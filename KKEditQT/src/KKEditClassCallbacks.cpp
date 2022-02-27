@@ -978,7 +978,7 @@ void KKEditClass::doOddButtons(void)
 				this->switchPage(this->mainNotebook->currentIndex());
 				break;
 			case DOLIVESEARCH:
-				fprintf(stderr,"DOLIVESEARCH\n");
+				this->doLiveSearch(this->liveSearchWidget->text());
 				break;
 			case DOAPISEARCH:
 				fprintf(stderr,"DOAPISEARCH\n");

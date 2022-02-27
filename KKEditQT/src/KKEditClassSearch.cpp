@@ -340,3 +340,20 @@ void KKEditClass::functionSearchDialog(void)
 	if ((ok==true) && (!text.isEmpty()))
 		this->goToDefinition(text);
 }
+
+void KKEditClass::doLiveSearch(const QString text)
+{
+	DocumentClass	*doc=this->getDocumentForTab(-1);
+
+	if(this->application->queryKeyboardModifiers()==Qt::ShiftModifier)
+		{
+			QTextCursor tc=doc->textCursor();
+			tc.movePosition(QTextCursor::Left,QTextCursor::MoveAnchor,text.length());
+			doc->setTextCursor(tc);
+			doc->find(text,QTextDocument::FindBackward);
+		}
+	else
+		doc->find(text);
+}
+
+

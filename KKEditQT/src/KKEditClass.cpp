@@ -50,7 +50,6 @@ void KKEditClass::doSearchFromBar(const QString txt)
 	switch(sender()->objectName().toInt())
 		{
 			case DOLINEBOX:
-				//fprintf(stderr,"DOLIVESEARCH\n");
 				this->gotoLine(txt.toInt());
 				break;
 		}
@@ -71,34 +70,10 @@ void KKEditClass::setUpToolBar(void)
 					case 'O':
 						{
 							QPushButton *recent=new QPushButton(NULL);
-	//						QMenu		*recentmenu=new QMenu("");
-
-//RecentMenuClass *rc=new RecentMenuClass(this);
-//rc->updateRecents();
-//QObject::connect(rc->recentMenu,&QMenu::triggered,[=]() {DEBUGSTR("menu item pressed")});
-//MenuItemClass *mc1=new MenuItemClass("/home/keithhedger/Projects/HOLDTOGO/src/backclass.cpp");
-//rc->addAction(mc1);
-//rc->addAction("gfddlfgdfkl");
-//rc->addAction("gfddlfgdfkl");
-//rc->addAction("gfddlfgdfkl");
-//
-//this->toolBar->addAction(qobject_cast<QAction*>(rc));
-//
-//							MenuItemClass *mc=new MenuItemClass("/home/keithhedger/Projects/HOLDTOGO/src/backclass.cpp");
-//							recentmenu->addAction(mc);
-//							QObject::connect(mc,&QAction::triggered,[=]() {DEBUGSTR("menu item pressed")});
-//							recentmenu->addAction("two");
-//							recentmenu->addAction("three");
-//							recentmenu->addAction("four");
-							//recent->setMenu(recentmenu);
-							
 							recent->setMenu(this->recentFiles->recentMenu);
 							recent->setFlat(true);
 							recent->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);	
 							recent->setMaximumWidth(16);
-
-							//QIcon itemicon=QIcon::fromTheme("document-open");
-
 							this->toolBar->addAction(qobject_cast<QAction*>(this->openMenuItem));
 							this->toolBar->addWidget(qobject_cast<QWidget*>(recent));
 						}
@@ -181,6 +156,7 @@ void KKEditClass::setUpToolBar(void)
 						QObject::connect(this->findQtApiWidget,SIGNAL(returnPressed()),this,SLOT(doOddButtons()));
 						this->toolBar->addWidget(this->findQtApiWidget);
 						break;
+
 //find in function def
 					case 'D':
 						if(this->findDefWidget==NULL)
@@ -195,7 +171,9 @@ void KKEditClass::setUpToolBar(void)
 						if(this->liveSearchWidget==NULL)
 							this->liveSearchWidget=new QLineEdit;
 						this->liveSearchWidget->setToolTip("Live Search");
-						//QObject::connect(((QLineEdit*)this->liveSearchWidget),&QLineEdit::textChanged,doLiveSearch);
+						this->liveSearchWidget->setObjectName(QString("%1").arg(DOLIVESEARCH));
+						QObject::connect(this->liveSearchWidget,SIGNAL(textChanged(QString)),this,SLOT(doLiveSearch(QString)));
+						QObject::connect(this->liveSearchWidget,SIGNAL(returnPressed()),this,SLOT(doOddButtons()));
 						this->toolBar->addWidget(this->liveSearchWidget);
 						break;
 

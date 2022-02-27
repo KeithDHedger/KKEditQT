@@ -306,15 +306,15 @@ class KKEditClass : public QObject
 		MenuItemClass				*makeMenuItemClass(int mainmenu,const QString name,const QKeySequence key,const QString iconname,const QString objectname,int userdata);
 
 //toolbar vars
-//		QToolBar					*toolBar=NULL;
 		ToolBarClass				*toolBar=NULL;
 		QWidget						*lineNumberWidget=NULL;
 		QLineEdit					*findGtkApiWidget=NULL;
 		QLineEdit					*findQtApiWidget=NULL;
 		QLineEdit					*findDefWidget=NULL;
-		QWidget						*liveSearchWidget=NULL;
+		QLineEdit					*liveSearchWidget=NULL;
 //toolbar functions
 		void						setUpToolBar(void);
+//		void						doLiveSearch(const QString text);
 
 //file vars
 		bool						openFromDialog=false;
@@ -451,6 +451,8 @@ class KKEditClass : public QObject
 		void						doSessionsMenuItems(void);
 
 		void						setToolsData(int);
+
+		void						doLiveSearch(const QString text);
 
 	protected:
 	private:
