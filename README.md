@@ -1,7 +1,7 @@
 **KKEdit Source Code Editor.**<br>
 ![KKEdit](screenshots/main.jpg?raw=true "KKEdit")<br>
 <br>
-[Full details and screenshots:](http://kkedit.freeddns.org)<br>
+[Full details and screenshots:](https://keithdhedger.github.io/KKEditQT/)<br>
 <br>
 Why another text editor?<br>
 <br>
@@ -18,19 +18,23 @@ Save/Restore session.<br>
 Run external tool synchronously or asynchronously.<br>
 Pass selected text to external tools.<br>
 <br>
-Find API declarations in installed Gtk-Doc's.<br>
+Find API declarations in installed QT5 Docs, Gtk-Doc's.<br>
 <br>
 Full source code highlighted printing<br>
 <br>
 + The usual source view options, line wrap, line numbers etc.<br>
 <br>
-Ported to gtk3.<br>
-<br>
-Add --enable-gtk3 to your configure to build for gtk3.<br>
-<br>
-Default is to build for gtk2<br>
-You may need to install gtk3 dev files if your distro splits them off from the main package ( debian etc ).<br>
-<br>
-*bsd* compile abandoned for the moment as webkit is broken on freeports, can be used with --disable-docviewer.<br>
+Ported to QT5.<br>
 <br>
 + When building from a fesh clone for the first time, please use ./autogen.sh instead of ./configure, args passed to autogen.sh are the same for configure, this only needs to be done on a fresh clone<br>
+
+This is the QT5 version of KKEDit and is not yet as full featured as the gtk version that it will soon replace.<br>
+
+TODO:
+
+search forward/back checkbox<br>
+plugins<br>
+global tools<br>
+hilighting<br>
+
+
