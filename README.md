@@ -22,7 +22,7 @@ Find API declarations in installed QT5 Docs, Gtk-Doc's.<br>
 <br>
 Full source code highlighted printing<br>
 <br>
-+ The usual source view options, line wrap, line numbers etc.<br>
+The usual source view options, line wrap, line numbers etc.<br>
 <br>
 Ported to QT5.<br>
 <br>
