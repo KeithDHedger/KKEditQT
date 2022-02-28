@@ -262,7 +262,17 @@ void KKEditClass::doToolsMenuItems()
 									{
 										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
 										str=runPipeAndCapture(str);
-										this->toolsOPText->setPlainText(str);
+										if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).toInt()==0)
+											{
+												QTextCursor tc=this->toolsOPText->textCursor();
+												tc.movePosition(QTextCursor::End,QTextCursor::MoveAnchor);
+												this->toolsOPText->setTextCursor(tc);
+												this->toolsOPText->insertPlainText(str);
+											}
+										else
+											{
+												this->toolsOPText->setPlainText(str);
+											}
 										this->toolOutputWindow->setWindowTitle(sl.at(TOOL_NAME).section(TOOLNAME,1,1));
 										this->toolOutputWindow->show();
 										return;
@@ -321,7 +331,8 @@ void KKEditClass::doHelpMenuItems()
 			 	this->showWebPage("Help For " PACKAGE,"file://" DATADIR "/help/index.html");
 			 	break;
 			 case ONLINEHELPMENUITEM:
-			 	this->showWebPage("Online Help For " PACKAGE,"https://keithdhedger.github.io/KKEdit/"); //TODO//online help
+			 DEBUGSTR(KKEDITQTPAGE)
+			 	this->showWebPage("Online Help For " PACKAGE,KKEDITQTPAGE);
 			 	break;
 			 case GETPLUGSMENUITEM:
 				DEBUGSTR("TODO get plugins ...")

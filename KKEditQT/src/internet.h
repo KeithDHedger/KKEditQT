@@ -30,7 +30,7 @@
 #define THEMEMANAGER GLOBALWEBSITE "/pages/apps.html#themeed"
 #define COMPMANAGER GLOBALWEBSITE "/pages/apps.html#xfcecomp"
 #define KKEDITPAGE "https://keithdhedger.github.io/KKEdit/"
-#define KKEDITQTPAGE "https://keithdhedger.github.io/KKEdit/"
+#define KKEDITQTPAGE "https://keithdhedger.github.io/KKEditQT/"
 #define KKTERMINALPAGE GLOBALWEBSITE "/pages/kkterminal/kkterminal.html"
 
 #define COPYRITE "Copyright © 2013-2021 K.D.Hedger"

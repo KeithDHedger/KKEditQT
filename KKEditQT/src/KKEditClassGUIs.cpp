@@ -1365,4 +1365,7 @@ void KKEditClass::buildToolOutputWindow(void)
 		});
 
 	docvlayout->addWidget(button);
-	this->toolOutputWindow->hide();}
+	this->toolOutputWindow->hide();
+}
+
+
