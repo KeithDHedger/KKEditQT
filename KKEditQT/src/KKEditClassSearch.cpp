@@ -344,16 +344,37 @@ void KKEditClass::functionSearchDialog(void)
 void KKEditClass::doLiveSearch(const QString text)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
+	bool			retval;
+	QTextCursor		savetc=doc->textCursor();
 
 	if(this->application->queryKeyboardModifiers()==Qt::ShiftModifier)
 		{
 			QTextCursor tc=doc->textCursor();
 			tc.movePosition(QTextCursor::Left,QTextCursor::MoveAnchor,text.length());
 			doc->setTextCursor(tc);
-			doc->find(text,QTextDocument::FindBackward);
+			retval=doc->find(text,QTextDocument::FindBackward);
+			if(retval==false)
+				{
+					QTextCursor tc=doc->textCursor();
+					tc.movePosition(QTextCursor::End,QTextCursor::MoveAnchor);
+					doc->setTextCursor(tc);
+					retval=doc->find(text,QTextDocument::FindBackward);
+				}
 		}
 	else
-		doc->find(text);
+		{
+			QTextCursor savetc=doc->textCursor();
+			retval=doc->find(text);
+			if(retval==false)
+				{
+					QTextCursor tc=doc->textCursor();
+					tc.movePosition(QTextCursor::Start,QTextCursor::MoveAnchor);
+					doc->setTextCursor(tc);
+					retval=doc->find(text);
+				}
+		}
+	if(retval==false)
+		doc->setTextCursor(savetc);
 }
 
 

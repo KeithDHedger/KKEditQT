@@ -307,7 +307,7 @@ class KKEditClass : public QObject
 
 //toolbar vars
 		ToolBarClass				*toolBar=NULL;
-		QWidget						*lineNumberWidget=NULL;
+		QLineEdit					*lineNumberWidget=NULL;
 		QLineEdit					*findGtkApiWidget=NULL;
 		QLineEdit					*findQtApiWidget=NULL;
 		QLineEdit					*findDefWidget=NULL;

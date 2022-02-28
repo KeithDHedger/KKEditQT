@@ -124,33 +124,32 @@ void KKEditClass::setUpToolBar(void)
 						break;
 
 					case '9':
-						if(this->lineNumberWidget==NULL)
-							{
-								this->lineNumberWidget=new QLineEdit;
-								qobject_cast<QLineEdit*>(this->lineNumberWidget)->setValidator(new QIntValidator);
-								this->lineNumberWidget->setObjectName(QString("%1").arg(DOLINEBOX));
-								this->lineNumberWidget->setToolTip("Go To Line");
-								this->lineNumberWidget->setMaximumWidth(48);
-								QObject::connect(this->lineNumberWidget,SIGNAL(textEdited(const QString)),this,SLOT(doSearchFromBar(const QString)));
-							}
+						if(this->lineNumberWidget!=NULL)
+							delete this->lineNumberWidget;
+						this->lineNumberWidget=new QLineEdit;
+						this->lineNumberWidget->setValidator(new QIntValidator);
+						this->lineNumberWidget->setObjectName(QString("%1").arg(DOLINEBOX));
+						this->lineNumberWidget->setToolTip("Go To Line");
+						this->lineNumberWidget->setMaximumWidth(48);
+						QObject::connect(this->lineNumberWidget,SIGNAL(textEdited(const QString)),this,SLOT(doSearchFromBar(const QString)));
 						this->toolBar->addWidget(this->lineNumberWidget);
 						break;
 //find in gtkdoc
 					case 'A':
-						if(this->findGtkApiWidget==NULL)
-							{
-								this->findGtkApiWidget=new QLineEdit;
-								this->findGtkApiWidget->setObjectName(QString("%1").arg(DOGTKSEARCH));
-								this->findGtkApiWidget->setToolTip("Find API In Gtk Docs");
-								QObject::connect(this->findGtkApiWidget,SIGNAL(returnPressed()),this,SLOT(doOddButtons()));
-							}
+						if(this->findGtkApiWidget!=NULL)
+							delete this->findGtkApiWidget;
+						this->findGtkApiWidget=new QLineEdit;
+						this->findGtkApiWidget->setObjectName(QString("%1").arg(DOGTKSEARCH));
+						this->findGtkApiWidget->setToolTip("Find API In Gtk Docs");
+						QObject::connect(this->findGtkApiWidget,SIGNAL(returnPressed()),this,SLOT(doOddButtons()));
 						this->toolBar->addWidget(this->findGtkApiWidget);
 						break;
 
 //find in qt5doc
 					case 'Q':
-						if(this->findQtApiWidget==NULL)
-							this->findQtApiWidget=new QLineEdit;
+						if(this->findQtApiWidget!=NULL)
+							delete this->findQtApiWidget;
+						this->findQtApiWidget=new QLineEdit;
 						this->findQtApiWidget->setObjectName(QString("%1").arg(DOQT5SEARCH));
 						this->findQtApiWidget->setToolTip("Find API In Qt5 Docs");
 						QObject::connect(this->findQtApiWidget,SIGNAL(returnPressed()),this,SLOT(doOddButtons()));
@@ -159,8 +158,9 @@ void KKEditClass::setUpToolBar(void)
 
 //find in function def
 					case 'D':
-						if(this->findDefWidget==NULL)
-							this->findDefWidget=new QLineEdit;
+						if(this->findDefWidget!=NULL)
+							delete this->findDefWidget;
+						this->findDefWidget=new QLineEdit;
 						this->findDefWidget->setObjectName(QString("%1").arg(DOAPISEARCH));
 						this->findDefWidget->setToolTip("Search For Define");
 						QObject::connect(this->findDefWidget,SIGNAL(returnPressed()),this,SLOT(doOddButtons()));
@@ -168,8 +168,9 @@ void KKEditClass::setUpToolBar(void)
 						break;
 //livesearch
 					case 'L':
-						if(this->liveSearchWidget==NULL)
-							this->liveSearchWidget=new QLineEdit;
+						if(this->liveSearchWidget!=NULL)
+							delete this->liveSearchWidget;
+						this->liveSearchWidget=new QLineEdit;
 						this->liveSearchWidget->setToolTip("Live Search");
 						this->liveSearchWidget->setObjectName(QString("%1").arg(DOLIVESEARCH));
 						QObject::connect(this->liveSearchWidget,SIGNAL(textChanged(QString)),this,SLOT(doLiveSearch(QString)));
@@ -387,9 +388,9 @@ void KKEditClass::initApp(int argc,char** argv)
 						this->sessionNames[j]=tstr;
 				}
 		}
-DEBUGSTR( ">>" << this->homeFolder << "<<" )
-DEBUGSTR( ">>" << this->homeDataFolder << "<<" )
-DEBUGSTR( ">>" << this->sessionFolder << "<<" )
+//DEBUGSTR( ">>" << this->homeFolder << "<<" )
+//DEBUGSTR( ">>" << this->homeDataFolder << "<<" )
+//DEBUGSTR( ">>" << this->sessionFolder << "<<" )
 
 	//
 	this->tmpFolderName=mkdtemp(tmpfoldertemplate);
@@ -645,6 +646,7 @@ void KKEditClass::readConfigs(void)
 //application
 	this->prefsMsgTimer=this->prefs.value("app/msgtimer",1000).toInt();
 	this->prefsUseSingle=this->prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
+	this->prefsNagScreen=this->prefs.value("app/bekind",QVariant(bool(false))).value<bool>();
 	this->findList=this->prefs.value("app/findlist").toStringList();
 	this->replaceList=this->prefs.value("app/replacelist").toStringList();
 	this->defaultShortCutsList=this->prefs.value("app/shortcuts",QVariant(QStringList({"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'"}))).toStringList();
@@ -773,6 +775,7 @@ void KKEditClass::writeExitData(void)
 //application
 	this->prefs.setValue("app/msgtimer",this->prefsMsgTimer);
 	this->prefs.setValue("app/usesingle",this->prefsUseSingle);
+	this->prefs.setValue("app/bekind",this->prefsNagScreen);
 	this->prefs.setValue("app/shortcuts",this->defaultShortCutsList);
 	this->prefs.setValue("app/findlist",this->findList);
 	this->prefs.setValue("app/replacelist",this->replaceList);

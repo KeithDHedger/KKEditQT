@@ -59,7 +59,7 @@ void KKEditClass::buildPrefsWindow(void)
 	QLabel				*widgetlabel;
 	int					posy;
 
-	listWidget=new QListWidget;
+	this->listWidget=new QListWidget;
 	fromHBox=new QToolBar;
 
 	this->prefsWindow=new QDialog(this->mainWindow);

@@ -1,4 +1,8 @@
 0.5.2
+Wrapped live search.
+Added be kind check box to prefs.
+Fixed dispapearing edit boxes, when setting prefs.
+Removed some debug code.
 Done Live search
 Updated docs.
 Clicking on line number now toggles bookmark.

@@ -646,6 +646,7 @@ void KKEditClass::setPreferences(void)
 	this->prefsSyntaxHilighting=qobject_cast<QCheckBox*>(this->prefsWidgets[SYNTAXHILITE])->checkState();
 	this->prefsAutoShowCompletions=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSHOW])->checkState();
 	this->prefsNoOpenduplicate=qobject_cast<QCheckBox*>(this->prefsWidgets[NODUPLICATE])->checkState();
+	this->prefsNagScreen=qobject_cast<QCheckBox*>(this->prefsWidgets[BEKIND])->checkState();
 	this->recentFiles->maxFiles=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXRECENTS])->value();
 	this->recentFiles->updateRecents();
 
@@ -939,7 +940,6 @@ void KKEditClass::doOddButtons(void)
 				break;
 #ifdef _ASPELL_
 			case APPLYWORDBUTTON:
-				fprintf(stderr,"APPLYWORD\n");
 				this->spellCheckGUI->hide();
 				if(this->returnWord==false)
 					{
@@ -951,7 +951,6 @@ void KKEditClass::doOddButtons(void)
 				this->returnWord=false;
 				break;
 			case IGNOREWORDBUTTON:
-				fprintf(stderr,"IGNOREWORDBUTTON\n");
 				if(this->returnWord==false)
 					aspell_speller_add_to_session(this->spellChecker,doc->textCursor().selectedText().toStdString().c_str(),-1);
 				else
@@ -960,13 +959,11 @@ void KKEditClass::doOddButtons(void)
 				this->returnWord=false;
 				break;
 			case ADDWORDBUTTON:
-				fprintf(stderr,"ADDWORDBUTTON\n");
 				aspell_speller_add_to_personal(this->spellChecker,this->badWord.toStdString().c_str(),-1);
 				aspell_speller_save_all_word_lists(this->spellChecker);
 				this->spellCheckGUI->hide();
 				break;
 			case CANCELSPELLCHECK:
-				fprintf(stderr,"CANCELSPELLCHECK\n");
 				this->cancelCheck=true;
 				this->spellCheckGUI->hide();
 				break;
@@ -981,15 +978,12 @@ void KKEditClass::doOddButtons(void)
 				this->doLiveSearch(this->liveSearchWidget->text());
 				break;
 			case DOAPISEARCH:
-				fprintf(stderr,"DOAPISEARCH\n");
 				this->goToDefinition(this->findDefWidget->text());
 				break;
 			case DOQT5SEARCH:
-				fprintf(stderr,"DOQT5SEARCH\n");
 				this->searchAPIDocs(this->findQtApiWidget->text(),1);
 				break; 
 			case DOGTKSEARCH:
-				fprintf(stderr,"DOGTKSEARCH gtkwidget QLineEdit\n");
 				this->searchAPIDocs(this->findGtkApiWidget->text(),0);
 				break;
 			case DOCVIEWERGOHOME:
