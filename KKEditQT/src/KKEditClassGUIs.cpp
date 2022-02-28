@@ -1264,7 +1264,7 @@ void KKEditClass::buildDocViewer(void)
 
 	r=this->prefs.value("app/viewergeometry",QVariant(QRect(100,100,800,600))).value<QRect>();
 	this->docView->setGeometry(r);
-	
+	docvlayout->setContentsMargins(0,0,0,0);
 	widget=new QWidget;
 	widget->setLayout(docvlayout);
 	this->docView->setCentralWidget(widget);
@@ -1328,3 +1328,41 @@ int KKEditClass::yesNoDialog(QString txt,QString info)
 	msgBox.setDefaultButton(QMessageBox::No);
 	return(msgBox.exec());
 }
+
+void KKEditClass::buildToolOutputWindow(void)
+{
+	QVBoxLayout	*docvlayout=new QVBoxLayout;
+	QHBoxLayout	*dochlayout=new QHBoxLayout;
+	QWidget		*widget;
+	QPushButton	*button;
+	QRect		r;
+
+	this->toolOutputWindow=new QMainWindow(mainWindow);
+
+	r=this->prefs.value("app/toolsopgeometry",QVariant(QRect(100,100,800,600))).value<QRect>();
+	this->toolOutputWindow->setGeometry(r);
+
+	docvlayout->setContentsMargins(0,0,0,0);
+	widget=new QWidget;
+	widget->setLayout(docvlayout);
+	this->toolOutputWindow->setCentralWidget(widget);
+
+	this->toolsOPText=new QPlainTextEdit(this->mainWindow);
+	docvlayout->addWidget(this->toolsOPText);
+
+	button=new QPushButton(QIcon::fromTheme("edit-copy"),"Copy To Clipboard");
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+		if(this->toolsOPText->textCursor().hasSelection()==true)
+			this->toolsOPText->copy();
+		else
+			{
+				QTextCursor savetc=this->toolsOPText->textCursor();
+				this->toolsOPText->selectAll();
+				this->toolsOPText->copy();
+				this->toolsOPText->setTextCursor(savetc);
+			}
+		});
+
+	docvlayout->addWidget(button);
+	this->toolOutputWindow->hide();}

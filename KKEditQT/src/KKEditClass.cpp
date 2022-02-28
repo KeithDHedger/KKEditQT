@@ -432,6 +432,8 @@ void KKEditClass::initApp(int argc,char** argv)
 
 	this->buildMainGui();
 	this->buildPrefsWindow();
+	this->buildToolOutputWindow();
+
 //TODO//
 //	if(onExitSaveSession==true)
 //		restoreSession(NULL,(void*)restoreBookmarks);
@@ -439,7 +441,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->buildDocViewer();
 #endif
 
-	buildFindReplace();
+	this->buildFindReplace();
 #ifdef _ASPELL_
 	AspellCanHaveError	*possible_err;
 	this->aspellConfig=new_aspell_config();
@@ -776,6 +778,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/msgtimer",this->prefsMsgTimer);
 	this->prefs.setValue("app/usesingle",this->prefsUseSingle);
 	this->prefs.setValue("app/bekind",this->prefsNagScreen);
+	this->prefs.setValue("app/toolsopgeometry",this->toolOutputWindow->geometry());
 	this->prefs.setValue("app/shortcuts",this->defaultShortCutsList);
 	this->prefs.setValue("app/findlist",this->findList);
 	this->prefs.setValue("app/replacelist",this->replaceList);

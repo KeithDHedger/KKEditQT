@@ -234,8 +234,7 @@ void KKEditClass::doToolsMenuItems()
 								str.replace("%i","TODO");
 
 								int trm=sl.indexOf(QRegularExpression(QString(".*%1.*").arg(TOOLRUNINTERM)));//todo//
-								
-								DEBUGSTR( "prefsTerminalCommand=" << this->prefsTerminalCommand << " str=" << str << "<<" << sl.at(trm).section(TOOLRUNINTERM,1,1).trimmed() )
+								//run in term
 								if(sl.at(trm).section(TOOLRUNINTERM,1,1).trimmed().toInt()==1)
 									{
 										str=this->prefsTerminalCommand + " " + str;
@@ -263,8 +262,9 @@ void KKEditClass::doToolsMenuItems()
 									{
 										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
 										str=runPipeAndCapture(str);
-										QMessageBox mes(QMessageBox::Information,"Tool Output",str,QMessageBox::Ok);
-										mes.exec();
+										this->toolsOPText->setPlainText(str);
+										this->toolOutputWindow->setWindowTitle(sl.at(TOOL_NAME).section(TOOLNAME,1,1));
+										this->toolOutputWindow->show();
 										return;
 									}
 

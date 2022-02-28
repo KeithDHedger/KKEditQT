@@ -1,4 +1,8 @@
 0.5.2
+Save tool output geometry.
+Added copy to clipboard to tool output window.
+Added scrollable text to tool output window.
+Remove unwanted borders from doc viewer window.
 Wrapped live search.
 Added be kind check box to prefs.
 Fixed dispapearing edit boxes, when setting prefs.

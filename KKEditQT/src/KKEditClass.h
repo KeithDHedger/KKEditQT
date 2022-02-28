@@ -353,10 +353,13 @@ class KKEditClass : public QObject
 //tools vars
 		QDialog						*toolsWindow;
 		QComboBox					*toolSelect;
+		QMainWindow					*toolOutputWindow;
+		QPlainTextEdit				*toolsOPText;
 
 //tools functions
 		void						rebuildToolsMenu(void);
 		QStringList					verifyTool(QString filepath);
+		void						buildToolOutputWindow(void);
 
 //docviewer vars
 #ifdef _BUILDDOCVIEWER_
