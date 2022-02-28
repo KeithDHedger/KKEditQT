@@ -1,5 +1,5 @@
-**KKEdit Source Code Editor.**<br>
-![KKEdit](screenshots/main.jpg?raw=true "KKEdit")<br>
+**KKEditQT Source Code Editor.**<br>
+![KKEditQT](screenshots/main.jpg?raw=true "KKEdit")<br>
 <br>
 [Full details and screenshots:](https://keithdhedger.github.io/KKEditQT/)<br>
 <br>
