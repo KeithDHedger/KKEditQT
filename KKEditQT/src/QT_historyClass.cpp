@@ -46,8 +46,6 @@ void HistoryClass::pushToBackList(int line,QString documentpath)
 		this->oneList.clear();
 	this->oneList.push_back(fromhere);
 	this->currentIndex++;
-
-	//this->debuglist();
 }
 
 void HistoryClass::goBack(void)
@@ -111,16 +109,6 @@ void HistoryClass::goForward(void)
 			this->mainKKEditClass->openFile(fromhere.documentPath,fromhere.line);
 		}
 }
-//
-//void HistoryClass::debuglist(void)
-//{
-//	DEBUGSTR("onelist:")
-//	for(int j=0;j<this->oneList.count();j++)
-//		{
-//			DEBUGSTR(j << " current=" << this->currentIndex << " doc  " << this->oneList.at(j).documentPath << " line " << this->oneList.at(j).line);
-//		}
-//}
-//
 
 
 

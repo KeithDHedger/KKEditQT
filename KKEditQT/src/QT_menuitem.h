@@ -42,8 +42,6 @@ class MenuItemClass : public QAction
 		QString				getMenuString(void);
 
 
-		//void				setCallBackVoid(menuCallbackVoid func);
-		//void				setCallBackBool(menuCallbackBool func);
 		bool				inPopup=false;
 		bool				alwaysInPopup=false;
 
@@ -53,12 +51,6 @@ class MenuItemClass : public QAction
 	private:
 		int					menuID;
 		QString				menuString;
-		//menuCallbackVoid	callbackVoid;
-		//menuCallbackBool	callbackBool;
-
-	private slots:
-		void				menuClickedVoid(void);
-		bool				menuClickedBool(void);
 };
 
 #endif

@@ -226,6 +226,8 @@ class KKEditClass : public QObject
 		void						rebuildTabsMenu(void);
 		void						functionSearchDialog(void);
 		bool						checkForOpenFile(QString filepath);
+		void						printDocument(void);
+
 //menubar
 		QMenuBar					*menuBar;
 

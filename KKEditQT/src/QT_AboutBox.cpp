@@ -197,5 +197,3 @@ AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
 	vlayout->addWidget(hbox);
 	this->aboutdialog->setLayout((QLayout*)vlayout);
 }
-
-

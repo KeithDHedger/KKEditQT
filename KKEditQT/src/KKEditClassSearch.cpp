@@ -29,7 +29,7 @@ void KKEditClass::doFindReplace(int response_id)
 {
 	int									flags=0;
 	DocumentClass						*document=this->getDocumentForTab(-1);
-	char								*currentfindtext;
+	char								*currentfindtext;//TODO//
 	char								*currentreplacetext;
 	const char							*thetext;
 	QStringList							*tlist;
@@ -213,7 +213,7 @@ void KKEditClass::doFindReplace(int response_id)
 				}
 		}
 
-	if (currentfindtext!=NULL) free(currentfindtext);currentfindtext=NULL;
+	if (currentfindtext!=NULL) free(currentfindtext);currentfindtext=NULL;//TODO//
 	if (currentreplacetext!=NULL) free(currentreplacetext);currentreplacetext=NULL;
 }
 
@@ -376,5 +376,3 @@ void KKEditClass::doLiveSearch(const QString text)
 	if(retval==false)
 		doc->setTextCursor(savetc);
 }
-
-

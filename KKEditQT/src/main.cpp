@@ -40,7 +40,7 @@ int main (int argc, char **argv)
 	singleOverRide=false;
 	loadPluginsFlag=true;
 
-	if(safeflag==true)
+	if(safeflag==true)//TODO//
 		{
 			singleOverRide=true;
 			loadPluginsFlag=false;

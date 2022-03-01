@@ -46,6 +46,5 @@ class HistoryClass : public QObject
 	private:
 		KKEditClass			*mainKKEditClass;
 		int					currentIndex=0;
-//		void				debuglist(void);
 };
 #endif

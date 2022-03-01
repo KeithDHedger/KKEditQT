@@ -204,8 +204,6 @@ void DocumentClass::updateLineNumberArea(const QRect &rect,int dy)
 
 void DocumentClass::keyPressEvent(QKeyEvent *event)
 {
-	//this->dirty=true;
-
 //fix for vnc/linuxfb tab key
 	if(((this->mainKKEditClass->application->platformName().compare("vnc")==0) || (this->mainKKEditClass->application->platformName().compare("linuxfb")==0)) && (event->key()==Qt::Key_Tab))
 		{
@@ -263,9 +261,6 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 
 	connect(this,SIGNAL(undoAvailable(bool)),this,SLOT(setUndo(bool)));
 	connect(this,SIGNAL(redoAvailable(bool)),this,SLOT(setRedo(bool)));
-
-	//connect(this,SIGNAL(keyPressEvent()),this,SLOT(keyp(QKeyEvent * event)));
-	//QObject::connect(qobject_cast<QWidget*>(this->mainNotebook),&QWidget::keyPressEvent,keyp);
 
 	updateLineNumberAreaWidth();
 	highlightCurrentLine();
@@ -418,11 +413,9 @@ Mime type: "text/x-c++src"
 Mime type: "text/x-c++src"
 Mime type: "text/x-c++src"
 Mime type: "text/plain"
-
 */
 void DocumentClass::setHiliteLanguage(void)
 {
-//fprintf(stderr,"%s=%s\n",this->filePath.toStdString().c_str(),this->mimeType.toStdString().c_str());
 	QSourceHighliter::Themes	theme=(QSourceHighliter::Themes)2;
 
 	if(this->mainKKEditClass->prefsSyntaxHilighting==false)
@@ -478,7 +471,6 @@ void DocumentClass::setRedo(bool avail)
 
 void DocumentClass::dragMoveEvent(QDragMoveEvent *event)
 {
-//DEBUGSTR("here")
 	if((event->mimeData()->hasUrls()==true))
 		event->accept();
 	else
@@ -548,5 +540,3 @@ void DocumentClass::setBMFromLineBar(QMouseEvent *event)
 	this->mainKKEditClass->handleBMMenu(this,TOGGLEBOOKMARKMENUITEM,cursor);
 	this->highlightCurrentLine();
 }
-
-

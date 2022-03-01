@@ -232,8 +232,6 @@ void KKEditClass::setToolsData(int what)
 					sl<<QString("%1\t0").arg(TOOLRUNASROOT);
 					sl<<QString("%1\t").arg(TOOLKEY);
 					sl<<QString("%1\t0").arg(TOOLUSEPOLE);
-					//for(int j=0;j<TOOL_END;j++)
-					//	DEBUGSTR( sl.at(j) )
 					savebutton->setEnabled(false);
 				}
 			else
@@ -401,5 +399,3 @@ void KKEditClass::setToolsData(int what)
 				}
 		}
 }
-
-

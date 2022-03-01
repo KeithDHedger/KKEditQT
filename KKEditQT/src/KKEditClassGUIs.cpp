@@ -295,7 +295,6 @@ void KKEditClass::buildPrefsWindow(void)
 	hbox->addStretch(1);
 	mainvbox->addLayout(hbox,0);
 
-//TODO//
 	makePrefsCheck(BEKIND,"I have donated",this->prefsNagScreen,-1,-1);
 	hbox=new QHBoxLayout;
     hbox->addStretch(1);
@@ -319,15 +318,12 @@ void KKEditClass::buildPrefsWindow(void)
 	hbox=new QHBoxLayout;
 	hbox->addStretch(1);
 	button=new QPushButton("Save Prefs");
-	//QObject::connect(((QPushButton*)button),&QPushButton::clicked,setPrefs);
-	//	QObject::connect(this->listWidget,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(doDoubleClickPrefs(QListWidgetItem*)));
 	QObject::connect(button,SIGNAL(clicked()),this,SLOT(setPreferences()));
 	hbox->addWidget(button);
 	hbox->addStretch(1);
 	button=new QPushButton("Restore Prefs");
 	button->setObjectName(QString("%1").arg(CANCELPREFS));
 	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
-	//QObject::connect(((QPushButton*)button),&QPushButton::clicked,cancelPrefs);
 	hbox->addWidget(button);
 	hbox->addStretch(1);
 	mainvbox->addLayout(hbox);
@@ -606,12 +602,6 @@ void KKEditClass::buildMainGui(void)
 {
 	MenuItemClass	*menuItemSink;
 
-	//this->mainWindow=new QMainWindow;
-//	this->mainWindowVBox=new QVBoxLayout();//TODO//HMMmmmmmm
-//	this->mainWindowVBox->setContentsMargins(2,2,2,2);
-//	this->mainWindow->setLayout(this->mainWindowVBox);
-
-	//this->mainNotebook=new QTabWidget;
 	this->mainNotebook=new NoteBookClass(this);
 
 //contextMenuEvent
@@ -622,19 +612,11 @@ void KKEditClass::buildMainGui(void)
 	this->mainNotebook->setDocumentMode(true);
 	this->mainNotebook->setTabsClosable(true);
 	this->mainNotebook->setMovable(true);
-	//	this->mainNotebook->setAcceptDrops(true);//TODO//
-	//	this->mainNotebook->tabBar()->setAcceptDrops(true);
-	
-	//QObject::connect(this->mainNotebook,&QTabWidget::currentChanged(int),switchPage(int));//TODO//
 	QObject::connect(this->mainNotebook,SIGNAL(currentChanged(int)),this,SLOT(switchPage(int)));
 	QObject::connect(this->mainNotebook,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));
-	//QObject::connect(this->mainNotebook,&QTabWidget::tabCloseRequested,closeTabQT);
-////	QObject::connect(qobject_cast<QWidget*>(mainNotebook),&QWidget::keyPressEvent,keyp);
 
 	this->menuBar=new QMenuBar;
-	//this->toolBar=new QToolBar;
 	this->toolBar=new ToolBarClass(this);
-
 
 //file menu
 	this->fileMenu=new QMenu("&File");
@@ -647,9 +629,8 @@ void KKEditClass::buildMainGui(void)
 	this->openMenuItem=this->makeMenuItemClass(FILEMENU,"Open",QKeySequence::Open,"document-open",OPENMENUNAME,OPENMENUITEM);
 
 //open recent
-	//this->openRecentMenuItem=this->makeMenuItemClass(FILEMENU,"Open Recent",QKeySequence::Open,"document-open",OPENMENUNAME,OPENMENUITEM);
-	//this->openRecentMenuItem=new QMenu("&Save Session");
-this->fileMenu->addMenu(this->recentFiles->recentMenu);
+	this->fileMenu->addMenu(this->recentFiles->recentMenu);
+
 //open as hexdump
 	menuItemSink=this->makeMenuItemClass(FILEMENU,"Open As Hexdump",0,"document-open",HEXDUMPMENUNAME,HEXDUMPMENUITEM);
 
@@ -668,11 +649,6 @@ this->fileMenu->addMenu(this->recentFiles->recentMenu);
 
 	this->fileMenu->addSeparator();
 
-//recent menu
-//TODO//
-//	makeMenuItem(this->fileMenu,"Recent Files",0,NULL,RECENTMENUNAME,&newFileWrap,NULL,1000);
-	this->fileMenu->addSeparator();
-
 //save
 	this->saveMenuItem=this->makeMenuItemClass(FILEMENU,"Save",QKeySequence::Save,"document-save",SAVEMENUNAME,SAVEMENUITEM);
 
@@ -683,7 +659,6 @@ this->fileMenu->addMenu(this->recentFiles->recentMenu);
 	this->saveAllMenuItem=this->makeMenuItemClass(FILEMENU,"Save All",0,"document-save",SAVEALLMENUNAME,SAVEALLMENUITEM);
 
 	this->fileMenu->addSeparator();
-
 
 //save session
 	this->saveSessionsMenu=new QMenu("&Save Session");
@@ -703,6 +678,8 @@ this->fileMenu->addMenu(this->recentFiles->recentMenu);
 			menuItemSink=this->makeMenuItemClass(RESTORESESSIONSMENU,this->sessionNames.value(j),0,NULL,RESTORESESSIONMENUNAME,j);
 			this->restoreSessionMenuItemsList.append(menuItemSink);
 		}
+	this->fileMenu->addSeparator();
+
 //printfile
 	this->printMenuItem=this->makeMenuItemClass(FILEMENU,"Print",QKeySequence::Print,"document-print",PRINTMENUNAME,PRINTMENUITEM);
 
@@ -909,9 +886,7 @@ void KKEditClass::showLineEntry(void)
 	QString	text=QInputDialog::getText(this->mainWindow,"Go To Line","Enter Line Number",QLineEdit::Normal,"0",&ok);
 
 	if ((ok==true) && (!text.isEmpty()))
-		{
-			this->gotoLine(text.toUInt());
-		}
+		this->gotoLine(text.toUInt());
 }
 
 void KKEditClass::buildTools(void)
@@ -1046,7 +1021,6 @@ void KKEditClass::buildTools(void)
 	tab->setLayout(grid);
 	mainvbox->addWidget(tab);
 
-
 	hbox=new QHBoxLayout;
 	hbox->addStretch(1);
 	button=new QPushButton("Save Tool");
@@ -1074,27 +1048,6 @@ void KKEditClass::buildTools(void)
 	hbox->addWidget(button);
 	hbox->addStretch(1);
 	mainvbox->addLayout(hbox);
-
-
-//
-//
-//
-//	button=new QPushButton("Restore Prefs");
-//	button->setObjectName(QString("%1").arg(CANCELPREFS));
-//	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
-
-	//prefsnotebook->addTab(tab,"Text Style");
-
-
-//	widgetlabel=new QLabel("Theme:");
-//	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
-//	table->addWidget(prefsOtherWidgets[THEMECOMBO],posy,1,posy,-1,Qt::AlignVCenter);
-
-//	menuitem=gtk_image_menu_item_new_with_label("Manage External Tools");
-//	image=gtk_image_new_from_stock(GTK_STOCK_EDIT,GTK_ICON_SIZE_MENU);
-//	gtk_image_menu_item_set_image((GtkImageMenuItem *)menuitem,image);
-//	gtk_menu_shell_append(GTK_MENU_SHELL(menu),menuitem);
-//	g_signal_connect(G_OBJECT(menuitem),"activate",G_CALLBACK(doMakeTool),NULL);
 
 	this->toolsWindow->setLayout(mainvbox);
 
@@ -1259,9 +1212,6 @@ void KKEditClass::buildDocViewer(void)
 
 	this->docView=new QMainWindow(mainWindow);
 
-//TODO//close event
-//QObject::connect((QWidget*)this->docView,&QWidget::closeEvent,[=]() {fprintf(stderr,">>>>>\n");});
-
 	r=this->prefs.value("app/viewergeometry",QVariant(QRect(100,100,800,600))).value<QRect>();
 	this->docView->setGeometry(r);
 	docvlayout->setContentsMargins(0,0,0,0);
@@ -1363,9 +1313,21 @@ void KKEditClass::buildToolOutputWindow(void)
 				this->toolsOPText->setTextCursor(savetc);
 			}
 		});
+	dochlayout->addStretch(1);
+	dochlayout->addWidget(button);
 
-	docvlayout->addWidget(button);
+	button=new QPushButton(QIcon::fromTheme("window-close"),"Close");
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->toolOutputWindow->hide();
+		});
+	dochlayout->addStretch(1);
+	dochlayout->addWidget(button);
+
+
+	dochlayout->addStretch(1);
+
+	docvlayout->addLayout(dochlayout);
+	docvlayout->addSpacing(6);
 	this->toolOutputWindow->hide();
 }
-
-

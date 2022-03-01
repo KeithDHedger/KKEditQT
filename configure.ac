@@ -39,6 +39,11 @@ if test "$enable_docviewer" = "yes"; then
 	AC_DEFINE([_BUILDDOCVIEWER_], [], [Build doc viewer])
 fi
 
+QTPRINTSUPPORT_MODULES="Qt5PrintSupport >= 5.15.2"
+PKG_CHECK_MODULES(QTPRINTSUPPORT, $QTPRINTSUPPORT_MODULES)
+AC_SUBST(QTPRINTSUPPORT_CFLAGS)
+AC_SUBST(QTPRINTSUPPORT_LIBS)
+
 AC_MSG_CHECKING(whether to include spell checker (aspell))
 AC_ARG_ENABLE(aspell,AS_HELP_STRING([--enable-aspell],[Include spellchecker]),
     [enable_aspell=$enableval],

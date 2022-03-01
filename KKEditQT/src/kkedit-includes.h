@@ -43,8 +43,13 @@
 #include <vector>
 #include <map>
 
+#include <QApplication>
 #include <QtWidgets>
 #include <QSettings>
+#include <QPrintDialog>
+#include <QPrinter>
+#include <QPrintPreviewDialog>
+
 
 #include "config.h"
 

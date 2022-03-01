@@ -388,14 +388,8 @@ void KKEditClass::initApp(int argc,char** argv)
 						this->sessionNames[j]=tstr;
 				}
 		}
-//DEBUGSTR( ">>" << this->homeFolder << "<<" )
-//DEBUGSTR( ">>" << this->homeDataFolder << "<<" )
-//DEBUGSTR( ">>" << this->sessionFolder << "<<" )
 
-	//
 	this->tmpFolderName=mkdtemp(tmpfoldertemplate);
-//	this->prefsTerminalCommand="xterm -e ";
-//	this->prefsRootCommand=GTKSUPATH;
 
 	exitstatus=system("which manpageeditor 2>&1 >/dev/null");
 	this->gotManEditor=WEXITSTATUS(exitstatus);
@@ -406,9 +400,6 @@ void KKEditClass::initApp(int argc,char** argv)
 //	else
 //		styleName="Root Source";
 	//this->highlightColour="#808080";
-//	asprintf(&filename,"%s/" KKEDITFOLDER "/tools",getenv("HOME"));
-//	g_mkdir_with_parents(filename,493);
-//	if (filename!=NULL) free(filename);filename=NULL;
 
 	this->mainWindow=new QMainWindow;
 	for(int j=0;j<SHORTCUTSCOUNT;j++)
@@ -461,7 +452,6 @@ void KKEditClass::initApp(int argc,char** argv)
 #endif
 
 	this->htmlFile=QString("%1/Docview-%2.html").arg(this->tmpFolderName).arg(this->randomName(6));
-	//this->htmlURI=QString("file://%1/Docview-%2.html").arg(this->tmpFolderName).arg(this->randomName(6));
 	this->htmlURI="file://"+this->htmlFile;
 
 	this->recentFiles->updateRecents();
@@ -472,32 +462,6 @@ void KKEditClass::initApp(int argc,char** argv)
 
 	this->setToolbarSensitive();
 	this->mainWindow->show();
-return;
-//	refreshMainWindow();
-//
-//	buildFindReplace();
-//
-//	for(unsigned int j=0; j<g_slist_length(findList); j++)
-//		{
-//			reinterpret_cast<QComboBox*>(findDropBox)->addItem((const char*)g_slist_nth_data(findList,j));
-//		}
-//	reinterpret_cast<QComboBox*>(findDropBox)->setCurrentIndex(g_slist_length(findList)-1);
-//
-//	for(unsigned int j=0; j<g_slist_length(findList); j++)
-//		{
-//			reinterpret_cast<QComboBox*>(replaceDropBox)->addItem((const char*)g_slist_nth_data(replaceList,j));
-//		}
-//	reinterpret_cast<QComboBox*>(replaceDropBox)->setCurrentIndex(g_slist_length(findList)-1);
-//
-////TODO//
-//
-//#ifdef _BUILDDOCVIEWER_
-//	buildDocViewer();
-//#endif
-//
-//
-////TODO//
-
 }
 
 QString KKEditClass::randomName(int len)
@@ -828,7 +792,6 @@ void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString c
 
 	pipecom=QString("KKEditQTProgressBar \"%1\" \"%2\" \"%3\" \"%4\" &").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(controlfile);
 	this->runPipe(pipecom);
-//DEBUGSTR(pipecom)
 }
 
 void KKEditClass::buildDocs(void)
@@ -875,7 +838,7 @@ void KKEditClass::showDocs(void)
 	if(fileinfo.exists()==false)
 		this->buildDocs();
 	else
-		{//TODO//
+		{
 			QString com=QString("/bin/echo '<meta http-equiv=\"refresh\" content=\"0; URL='file://%1'\" />' > %2").arg(fileinfo.absoluteFilePath()).arg(this->htmlFile);
 			system(com.toStdString().c_str());
 			this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
@@ -884,7 +847,6 @@ void KKEditClass::showDocs(void)
 
 void KKEditClass::closeAllTabs(void)
 {
-printf("void KKEditClass::closeAllTabs(void)\n");
 	bool retval;
 	this->sessionBusy=true;
 	int	numtabs=(this->mainNotebook)->count();
@@ -951,7 +913,6 @@ bool KKEditClass::closeTab(int index)
 
 	if(this->closingAllTabs==false)
 			this->handleBMMenu(this->mainNotebook->widget(thispage),REMOVEBOOKMARKSFROMPAGE,tc);
-		//	this->handleBMMenu(this->mainNotebook->widget(thispage),REMOVEBOOKMARKSFROMPAGE);
 
 			this->mainNotebook->removeTab(thispage);
 			delete doc;
@@ -959,8 +920,6 @@ bool KKEditClass::closeTab(int index)
 
 	if(this->closingAllTabs==false)
 		{
-			//this->rebuildBookMarkMenu();
-			//this->handleBMMenu(this->mainNotebook->widget(thispage),REMOVEBOOKMARKSFROMPAGE);
 			this->rebuildTabsMenu();
 			this->setToolbarSensitive();
 		}
@@ -1037,7 +996,6 @@ void KKEditClass::setToolbarSensitive(void)
 			hasselection=doc->textCursor().hasSelection();
 		}
 
-//	if(	this->currentSessionNumber==0xdeadbeef)
 	if(this->mainNotebook->count()==0)
 		{
 			this->saveSessionsMenu->setEnabled(false);
@@ -1146,7 +1104,7 @@ void KKEditClass::runCLICommands(int quid)
 	QStringList	list;
 
 	if(quid==-1)
-		fprintf(stderr,"From KKedit Can't create message queue, scripting wont work :( ...\n");
+		fprintf(stderr,"From KKeditQT Can't create message queue, scripting wont work :( ...\n");
 	else
 		{
 			if(this->parser.isSet("quit"))
@@ -1206,5 +1164,20 @@ void KKEditClass::showWebPage(QString windowtitle,QString url)
 	QDesktopServices::openUrl(QUrl(url));
 #endif
 }
+
+void KKEditClass::printDocument(void)
+{
+	DocumentClass	*doc=this->getDocumentForTab(-1);
+	QPrinter		printer(QPrinter::HighResolution);
+
+	printer.setOutputFileName(QString("/tmp/%1.pdf").arg(doc->getFileName()));
+ 
+    QPrintDialog	dialog(&printer,this->mainWindow);
+	if(dialog.exec()!=QDialog::Accepted)
+		return;
+
+	doc->print(&printer);
+}
+
 
 

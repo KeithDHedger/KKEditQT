@@ -61,7 +61,6 @@ void KKEditClass::goToDefinition(const QString txt)
 			else
 				searchfor=txt;
 		}
-DEBUGSTR("goToDefinition")
 
 	Qt::CaseSensitivity casesens=Qt::CaseSensitive;
 	for(int sens=0;sens<3;sens++)
@@ -166,11 +165,8 @@ void KKEditClass::gotoLine(int linenumber)
 	doc->setTextCursor(cursor);
 }
 
-
 void KKEditClass::reloadDocument(void)
 {
-printf("void KKEditClass::reloadFile(void)\n");
-
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 	bool			retval;
 	int				calctabnum;
@@ -323,4 +319,3 @@ void KKEditClass::checkDoc(DocumentClass *doc)
 	doc->setPlainText(line);
 #endif
 }
-

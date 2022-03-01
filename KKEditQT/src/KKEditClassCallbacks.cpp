@@ -141,7 +141,6 @@ void KKEditClass::doSessionsMenuItems(void)
 										{
 											this->gotoLine(linenumber);
 											QTextCursor tc;
-											//this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM);
 											this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM,tc);
 										}
 								}
@@ -559,14 +558,8 @@ void KKEditClass::doFileMenuItems()
 			case SAVEALLMENUITEM:
 				this->saveAllFiles();
 				break;
-			case SAVESESSIONMENUITEM:
-				//saveSession(NULL,SAVESESSIONMENUITEM);
-				break;
-			case RESTORESESSIONMENUITEM:
-				//restoreSession(NULL,RESTORESESSIONMENUITEM);
-				break;
 			case PRINTMENUITEM:
-				//printFile(NULL,PRINTMENUITEM);
+				this->printDocument();
 				break;
 			case CLOSEMENUITEM:
 				this->closingAllTabs=false;
@@ -764,7 +757,6 @@ void KKEditClass::doTabBarContextMenu(void)
 				clipboard->setText(doc->getFileName());
 				break;
 			case SPELLCHECKDOC:
-				fprintf(stderr,"SPELLCHECKDOC\n");
 				this->checkDoc(doc);
 				break;
 			case OPENFROMHERE:
@@ -890,9 +882,6 @@ void KKEditClass::doOddButtons(void)
 						{
 
 							this->showBarberPole("Rebuild Tools Menu","Rebuilding tools menu, please wait ...","Cancel",QString("%1/tools").arg(this->tmpFolderName));
-
-							DEBUGSTR("Saving : " << this->toolSelect->currentData().toString())
-
 							QTextStream(&file) << TOOLALWAYSINPOPUP << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLALWAYSINPOPUP)->isChecked() << Qt::endl;
 							QTextStream(&file) << TOOLCLEAROP << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLCLEAROP)->isChecked() << Qt::endl;
 							QTextStream(&file) << TOOLCOMMAND << "\t" << this->toolsWindow->findChild<QLineEdit*>(TOOLCOMMAND)->text() << Qt::endl;
@@ -936,7 +925,6 @@ void KKEditClass::doOddButtons(void)
 					QFile		file;
 					file.setFileName(this->toolSelect->currentData().toString());
 					QFileInfo	fileinfo(file);
-					DEBUGSTR("Deleting : " << fileinfo.fileName())
 					if(this->yesNoDialog("Deleting "+fileinfo.fileName(),"This is not undoable, continue?")!=QMessageBox::Yes)
 						return;
 
@@ -1004,6 +992,3 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
-
-
-
