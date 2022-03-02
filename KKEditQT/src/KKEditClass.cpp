@@ -215,6 +215,7 @@ void KKEditClass::switchPage(int index)
 	sl.clear();
 	doc->setStatusBarText();
 	this->funcMenu->clear();
+	//doc->setCompleter();
 
 	sl=this->getNewRecursiveTagList(doc->getFilePath());
 	if(sl.isEmpty()==true)
@@ -280,6 +281,7 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 	DocumentClass	*doc=this->pages.value(qobject_cast<DocumentClass*>(widget)->pageIndex);
 	QTextCursor		cursor;
 	bookMarkStruct	bms;
+	bool			holdsb=this->sessionBusy;
 
 if(curs.isNull()==true)
 	cursor=doc->textCursor();
@@ -312,7 +314,7 @@ else
 
 									bf.clearBackground();
 									cursor.setBlockFormat(bf);
-									this->sessionBusy=false;
+									this->sessionBusy=holdsb;
 								
 									this->bookMarkMenu->removeAction(value.menu);
 									this->bookMarks.remove(value.bmKey);
@@ -594,7 +596,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsQtDocDir=this->prefs.value("editor/qtdocdir","/usr/share/doc/qt5").toString();
 	this->prefsNoOpenduplicate=this->prefs.value("editor/noopendup",QVariant(bool(true))).value<bool>();
 	this->recentFiles->maxFiles=this->prefs.value("editor/maxrecents",10).toInt();
-
+	
 //document
 	this->prefsHighLightline=this->prefs.value("document/highlightline",QVariant(bool(true))).value<bool>();
 	this->prefsShowLineNumbers=this->prefs.value("document/showlinenumbers",QVariant(bool(true))).value<bool>();
@@ -604,6 +606,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsLineWrap=this->prefs.value("document/wrap",QVariant(bool(true))).value<bool>();
 	this->prefsIndent=this->prefs.value("document/indent",QVariant(bool(true))).value<bool>();
 	this->prefsAutoShowCompletions=this->prefs.value("document/autoshowcompletions",QVariant(bool(true))).value<bool>();
+	this->autoShowMinChars=this->prefs.value("document/autoshowminchars",6).toInt();
 
 //theme
 	this->prefsHiLiteLineColor=this->prefs.value("theme/hilitelinecol",QVariant(QColor(0xff,0xff,0xff,0x40))).value<QColor>();
@@ -733,6 +736,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("document/showlinenumbers",this->prefsShowLineNumbers);
 	this->prefs.setValue("document/highlightline",this->prefsHighLightline);
 	this->prefs.setValue("document/autoshowcompletions",this->prefsAutoShowCompletions);
+	this->prefs.setValue("document/autoshowminchars",this->autoShowMinChars);
 
 //theme
 	this->prefs.setValue("theme/hilitelinecol",this->prefsHiLiteLineColor);
@@ -1179,5 +1183,50 @@ void KKEditClass::printDocument(void)
 	doc->print(&printer);
 }
 
+void KKEditClass::setCompWordList(void)
+{
+	QString	results;
+	QString	command;
+	QString	paths;
+	DocumentClass	*doc;
+	for(int j=0;j<this->mainNotebook->count();j++)
+		{
+			doc=this->getDocumentForTab(j);
+			paths+="'"+doc->getFilePath()+"' ";
+		}
+
+	command=QString("grep -Eho '[[:alpha:]_]{%1,}' %2|sort -u").arg(this->autoShowMinChars).arg(paths);
+DEBUGSTR(command)
+	results=this->runPipeAndCapture(command);
+	this->completionWords=results.split("\n",Qt::SkipEmptyParts);
+
+
+
+	//QString				results;
+
+	QAbstractItemModel	*model;
+
+	if(this->completer!=NULL)
+		delete this->completer;
+
+
+    this->completer=new QCompleter(this->completionWords,this);
+	this->completer->setCaseSensitivity(Qt::CaseInsensitive);
+	//model=new QStringListModel(words,this->completer);
+	model=new QStringListModel(this->completionWords,this->completer);
+	this->completer->setCompletionMode(QCompleter::PopupCompletion);
+	this->completer->setModel(model);
+	this->completer->setWrapAround(false);
+	//this->completer->setWidget(this);
+	//QObject::connect(this->completer,SIGNAL(activated(QString)),this,SLOT(insertCompletion(QString)));
+
+	for(int j=0;j<this->mainNotebook->count();j++)
+		{
+			doc=this->getDocumentForTab(j);
+			doc->setCompleter();
+		}
+
+
+}
 
 

@@ -72,6 +72,7 @@ void KKEditClass::newFile(const QString data,const QString filename)
 {
 	DocumentClass	*doc;
 	int				tabnum;
+	bool			holdsb=this->sessionBusy;
 
 	this->sessionBusy=true;
 	doc=new DocumentClass(this);
@@ -91,7 +92,7 @@ void KKEditClass::newFile(const QString data,const QString filename)
 	this->untitledNumber++;
 	this->mainNotebook->setCurrentWidget(doc);
 	this->rebuildTabsMenu();
-	this->sessionBusy=false;
+	this->sessionBusy=holdsb;
 	this->setToolbarSensitive();
 }
 
@@ -141,6 +142,7 @@ bool KKEditClass::saveFileAs(int tabnum)
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
 					file.close();
 					this->recentFiles->addFilePath(doc->getFilePath());
+					this->setCompWordList();
 				}
 			else
 				{
@@ -195,6 +197,7 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 					doc->dirty=false;
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
 					file.close();
+					this->setCompWordList();
 				}
 			else
 				{
@@ -302,7 +305,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
 #endif
 			doc->highlighter->rehighlight();
 			doc->dirty=false;
-
+			//doc->setCompleter();
 			retval=true;
 			file.close();
 			this->recentFiles->addFilePath(filepath);
@@ -315,6 +318,9 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
 		this->switchPage(tabnum);
 
 	this->setToolbarSensitive();
+	if(this->sessionBusy==false)
+		this->setCompWordList();
+
 	return(retval);
 }
 

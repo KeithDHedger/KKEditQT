@@ -49,7 +49,7 @@
 #include <QPrintDialog>
 #include <QPrinter>
 #include <QPrintPreviewDialog>
-
+#include <QCompleter>
 
 #include "config.h"
 

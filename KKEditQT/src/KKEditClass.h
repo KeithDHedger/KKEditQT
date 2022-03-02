@@ -215,7 +215,7 @@ class KKEditClass : public QObject
 		int							currentPage=0;
 		bool						closingAllTabs=false;
 		bool						noWarnings=false;
-		unsigned int				autoShowMinChars=4;
+		unsigned int				autoShowMinChars=6;
 		unsigned int				maxBMChars;
 		unsigned int 				untitledNumber=1;
 		HistoryClass				*history;
@@ -335,6 +335,9 @@ class KKEditClass : public QObject
 		QStringList					getNewRecursiveTagList(QString filepath);
 
 //document vars
+		QStringList					completionWords;
+		QCompleter					*completer=NULL;
+
 //document functions
 		DocumentClass				*getDocumentForTab(int tabnum);
 		void						resetAllFilePrefs(void);
@@ -342,6 +345,7 @@ class KKEditClass : public QObject
 		void						showLineEntry(void);
 		void						gotoLine(int linenumber);
 		void						reloadDocument(void);
+		void						setCompWordList(void);
 
 //bookmark vars
 		QHash<int,bookMarkStruct>	bookMarks;

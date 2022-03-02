@@ -132,6 +132,8 @@ void DocumentClass::setStatusBarText(void)
 
 void DocumentClass::highlightCurrentLine()
 {
+	bool	holdsb=this->mainKKEditClass->sessionBusy;
+
 	this->setStatusBarText();
 	foreach(bookMarkStruct value,this->mainKKEditClass->bookMarks)
 		{
@@ -143,7 +145,7 @@ void DocumentClass::highlightCurrentLine()
 					QTextCursor cursor(block);
 					bf.setBackground(this->bookmarkLineColor);
 					cursor.setBlockFormat(bf);
-					this->mainKKEditClass->sessionBusy=false;
+					this->mainKKEditClass->sessionBusy=holdsb;
 				}
 		}
 
@@ -202,8 +204,69 @@ void DocumentClass::updateLineNumberArea(const QRect &rect,int dy)
 		updateLineNumberAreaWidth();
 }
 
+void DocumentClass::insertCompletion(const QString& completion)
+{
+	if(this->mainKKEditClass->completer->widget()!=this)
+		return;
+    QTextCursor tc=this->textCursor();
+    tc.movePosition(QTextCursor::StartOfWord,QTextCursor::KeepAnchor);
+    tc.removeSelectedText();
+    tc.insertText(completion);
+    this->setTextCursor(tc);
+}
+
+void DocumentClass::setCompleter(void)
+{
+//	QString				results;
+//	QString				command;
+//	QAbstractItemModel	*model;
+//
+//	if(this->completer!=NULL)
+//		delete this->completer;
+
+//this->mainKKEditClass->setCompWordList();
+
+////	command=QString("find \"%1\" -maxdepth %2|ctags -L - -x|sort -k 2rb,2rb -k 1b,1b|cut -f 1 -d \" \"").arg(this->filePath).arg(this->mainKKEditClass->prefsDepth);
+//	command=QString("grep -Eo '[[:alpha:]]{%1,}' '%2'|sort -u").arg(this->mainKKEditClass->autoShowMinChars).arg(this->filePath);
+//	DEBUGSTR(command)
+//	results=this->mainKKEditClass->runPipeAndCapture(command);
+//	this->words=results.split("\n",Qt::SkipEmptyParts);
+//
+//    //this->completer=new QCompleter(this->words,this);
+//    this->completer=new QCompleter(this->mainKKEditClass->completionWords,this);
+//	this->completer->setCaseSensitivity(Qt::CaseInsensitive);
+//	//model=new QStringListModel(words,this->completer);
+//	model=new QStringListModel(this->mainKKEditClass->completionWords,this->completer);
+//	this->completer->setCompletionMode(QCompleter::PopupCompletion);
+//	this->completer->setModel(model);
+//	this->completer->setWrapAround(false);
+	this->mainKKEditClass->completer->setWidget(this);
+	QObject::connect(this->mainKKEditClass->completer,SIGNAL(activated(QString)),this,SLOT(insertCompletion(QString)));
+}
+
+void DocumentClass::focusInEvent(QFocusEvent *e)
+{
+    if (this->mainKKEditClass->completer)
+        this->mainKKEditClass->completer->setWidget(this);
+    QPlainTextEdit::focusInEvent(e);
+}
+
+const QString DocumentClass::textUnderCursor()
+{
+    QTextCursor tc=this->textCursor();
+    tc.select(QTextCursor::WordUnderCursor);
+    return tc.selectedText();
+}
+
 void DocumentClass::keyPressEvent(QKeyEvent *event)
 {
+	bool			isshortcut;
+	bool			ctrlorshift;
+	bool			hasmodifier;
+	QRect			cr;
+	QString			completionPrefix;
+	const QString	eow("~!@#$%^&*()+{}|:\"<>?,./;'[]\\-="); // end of word;
+
 //fix for vnc/linuxfb tab key
 	if(((this->mainKKEditClass->application->platformName().compare("vnc")==0) || (this->mainKKEditClass->application->platformName().compare("linuxfb")==0)) && (event->key()==Qt::Key_Tab))
 		{
@@ -224,7 +287,50 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 						this->indentPad+=data.at(j++);
 				}
 		}
-	QPlainTextEdit::keyPressEvent(event);
+
+	if(this->mainKKEditClass->completer && this->mainKKEditClass->completer->popup()->isVisible())
+		{
+        // The following keys are forwarded by the completer to the widget
+			switch (event->key())
+				{
+					case Qt::Key_Enter:
+					case Qt::Key_Return:
+					case Qt::Key_Escape:
+					case Qt::Key_Tab:
+					case Qt::Key_Backtab:
+						event->ignore();
+						return; // let the completer do default behavior
+					default:
+						break;
+				}
+		}
+
+	isshortcut=((event->modifiers() & Qt::ControlModifier) && event->key()== Qt::Key_E); // CTRL+E//TODO//
+	if (!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer
+		QPlainTextEdit::keyPressEvent(event);
+
+	ctrlorshift=event->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
+    if (!this->mainKKEditClass->completer || (ctrlorshift && event->text().isEmpty()))
+        return;
+
+	hasmodifier=(event->modifiers() != Qt::NoModifier) && !ctrlorshift;
+	completionPrefix=this->textUnderCursor();
+
+    if(!isshortcut && (hasmodifier || event->text().isEmpty()|| completionPrefix.length() < this->mainKKEditClass->autoShowMinChars || eow.contains(event->text().right(1))))
+		{
+        	this->mainKKEditClass->completer->popup()->hide();
+        	return;
+		}
+
+	if (completionPrefix!=this->mainKKEditClass->completer->completionPrefix())
+		{
+			this->mainKKEditClass->completer->setCompletionPrefix(completionPrefix);
+			this->mainKKEditClass->completer->popup()->setCurrentIndex(this->mainKKEditClass->completer->completionModel()->index(0, 0));
+		}
+
+	cr=this->cursorRect();
+    cr.setWidth(this->mainKKEditClass->completer->popup()->sizeHintForColumn(0)+this->mainKKEditClass->completer->popup()->verticalScrollBar()->sizeHint().width());
+    this->mainKKEditClass->completer->complete(cr);
 }
 
 void DocumentClass::keyReleaseEvent(QKeyEvent *event)

@@ -109,6 +109,7 @@ void KKEditClass::doSessionsMenuItems(void)
 
 	if(sender()->objectName().compare(RESTORESESSIONMENUNAME)==0)
 		{
+			this->sessionBusy=true;
 			sessionnumber=mc->getMenuID();
 			if(sessionnumber==CURRENTSESSION)
 				return;
@@ -154,6 +155,7 @@ void KKEditClass::doSessionsMenuItems(void)
 		}
 
 	this->sessionBusy=false;
+	this->setCompWordList();
 	this->switchPage(this->mainNotebook->count()-1);
 	this->setToolbarSensitive();
 }
@@ -652,6 +654,7 @@ void KKEditClass::setPreferences(void)
 	this->prefsNoOpenduplicate=qobject_cast<QCheckBox*>(this->prefsWidgets[NODUPLICATE])->checkState();
 	this->prefsNagScreen=qobject_cast<QCheckBox*>(this->prefsWidgets[BEKIND])->checkState();
 	this->recentFiles->maxFiles=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXRECENTS])->value();
+	this->autoShowMinChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[COMPLETIONSIZE])->value();
 	this->recentFiles->updateRecents();
 
 //term command
@@ -784,6 +787,7 @@ void KKEditClass::doTabBarContextMenuSetHilite(void)
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
 	DocumentClass	*doc;
 	int				themenum=2;
+	bool			holdsb=this->sessionBusy;
 
 	doc=this->getDocumentForTab((mc->getMenuID() & 0xff));
 	if(doc==NULL)
@@ -833,7 +837,8 @@ void KKEditClass::doTabBarContextMenuSetHilite(void)
 				break;
 		}
 	doc->highlighter->setTheme((QSourceHighliter::Themes)themenum);
-	this->sessionBusy=false;
+	//this->sessionBusy=false;
+	this->sessionBusy=holdsb;
 }
 
 void KKEditClass::doOddMenuItems(void)

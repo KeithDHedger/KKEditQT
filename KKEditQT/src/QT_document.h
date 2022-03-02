@@ -70,6 +70,7 @@ class DocumentClass : public QPlainTextEdit
 		KKEditClass							*mainKKEditClass=NULL;
 		QColor								prefsHiLiteLineColor;
 		QColor								bookmarkLineColor;
+		void								setBMFromLineBar(QMouseEvent *event);
 
 //pageStruct
 		QString								fileName;
@@ -83,12 +84,16 @@ class DocumentClass : public QPlainTextEdit
 		bool								gotUndo=false;
 		bool								gotRedo=false;
 		int									pageIndex;
-		void								setBMFromLineBar(QMouseEvent *event);
+//completer
+	//	QCompleter							*completer=NULL;
+//		QStringList							words;
+		void								setCompleter(void);
 
 	protected:
 	    void								resizeEvent(QResizeEvent *event);
 		void								keyPressEvent(QKeyEvent *event);
 		void								keyReleaseEvent(QKeyEvent *event);
+		void								focusInEvent(QFocusEvent *e);
 		void								contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
 //dand
 		void								dragEnterEvent(QDragEnterEvent* event);
@@ -103,6 +108,8 @@ class DocumentClass : public QPlainTextEdit
 		void								setUndo(bool avail);
 		void								setRedo(bool avail);
 
+void insertCompletion(const QString &completion);
+
 	private:
 		void								clearXtraSelections(void);
 		QWidget 							*lineNumberArea;
@@ -110,6 +117,7 @@ class DocumentClass : public QPlainTextEdit
 		bool								realShowLineNumbers(void);
 		bool								realHiliteLine(void);
 		bool								realSyntaxHighlighting(void);
+		const QString						textUnderCursor();
 };
 
 
