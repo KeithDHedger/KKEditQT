@@ -37,7 +37,6 @@ Plugins ( Major )<br>
 Global tools ( Minor )<br>
 Hilighting ( Major )<br>
 Interaction with built document ( Major )<br>
-Printing  ( Major )<br>
 Scripting ( Major )<br>
 
 
