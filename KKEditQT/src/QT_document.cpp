@@ -274,6 +274,12 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 				}
 		}
 
+	if(this->mainKKEditClass->showCompletions==false)
+		{
+			QPlainTextEdit::keyPressEvent(event);
+			return;
+		}
+
 	isshortcut=((event->modifiers() & Qt::ControlModifier) && event->key()== Qt::Key_E); // CTRL+E//TODO//
 	if (!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer
 		QPlainTextEdit::keyPressEvent(event);

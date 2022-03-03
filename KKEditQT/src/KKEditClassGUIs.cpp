@@ -122,7 +122,7 @@ void KKEditClass::buildPrefsWindow(void)
 
 //autoshow completion
 	posy++;
-	makePrefsCheck(AUTOSHOW,"Auto show Completions",this->prefsAutoShowCompletions,0,posy);
+	makePrefsCheck(AUTOSHOW,"Show Completions",this->prefsAutoShowCompletions,0,posy);
 
 	tab->setLayout(table);
 	prefsnotebook->addTab(tab,"General Appearance");
@@ -809,7 +809,7 @@ void KKEditClass::buildMainGui(void)
 //QCompleter
 //toggle completions
 	this->showCompletions=this->prefsAutoShowCompletions;
-	this->toggleCompletionsMenuItem=this->makeMenuItemClass(VIEWMENU,"Auto Show Completions",0,NULL,"NOTNEEDED",TOGGLECOMPLETIONSMENUITEM);
+	this->toggleCompletionsMenuItem=this->makeMenuItemClass(VIEWMENU,"Show Completions",0,NULL,"NOTNEEDED",TOGGLECOMPLETIONSMENUITEM);
 	this->toggleCompletionsMenuItem->setCheckable(true);
 	this->toggleCompletionsMenuItem->setChecked(this->showCompletions);
 
