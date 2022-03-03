@@ -346,6 +346,7 @@ class KKEditClass : public QObject
 		void						gotoLine(int linenumber);
 		void						reloadDocument(void);
 		void						setCompWordList(void);
+		void						insertCompletion(const QString &completion);
 
 //bookmark vars
 		QHash<int,bookMarkStruct>	bookMarks;
@@ -462,6 +463,9 @@ class KKEditClass : public QObject
 		void						setToolsData(int);
 
 		void						doLiveSearch(const QString text);
+
+//	private slots:
+//		void						insertCompletion(const QString &completion);
 
 	protected:
 	private:

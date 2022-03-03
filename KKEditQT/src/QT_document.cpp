@@ -132,20 +132,25 @@ void DocumentClass::setStatusBarText(void)
 
 void DocumentClass::highlightCurrentLine()
 {
-	bool	holdsb=this->mainKKEditClass->sessionBusy;
+	QTextEdit::ExtraSelection	bmselect;
+	bool						holdsb=this->mainKKEditClass->sessionBusy;
+	QTextCursor	cursor=this->textCursor();
+	cursor.joinPreviousEditBlock();
 
 	this->setStatusBarText();
+	this->extraBMSelections.clear();
 	foreach(bookMarkStruct value,this->mainKKEditClass->bookMarks)
 		{
 			if(value.docIndex==this->pageIndex)
 				{
-					this->mainKKEditClass->sessionBusy=true;
 					QTextBlock block=this->document()->findBlockByNumber(value.line-1);
-					QTextBlockFormat bf=block.blockFormat();
-					QTextCursor cursor(block);
-					bf.setBackground(this->bookmarkLineColor);
-					cursor.setBlockFormat(bf);
-					this->mainKKEditClass->sessionBusy=holdsb;
+					QTextCursor cursor1(block);
+					bmselect.format.setBackground(this->bookmarkLineColor);
+					bmselect.format.setProperty(QTextFormat::FullWidthSelection, true);
+					bmselect.cursor=cursor1;
+					bmselect.cursor.movePosition(QTextCursor::StartOfBlock,QTextCursor::MoveAnchor);
+					bmselect.cursor.movePosition(QTextCursor::NextBlock,QTextCursor::KeepAnchor);
+					this->extraBMSelections.append(bmselect);			
 				}
 		}
 
@@ -163,14 +168,18 @@ void DocumentClass::highlightCurrentLine()
 		}
 	else
 		this->setXtraSelections();
+	cursor.endEditBlock();
+
+	this->mainKKEditClass->sessionBusy=holdsb;
 	this->mainKKEditClass->setToolbarSensitive();
 }
 
-void DocumentClass::setXtraSelections()
+void DocumentClass::setXtraSelections(void)
 {
 	this->extraSelections.clear();
 	this->extraSelections=this->extraSelections+this->hilightSelections;
 	this->extraSelections.append(this->selectedLine);
+	this->extraSelections.append(this->extraBMSelections);
 	this->setExtraSelections(this->extraSelections);
 }
 
@@ -202,46 +211,6 @@ void DocumentClass::updateLineNumberArea(const QRect &rect,int dy)
 
 	if(rect.contains(viewport()->rect()))
 		updateLineNumberAreaWidth();
-}
-
-void DocumentClass::insertCompletion(const QString& completion)
-{
-	if(this->mainKKEditClass->completer->widget()!=this)
-		return;
-    QTextCursor tc=this->textCursor();
-    tc.movePosition(QTextCursor::StartOfWord,QTextCursor::KeepAnchor);
-    tc.removeSelectedText();
-    tc.insertText(completion);
-    this->setTextCursor(tc);
-}
-
-void DocumentClass::setCompleter(void)
-{
-//	QString				results;
-//	QString				command;
-//	QAbstractItemModel	*model;
-//
-//	if(this->completer!=NULL)
-//		delete this->completer;
-
-//this->mainKKEditClass->setCompWordList();
-
-////	command=QString("find \"%1\" -maxdepth %2|ctags -L - -x|sort -k 2rb,2rb -k 1b,1b|cut -f 1 -d \" \"").arg(this->filePath).arg(this->mainKKEditClass->prefsDepth);
-//	command=QString("grep -Eo '[[:alpha:]]{%1,}' '%2'|sort -u").arg(this->mainKKEditClass->autoShowMinChars).arg(this->filePath);
-//	DEBUGSTR(command)
-//	results=this->mainKKEditClass->runPipeAndCapture(command);
-//	this->words=results.split("\n",Qt::SkipEmptyParts);
-//
-//    //this->completer=new QCompleter(this->words,this);
-//    this->completer=new QCompleter(this->mainKKEditClass->completionWords,this);
-//	this->completer->setCaseSensitivity(Qt::CaseInsensitive);
-//	//model=new QStringListModel(words,this->completer);
-//	model=new QStringListModel(this->mainKKEditClass->completionWords,this->completer);
-//	this->completer->setCompletionMode(QCompleter::PopupCompletion);
-//	this->completer->setModel(model);
-//	this->completer->setWrapAround(false);
-	this->mainKKEditClass->completer->setWidget(this);
-	QObject::connect(this->mainKKEditClass->completer,SIGNAL(activated(QString)),this,SLOT(insertCompletion(QString)));
 }
 
 void DocumentClass::focusInEvent(QFocusEvent *e)

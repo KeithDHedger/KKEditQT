@@ -53,6 +53,7 @@ class DocumentClass : public QPlainTextEdit
 		void								setStatusBarText(void);
 
 		QList<QTextEdit::ExtraSelection>	extraSelections;
+		QList<QTextEdit::ExtraSelection>	extraBMSelections;
 		QList<QTextEdit::ExtraSelection>	hilightSelections;
 		
 		QTextEdit::ExtraSelection			selection;
@@ -84,10 +85,6 @@ class DocumentClass : public QPlainTextEdit
 		bool								gotUndo=false;
 		bool								gotRedo=false;
 		int									pageIndex;
-//completer
-	//	QCompleter							*completer=NULL;
-//		QStringList							words;
-		void								setCompleter(void);
 
 	protected:
 	    void								resizeEvent(QResizeEvent *event);
@@ -107,8 +104,6 @@ class DocumentClass : public QPlainTextEdit
 		void								modified();
 		void								setUndo(bool avail);
 		void								setRedo(bool avail);
-
-void insertCompletion(const QString &completion);
 
 	private:
 		void								clearXtraSelections(void);

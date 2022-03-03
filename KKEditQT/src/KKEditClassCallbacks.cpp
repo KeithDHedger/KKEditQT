@@ -152,6 +152,13 @@ void KKEditClass::doSessionsMenuItems(void)
 					file.close();
 					this->runPipe(QString("echo quit>\"%1/session\"").arg(this->tmpFolderName));
 				}
+			for(int j=0;j<this->mainNotebook->count();j++)
+				{
+					doc=this->getDocumentForTab(j);
+					doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
+					doc->dirty=false;
+				}
+
 		}
 
 	this->sessionBusy=false;

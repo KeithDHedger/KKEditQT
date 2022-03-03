@@ -283,10 +283,10 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 	bookMarkStruct	bms;
 	bool			holdsb=this->sessionBusy;
 
-if(curs.isNull()==true)
-	cursor=doc->textCursor();
-else
-	cursor=curs;
+	if(curs.isNull()==true)
+		cursor=doc->textCursor();
+	else
+		cursor=curs;
 
 	switch(what)
 		{
@@ -300,6 +300,7 @@ else
 									this->bookMarks.remove(value.bmKey);
 							}
 					}
+				this->sessionBusy=holdsb;
 				return;
 				break;
 			case TOGGLEBOOKMARKMENUITEM:
@@ -1185,10 +1186,12 @@ void KKEditClass::printDocument(void)
 
 void KKEditClass::setCompWordList(void)
 {
-	QString	results;
-	QString	command;
-	QString	paths;
-	DocumentClass	*doc;
+	QString				results;
+	QString				command;
+	QString				paths;
+	DocumentClass		*doc;
+	QAbstractItemModel	*model;
+
 	for(int j=0;j<this->mainNotebook->count();j++)
 		{
 			doc=this->getDocumentForTab(j);
@@ -1196,37 +1199,36 @@ void KKEditClass::setCompWordList(void)
 		}
 
 	command=QString("grep -Eho '[[:alpha:]_]{%1,}' %2|sort -u").arg(this->autoShowMinChars).arg(paths);
-DEBUGSTR(command)
 	results=this->runPipeAndCapture(command);
 	this->completionWords=results.split("\n",Qt::SkipEmptyParts);
-
-
-
-	//QString				results;
-
-	QAbstractItemModel	*model;
 
 	if(this->completer!=NULL)
 		delete this->completer;
 
-
     this->completer=new QCompleter(this->completionWords,this);
 	this->completer->setCaseSensitivity(Qt::CaseInsensitive);
-	//model=new QStringListModel(words,this->completer);
 	model=new QStringListModel(this->completionWords,this->completer);
 	this->completer->setCompletionMode(QCompleter::PopupCompletion);
 	this->completer->setModel(model);
 	this->completer->setWrapAround(false);
-	//this->completer->setWidget(this);
-	//QObject::connect(this->completer,SIGNAL(activated(QString)),this,SLOT(insertCompletion(QString)));
-
-	for(int j=0;j<this->mainNotebook->count();j++)
+	QObject::connect(this->completer,QOverload<const QString &>::of(&QCompleter::activated),[=](const QString &text)
 		{
-			doc=this->getDocumentForTab(j);
-			doc->setCompleter();
-		}
+			this->insertCompletion(text);
+		});
+}
 
+void KKEditClass::insertCompletion(const QString& completion)
+{
+	DocumentClass	*doc=this->getDocumentForTab(-1);
+	QTextCursor		tc;
 
+	if(this->completer->widget()!=doc)
+		return;
+	tc=doc->textCursor();
+    tc.movePosition(QTextCursor::StartOfWord,QTextCursor::KeepAnchor);
+    tc.removeSelectedText();
+    tc.insertText(completion);
+    doc->setTextCursor(tc);
 }
 
 

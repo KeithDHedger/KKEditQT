@@ -118,10 +118,6 @@ Highlighter::Highlighter(QTextDocument *parent)
 //! [7]
 void Highlighter::highlightBlock(const QString &text)
 {
-//	QTextDocument	*docu;
-//	QTextCursor		*curs;
-//	docu=this->document();
-//	curs=this->document()->textCursor();
     foreach (const HighlightingRule &rule, highlightingRules) {
         QRegExp expression(rule.pattern);
         int index = expression.indexIn(text);
@@ -155,6 +151,5 @@ void Highlighter::highlightBlock(const QString &text)
         setFormat(startIndex, commentLength, multiLineCommentFormat);
         startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
     }
-	//doc->textCursor().endEditBlock();
 }
 //! [11]

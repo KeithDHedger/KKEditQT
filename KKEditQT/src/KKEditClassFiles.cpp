@@ -89,6 +89,7 @@ void KKEditClass::newFile(const QString data,const QString filename)
 	doc->pageIndex=this->newPageIndex;
 	this->pages[this->newPageIndex++]=doc;
 	doc->setHiliteLanguage();
+	doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 	this->untitledNumber++;
 	this->mainNotebook->setCurrentWidget(doc);
 	this->rebuildTabsMenu();
@@ -293,7 +294,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
 			this->mainNotebook->setTabToolTip(tabnum,doc->getFilePath());
 			this->mainNotebook->setCurrentIndex(tabnum);
 			this->gotoLine(linenumber);
-			doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
+			//doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 			doc->setHiliteLanguage();
 #ifndef _USEMINE_
 			//doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeCpp);
@@ -304,6 +305,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
 //			doc->highlighter->setTheme(theme);
 #endif
 			doc->highlighter->rehighlight();
+			doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 			doc->dirty=false;
 			//doc->setCompleter();
 			retval=true;
