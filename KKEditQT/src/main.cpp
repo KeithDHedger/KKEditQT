@@ -54,8 +54,8 @@ void loadPlugins(void)
 						{
 							pluginStruct	ps;
 							plugtest->initPlug(kkedit,s);
-							whatIWant wants=plugtest->plugWants();
 
+							ps.wants=plugtest->plugWants();
 							ps.instance=plugtest;
 							ps.loaded=true;
 							ps.plugPath=s;

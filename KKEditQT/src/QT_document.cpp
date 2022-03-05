@@ -449,7 +449,15 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	menu.addAction(this->mainKKEditClass->spellCheckMenuItem);
 #endif
 	menu.addSeparator();
-menu.setStyleSheet("QMenu { menu-scrollable: true ;}");
+
+//plugins
+	for(int j=0;j<this->mainKKEditClass->plugins.count();j++)
+		{
+			if(this->mainKKEditClass->plugins[j].wants==DOCONTEXTMENU)
+				this->mainKKEditClass->plugins[j].instance->plugAddToContextMenu(&menu,this);
+		}
+
+	menu.setStyleSheet("QMenu { menu-scrollable: true ;}");
 	menu.exec(event->globalPos());
 }
 

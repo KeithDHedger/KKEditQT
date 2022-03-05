@@ -36,6 +36,11 @@ void kkeditQTexamplePlug::initPlug(KKEditClass *kk,QString pathtoplug)
 		});
 }
 
+void kkeditQTexamplePlug::plugAddToContextMenu(QMenu *menu,DocumentClass *document)
+{
+	DEBUGSTR("void OpenUri::unloadPlug(void)")
+}
+
 void kkeditQTexamplePlug::unloadPlug(void)
 {
 	DEBUGSTR("void kkeditQTexamplePlug::unloadPlug(void)")

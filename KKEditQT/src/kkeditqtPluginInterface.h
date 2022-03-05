@@ -21,7 +21,7 @@
 #ifndef KKEDITQTPLUGININTERFACE_H
 #define KKEDITQTPLUGININTERFACE_H
 
-enum whatIWant {DONONE,DOSAVE,DOLOAD,DOCLOSE,DORESSESSION,DOSAVESESSION};
+enum whatIWant {DONONE,DOSAVE,DOLOAD,DOCLOSE,DORESSESSION,DOSAVESESSION,DOCONTEXTMENU,DOTABPOPUP};
 
 class KKEditClass;
 
@@ -37,6 +37,7 @@ class kkEditQTPluginInterface
 		virtual void		plugAbout(void)=0;
 		virtual void		plugSettings(void)=0;
 		virtual void		plugRun(whatIWant)=0;
+		virtual void		plugAddToContextMenu(QMenu *menu,DocumentClass *document)=0;
 		virtual whatIWant	plugWants(void)=0;
 };
 
