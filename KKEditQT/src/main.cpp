@@ -21,8 +21,56 @@
 #include "kkedit-includes.h"
 #include "SingleInstanceClass.h"
 
-bool	singleOverRide=false;
-bool	loadPluginsFlag=true;
+bool					singleOverRide=false;
+bool					loadPluginsFlag=true;
+KKEditClass				*kkedit;
+
+//unsigned long hashFromKey(const char *key)
+//{
+//	unsigned long hash=0;
+//
+//	for(unsigned i=0;key[i]!=0;i++)
+//		hash=31*hash+key[i];
+//
+//	return(hash);
+//}
+
+void loadPlugins(void)
+{
+	kkEditQTPluginInterface	*plugtest;
+	int 					cnt=0;
+    QDir 					pluginsDir(kkedit->homeDataFolder+"/plugins/");
+	QDirIterator 			it(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+
+	while (it.hasNext())
+		{
+			QString			s=it.next();
+        	QPluginLoader	pluginLoader(s);
+        	QObject			*plugin=pluginLoader.instance();
+			if(plugin)
+				{
+					plugtest=qobject_cast<kkEditQTPluginInterface*>(plugin);
+					if(plugtest)
+						{
+							QFileInfo		fileinfo(s);
+							pluginStruct	ps;
+
+							QTextStream(stderr) << "Loaded plugin " << s << " number " << cnt << Qt::endl;
+							QTextStream(stderr) << "Loaded plugin name" << fileinfo.fileName() << Qt::endl;
+							plugtest->initPlug(kkedit,s);
+							whatIWant wants=plugtest->plugWants();
+							ps.plugName=fileinfo.fileName();
+							ps.instance=plugtest;
+							ps.loaded=true;
+							kkedit->plugins[cnt++]=ps;
+						}
+				}
+			else
+				{
+					QTextStream(stderr) << "Error Could not load plugin " << s << "\n" << pluginLoader.errorString() << Qt::endl;
+				}
+		}
+}
 
 int main (int argc, char **argv)
 {
@@ -31,7 +79,6 @@ int main (int argc, char **argv)
 	bool				retval=false;
 	QDir				commsDir;
 	QApplication		app(argc,argv);
-	KKEditClass  		*kkedit;
 
 	app.setStyleSheet("QMenu { menu-scrollable: true ;}");
 	app.setOrganizationName("KDHedger");
@@ -73,8 +120,12 @@ int main (int argc, char **argv)
 	kkedit->forceDefaultGeom=!siapp.isOnX11;
 
 	kkedit->initApp(argc,argv);
+//load plugins
+	loadPlugins();
 
 	kkedit->runCLICommands(kkedit->queueID);
+
+	kkedit->setToolbarSensitive();
 
 	if(getuid()!=0)
 		app.setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));

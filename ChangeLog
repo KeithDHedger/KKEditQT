@@ -1,4 +1,6 @@
 0.5.2
+Added wxample plugin.
+Started plugins.
 Done 'Show Completions' menu item.
 Fixed bookmark screwing up undo/redo.
 Done completion.

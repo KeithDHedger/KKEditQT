@@ -43,7 +43,7 @@ enum {MANAGETOOLSMENUITEM=0xd000,TOOLNUMBER};
 //help
 enum {ABOUTMENUITEM=0xe000,HELPMENUITEM,ONLINEHELPMENUITEM,GETPLUGSMENUITEM};
 
-enum	{AUTOINDENT=0,SHOWNUMS,WRAP,HIGHLIGHT,SYNTAXHILITE,USESINGLE,AUTOSAVE,NODUPLICATE,NOWARN,AUTOSHOW,BEKIND,GLOBALPLUGMENU,SETFONT,MAXPREFSWIDGETS};
+enum	{AUTOINDENT=0,SHOWNUMS,WRAP,HIGHLIGHT,SYNTAXHILITE,USESINGLE,AUTOSAVE,NODUPLICATE,NOWARN,AUTOSHOW,BEKIND,SETFONT,MAXPREFSWIDGETS};
 enum {MAXTABCHARS=0,MAXHISTORY,MAXFUNCDEPTH,COMPLETIONSIZE,TABWIDTH,MENUWIDTH,MAXBMWIDTH,MAXRECENTS,MAXPREFSINTWIDGETS};
 enum {FUNCTIONCOMBO=0,THEMECOMBO,FONTNAMECOMBO,FONTSIZECOMBO,PREFSTERMCOMMAND,PREFSROOTCOMMAND,PREFSQTDOCDIR,PREFSBROWSERCOMMAND,PREFSCURRENTFONT,BMHIGHLIGHTCOLOUR,CURRENTLINECOLOUR,SHORTCUTSCOMBO,MAXPREFSOTHERWIDGETS};
 
@@ -82,12 +82,22 @@ enum {FRCASE=0,FRUSEREGEX,FRWRAP,FRALLFILES,FRHIGHLIGHTALL,FRREPLACEALL,FRMAXSWI
 #include "QT_toolbar.h"
 #include "QT_notebook.h"
 
+#include "kkeditqtPluginInterface.h"
 
 class NoteBookClass;
 class MenuItemClass;
 class RecentMenuClass;
 class HistoryClass;
 class ToolBarClass;
+class kkEditQTPluginInterface;
+
+struct pluginStruct
+{
+	QString					plugName="";
+	kkEditQTPluginInterface	*instance=NULL;
+	whatIWant				wants=DONONE;
+	bool					loaded=false;
+};
 
 class KKEditClass : public QObject
 {
@@ -143,6 +153,7 @@ class KKEditClass : public QObject
 		QString						sessionFolder;
 		unsigned int				currentSessionNumber=0xdeadbeef;
 		QString						toolsFolder;
+		QHash<int,pluginStruct>		plugins;
 
 //app functions
 		void						initApp(int argc,char** argv);
@@ -197,7 +208,6 @@ class KKEditClass : public QObject
 		QString						prefsQtDocDir;
 		bool						prefsNoOpenduplicate=false;
 //app
-		bool						prefsUseGlobalPlugMenu=true;
 		int							prefsMsgTimer;
 		bool						prefsUseSingle=true;
 		bool						prefsNagScreen=false;
@@ -301,6 +311,9 @@ class KKEditClass : public QObject
 //bookmarks menu
 		QMenu						*bookMarkMenu;
 
+//plugin menu
+		QMenu						*pluginMenu;
+
 //help menu
 		QMenu						*helpMenu;
 
@@ -361,7 +374,7 @@ class KKEditClass : public QObject
 		QDialog						*toolsWindow;
 		QComboBox					*toolSelect;
 		QMainWindow					*toolOutputWindow;
-		QPlainTextEdit				*toolsOPText;
+		QPlainTextEdit				*toolsOPText=NULL;
 
 //tools functions
 		void						rebuildToolsMenu(void);
@@ -418,9 +431,6 @@ class KKEditClass : public QObject
 //search vars
 //search functions
 		void						searchAPIDocs(const QString txt,int what);
-
-//plugin vars
-		QWidget						*globalPlugMenu=NULL;
 
 	public slots:
 		void						debugSignalSlot(int);

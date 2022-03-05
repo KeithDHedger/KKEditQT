@@ -38,6 +38,11 @@ KKEditClass::~KKEditClass()
 		delete this->appShortcuts[j];
 	delete this->recentFiles;
 //	delete this->history;
+	for(int j=0;j<this->plugins.count();j++)
+		{
+			this->plugins[j].instance->unloadPlug();
+			delete this->plugins[j].instance;
+		}
 
 	asprintf(&command,"rm -rf %s",this->tmpFolderName.toStdString().c_str());
 	system(command);
@@ -1015,6 +1020,8 @@ void KKEditClass::setToolbarSensitive(void)
 		this->saveCurrentSessionMenuItem->setEnabled(true);
 		
 	this->restoreDefaultSessionMenuItem->setEnabled(false);//TODO//
+
+	this->pluginMenu->setEnabled(!this->pluginMenu->isEmpty());
 
 	for(int j=0;j<this->prefsToolBarLayout.length();j++)
 		{

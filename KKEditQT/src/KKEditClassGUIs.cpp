@@ -210,6 +210,7 @@ void KKEditClass::buildPrefsWindow(void)
 	qobject_cast<QComboBox*>(prefsOtherWidgets[FUNCTIONCOMBO])->addItem("Display functions etc in menu in categorised format");
 	prefsOtherWidgets[FUNCTIONCOMBO]->setProperty("currentIndex",this->prefsFunctionMenuLayout);
 
+
 	hbox=new QHBoxLayout;
     hbox->addStretch(1);
 	hbox->addWidget(prefsOtherWidgets[FUNCTIONCOMBO]);
@@ -271,9 +272,6 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
 	makePrefsDial(MAXBMWIDTH,"Max Characters In Bookmarks:",this->maxBMChars,5,MAXTEXTWIDTH,posy);
 
-//use global plug menu
-	posy++;
-	makePrefsCheck(GLOBALPLUGMENU,"Use Global Plugins Menu ( Requires Restart )",this->prefsUseGlobalPlugMenu,0,posy);
 //end admin
 
 	posy++;
@@ -855,6 +853,8 @@ void KKEditClass::buildMainGui(void)
 
 //TODO//
 //plugin menu
+	this->pluginMenu=new QMenu("&Plugins");
+	this->menuBar->addMenu(this->pluginMenu);
 
 //help
 	this->helpMenu=new QMenu("&Help");

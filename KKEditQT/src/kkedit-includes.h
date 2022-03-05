@@ -50,8 +50,12 @@
 #include <QPrinter>
 #include <QPrintPreviewDialog>
 #include <QCompleter>
+#include <QObject>
+#include <QtPlugin>
 
 #include "config.h"
+
+//#include "kkeditqtPluginInterface.h"
 
 #ifdef _ASPELL_
 #include <aspell.h>
@@ -214,6 +218,7 @@ struct bookMarkStruct
 	QAction				*menu;
 	int					bmKey;
 };
+
 
 #include "KKEditClass.h"
 
