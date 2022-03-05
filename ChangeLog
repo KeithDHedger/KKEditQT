@@ -1,5 +1,7 @@
 0.5.2
-Added wxample plugin.
+Store metadata for plugin.
+Added metadata to example plugin.
+Added example plugin.
 Started plugins.
 Done 'Show Completions' menu item.
 Fixed bookmark screwing up undo/redo.

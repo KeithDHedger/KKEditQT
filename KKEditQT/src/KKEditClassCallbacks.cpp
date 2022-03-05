@@ -522,6 +522,7 @@ void KKEditClass::doEditMenuItems()
 				this->doPrefs();
 				break;
 			case PLUGPREFSMENUITEM:
+				DEBUGSTR(PLUGPREFSMENUITEM)
 				//doPlugPrefs(NULL,0);
 				break;
 		}

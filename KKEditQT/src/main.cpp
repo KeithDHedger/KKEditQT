@@ -52,16 +52,15 @@ void loadPlugins(void)
 					plugtest=qobject_cast<kkEditQTPluginInterface*>(plugin);
 					if(plugtest)
 						{
-							QFileInfo		fileinfo(s);
 							pluginStruct	ps;
-
-							QTextStream(stderr) << "Loaded plugin " << s << " number " << cnt << Qt::endl;
-							QTextStream(stderr) << "Loaded plugin name" << fileinfo.fileName() << Qt::endl;
 							plugtest->initPlug(kkedit,s);
 							whatIWant wants=plugtest->plugWants();
-							ps.plugName=fileinfo.fileName();
+
 							ps.instance=plugtest;
 							ps.loaded=true;
+							ps.plugPath=s;
+							ps.plugName=pluginLoader.metaData().value("MetaData").toObject().value("name").toString();
+							ps.plugVersion=pluginLoader.metaData().value("MetaData").toObject().value("version").toString();
 							kkedit->plugins[cnt++]=ps;
 						}
 				}
@@ -122,6 +121,15 @@ int main (int argc, char **argv)
 	kkedit->initApp(argc,argv);
 //load plugins
 	loadPlugins();
+//test plugs
+//	for(int j=0;j<kkedit->plugins.count();j++)
+//		{
+//			DEBUGSTR(kkedit->plugins[j].plugName);
+//			DEBUGSTR(kkedit->plugins[j].plugVersion);
+//			DEBUGSTR(kkedit->plugins[j].plugPath);
+//			DEBUGSTR(kkedit->plugins[j].wants);
+//			DEBUGSTR(kkedit->plugins[j].loaded);
+//		}
 
 	kkedit->runCLICommands(kkedit->queueID);
 

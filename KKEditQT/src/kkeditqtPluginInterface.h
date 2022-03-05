@@ -21,7 +21,7 @@
 #ifndef KKEDITQTPLUGININTERFACE_H
 #define KKEDITQTPLUGININTERFACE_H
 
-enum whatIWant {DOSAVE,DOLOAD,DOCLOSE,DORESSESSION,DOSAVESESSION,DONONE};
+enum whatIWant {DONONE,DOSAVE,DOLOAD,DOCLOSE,DORESSESSION,DOSAVESESSION};
 
 class KKEditClass;
 
@@ -42,7 +42,7 @@ class kkEditQTPluginInterface
 
 QT_BEGIN_NAMESPACE
 
-#define kkEditQTPluginInterface_iid "org.qt-project.Qt.Examples.kkEditQTPluginInterface"
+#define kkEditQTPluginInterface_iid "org.KKEditQT.kkEditQTPluginInterface"
 
 Q_DECLARE_INTERFACE(kkEditQTPluginInterface, kkEditQTPluginInterface_iid)
 QT_END_NAMESPACE

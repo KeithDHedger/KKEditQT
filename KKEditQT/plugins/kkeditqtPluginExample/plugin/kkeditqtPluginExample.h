@@ -26,7 +26,7 @@
 class kkeditQTexamplePlug : public QObject, kkEditQTPluginInterface
 {
 	Q_OBJECT
-	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.Examples.kkEditQTPluginInterface" FILE "kkeditqtPluginExample.json")
+	Q_PLUGIN_METADATA(IID "org.KKEditQT.Example.kkEditQTPluginInterface" FILE "kkeditqtPluginExample.json")
 	Q_INTERFACES(kkEditQTPluginInterface)
 
 	public:

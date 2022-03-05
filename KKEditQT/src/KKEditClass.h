@@ -93,7 +93,9 @@ class kkEditQTPluginInterface;
 
 struct pluginStruct
 {
+	QString					plugPath="";
 	QString					plugName="";
+	QString					plugVersion="";
 	kkEditQTPluginInterface	*instance=NULL;
 	whatIWant				wants=DONONE;
 	bool					loaded=false;
