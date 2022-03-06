@@ -1331,3 +1331,108 @@ void KKEditClass::buildToolOutputWindow(void)
 	docvlayout->addSpacing(6);
 	this->toolOutputWindow->hide();
 }
+
+void KKEditClass::buildPlugPrefs(void)
+{
+	DEBUGSTR("void KKEditClass::buildPlugPrefs(void)")
+
+	QVBoxLayout	*docvlayout=new QVBoxLayout;
+	QHBoxLayout	*dochlayout;//=new QHBoxLayout;
+	QPushButton	*btn;
+	QCheckBox	*cb;
+
+	this->pluginPrefsWindow=new QDialog(mainWindow);
+	this->pluginPrefsWindow->setWindowTitle("Plugin Prefs");
+
+	for(int j=0;j<this->plugins.count();j++)
+		{
+			dochlayout=new QHBoxLayout;
+			cb=new QCheckBox(this->plugins[j].plugName);
+			cb->setChecked(this->plugins[j].loaded);
+			QObject::connect(cb,&QCheckBox::clicked,[this,j](bool checked)
+				{
+					DEBUGSTR(this->plugins[j].plugName << " " << checked)
+					this->plugins[j].toBeUnloaded=!checked;
+				});
+
+			dochlayout->addWidget(cb);
+			docvlayout->addLayout(dochlayout);
+		}
+
+	dochlayout=new QHBoxLayout;
+	btn=new QPushButton("Preferences");
+	QObject::connect(btn,&QPushButton::clicked,[this]()
+		{
+			DEBUGSTR("Preferences")
+		});
+	dochlayout->addWidget(btn);
+
+	btn=new QPushButton("About");
+	QObject::connect(btn,&QPushButton::clicked,[this]()
+		{
+			DEBUGSTR("About")
+		});
+	dochlayout->addWidget(btn);
+
+	btn=new QPushButton("Apply");
+	QObject::connect(btn,&QPushButton::clicked,[this]()
+		{
+			DEBUGSTR("Apply")
+			for(int j=0;j<this->plugins.count();j++)
+				{
+					if(this->plugins[j].toBeUnloaded==true)
+						{
+							if(this->plugins[j].loaded==true)
+								{
+									this->plugins[j].instance->unloadPlug();
+									this->plugins[j].pluginLoader->unload();
+									delete this->plugins[j].pluginLoader;
+									this->plugins[j].pluginLoader=NULL;
+									this->plugins[j].toBeUnloaded=false;
+									this->plugins[j].loaded=false;
+								}
+						}
+					else
+						{
+							if(this->plugins[j].loaded==false)
+								{
+        							this->plugins[j].pluginLoader=new QPluginLoader(this->plugins[j].plugPath);
+        							QObject	*plugin=this->plugins[j].pluginLoader->instance();
+									if(plugin)
+										{
+											this->plugins[j].instance=qobject_cast<kkEditQTPluginInterface*>(plugin);
+											if(this->plugins[j].instance)
+												{
+													this->plugins[j].instance->initPlug(this,this->plugins[j].plugPath);
+													this->plugins[j].wants=this->plugins[j].instance->plugWants();
+													this->plugins[j].loaded=true;
+													this->plugins[j].plugName=this->plugins[j].pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
+													this->plugins[j].plugVersion=this->plugins[j].pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
+													this->plugins[j].loaded=true;
+												}
+											this->plugins[j].toBeUnloaded=false;
+										}
+									else
+										{
+											delete this->plugins[j].pluginLoader;
+											this->plugins[j].pluginLoader=NULL;
+										}
+								}
+						}
+				}
+			this->pluginPrefsWindow->hide();
+		});
+	dochlayout->addWidget(btn);
+
+	btn=new QPushButton("Close");
+	QObject::connect(btn,&QPushButton::clicked,[this]()
+		{
+			this->pluginPrefsWindow->hide();
+		});
+	dochlayout->addWidget(btn);
+
+	docvlayout->addLayout(dochlayout);
+	this->pluginPrefsWindow->setLayout(docvlayout);
+}
+
+

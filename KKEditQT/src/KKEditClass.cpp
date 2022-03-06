@@ -40,8 +40,13 @@ KKEditClass::~KKEditClass()
 //	delete this->history;
 	for(int j=0;j<this->plugins.count();j++)
 		{
-			this->plugins[j].instance->unloadPlug();
-			delete this->plugins[j].instance;
+			if(this->plugins[j].loaded==true)
+				{
+					this->plugins[j].instance->unloadPlug();
+					delete this->plugins[j].instance;
+					this->plugins[j].pluginLoader->unload();
+				}
+				delete this->plugins[j].pluginLoader;
 		}
 
 	asprintf(&command,"rm -rf %s",this->tmpFolderName.toStdString().c_str());
@@ -432,6 +437,8 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->buildMainGui();
 	this->buildPrefsWindow();
 	this->buildToolOutputWindow();
+	this->loadPlugins();
+	this->buildPlugPrefs();
 
 //TODO//
 //	if(onExitSaveSession==true)
@@ -625,6 +632,9 @@ void KKEditClass::readConfigs(void)
 	this->findList=this->prefs.value("app/findlist").toStringList();
 	this->replaceList=this->prefs.value("app/replacelist").toStringList();
 	this->defaultShortCutsList=this->prefs.value("app/shortcuts",QVariant(QStringList({"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'"}))).toStringList();
+	
+	this->enabledPlugins=this->prefs.value("app/enabledplugins").toStringList();
+	this->disabledPlugins=this->prefs.value("app/disabledplugins").toStringList();
 
 	this->setAppShortcuts();	
 }
@@ -756,6 +766,8 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/shortcuts",this->defaultShortCutsList);
 	this->prefs.setValue("app/findlist",this->findList);
 	this->prefs.setValue("app/replacelist",this->replaceList);
+	this->prefs.setValue("app/enabledplugins",this->enabledPlugins);
+	this->prefs.setValue("app/disabledplugins",this->disabledPlugins);
 }
 
 void KKEditClass::findFile(void)
@@ -1236,6 +1248,44 @@ void KKEditClass::insertCompletion(const QString& completion)
     tc.removeSelectedText();
     tc.insertText(completion);
     doc->setTextCursor(tc);
+}
+
+void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
+{
+	kkEditQTPluginInterface	*plugtest;
+	int 					cnt=0;
+    QDir 					pluginsDir(this->homeDataFolder+"/plugins/");
+	QDirIterator 			it(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+
+	while (it.hasNext())
+		{
+			QString			s=it.next();
+        	QPluginLoader	*loader=new QPluginLoader(s);
+        	QObject			*plugin=loader->instance();
+			if(plugin)
+				{
+					plugtest=qobject_cast<kkEditQTPluginInterface*>(plugin);
+					if(plugtest)
+						{
+							pluginStruct	ps;
+							plugtest->initPlug(this,s);
+							ps.pluginLoader=loader;
+							ps.wants=plugtest->plugWants();
+							ps.instance=plugtest;
+							ps.loaded=true;
+							ps.plugPath=s;
+							ps.plugName=loader->metaData().value("MetaData").toObject().value("name").toString();
+							ps.plugVersion=loader->metaData().value("MetaData").toObject().value("version").toString();
+							this->plugins[cnt++]=ps;
+						}
+				}
+			else
+				{
+					QTextStream(stderr) << "Error Could not load plugin " << s << "\n" << loader->errorString() << Qt::endl;
+					delete loader;
+				}
+		}
+
 }
 
 

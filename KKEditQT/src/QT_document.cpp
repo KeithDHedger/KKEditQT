@@ -453,7 +453,7 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 //plugins
 	for(int j=0;j<this->mainKKEditClass->plugins.count();j++)
 		{
-			if(this->mainKKEditClass->plugins[j].wants==DOCONTEXTMENU)
+			if((this->mainKKEditClass->plugins[j].loaded) && (this->mainKKEditClass->plugins[j].wants==DOCONTEXTMENU))
 				this->mainKKEditClass->plugins[j].instance->plugAddToContextMenu(&menu,this);
 		}
 

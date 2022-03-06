@@ -43,6 +43,8 @@ void kkeditQTexamplePlug::plugAddToContextMenu(QMenu *menu,DocumentClass *docume
 
 void kkeditQTexamplePlug::unloadPlug(void)
 {
+	this->mainKKEditClass->pluginMenu->removeAction(this->exampleMenuitem);
+	delete this->exampleMenuitem;
 	DEBUGSTR("void kkeditQTexamplePlug::unloadPlug(void)")
 }
 

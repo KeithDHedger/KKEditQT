@@ -93,12 +93,14 @@ class kkEditQTPluginInterface;
 
 struct pluginStruct
 {
+	QPluginLoader			*pluginLoader=NULL;
 	QString					plugPath="";
 	QString					plugName="";
 	QString					plugVersion="";
 	kkEditQTPluginInterface	*instance=NULL;
 	whatIWant				wants=DONONE;
 	bool					loaded=false;
+	bool					toBeUnloaded=false;
 };
 
 class KKEditClass : public QObject
@@ -155,7 +157,6 @@ class KKEditClass : public QObject
 		QString						sessionFolder;
 		unsigned int				currentSessionNumber=0xdeadbeef;
 		QString						toolsFolder;
-		QHash<int,pluginStruct>		plugins;
 
 //app functions
 		void						initApp(int argc,char** argv);
@@ -433,6 +434,17 @@ class KKEditClass : public QObject
 //search vars
 //search functions
 		void						searchAPIDocs(const QString txt,int what);
+
+//plugins
+//plug vars
+		QDialog						*pluginPrefsWindow;
+		QStringList					enabledPlugins;
+		QStringList					disabledPlugins;
+		QHash<int,pluginStruct>		plugins;
+
+//plug functions
+		void						loadPlugins(void);
+		void						buildPlugPrefs(void);
 
 	public slots:
 		void						debugSignalSlot(int);

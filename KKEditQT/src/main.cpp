@@ -34,42 +34,44 @@ KKEditClass				*kkedit;
 //
 //	return(hash);
 //}
-
-void loadPlugins(void)
-{
-	kkEditQTPluginInterface	*plugtest;
-	int 					cnt=0;
-    QDir 					pluginsDir(kkedit->homeDataFolder+"/plugins/");
-	QDirIterator 			it(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
-
-	while (it.hasNext())
-		{
-			QString			s=it.next();
-        	QPluginLoader	pluginLoader(s);
-        	QObject			*plugin=pluginLoader.instance();
-			if(plugin)
-				{
-					plugtest=qobject_cast<kkEditQTPluginInterface*>(plugin);
-					if(plugtest)
-						{
-							pluginStruct	ps;
-							plugtest->initPlug(kkedit,s);
-
-							ps.wants=plugtest->plugWants();
-							ps.instance=plugtest;
-							ps.loaded=true;
-							ps.plugPath=s;
-							ps.plugName=pluginLoader.metaData().value("MetaData").toObject().value("name").toString();
-							ps.plugVersion=pluginLoader.metaData().value("MetaData").toObject().value("version").toString();
-							kkedit->plugins[cnt++]=ps;
-						}
-				}
-			else
-				{
-					QTextStream(stderr) << "Error Could not load plugin " << s << "\n" << pluginLoader.errorString() << Qt::endl;
-				}
-		}
-}
+//
+//void loadPlugins(void)
+//{
+//	kkEditQTPluginInterface	*plugtest;
+//	int 					cnt=0;
+//    QDir 					pluginsDir(kkedit->homeDataFolder+"/plugins/");
+//	QDirIterator 			it(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+//
+//	while (it.hasNext())
+//		{
+//			QString			s=it.next();
+//        	QPluginLoader	*loader=new QPluginLoader(s);
+//        	QObject			*plugin=loader->instance();
+//			if(plugin)
+//				{
+//					plugtest=qobject_cast<kkEditQTPluginInterface*>(plugin);
+//					if(plugtest)
+//						{
+//							pluginStruct	ps;
+//							plugtest->initPlug(kkedit,s);
+//
+//							ps.pluginLoader=loader;
+//							ps.wants=plugtest->plugWants();
+//							ps.instance=plugtest;
+//							ps.loaded=true;
+//							ps.plugPath=s;
+//							ps.plugName=loader->metaData().value("MetaData").toObject().value("name").toString();
+//							ps.plugVersion=loader->metaData().value("MetaData").toObject().value("version").toString();
+//							kkedit->plugins[cnt++]=ps;
+//						}
+//				}
+//			else
+//				{
+//					QTextStream(stderr) << "Error Could not load plugin " << s << "\n" << loader->errorString() << Qt::endl;
+//					delete loader;
+//				}
+//		}
+//}
 
 int main (int argc, char **argv)
 {
@@ -120,17 +122,24 @@ int main (int argc, char **argv)
 
 	kkedit->initApp(argc,argv);
 //load plugins
-	loadPlugins();
+//	loadPlugins();
 //test plugs
-//	for(int j=0;j<kkedit->plugins.count();j++)
-//		{
-//			DEBUGSTR(kkedit->plugins[j].plugName);
-//			DEBUGSTR(kkedit->plugins[j].plugVersion);
-//			DEBUGSTR(kkedit->plugins[j].plugPath);
-//			DEBUGSTR(kkedit->plugins[j].wants);
-//			DEBUGSTR(kkedit->plugins[j].loaded);
-//		}
-
+#if 0
+	for(int j=0;j<kkedit->plugins.count();j++)
+		{
+			DEBUGSTR(kkedit->plugins[j].plugName);
+			DEBUGSTR(kkedit->plugins[j].plugVersion);
+			DEBUGSTR(kkedit->plugins[j].plugPath);
+			DEBUGSTR(kkedit->plugins[j].wants);
+			DEBUGSTR(kkedit->plugins[j].loaded);
+			if(kkedit->plugins[j].plugName.compare("Example Plugin")==0)
+				{
+					kkedit->plugins[j].instance->unloadPlug();
+					kkedit->plugins[j].pluginLoader->unload();
+					kkedit->plugins[j].loaded=false;
+				}
+		}
+#endif
 	kkedit->runCLICommands(kkedit->queueID);
 
 	kkedit->setToolbarSensitive();
