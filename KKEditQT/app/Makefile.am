@@ -8,9 +8,6 @@ kkeditqt_SOURCES = $(COMMONSRC)
 
 KKEditQTProgressBar_SOURCES = ../pole/main.cpp
 
-#kkeditqt_CFLAGS = -ggdb -O0 -fvisibility=default
-#kkeditqt_CXXFLAGS = -ggdb -O0 -fvisibility=default
-
 pixfilesdir = $(pkgdatadir)/pixmaps
 pixfiles_DATA = ../resources/pixmaps/*
 
@@ -26,8 +23,6 @@ docfiles_DATA = ../resources/docs/*
 #stylefilesdir = $(pkgdatadir)/styles
 #stylefiles_DATA = ../resources/styles/*
 
-#include_HEADERS = ../src/kkedit-plugins.h
-
 bin_PROGRAMS = kkeditqt KKEditQTProgressBar
 
 install-exec-hook:
@@ -36,7 +31,6 @@ install-exec-hook:
 	install -D ../resources/pixmaps/KKEditQT.png $(DESTDIR)${prefix}/share/pixmaps/KKEditQT.png
 	install -D ../resources/pixmaps/KKEditQT.desktop $(DESTDIR)${prefix}/share/applications/KKEditQT.desktop
 	install -D ../resources/pixmaps/KKEditQTRoot.desktop $(DESTDIR)${prefix}/share/applications/KKEditQTRoot.desktop
-	echo "Exec=${with_gsu_path} kkeditqt -m %f" >> $(DESTDIR)${prefix}/share/applications/KKEditQTRoot.desktop
 	install -D ../resources/pixmaps/KKEditQT.png $(DESTDIR)${prefix}/share/icons/hicolor/128x128/apps/KKEditQT.png
 	install -D ../resources/pixmaps/KKEditQTRoot.png $(DESTDIR)${prefix}/share/icons/hicolor/128x128/apps/KKEditQTRoot.png
 	mkdir -vp $(DESTDIR)$(pkgdatadir)/plugins

@@ -380,9 +380,6 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 COMMONSRC = ../src/KKEditClassCallbacks.cpp ../src/KKEditClass.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/languagedata.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_toolbar.cpp ../src/qsourcehighliter.cpp ../src/qsourcehighliterthemes.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp
 kkeditqt_SOURCES = $(COMMONSRC)
 KKEditQTProgressBar_SOURCES = ../pole/main.cpp
-
-#kkeditqt_CFLAGS = -ggdb -O0 -fvisibility=default
-#kkeditqt_CXXFLAGS = -ggdb -O0 -fvisibility=default
 pixfilesdir = $(pkgdatadir)/pixmaps
 pixfiles_DATA = ../resources/pixmaps/*
 helpfilesdir = $(pkgdatadir)/help
@@ -997,7 +994,6 @@ install-exec-hook:
 	install -D ../resources/pixmaps/KKEditQT.png $(DESTDIR)${prefix}/share/pixmaps/KKEditQT.png
 	install -D ../resources/pixmaps/KKEditQT.desktop $(DESTDIR)${prefix}/share/applications/KKEditQT.desktop
 	install -D ../resources/pixmaps/KKEditQTRoot.desktop $(DESTDIR)${prefix}/share/applications/KKEditQTRoot.desktop
-	echo "Exec=${with_gsu_path} kkeditqt -m %f" >> $(DESTDIR)${prefix}/share/applications/KKEditQTRoot.desktop
 	install -D ../resources/pixmaps/KKEditQT.png $(DESTDIR)${prefix}/share/icons/hicolor/128x128/apps/KKEditQT.png
 	install -D ../resources/pixmaps/KKEditQTRoot.png $(DESTDIR)${prefix}/share/icons/hicolor/128x128/apps/KKEditQTRoot.png
 	mkdir -vp $(DESTDIR)$(pkgdatadir)/plugins
