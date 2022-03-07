@@ -334,7 +334,9 @@ void KKEditClass::doHelpMenuItems()
 					about->runAbout();
 				}
 			 	break;
-
+			 case ABOUTQTMENUITEM:
+			 	QApplication::aboutQt();
+			 	break;
 			 case HELPMENUITEM:
 			 	this->showWebPage("Help For " PACKAGE,"file://" DATADIR "/help/index.html");
 			 	break;

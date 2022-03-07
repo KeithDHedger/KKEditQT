@@ -862,6 +862,9 @@ void KKEditClass::buildMainGui(void)
 //
 //about
 	menuItemSink=this->makeMenuItemClass(HELPMENU,"About",0,"help-about",ABOUTMENUNAME,ABOUTMENUITEM);
+//aboutqt
+	menuItemSink=this->makeMenuItemClass(HELPMENU,"About QT",0,"help-about",ABOUTMENUNAME,ABOUTQTMENUITEM);
+
 //help
 	menuItemSink=this->makeMenuItemClass(HELPMENU,"Help",0,"help-contents",HELPMENUNAME,HELPMENUITEM);
 	menuItemSink=this->makeMenuItemClass(HELPMENU,"Online Help",0,"help-contents",ONLINEHELPMENUNAME,ONLINEHELPMENUITEM);
