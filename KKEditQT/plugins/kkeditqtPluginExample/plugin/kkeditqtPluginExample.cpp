@@ -38,19 +38,25 @@ void kkeditQTexamplePlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 void kkeditQTexamplePlug::plugAddToContextMenu(QMenu *menu,DocumentClass *document)
 {
-	DEBUGSTR("void OpenUri::unloadPlug(void)")
+	DEBUGSTR("void kkeditQTexamplePlug::plugAddToContextMenu(QMenu *menu,DocumentClass *document)")
 }
 
 void kkeditQTexamplePlug::unloadPlug(void)
 {
 	this->mainKKEditClass->pluginMenu->removeAction(this->exampleMenuitem);
 	delete this->exampleMenuitem;
-	DEBUGSTR("void kkeditQTexamplePlug::unloadPlug(void)")
 }
 
 void kkeditQTexamplePlug::plugAbout(void)
 {
-	DEBUGSTR("void kkeditQTexamplePlug::plugAbout(void)")
+	QMessageBox msgBox;
+
+	QString txt="KKEditQT Example Plugin\n\n©K.D.Hedger 2022\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
+	msgBox.setText(txt);
+	msgBox.setIconPixmap(QPixmap("/usr/share/KKEditQT/pixmaps/KKEditQTPlug.png"));
+	msgBox.setWindowTitle("Plugin About");
+	msgBox.setTextFormat(Qt::MarkdownText);
+	msgBox.exec();
 }
 
 void kkeditQTexamplePlug::plugSettings(void)
@@ -65,6 +71,5 @@ void kkeditQTexamplePlug::plugRun(unsigned int)
 
 unsigned int kkeditQTexamplePlug::plugWants(void)
 {
-	DEBUGSTR("whatIWant kkeditQTexamplePlug::plugWants(void)")
-	return(DOABOUT|DOSETTINGS);
+	return(DOABOUT);
 }

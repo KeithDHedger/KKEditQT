@@ -47,28 +47,19 @@ void OpenUri::plugAddToContextMenu(QMenu *menu,DocumentClass *document)
 		}
 }
 
-void OpenUri::unloadPlug(void)
-{
-	DEBUGSTR("void OpenUri::unloadPlug(void)")
-}
-
 void OpenUri::plugAbout(void)
 {
-	DEBUGSTR("void OpenUri::plugAbout(void)")
-}
+	QMessageBox msgBox;
 
-void OpenUri::plugSettings(void)
-{
-	DEBUGSTR("void OpenUri::plugSettings(void)")
-}
-
-void OpenUri::plugRun(unsigned int)
-{
-	DEBUGSTR("void OpenUri::plugRun(whatIWant)")
+	QString txt="Open URI Plugin\n\n©K.D.Hedger 2022\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
+	msgBox.setText(txt);
+	msgBox.setIconPixmap(QPixmap("/usr/share/KKEditQT/pixmaps/KKEditQTPlug.png"));
+	msgBox.setWindowTitle("Plugin About");
+	msgBox.setTextFormat(Qt::MarkdownText);
+	msgBox.exec();
 }
 
 unsigned int OpenUri::plugWants(void)
 {
-	DEBUGSTR("whatIWant OpenUri::plugWants(void)")
 	return(DOCONTEXTMENU|DOABOUT);
 }

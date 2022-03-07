@@ -37,16 +37,14 @@ KKEditClass::~KKEditClass()
 	for(int j=0;j<SHORTCUTSCOUNT;j++)
 		delete this->appShortcuts[j];
 	delete this->recentFiles;
-//	delete this->history;
+	delete this->history;
+
 	for(int j=0;j<this->plugins.count();j++)
 		{
 			if(this->plugins[j].loaded==true)
 				{
-					this->plugins[j].instance->unloadPlug();
-					delete this->plugins[j].instance;
-					this->plugins[j].pluginLoader->unload();
+					this->unloadPlug(&this->plugins[j]);
 				}
-				delete this->plugins[j].pluginLoader;
 		}
 
 	asprintf(&command,"rm -rf %s",this->tmpFolderName.toStdString().c_str());
@@ -765,6 +763,13 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/shortcuts",this->defaultShortCutsList);
 	this->prefs.setValue("app/findlist",this->findList);
 	this->prefs.setValue("app/replacelist",this->replaceList);
+
+	this->disabledPlugins.clear();
+	for(int j=0;j<this->plugins.count();j++)
+		{
+			if(this->plugins[j].loaded==false)
+				this->disabledPlugins<<this->plugins[j].plugPath;
+		}
 	this->prefs.setValue("app/disabledplugins",this->disabledPlugins);
 }
 
@@ -1264,23 +1269,49 @@ void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
 			if(this->loadPlug(&ps)==false)
 				DEBUGSTR("Error loading plug > " << s)
 
+			//if(this->disabledPlugins.contains(ps.plugPath)==false)
+			//	{
+			//	}
+//			else
+//				{
+//					ps.pluginLoader=new QPluginLoader(ps.plugPath);
+//					ps.plugName=ps.pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
+//					ps.plugVersion=ps.pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
+//					delete ps.pluginLoader;
+//					ps.pluginLoader=NULL;
+//					ps.loaded=false;
+//				}
+
 			this->plugins[cnt++]=ps;
 		}
-
 }
 
 bool KKEditClass::loadPlug(pluginStruct *ps)
 {
 	QObject	*plugininst=NULL;
 
+	ps->statusChanged=false;
+
+	if(ps->loaded==true)
+		return(true);
+
 	ps->pluginLoader=new QPluginLoader(ps->plugPath);
 	plugininst=ps->pluginLoader->instance();
 	if(plugininst!=nullptr)
 		{
 			ps->instance=qobject_cast<kkEditQTPluginInterface*>(plugininst);
-			ps->instance->initPlug(this,ps->plugPath);//TODO//return false if cant init
-			ps->wants=ps->instance->plugWants();
-			ps->loaded=true;
+			if(this->disabledPlugins.contains(ps->plugPath)==false)
+				{
+					ps->instance->initPlug(this,ps->plugPath);//TODO//return false if cant init
+					ps->loaded=true;
+					ps->wants=ps->instance->plugWants();
+				}
+			else
+				{
+					ps->loaded=false;
+					ps->wants=DONONE;
+				}
+					
 			ps->plugName=ps->pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
 			ps->plugVersion=ps->pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
 		}
@@ -1288,38 +1319,26 @@ bool KKEditClass::loadPlug(pluginStruct *ps)
 		{
 			ps->loaded=false;
 			ps->broken=true;
+			ps->plugName=QFileInfo(ps->plugPath).fileName();
 			return(false);
 		}
-return(true);
- //       	QPluginLoader	*loader=new QPluginLoader(s);
-//        	QObject			*plugin=loader->instance();
-//			if(plugin)
-//				{
-//					//plugtest=qobject_cast<kkEditQTPluginInterface*>(plugin);
-//					if(plugtest)
-//						{
-//							pluginStruct	ps;
-//							plugtest->initPlug(this,s);
-//							//ps.pluginLoader=loader;
-//							//ps.wants=plugtest->plugWants();
-//							//ps.instance=plugtest;
-//							//ps.loaded=true;
-//							//ps.plugPath=s;
-//							ps.plugName=loader->metaData().value("MetaData").toObject().value("name").toString();
-//							ps.plugVersion=loader->metaData().value("MetaData").toObject().value("version").toString();
-//							this->plugins[cnt++]=ps;
-//						}
-//				}
-//			else
-//				{
-//					QTextStream(stderr) << "Error Could not load plugin " << s << "\n" << loader->errorString() << Qt::endl;
-//					delete loader;
-//				}
 
+	return(true);
 }
 
 bool KKEditClass::unloadPlug(pluginStruct *ps)
 {
-	return(false);
+	ps->statusChanged=false;
+
+	if(ps->loaded==false)
+		return(true);
+
+	ps->instance->unloadPlug();
+	ps->pluginLoader->unload();
+	delete ps->pluginLoader;
+	ps->pluginLoader=NULL;
+	ps->loaded=false;
+
+	return(true);
 }
 

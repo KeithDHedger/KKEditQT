@@ -1,4 +1,9 @@
 0.5.2
+Done plugin prefs.
+Handle broken plugins.
+Added disabled plugs to prefs.
+Added about box to plugins.
+Done plugin prefs dialog.
 More plug stuff.
 Fixed completion segfault when using CTL-E to pop up dialog.
 Fixed marking document dirty wrong.

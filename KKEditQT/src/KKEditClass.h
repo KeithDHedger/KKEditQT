@@ -100,7 +100,7 @@ struct pluginStruct
 	kkEditQTPluginInterface	*instance=NULL;
 	unsigned int			wants=DONONE;
 	bool					loaded=false;
-	bool					toBeUnloaded=false;
+	bool					statusChanged=false;
 	bool					broken=false;
 };
 

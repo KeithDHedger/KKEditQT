@@ -31,10 +31,10 @@ class OpenUri : public QObject, kkEditQTPluginInterface
 
 	public:
 		void			initPlug(KKEditClass *kk,QString pathtoplug) override;
-		void			unloadPlug(void) override;
+		void			unloadPlug(void) override {};
 		void			plugAbout(void) override;
-		void			plugSettings(void) override;
-		void			plugRun(unsigned int what) override;
+		void			plugSettings(void) override {};
+		void			plugRun(unsigned int what) override {};
 		void			plugAddToContextMenu(QMenu *menu,DocumentClass *document) override;
 		unsigned int	plugWants(void) override;
 

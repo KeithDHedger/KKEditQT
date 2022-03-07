@@ -1334,10 +1334,8 @@ void KKEditClass::buildToolOutputWindow(void)
 
 void KKEditClass::buildPlugPrefs(void)
 {
-	DEBUGSTR("void KKEditClass::buildPlugPrefs(void)")
-
 	QVBoxLayout	*docvlayout=new QVBoxLayout;
-	QHBoxLayout	*dochlayout;//=new QHBoxLayout;
+	QHBoxLayout	*dochlayout;
 	QPushButton	*btn;
 	QCheckBox	*cb;
 
@@ -1348,83 +1346,60 @@ void KKEditClass::buildPlugPrefs(void)
 		{
 			dochlayout=new QHBoxLayout;
 			cb=new QCheckBox(this->plugins[j].plugName);
-			cb->setChecked(this->plugins[j].loaded);
-			QObject::connect(cb,&QCheckBox::clicked,[this,j](bool checked)
+			if(this->plugins[j].broken==true)
 				{
-					DEBUGSTR(this->plugins[j].plugName << " " << checked)
-					this->plugins[j].toBeUnloaded=!checked;
-				});
+					cb->setEnabled(false);
+				}
+			else
+				{
+					cb->setChecked(this->plugins[j].loaded);
+					QObject::connect(cb,&QCheckBox::clicked,[this,j](bool checked)
+						{
+							this->plugins[j].statusChanged=true;
+						});
 
+				}
 			dochlayout->addWidget(cb);
+			dochlayout->addStretch(128);
 
 			btn=new QPushButton("Settings");
 			dochlayout->addWidget(btn);
-			if((this->plugins[j].wants & DOSETTINGS)!=DOSETTINGS)//TODO//setup
+			if(((this->plugins[j].wants & DOSETTINGS)!=DOSETTINGS) || (this->plugins[j].loaded==false))//TODO//setup
 				btn->setEnabled(false);
 			QObject::connect(btn,&QPushButton::clicked,[this,j]()
 				{
 					this->plugins[j].instance->plugSettings();
-					DEBUGSTR("Settings")
 				});
 			
 			btn=new QPushButton("About");
-			if((this->plugins[j].wants & DOABOUT)!=DOABOUT)
+			if(((this->plugins[j].wants & DOABOUT)!=DOABOUT) || (this->plugins[j].loaded==false))
 				btn->setEnabled(false);
 			QObject::connect(btn,&QPushButton::clicked,[this,j]()
 				{
 					this->plugins[j].instance->plugAbout();
-					DEBUGSTR("About")
 				});
 			dochlayout->addWidget(btn);
 			docvlayout->addLayout(dochlayout);
 		}
-
 
 	dochlayout=new QHBoxLayout;
 
 	btn=new QPushButton("Apply");
 	QObject::connect(btn,&QPushButton::clicked,[this]()
 		{
-			DEBUGSTR("Apply")
 			for(int j=0;j<this->plugins.count();j++)
 				{
-					if(this->plugins[j].toBeUnloaded==true)
+					if(this->plugins[j].statusChanged==true)
 						{
 							if(this->plugins[j].loaded==true)
 								{
-									this->plugins[j].instance->unloadPlug();
-									this->plugins[j].pluginLoader->unload();
-									delete this->plugins[j].pluginLoader;
-									this->plugins[j].pluginLoader=NULL;
-									this->plugins[j].toBeUnloaded=false;
-									this->plugins[j].loaded=false;
+									this->unloadPlug(&this->plugins[j]);
+									this->disabledPlugins<<this->plugins[j].plugPath;
 								}
-						}
-					else
-						{
-							if(this->plugins[j].loaded==false)
+							else
 								{
-        							this->plugins[j].pluginLoader=new QPluginLoader(this->plugins[j].plugPath);
-        							QObject	*plugin=this->plugins[j].pluginLoader->instance();
-									if(plugin)
-										{
-											this->plugins[j].instance=qobject_cast<kkEditQTPluginInterface*>(plugin);
-											if(this->plugins[j].instance)
-												{
-													this->plugins[j].instance->initPlug(this,this->plugins[j].plugPath);
-													this->plugins[j].wants=this->plugins[j].instance->plugWants();
-													this->plugins[j].loaded=true;
-													this->plugins[j].plugName=this->plugins[j].pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
-													this->plugins[j].plugVersion=this->plugins[j].pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
-													this->plugins[j].loaded=true;
-												}
-											this->plugins[j].toBeUnloaded=false;
-										}
-									else
-										{
-											delete this->plugins[j].pluginLoader;
-											this->plugins[j].pluginLoader=NULL;
-										}
+									this->disabledPlugins.replaceInStrings(this->plugins[j].plugPath,"");
+									this->loadPlug(&this->plugins[j]);
 								}
 						}
 				}
