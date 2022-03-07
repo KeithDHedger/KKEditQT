@@ -1356,23 +1356,31 @@ void KKEditClass::buildPlugPrefs(void)
 				});
 
 			dochlayout->addWidget(cb);
+
+			btn=new QPushButton("Settings");
+			dochlayout->addWidget(btn);
+			if((this->plugins[j].wants & DOSETTINGS)!=DOSETTINGS)//TODO//setup
+				btn->setEnabled(false);
+			QObject::connect(btn,&QPushButton::clicked,[this,j]()
+				{
+					this->plugins[j].instance->plugSettings();
+					DEBUGSTR("Settings")
+				});
+			
+			btn=new QPushButton("About");
+			if((this->plugins[j].wants & DOABOUT)!=DOABOUT)
+				btn->setEnabled(false);
+			QObject::connect(btn,&QPushButton::clicked,[this,j]()
+				{
+					this->plugins[j].instance->plugAbout();
+					DEBUGSTR("About")
+				});
+			dochlayout->addWidget(btn);
 			docvlayout->addLayout(dochlayout);
 		}
 
-	dochlayout=new QHBoxLayout;
-	btn=new QPushButton("Preferences");
-	QObject::connect(btn,&QPushButton::clicked,[this]()
-		{
-			DEBUGSTR("Preferences")
-		});
-	dochlayout->addWidget(btn);
 
-	btn=new QPushButton("About");
-	QObject::connect(btn,&QPushButton::clicked,[this]()
-		{
-			DEBUGSTR("About")
-		});
-	dochlayout->addWidget(btn);
+	dochlayout=new QHBoxLayout;
 
 	btn=new QPushButton("Apply");
 	QObject::connect(btn,&QPushButton::clicked,[this]()

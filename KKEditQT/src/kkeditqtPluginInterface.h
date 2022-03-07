@@ -21,7 +21,28 @@
 #ifndef KKEDITQTPLUGININTERFACE_H
 #define KKEDITQTPLUGININTERFACE_H
 
-enum whatIWant {DONONE,DOSAVE,DOLOAD,DOCLOSE,DORESSESSION,DOSAVESESSION,DOCONTEXTMENU,DOTABPOPUP};
+/*
+
+int a=1;
+int b=a<<1;
+int c=b<<1;
+
+DEBUGSTR(a << " " << b << " " << c )
+return 0;
+
+*/
+#define DONONE 0
+#define DOSAVE 1
+#define DOLOAD DOSAVE << 1
+#define DOCLOSE DOLOAD << 1
+#define DORESSESSION DOCLOSE << 1
+#define DOSAVESESSION DORESSESSION << 1
+#define DOCONTEXTMENU DOSAVESESSION << 1
+#define DOTABPOPUP DOCONTEXTMENU << 1
+#define DOABOUT DOTABPOPUP << 1
+#define DOSETTINGS DOABOUT << 1
+
+//enum whatIWant {DONONE=0,DOSAVE,DOLOAD,DOCLOSE,DORESSESSION,DOSAVESESSION,DOCONTEXTMENU,DOTABPOPUP,DOABOUT=16,DOSETTINGS=32};
 
 class KKEditClass;
 
@@ -32,13 +53,13 @@ class kkEditQTPluginInterface
 	public:
 		virtual ~kkEditQTPluginInterface()=default;
 
-		virtual void		initPlug(KKEditClass *kk,QString pathtoplug)=0;
-		virtual void		unloadPlug(void)=0;
-		virtual void		plugAbout(void)=0;
-		virtual void		plugSettings(void)=0;
-		virtual void		plugRun(whatIWant)=0;
-		virtual void		plugAddToContextMenu(QMenu *menu,DocumentClass *document)=0;
-		virtual whatIWant	plugWants(void)=0;
+		virtual void			initPlug(KKEditClass *kk,QString pathtoplug)=0;
+		virtual void			unloadPlug(void)=0;
+		virtual void			plugAbout(void)=0;
+		virtual void			plugSettings(void)=0;
+		virtual void			plugRun(unsigned int what)=0;
+		virtual void			plugAddToContextMenu(QMenu *menu,DocumentClass *document)=0;
+		virtual unsigned int	plugWants(void)=0;
 };
 
 QT_BEGIN_NAMESPACE

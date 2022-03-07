@@ -34,9 +34,9 @@ class OpenUri : public QObject, kkEditQTPluginInterface
 		void			unloadPlug(void) override;
 		void			plugAbout(void) override;
 		void			plugSettings(void) override;
-		void			plugRun(whatIWant) override;
+		void			plugRun(unsigned int what) override;
 		void			plugAddToContextMenu(QMenu *menu,DocumentClass *document) override;
-		whatIWant		plugWants(void) override;
+		unsigned int	plugWants(void) override;
 
 	private:
 		void			openUri(void);

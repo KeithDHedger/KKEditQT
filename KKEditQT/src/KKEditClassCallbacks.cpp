@@ -522,8 +522,10 @@ void KKEditClass::doEditMenuItems()
 				this->doPrefs();
 				break;
 			case PLUGPREFSMENUITEM:
+				this->buildPlugPrefs();
 				this->pluginPrefsWindow->exec();
 				this->setToolbarSensitive();
+				delete this->pluginPrefsWindow;
 				break;
 		}
 }

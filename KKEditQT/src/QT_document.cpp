@@ -135,7 +135,6 @@ void DocumentClass::highlightCurrentLine()
 	QTextEdit::ExtraSelection	bmselect;
 	bool						holdsb=this->mainKKEditClass->sessionBusy;
 	QTextCursor	cursor=this->textCursor();
-	cursor.joinPreviousEditBlock();
 
 	this->setStatusBarText();
 	this->extraBMSelections.clear();
@@ -168,7 +167,6 @@ void DocumentClass::highlightCurrentLine()
 		}
 	else
 		this->setXtraSelections();
-	cursor.endEditBlock();
 
 	this->mainKKEditClass->sessionBusy=holdsb;
 	this->mainKKEditClass->setToolbarSensitive();
@@ -273,7 +271,6 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 						break;
 				}
 		}
-
 	if(this->mainKKEditClass->showCompletions==false)
 		{
 			QPlainTextEdit::keyPressEvent(event);
@@ -305,7 +302,8 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 
 	cr=this->cursorRect();
     cr.setWidth(this->mainKKEditClass->completer->popup()->sizeHintForColumn(0)+this->mainKKEditClass->completer->popup()->verticalScrollBar()->sizeHint().width());
-    this->mainKKEditClass->completer->complete(cr);
+   	if(this->mainKKEditClass->completer->widget()==this)
+		this->mainKKEditClass->completer->complete(cr);
 }
 
 void DocumentClass::keyReleaseEvent(QKeyEvent *event)
@@ -315,7 +313,7 @@ void DocumentClass::keyReleaseEvent(QKeyEvent *event)
 			QTextCursor cursor=this->textCursor();
 			this->insertPlainText(this->indentPad);
 		}
-	this->dirty=true;
+	//this->dirty=true;
 	this->mainKKEditClass->setToolbarSensitive();
 	QPlainTextEdit::keyReleaseEvent(event);
 }
@@ -453,7 +451,7 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 //plugins
 	for(int j=0;j<this->mainKKEditClass->plugins.count();j++)
 		{
-			if((this->mainKKEditClass->plugins[j].loaded) && (this->mainKKEditClass->plugins[j].wants==DOCONTEXTMENU))
+			if((this->mainKKEditClass->plugins[j].loaded) && ((this->mainKKEditClass->plugins[j].wants & DOCONTEXTMENU)==DOCONTEXTMENU))
 				this->mainKKEditClass->plugins[j].instance->plugAddToContextMenu(&menu,this);
 		}
 

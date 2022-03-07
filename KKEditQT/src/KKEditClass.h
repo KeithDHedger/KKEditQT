@@ -98,9 +98,10 @@ struct pluginStruct
 	QString					plugName="";
 	QString					plugVersion="";
 	kkEditQTPluginInterface	*instance=NULL;
-	whatIWant				wants=DONONE;
+	unsigned int			wants=DONONE;
 	bool					loaded=false;
 	bool					toBeUnloaded=false;
+	bool					broken=false;
 };
 
 class KKEditClass : public QObject
@@ -314,9 +315,6 @@ class KKEditClass : public QObject
 //bookmarks menu
 		QMenu						*bookMarkMenu;
 
-//plugin menu
-		QMenu						*pluginMenu;
-
 //help menu
 		QMenu						*helpMenu;
 
@@ -436,13 +434,17 @@ class KKEditClass : public QObject
 		void						searchAPIDocs(const QString txt,int what);
 
 //plugins
+//plugin menu
+		QMenu						*pluginMenu;
+
 //plug vars
 		QDialog						*pluginPrefsWindow;
-		QStringList					enabledPlugins;
 		QStringList					disabledPlugins;
 		QHash<int,pluginStruct>		plugins;
 
 //plug functions
+		bool						loadPlug(pluginStruct *ps);
+		bool						unloadPlug(pluginStruct *ps);
 		void						loadPlugins(void);
 		void						buildPlugPrefs(void);
 

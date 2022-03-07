@@ -62,13 +62,13 @@ void OpenUri::plugSettings(void)
 	DEBUGSTR("void OpenUri::plugSettings(void)")
 }
 
-void OpenUri::plugRun(whatIWant)
+void OpenUri::plugRun(unsigned int)
 {
 	DEBUGSTR("void OpenUri::plugRun(whatIWant)")
 }
 
-whatIWant OpenUri::plugWants(void)
+unsigned int OpenUri::plugWants(void)
 {
 	DEBUGSTR("whatIWant OpenUri::plugWants(void)")
-	return(DOCONTEXTMENU);
+	return(DOCONTEXTMENU|DOABOUT);
 }

@@ -58,13 +58,13 @@ void kkeditQTexamplePlug::plugSettings(void)
 	DEBUGSTR("void kkeditQTexamplePlug::plugSettings(void)")
 }
 
-void kkeditQTexamplePlug::plugRun(whatIWant)
+void kkeditQTexamplePlug::plugRun(unsigned int)
 {
 	DEBUGSTR("void kkeditQTexamplePlug::plugRun(whatIWant)")
 }
 
-whatIWant kkeditQTexamplePlug::plugWants(void)
+unsigned int kkeditQTexamplePlug::plugWants(void)
 {
 	DEBUGSTR("whatIWant kkeditQTexamplePlug::plugWants(void)")
-	return(DONONE);
+	return(DOABOUT|DOSETTINGS);
 }

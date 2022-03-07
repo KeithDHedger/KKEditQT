@@ -34,44 +34,6 @@ KKEditClass				*kkedit;
 //
 //	return(hash);
 //}
-//
-//void loadPlugins(void)
-//{
-//	kkEditQTPluginInterface	*plugtest;
-//	int 					cnt=0;
-//    QDir 					pluginsDir(kkedit->homeDataFolder+"/plugins/");
-//	QDirIterator 			it(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
-//
-//	while (it.hasNext())
-//		{
-//			QString			s=it.next();
-//        	QPluginLoader	*loader=new QPluginLoader(s);
-//        	QObject			*plugin=loader->instance();
-//			if(plugin)
-//				{
-//					plugtest=qobject_cast<kkEditQTPluginInterface*>(plugin);
-//					if(plugtest)
-//						{
-//							pluginStruct	ps;
-//							plugtest->initPlug(kkedit,s);
-//
-//							ps.pluginLoader=loader;
-//							ps.wants=plugtest->plugWants();
-//							ps.instance=plugtest;
-//							ps.loaded=true;
-//							ps.plugPath=s;
-//							ps.plugName=loader->metaData().value("MetaData").toObject().value("name").toString();
-//							ps.plugVersion=loader->metaData().value("MetaData").toObject().value("version").toString();
-//							kkedit->plugins[cnt++]=ps;
-//						}
-//				}
-//			else
-//				{
-//					QTextStream(stderr) << "Error Could not load plugin " << s << "\n" << loader->errorString() << Qt::endl;
-//					delete loader;
-//				}
-//		}
-//}
 
 int main (int argc, char **argv)
 {

@@ -1,4 +1,7 @@
 0.5.2
+More plug stuff.
+Fixed completion segfault when using CTL-E to pop up dialog.
+Fixed marking document dirty wrong.
 Plug prefs started.
 Store metadata for plugin.
 Added metadata to example plugin.
