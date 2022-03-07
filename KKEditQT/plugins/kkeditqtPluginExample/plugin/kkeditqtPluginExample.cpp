@@ -27,6 +27,7 @@ void kkeditQTexamplePlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 	this->exampleMenuitem=new QAction("Example plugin menu");
 	this->exampleMenuitem->setObjectName("exampleplug");
+	this->exampleMenuitem->setIcon(QIcon("/usr/share/KKEditQT/pixmaps/KKEditQTPlugMenu.png"));
 	this->mainKKEditClass->pluginMenu->addAction(this->exampleMenuitem);
 
 	QObject::connect(this->exampleMenuitem,&QAction::triggered,[this]()
