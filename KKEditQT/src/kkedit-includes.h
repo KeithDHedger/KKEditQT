@@ -153,7 +153,7 @@ enum  utilVarType {BOOLVAR=0,INTVAR,CHARVAR,MULTVAR,BADTYPE,DECIMALOUT,HEXOUT,OC
 #define GOBACKMENUNAME "gobackmenu"
 #define GOFORWARDMENUNAME "goforwardmenu"
 #define ABOUTMENUNAME "aboutmenu"
-#define ABOUTMENUNAME "aboutmenuqt"
+#define ABOUTQTMENUNAME "aboutmenuqt"
 #define HELPMENUNAME "helpmenu"
 #define ONLINEHELPMENUNAME "onlinehelpmenu"
 #define GETPLUGSMENUNAME "getplugsmenu"
