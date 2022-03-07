@@ -33,7 +33,6 @@ This is the QT5 version of KKEDit and is not yet as full featured as the gtk ver
 TODO ( in no particular order ):
 
 Search forward/back checkbox ( Minor )<br>
-Plugins ( Major )<br>
 Global tools ( Minor )<br>
 Hilighting ( Major )<br>
 Interaction with built document ( Major )<br>
