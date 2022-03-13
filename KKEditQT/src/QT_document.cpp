@@ -531,10 +531,6 @@ bool retval=false;
 			retval=this->highlighter->setLanguage("C++");
 	else
 		retval=this->highlighter->setLanguage("plaintext");
-
-
-qDebug() << "aaaaaaaaaaaaaaaaaa";
-
 #else
 	QSourceHighliter::Themes	theme=(QSourceHighliter::Themes)2;
 

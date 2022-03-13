@@ -313,9 +313,15 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 				break;
 			case TOGGLEBOOKMARKMENUITEM:
 				{
+					QString testtext;
 					foreach(bookMarkStruct value,this->bookMarks)
 						{
-							if((value.bmLabel.compare(cursor.block().text().simplified())==0) && (value.docIndex==doc->pageIndex))
+							if(cursor.block().text().simplified().compare("")==0)
+								testtext=doc->getFileName() + QString(" Line %1").arg(cursor.blockNumber()+1);
+							else
+								testtext=cursor.block().text().simplified();
+
+							if((value.bmLabel.compare(testtext)==0) && (value.docIndex==doc->pageIndex))
 								{
 									this->sessionBusy=true;
 									QTextBlock			block=doc->document()->findBlockByLineNumber(value.line);

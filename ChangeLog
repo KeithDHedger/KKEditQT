@@ -1,4 +1,5 @@
 0.5.3
+Fixed setting bookmark on empty line.
 Done plain text.
 Redone plugin .pro files so per user install work.
 Added theme files.

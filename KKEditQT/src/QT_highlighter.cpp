@@ -150,12 +150,12 @@ void Highlighter::loadLangPlugins(void)
 	int 							cnt=0;
 
 	//QDir 					pluginsDir("/home/keithhedger/.KKEditQT/langplugins/");
-	QDir 					pluginsDir("/usr/share/KKEditQT/langplugins");
-	QDirIterator 			it(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	QDir 					pluginsDir(QString("%1/langplugins/").arg(DATADIR));
 
-	while (it.hasNext())
+	QDirIterator			git(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	while (git.hasNext())
 		{
-			QString				s=it.next();
+			QString				s=git.next();
 			langPluginStruct	ps;
 
 			ps.plugPath=s;
@@ -166,6 +166,24 @@ void Highlighter::loadLangPlugins(void)
 				}
 			this->langPlugins[cnt++]=ps;
 		}
+
+	pluginsDir.setPath(QString("%1/.KKEditQT/langplugins").arg(pluginsDir.homePath()));
+//	this->homeDataFolder=QString("%1/%2").arg(this->homeFolder).arg(KKEDITFOLDER);
+	QDirIterator			lit(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	while (lit.hasNext())
+		{
+			QString				s=lit.next();
+			langPluginStruct	ps;
+
+			ps.plugPath=s;
+			if(this->loadLangPlug(&ps)==false)
+				{
+					qDebug() << "Error loading plug " << s;
+					continue;
+				}
+			this->langPlugins[cnt++]=ps;
+		}
+
 }
 
 void Highlighter::setTheme(QString themename)//TODO//load from file
