@@ -26,7 +26,8 @@ pushd KKEditQT/languageplugins
 					make -j3 install
 				popd
 			done < <(find -maxdepth 2 -iname "*.pro")
-	mv -v /tmp/langplugins "${2}/langplugins"
+	mkdir "${2}/langplugins"
+	mv -v /tmp/langplugins/* "${2}/langplugins"
 	fi
 popd
 
@@ -48,6 +49,7 @@ pushd KKEditQT/plugins
 					make -j3 install
 				popd
 			done < <(find -maxdepth 2 -iname "*.pro")
-	mv -v /tmp/plugins "${2}"
+	mkdir "${2}/plugins"
+	mv -v /tmp/plugins/* "${2}/plugins"
 	fi
 popd

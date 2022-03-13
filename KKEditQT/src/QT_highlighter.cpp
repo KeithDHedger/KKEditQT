@@ -144,7 +144,8 @@ void Highlighter::loadLangPlugins(void)
 	SyntaxHighlitePluginInterface	*plugtest;
 	int 					cnt=0;
 
-	QDir 					pluginsDir("/home/keithhedger/.KKEditQT/langplugins/");
+	//QDir 					pluginsDir("/home/keithhedger/.KKEditQT/langplugins/");
+	QDir 					pluginsDir("/usr/share/KKEditQT/langplugins");
 	QDirIterator 			it(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 
 	while (it.hasNext())

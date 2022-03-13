@@ -520,7 +520,17 @@ Mime type: "text/plain"
 void DocumentClass::setHiliteLanguage(void)
 {
 #ifdef _USEPLUGINS_
-	this->highlighter->setLanguage("C++");//TODO//
+//	if(this->mimeType.compare("text/x-c++src",Qt::CaseInsensitive)==0)
+//		this->highlighter->setLanguage("C++");
+//	else if(this->mimeType.compare("text/x-c++hdr",Qt::CaseInsensitive)==0)
+//			this->highlighter->setLanguage("C++");
+//	else if(this->mimeType.compare("text/x-csrc",Qt::CaseInsensitive)==0)
+//			this->highlighter->setLanguage("C++");
+//	else if(this->mimeType.compare("text/x-chdr",Qt::CaseInsensitive)==0)
+//			this->highlighter->setLanguage("C++");
+//	else
+
+		this->highlighter->setLanguage("C++");
 #else
 	QSourceHighliter::Themes	theme=(QSourceHighliter::Themes)2;
 

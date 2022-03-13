@@ -148,7 +148,7 @@ void KKEditClass::buildPrefsWindow(void)
 
 	while (it.hasNext())
 		{
-			QString				s=it.next();
+			QString	s=it.next();
 			qobject_cast<QComboBox*>(prefsOtherWidgets[THEMECOMBO])->addItem(QFileInfo(s).baseName());
 		}
 	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
