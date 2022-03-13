@@ -796,6 +796,9 @@ void KKEditClass::doTabBarContextMenu(void)
 
 void KKEditClass::doTabBarContextMenuSetHilite(void)
 {
+#ifdef _USEPLUGINS_
+return;
+#else
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
 	DocumentClass	*doc;
 	int				themenum=2;
@@ -851,6 +854,7 @@ void KKEditClass::doTabBarContextMenuSetHilite(void)
 	doc->highlighter->setTheme((QSourceHighliter::Themes)themenum);
 	//this->sessionBusy=false;
 	this->sessionBusy=holdsb;
+#endif
 }
 
 void KKEditClass::doOddMenuItems(void)

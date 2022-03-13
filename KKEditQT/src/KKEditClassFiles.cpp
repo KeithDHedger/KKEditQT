@@ -297,7 +297,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
 			this->gotoLine(linenumber);
 			//doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 			doc->setHiliteLanguage();
-#ifndef _USEMINE_
+#ifndef _USEPLUGINS_
 			//doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeCpp);
 //			QSourceHighliter::Themes theme=(QSourceHighliter::Themes)-1;
 //			if(this->prefsSyntaxHilighting==true)

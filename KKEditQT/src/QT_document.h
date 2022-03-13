@@ -63,7 +63,7 @@ class DocumentClass : public QPlainTextEdit
 		void								addXtraSelections(void);
 		void								clearHilites(void);
 
-#ifdef _USEMINE_
+#ifdef _USEPLUGINS_
 		Highlighter							*highlighter;
 #else
 		QSourceHighlite::QSourceHighliter	*highlighter;

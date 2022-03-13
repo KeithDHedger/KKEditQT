@@ -607,7 +607,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsQtDocDir=this->prefs.value("editor/qtdocdir","/usr/share/doc/qt5").toString();
 	this->prefsNoOpenduplicate=this->prefs.value("editor/noopendup",QVariant(bool(true))).value<bool>();
 	this->recentFiles->maxFiles=this->prefs.value("editor/maxrecents",10).toInt();
-	
+
 //document
 	this->prefsHighLightline=this->prefs.value("document/highlightline",QVariant(bool(true))).value<bool>();
 	this->prefsShowLineNumbers=this->prefs.value("document/showlinenumbers",QVariant(bool(true))).value<bool>();
@@ -620,6 +620,7 @@ void KKEditClass::readConfigs(void)
 	this->autoShowMinChars=this->prefs.value("document/autoshowminchars",6).toInt();
 
 //theme
+	this->prefStyleName=this->prefs.value("theme/style","default").toString();
 	this->prefsHiLiteLineColor=this->prefs.value("theme/hilitelinecol",QVariant(QColor(0xff,0xff,0xff,0x40))).value<QColor>();
 	this->prefsBookmarkHiLiteColor=this->prefs.value("theme/bmhilitecol",QVariant(QColor(0,0,0,0x40))).value<QColor>();
 
@@ -752,6 +753,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("document/autoshowminchars",this->autoShowMinChars);
 
 //theme
+	this->prefs.setValue("theme/style",this->prefStyleName);
 	this->prefs.setValue("theme/hilitelinecol",this->prefsHiLiteLineColor);
 	this->prefs.setValue("theme/bmhilitecol",this->prefsBookmarkHiLiteColor);
 
@@ -1258,29 +1260,33 @@ void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
 	kkEditQTPluginInterface	*plugtest;
 	int 					cnt=0;
     QDir 					pluginsDir(this->homeDataFolder+"/plugins/");
-	QDirIterator 			it(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 
-	while (it.hasNext())
+//local plugins
+	QDirIterator 			lit(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	while (lit.hasNext())
 		{
-			QString			s=it.next();
+			QString			s=lit.next();
 			pluginStruct	ps;
 
 			ps.plugPath=s;
 			if(this->loadPlug(&ps)==false)
 				DEBUGSTR("Error loading plug > " << s)
 
-			//if(this->disabledPlugins.contains(ps.plugPath)==false)
-			//	{
-			//	}
-//			else
-//				{
-//					ps.pluginLoader=new QPluginLoader(ps.plugPath);
-//					ps.plugName=ps.pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
-//					ps.plugVersion=ps.pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
-//					delete ps.pluginLoader;
-//					ps.pluginLoader=NULL;
-//					ps.loaded=false;
-//				}
+			this->plugins[cnt++]=ps;
+		}
+
+//global plugins
+//TODO//prefs dont allow plugs with same name
+	pluginsDir.setPath(QString("%1/plugins/").arg(DATADIR));
+	QDirIterator			git(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	while (git.hasNext())
+		{
+			QString			s=git.next();
+			pluginStruct	ps;
+
+			ps.plugPath=s;
+			if(this->loadPlug(&ps)==false)
+				DEBUGSTR("Error loading plug > " << s)
 
 			this->plugins[cnt++]=ps;
 		}

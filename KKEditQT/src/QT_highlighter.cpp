@@ -1,155 +1,223 @@
-/****************************************************************************
-**
-** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** You may use this file under the terms of the BSD license as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
-**     of its contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+/*
+ *
+ * ©K. D. Hedger. Tue  8 Mar 16:31:34 GMT 2022 keithdhedger@gmail.com
+
+ * This file (QT_highlighter.cpp) is part of KKEditQT.
+
+ * KKEditQT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+
+ * KKEditQT is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "QT_highlighter.h"
 #include <QTextDocument>
-//! [0]
-Highlighter::Highlighter(QTextDocument *parent)
-    : QSyntaxHighlighter(parent)
+
+bool Highlighter::setLanguage(QString lang)
 {
-    HighlightingRule rule;
-
-
-//! [5]
-    functionFormat.setFontItalic(true);
-    functionFormat.setForeground(Qt::blue);
-    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
-    rule.format = functionFormat;
-    highlightingRules.append(rule);
-//! [5]
-
-    keywordFormat.setForeground(Qt::darkBlue);
-    keywordFormat.setFontWeight(QFont::Bold);
-    QStringList keywordPatterns;
-    keywordPatterns << "\\bchar\\b" << "\\bclass\\b" << "\\bconst\\b"
-                    << "\\bdouble\\b" << "\\benum\\b" << "\\bexplicit\\b"
-                    << "\\bfriend\\b" << "\\binline\\b" << "\\bint\\b"
-                    << "\\blong\\b" << "\\bnamespace\\b" << "\\boperator\\b"
-                    << "\\bprivate\\b" << "\\bprotected\\b" << "\\bpublic\\b"
-                    << "\\bshort\\b" << "\\bsignals\\b" << "\\bsigned\\b"
-                    << "\\bslots\\b" << "\\bstatic\\b" << "\\bstruct\\b"
-                    << "\\btemplate\\b" << "\\btypedef\\b" << "\\btypename\\b"
-                    << "\\bunion\\b" << "\\bunsigned\\b" << "\\bvirtual\\b"
-                    << "\\bvoid\\b" << "\\bvolatile\\b" << "\\bif\\b" << "\\bfor\\b";
-    foreach (const QString &pattern, keywordPatterns) {
-        rule.pattern = QRegExp(pattern);
-        rule.format = keywordFormat;
-        highlightingRules.append(rule);
-//! [0] //! [1]
-    }
-
-//! [1]
-
-//! [2]
-    classFormat.setFontWeight(QFont::Bold);
-    classFormat.setForeground(Qt::darkMagenta);
-    rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
-    rule.format = classFormat;
-    highlightingRules.append(rule);
-//! [2]
-
-//! [3]
-    singleLineCommentFormat.setForeground(Qt::red);
-    rule.pattern = QRegExp("//[^\n]*");
-    rule.format = singleLineCommentFormat;
-    highlightingRules.append(rule);
-
-    multiLineCommentFormat.setForeground(Qt::red);
-//! [3]
-
-//! [4]
-    quotationFormat.setForeground(Qt::darkGreen);
-    rule.pattern = QRegExp("\".*\"");
-    rule.format = quotationFormat;
-    highlightingRules.append(rule);
-//! [4]
-//
-////! [5]
-//    functionFormat.setFontItalic(true);
-//    functionFormat.setForeground(Qt::blue);
-//    rule.pattern = QRegExp("\b[A-Za-z0-9_]+(?=\()");
-//    rule.format = functionFormat;
-//    highlightingRules.append(rule);
-////! [5]
-//
-//! [6]
-    commentStartExpression = QRegExp("/\\*");
-    commentEndExpression = QRegExp("\\*/");
+	for(int j=0; j<this->langPlugins.count(); j++)
+		{
+			if(this->langPlugins[j].langName.compare(lang)==0)
+				{
+					this->currentPlug=j;
+					return(true);
+				}
+		}
+	return(false);
 }
-//! [6]
 
-//! [7]
+void Highlighter::resetRules(void)
+{
+//functions
+	this->langPlugins[this->currentPlug].instance->setFunctionRule(&(this->highlightingRules));
+//keywords
+	this->langPlugins[this->currentPlug].instance->setKeywordRule(&(this->highlightingRules));
+//class rule
+	this->langPlugins[this->currentPlug].instance->setClassRule(&(this->highlightingRules));
+//maths
+	this->langPlugins[this->currentPlug].instance->setNumberRule(&(this->highlightingRules));
+//types
+	this->langPlugins[this->currentPlug].instance->setTypeRule(&(this->highlightingRules));
+//double quotes
+	this->langPlugins[this->currentPlug].instance->setDoubleQuotesRule(&(this->highlightingRules));
+//includes
+	this->langPlugins[this->currentPlug].instance->setIncludesRule(&(this->highlightingRules));
+//custom rule
+	this->langPlugins[this->currentPlug].instance->setCustomRule(&(this->highlightingRules));
+
+//comments
+//single line comment
+	this->langPlugins[this->currentPlug].instance->setSingleLineCommentRule(&(this->highlightingRules));
+
+//mult line comment format
+	this->langPlugins[this->currentPlug].instance->setMultLineFormatStart(&(this->multiLineCommentStart));
+	this->langPlugins[this->currentPlug].instance->setMultLineFormatStop(&(this->multiLineCommentStop));
+}
+
+Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHighlighter(parent)
+{
+	this->loadLangPlugins();
+	this->setLanguage("C++");//TODO//default??
+	this->resetRules();
+}
+
 void Highlighter::highlightBlock(const QString &text)
 {
-    foreach (const HighlightingRule &rule, highlightingRules) {
-        QRegExp expression(rule.pattern);
-        int index = expression.indexIn(text);
-        while (index >= 0) {
-            int length = expression.matchedLength();
-            setFormat(index, length, rule.format);
-            index = expression.indexIn(text, index + length);
-        }
-    }
-//! [7] //! [8]
-    setCurrentBlockState(0);
-//! [8]
+	QRegularExpression	startExpression(this->multiLineCommentStart.pattern);
+	QRegularExpression	endExpression(this->multiLineCommentStop.pattern);
+	int					startIndex=0;
 
-//! [9]
-    int startIndex = 0;
-    if (previousBlockState() != 1)
-        startIndex = commentStartExpression.indexIn(text);
+	foreach (const highLightingRule &rule,highlightingRules)
+		{
+			QRegularExpression expression(rule.pattern);
+			QRegularExpressionMatchIterator i = expression.globalMatch(text);
+			while(i.hasNext())
+				{
+					QRegularExpressionMatch	match=i.next();
+					setFormat(match.capturedStart(),match.capturedLength(),rule.format);
+				}
+		}
 
-//! [9] //! [10]
-    while (startIndex >= 0) {
-//! [10] //! [11]
-        int endIndex = commentEndExpression.indexIn(text, startIndex);
-        int commentLength;
-        if (endIndex == -1) {
-            setCurrentBlockState(1);
-            commentLength = text.length() - startIndex;
-        } else {
-            commentLength = endIndex - startIndex
-                            + commentEndExpression.matchedLength();
-        }
-        setFormat(startIndex, commentLength, multiLineCommentFormat);
-        startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
-    }
+	setCurrentBlockState(0);
+
+	if(previousBlockState()!=1)
+		startIndex=text.indexOf(startExpression);
+
+	while(startIndex>=0)
+		{
+			QRegularExpressionMatch endMatch;
+			int endIndex=text.indexOf(endExpression,startIndex,&endMatch);
+			int commentLength;
+			if (endIndex==-1)
+				{
+					setCurrentBlockState(1);
+					commentLength=text.length()-startIndex;
+				}
+			else
+				{
+					commentLength=endIndex-startIndex+endMatch.capturedLength();
+				}
+			setFormat(startIndex,commentLength,this->multiLineCommentStart.format);
+			startIndex = text.indexOf(startExpression,startIndex + commentLength);
+		}
 }
-//! [11]
+
+bool Highlighter::loadLangPlug(langPluginStruct *ps)
+{
+	QObject	*plugininst=NULL;
+
+	if(ps->loaded==true)
+		return(true);
+
+	ps->pluginLoader=new QPluginLoader(ps->plugPath);
+	plugininst=ps->pluginLoader->instance();
+	if(plugininst!=nullptr)
+		{
+			ps->instance=qobject_cast<SyntaxHighlitePluginInterface*>(plugininst);
+			ps->instance->initPlug(ps->plugPath);//TODO//return false if cant init
+			ps->loaded=true;
+			ps->plugName=ps->pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
+			ps->langName=ps->pluginLoader->metaData().value("MetaData").toObject().value("langname").toString();
+			ps->plugVersion=ps->pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
+		}
+	else
+		{
+			ps->loaded=false;
+			ps->broken=true;
+			ps->plugName=QFileInfo(ps->plugPath).fileName();
+			return(false);
+		}
+
+	return(true);
+}
+
+void Highlighter::loadLangPlugins(void)
+{
+	SyntaxHighlitePluginInterface	*plugtest;
+	int 					cnt=0;
+
+	QDir 					pluginsDir("/home/keithhedger/.KKEditQT/langplugins/");
+	QDirIterator 			it(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+
+	while (it.hasNext())
+		{
+			QString				s=it.next();
+			langPluginStruct	ps;
+
+			ps.plugPath=s;
+			if(this->loadLangPlug(&ps)==false)
+				{
+					qDebug() << "Error loading plug " << s;
+					continue;
+				}
+			this->langPlugins[cnt++]=ps;
+		}
+}
+
+void Highlighter::setTheme(QString themename)//TODO//load from file
+{
+	QString					themepath;
+	QHash<int,themeStruct>	theme;
+	QJsonParseError			errorPtr;
+	QVariantList			localList;
+	QVariantMap				map;
+	QJsonDocument			doc;
+    QVariantMap				mainMap;
+    QByteArray				data;
+	const char				*entrynames[]={"functions","class","types","comments","quotes","includes","numbers","keywords","custom",NULL};
+
+	themepath=QString("%1/themes/%2.json").arg(DATADIR).arg(themename);
+
+	QFile	inFile(themepath);
+    inFile.open(QIODevice::ReadOnly|QIODevice::Text);
+    data=inFile.readAll();
+    inFile.close();
+
+    doc=QJsonDocument::fromJson(data,&errorPtr);
+	if(doc.isNull())
+    	{
+			qDebug() << "Parse failed for " << themepath;
+			return;
+		}
+
+	mainMap=doc.object().toVariantMap();
+	int cnt=0;
+	while(entrynames[cnt]!=NULL)
+		{
+			localList=mainMap[entrynames[cnt]].toList();    
+ 			map=localList[0].toMap();
+			theme[cnt].colour=QColor(map["colour"].toString());
+			if(map["bold"].toInt()==1)
+				theme[cnt].weight=QFont::Bold;
+			else
+				theme[cnt].weight=QFont::Normal;
+			theme[cnt].italic=map["italic"].toInt();
+			cnt++;
+		}
+
+
+	localList=mainMap["document"].toList();    
+	map=localList[0].toMap();
+
+	this->docbackground=QString("QPlainTextEdit {background-color: %1;}").arg(map["colour"].toString());
+	localList=mainMap["linenumbers"].toList();    
+	map=localList[0].toMap();
+	this->lineNumbersBackground=map["bgcolour"].toString();
+	this->lineNumbersForeground=map["fgcolour"].toString();
+	this->bookMarkBGColour=map["bmbgcolour"].toString();
+	this->bookMarkFGColour=map["bmfgcolour"].toString();
+	
+	this->langPlugins[this->currentPlug].instance->setTheme(theme);
+	this->resetRules();
+	this->rehighlight();
+	return;
+
+}

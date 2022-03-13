@@ -1,3 +1,8 @@
+0.5.3
+Redone plugin .pro files so per user install work.
+Added theme files.
+Started language plugins ( uncomment kkedit-includes.h>#define _USEPLUGINS_ to use ).
+
 0.5.2
 Minor makefile changes.
 Added about qt menu item.

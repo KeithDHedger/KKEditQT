@@ -20,8 +20,8 @@ scriptfiles_SCRIPTS = ../resources/tools/*
 docfilesdir = $(pkgdatadir)/docs
 docfiles_DATA = ../resources/docs/*
 
-#stylefilesdir = $(pkgdatadir)/styles
-#stylefiles_DATA = ../resources/styles/*
+themesfilesdir = $(pkgdatadir)/themes
+themesfiles_DATA = ../resources/themes/*
 
 bin_PROGRAMS = kkeditqt KKEditQTProgressBar
 

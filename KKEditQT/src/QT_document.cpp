@@ -46,8 +46,11 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 		return;
 
 	QPainter painter(this->lineNumberArea);
+#ifdef _USEPLUGINS_
+	painter.fillRect(event->rect(),this->highlighter->lineNumbersBackground);
+#else
 	painter.fillRect(event->rect(),Qt::lightGray);
-
+#endif
 	QTextBlock block=this->firstVisibleBlock();
 	int blockNumber=block.blockNumber();
 	int top=(int) blockBoundingGeometry(block).translated(contentOffset()).top();
@@ -57,15 +60,27 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 		{
 			if(block.isVisible() && bottom>=event->rect().top())
 				{
+#ifdef _USEPLUGINS_
+					painter.setPen(this->highlighter->lineNumbersForeground);
+#else
 					painter.setPen(Qt::black);
+#endif
 					foreach(bookMarkStruct value,this->mainKKEditClass->bookMarks)
 						{
 							if((value.docIndex==this->pageIndex) && (value.line==blockNumber+1))
 								{
-									painter.fillRect(QRect(0,top,lineNumberArea->width(),fontMetrics().height()),Qt::green);
+#ifdef _USEPLUGINS_
+									painter.fillRect(QRect(0,top,lineNumberArea->width(),fontMetrics().height()),this->highlighter->bookMarkBGColour);
+#else
+									painter.fillRect(QRect(0,top,lineNumberArea->width(),fontMetrics().height()),Qt::darkGray);
+#endif
 								}
 						}
-					QString number=QString::number(blockNumber+1);
+#ifdef _USEPLUGINS_
+					QString number=QString::number(blockNumber+1);painter.setPen(this->highlighter->lineNumbersForeground);
+#else
+					QString number=QString::number(blockNumber+1);painter.setPen(Qt::black);
+#endif
 					painter.drawText(0,top,lineNumberArea->width(),fontMetrics().height(),Qt::AlignRight,number);
 				}
 
@@ -325,8 +340,8 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	this->mainKKEditClass=kk;
 	this->setAcceptDrops(true);
 
-#ifdef _USEMINE_
-	this->highlighter=new Highlighter(this->document());
+#ifdef _USEPLUGINS_
+	this->highlighter=new Highlighter(this->document(),this);
 #else
 	this->highlighter=new QSourceHighlite::QSourceHighliter(this->document());
 #endif
@@ -462,14 +477,15 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 void DocumentClass::setFilePrefs(void)
 {
 	bool						holddirty=this->dirty;
-	QSourceHighliter::Themes	theme=(QSourceHighliter::Themes)-1;
 	QTextOption					opts;
 	this->setTabStopDistance(1.0);
 	this->dirty=true;
 
-	theme=(QSourceHighliter::Themes)2;//TODO//get theme from file
-
-	this->highlighter->setTheme(theme);
+#ifdef _USEPLUGINS_
+	this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
+	//this->highlighter->setTheme("default");
+	this->setStyleSheet(this->highlighter->docbackground);
+#endif
 
 	this->dirty=holddirty;
 	this->updateLineNumberAreaWidth();
@@ -503,6 +519,9 @@ Mime type: "text/plain"
 */
 void DocumentClass::setHiliteLanguage(void)
 {
+#ifdef _USEPLUGINS_
+	this->highlighter->setLanguage("C++");//TODO//
+#else
 	QSourceHighliter::Themes	theme=(QSourceHighliter::Themes)2;
 
 	if(this->mainKKEditClass->prefsSyntaxHilighting==false)
@@ -544,6 +563,7 @@ void DocumentClass::setHiliteLanguage(void)
 		theme=(QSourceHighliter::Themes)-1;
 
 	this->highlighter->setTheme(theme);
+#endif
 }
 
 void DocumentClass::setUndo(bool avail)
@@ -595,8 +615,7 @@ void DocumentClass::dropEvent(QDropEvent* event)
 							this->mimeType=type.name();
 							this->setPlainText(content);
 							this->setFilePrefs();
-							this->setHiliteLanguage();
-//#ifndef _USEMINE_
+//#ifndef _USEPLUGINS_
 //			//doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeCpp);
 ////			QSourceHighliter::Themes theme=(QSourceHighliter::Themes)-1;
 ////			if(this->prefsSyntaxHilighting==true)

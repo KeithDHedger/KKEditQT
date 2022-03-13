@@ -101,7 +101,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(scriptfilesdir)" \
 	"$(DESTDIR)$(docfilesdir)" "$(DESTDIR)$(helpfilesdir)" \
-	"$(DESTDIR)$(pixfilesdir)"
+	"$(DESTDIR)$(pixfilesdir)" "$(DESTDIR)$(themesfilesdir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_KKEditQTProgressBar_OBJECTS = ../pole/main.$(OBJEXT)
@@ -117,6 +117,7 @@ am__objects_1 = ../src/KKEditClassCallbacks.$(OBJEXT) \
 	../src/KKEditClassTools.$(OBJEXT) \
 	../src/languagedata.$(OBJEXT) ../src/main.$(OBJEXT) \
 	../src/moc_KKEditClass.$(OBJEXT) \
+	../src/moc_kkeditqtPluginInterface.$(OBJEXT) \
 	../src/moc_QT_AboutBox.$(OBJEXT) \
 	../src/moc_QT_document.$(OBJEXT) \
 	../src/moc_QT_highlighter.$(OBJEXT) \
@@ -207,6 +208,7 @@ am__depfiles_remade = ../pole/$(DEPDIR)/main.Po \
 	../src/$(DEPDIR)/moc_QT_notebook.Po \
 	../src/$(DEPDIR)/moc_QT_recentMenu.Po \
 	../src/$(DEPDIR)/moc_QT_toolbar.Po \
+	../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po \
 	../src/$(DEPDIR)/qsourcehighliter.Po \
 	../src/$(DEPDIR)/qsourcehighliterthemes.Po
 am__mv = mv -f
@@ -230,7 +232,8 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-DATA = $(docfiles_DATA) $(helpfiles_DATA) $(pixfiles_DATA)
+DATA = $(docfiles_DATA) $(helpfiles_DATA) $(pixfiles_DATA) \
+	$(themesfiles_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -377,7 +380,7 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 			-DLIBDIR=\""${libdir}/${PACKAGE}"\" \
 			-fPIC
 
-COMMONSRC = ../src/KKEditClassCallbacks.cpp ../src/KKEditClass.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/languagedata.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_toolbar.cpp ../src/qsourcehighliter.cpp ../src/qsourcehighliterthemes.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp
+COMMONSRC = ../src/KKEditClassCallbacks.cpp ../src/KKEditClass.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/languagedata.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_kkeditqtPluginInterface.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_toolbar.cpp ../src/qsourcehighliter.cpp ../src/qsourcehighliterthemes.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp
 kkeditqt_SOURCES = $(COMMONSRC)
 KKEditQTProgressBar_SOURCES = ../pole/main.cpp
 pixfilesdir = $(pkgdatadir)/pixmaps
@@ -388,6 +391,8 @@ scriptfilesdir = $(pkgdatadir)/tools
 scriptfiles_SCRIPTS = ../resources/tools/*
 docfilesdir = $(pkgdatadir)/docs
 docfiles_DATA = ../resources/docs/*
+themesfilesdir = $(pkgdatadir)/themes
+themesfiles_DATA = ../resources/themes/*
 all: all-am
 
 .SUFFIXES:
@@ -504,6 +509,8 @@ KKEditQTProgressBar$(EXEEXT): $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressB
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/moc_KKEditClass.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
+../src/moc_kkeditqtPluginInterface.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/moc_QT_AboutBox.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/moc_QT_document.$(OBJEXT): ../src/$(am__dirstamp) \
@@ -619,6 +626,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_notebook.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_recentMenu.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_toolbar.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/qsourcehighliter.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/qsourcehighliterthemes.Po@am__quote@ # am--include-marker
 
@@ -706,6 +714,27 @@ uninstall-pixfilesDATA:
 	@list='$(pixfiles_DATA)'; test -n "$(pixfilesdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(pixfilesdir)'; $(am__uninstall_files_from_dir)
+install-themesfilesDATA: $(themesfiles_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(themesfiles_DATA)'; test -n "$(themesfilesdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(themesfilesdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(themesfilesdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(themesfilesdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(themesfilesdir)" || exit $$?; \
+	done
+
+uninstall-themesfilesDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(themesfiles_DATA)'; test -n "$(themesfilesdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(themesfilesdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -796,7 +825,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(PROGRAMS) $(SCRIPTS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(scriptfilesdir)" "$(DESTDIR)$(docfilesdir)" "$(DESTDIR)$(helpfilesdir)" "$(DESTDIR)$(pixfilesdir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(scriptfilesdir)" "$(DESTDIR)$(docfilesdir)" "$(DESTDIR)$(helpfilesdir)" "$(DESTDIR)$(pixfilesdir)" "$(DESTDIR)$(themesfilesdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -867,6 +896,7 @@ distclean: distclean-am
 	-rm -f ../src/$(DEPDIR)/moc_QT_notebook.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_recentMenu.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_toolbar.Po
+	-rm -f ../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po
 	-rm -f ../src/$(DEPDIR)/qsourcehighliter.Po
 	-rm -f ../src/$(DEPDIR)/qsourcehighliterthemes.Po
 	-rm -f Makefile
@@ -886,7 +916,8 @@ info: info-am
 info-am:
 
 install-data-am: install-docfilesDATA install-helpfilesDATA \
-	install-pixfilesDATA install-scriptfilesSCRIPTS
+	install-pixfilesDATA install-scriptfilesSCRIPTS \
+	install-themesfilesDATA
 
 install-dvi: install-dvi-am
 
@@ -945,6 +976,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ../src/$(DEPDIR)/moc_QT_notebook.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_recentMenu.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_toolbar.Po
+	-rm -f ../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po
 	-rm -f ../src/$(DEPDIR)/qsourcehighliter.Po
 	-rm -f ../src/$(DEPDIR)/qsourcehighliterthemes.Po
 	-rm -f Makefile
@@ -964,7 +996,7 @@ ps-am:
 
 uninstall-am: uninstall-binPROGRAMS uninstall-docfilesDATA \
 	uninstall-helpfilesDATA uninstall-pixfilesDATA \
-	uninstall-scriptfilesSCRIPTS
+	uninstall-scriptfilesSCRIPTS uninstall-themesfilesDATA
 
 .MAKE: install-am install-exec-am install-strip
 
@@ -978,12 +1010,13 @@ uninstall-am: uninstall-binPROGRAMS uninstall-docfilesDATA \
 	install-html install-html-am install-info install-info-am \
 	install-man install-pdf install-pdf-am install-pixfilesDATA \
 	install-ps install-ps-am install-scriptfilesSCRIPTS \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-docfilesDATA uninstall-helpfilesDATA \
-	uninstall-pixfilesDATA uninstall-scriptfilesSCRIPTS
+	install-strip install-themesfilesDATA installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-binPROGRAMS uninstall-docfilesDATA \
+	uninstall-helpfilesDATA uninstall-pixfilesDATA \
+	uninstall-scriptfilesSCRIPTS uninstall-themesfilesDATA
 
 .PRECIOUS: Makefile
 

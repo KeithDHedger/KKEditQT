@@ -21,16 +21,6 @@
 #ifndef KKEDITQTPLUGININTERFACE_H
 #define KKEDITQTPLUGININTERFACE_H
 
-/*
-
-int a=1;
-int b=a<<1;
-int c=b<<1;
-
-DEBUGSTR(a << " " << b << " " << c )
-return 0;
-
-*/
 #define DONONE 0
 #define DOSAVE 1
 #define DOLOAD DOSAVE << 1
@@ -41,8 +31,6 @@ return 0;
 #define DOTABPOPUP DOCONTEXTMENU << 1
 #define DOABOUT DOTABPOPUP << 1
 #define DOSETTINGS DOABOUT << 1
-
-//enum whatIWant {DONONE=0,DOSAVE,DOLOAD,DOCLOSE,DORESSESSION,DOSAVESESSION,DOCONTEXTMENU,DOTABPOPUP,DOABOUT=16,DOSETTINGS=32};
 
 class KKEditClass;
 

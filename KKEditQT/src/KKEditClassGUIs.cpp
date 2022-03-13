@@ -143,6 +143,20 @@ void KKEditClass::buildPrefsWindow(void)
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[THEMECOMBO],posy,1,posy,-1,Qt::AlignVCenter);
 
+	QDir			languagesDir(QString("%1/themes/").arg(DATADIR));
+	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
+
+	while (it.hasNext())
+		{
+			QString				s=it.next();
+			qobject_cast<QComboBox*>(prefsOtherWidgets[THEMECOMBO])->addItem(QFileInfo(s).baseName());
+		}
+	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
+		{
+			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
+		});
+	qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->setCurrentText(this->prefStyleName);
+
 //shortcuts
 	posy++;
 	prefsOtherWidgets[SHORTCUTSCOMBO]=new QComboBox;

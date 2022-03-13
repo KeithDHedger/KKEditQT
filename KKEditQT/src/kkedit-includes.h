@@ -21,7 +21,7 @@
 #ifndef _KKEDIT_INCLUDES_
 #define _KKEDIT_INCLUDES_
 
-//#define _USEMINE_
+//#define _USEPLUGINS_
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -54,8 +54,6 @@
 #include <QtPlugin>
 
 #include "config.h"
-
-//#include "kkeditqtPluginInterface.h"
 
 #ifdef _ASPELL_
 #include <aspell.h>
