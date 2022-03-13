@@ -39,6 +39,7 @@ void Highlighter::resetRules(void)
 {
 	if(this->currentPlug==-1)
 		return;
+	this->highlightingRules.clear();
 //functions
 	this->langPlugins[this->currentPlug].instance->setFunctionRule(&(this->highlightingRules));
 //keywords
@@ -68,7 +69,7 @@ void Highlighter::resetRules(void)
 Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHighlighter(parent)
 {
 	this->loadLangPlugins();
-	this->setLanguage("C++");//TODO//default??
+	this->setLanguage("SH");//TODO//default??
 	this->resetRules();
 }
 

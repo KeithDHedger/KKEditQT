@@ -529,8 +529,13 @@ bool retval=false;
 			retval=this->highlighter->setLanguage("C++");
 	else if(this->mimeType.compare("text/x-chdr",Qt::CaseInsensitive)==0)
 			retval=this->highlighter->setLanguage("C++");
+	else if(this->mimeType.compare("application/x-shellscript",Qt::CaseInsensitive)==0)
+			retval=this->highlighter->setLanguage("SH");
 	else
 		retval=this->highlighter->setLanguage("plaintext");
+
+	this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
+	
 #else
 	QSourceHighliter::Themes	theme=(QSourceHighliter::Themes)2;
 
