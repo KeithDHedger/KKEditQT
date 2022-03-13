@@ -23,7 +23,7 @@
 
 bool Highlighter::setLanguage(QString lang)
 {
-	for(int j=0; j<this->langPlugins.count(); j++)
+	for(int j=0;j<this->langPlugins.count();j++)
 		{
 			if(this->langPlugins[j].langName.compare(lang)==0)
 				{
@@ -31,11 +31,14 @@ bool Highlighter::setLanguage(QString lang)
 					return(true);
 				}
 		}
+	this->currentPlug=-1;
 	return(false);
 }
 
 void Highlighter::resetRules(void)
 {
+	if(this->currentPlug==-1)
+		return;
 //functions
 	this->langPlugins[this->currentPlug].instance->setFunctionRule(&(this->highlightingRules));
 //keywords
@@ -71,6 +74,8 @@ Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHig
 
 void Highlighter::highlightBlock(const QString &text)
 {
+	if(this->currentPlug==-1)
+		return;
 	QRegularExpression	startExpression(this->multiLineCommentStart.pattern);
 	QRegularExpression	endExpression(this->multiLineCommentStop.pattern);
 	int					startIndex=0;
@@ -142,7 +147,7 @@ bool Highlighter::loadLangPlug(langPluginStruct *ps)
 void Highlighter::loadLangPlugins(void)
 {
 	SyntaxHighlitePluginInterface	*plugtest;
-	int 					cnt=0;
+	int 							cnt=0;
 
 	//QDir 					pluginsDir("/home/keithhedger/.KKEditQT/langplugins/");
 	QDir 					pluginsDir("/usr/share/KKEditQT/langplugins");
@@ -204,7 +209,6 @@ void Highlighter::setTheme(QString themename)//TODO//load from file
 			cnt++;
 		}
 
-
 	localList=mainMap["document"].toList();    
 	map=localList[0].toMap();
 
@@ -215,10 +219,14 @@ void Highlighter::setTheme(QString themename)//TODO//load from file
 	this->lineNumbersForeground=map["fgcolour"].toString();
 	this->bookMarkBGColour=map["bmbgcolour"].toString();
 	this->bookMarkFGColour=map["bmfgcolour"].toString();
-	
-	this->langPlugins[this->currentPlug].instance->setTheme(theme);
-	this->resetRules();
-	this->rehighlight();
+
+	if(this->currentPlug!=-1)
+		{
+			this->langPlugins[this->currentPlug].instance->setTheme(theme);
+			this->resetRules();
+			this->rehighlight();
+		}
+
 	return;
 
 }

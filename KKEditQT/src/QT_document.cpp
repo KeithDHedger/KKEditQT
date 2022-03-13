@@ -519,18 +519,22 @@ Mime type: "text/plain"
 */
 void DocumentClass::setHiliteLanguage(void)
 {
+bool retval=false;
 #ifdef _USEPLUGINS_
-//	if(this->mimeType.compare("text/x-c++src",Qt::CaseInsensitive)==0)
-//		this->highlighter->setLanguage("C++");
-//	else if(this->mimeType.compare("text/x-c++hdr",Qt::CaseInsensitive)==0)
-//			this->highlighter->setLanguage("C++");
-//	else if(this->mimeType.compare("text/x-csrc",Qt::CaseInsensitive)==0)
-//			this->highlighter->setLanguage("C++");
-//	else if(this->mimeType.compare("text/x-chdr",Qt::CaseInsensitive)==0)
-//			this->highlighter->setLanguage("C++");
-//	else
+	if(this->mimeType.compare("text/x-c++src",Qt::CaseInsensitive)==0)
+		retval=this->highlighter->setLanguage("C++");
+	else if(this->mimeType.compare("text/x-c++hdr",Qt::CaseInsensitive)==0)
+			retval=this->highlighter->setLanguage("C++");
+	else if(this->mimeType.compare("text/x-csrc",Qt::CaseInsensitive)==0)
+			retval=this->highlighter->setLanguage("C++");
+	else if(this->mimeType.compare("text/x-chdr",Qt::CaseInsensitive)==0)
+			retval=this->highlighter->setLanguage("C++");
+	else
+		retval=this->highlighter->setLanguage("plaintext");
 
-		this->highlighter->setLanguage("C++");
+
+qDebug() << "aaaaaaaaaaaaaaaaaa";
+
 #else
 	QSourceHighliter::Themes	theme=(QSourceHighliter::Themes)2;
 
