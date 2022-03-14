@@ -1,4 +1,6 @@
 0.5.3
+Added red ( root ) theme.
+Added grey theme.
 Lanuage plugins code clean.
 Added "lanuageextra" styling to style files.
 Fixed multi line comment having start/end patterns the same.
