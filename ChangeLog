@@ -1,6 +1,7 @@
 0.5.3
 Lanuage plugins code clean.
 Added "lanuageextra" styling to style files.
+Fixed multi line comment having start/end patterns the same.
 Added python lang plugin.
 New format for language plugs.
 Include mime types in lang plugs.
