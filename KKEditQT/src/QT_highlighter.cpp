@@ -40,6 +40,12 @@ void Highlighter::resetRules(void)
 	if(this->currentPlug==-1)
 		return;
 	this->highlightingRules.clear();
+
+//new format
+	this->langPlugins[this->currentPlug].instance->setLanguageRules(&(this->highlightingRules));
+//	return;
+
+#if 0
 //functions
 	this->langPlugins[this->currentPlug].instance->setFunctionRule(&(this->highlightingRules));
 //keywords
@@ -60,6 +66,7 @@ void Highlighter::resetRules(void)
 //comments
 //single line comment
 	this->langPlugins[this->currentPlug].instance->setSingleLineCommentRule(&(this->highlightingRules));
+#endif
 
 //mult line comment format
 	this->langPlugins[this->currentPlug].instance->setMultLineFormatStart(&(this->multiLineCommentStart));
@@ -133,6 +140,7 @@ bool Highlighter::loadLangPlug(langPluginStruct *ps)
 			ps->plugName=ps->pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
 			ps->langName=ps->pluginLoader->metaData().value("MetaData").toObject().value("langname").toString();
 			ps->plugVersion=ps->pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
+			ps->mimeType=ps->pluginLoader->metaData().value("MetaData").toObject().value("mimetypes").toString();
 		}
 	else
 		{

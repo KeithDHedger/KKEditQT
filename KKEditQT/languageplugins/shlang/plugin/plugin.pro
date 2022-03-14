@@ -11,7 +11,7 @@ equals(LOCAL,1) {
 	target.path = ~/.KKEditQT/langplugins/shlang
 }
 else {
-	target.path = /tmp/langplugins/cpplang
+	target.path = /tmp/langplugins/shlang
 }
 
 INSTALLS += target

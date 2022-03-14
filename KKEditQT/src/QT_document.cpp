@@ -516,11 +516,26 @@ Mime type: "text/x-c++src"
 Mime type: "text/x-c++src"
 Mime type: "text/x-c++src"
 Mime type: "text/plain"
+text/x-c++hdr
+text/x-chdr
 */
 void DocumentClass::setHiliteLanguage(void)
 {
 bool retval=false;
 #ifdef _USEPLUGINS_
+	for(int j=0;j<this->highlighter->langPlugins.count();j++)
+		{
+//		qDebug() << this->highlighter->langPlugins[j].mimeType << " " << this->mimeType << " " << this->highlighter->langPlugins[j].langName;
+			if(this->highlighter->langPlugins[j].mimeType.contains(this->mimeType)==true)
+				{
+					retval=this->highlighter->setLanguage(this->highlighter->langPlugins[j].langName);
+					this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
+					return;
+				}
+		}
+	retval=this->highlighter->setLanguage("plaintext");
+	this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
+return;
 	if(this->mimeType.compare("text/x-c++src",Qt::CaseInsensitive)==0)
 		retval=this->highlighter->setLanguage("C++");
 	else if(this->mimeType.compare("text/x-c++hdr",Qt::CaseInsensitive)==0)

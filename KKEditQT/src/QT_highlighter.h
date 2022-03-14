@@ -34,6 +34,7 @@ struct langPluginStruct
 	QString							plugName="";
 	QString							langName="";
 	QString							plugVersion="";
+	QString							mimeType="";
 	SyntaxHighlitePluginInterface	*instance=NULL;
 	bool							loaded=false;
 	bool							broken=false;
@@ -51,6 +52,9 @@ public:
 	Highlighter(QTextDocument *parent,QPlainTextEdit *doc);
 	bool						setLanguage(QString lang);
 	void						setTheme(QString themename);
+//plugins
+//vars
+	QHash<int,langPluginStruct>	langPlugins;
 
 	QString						docbackground;
 	QString						lineNumbersBackground;
@@ -69,9 +73,6 @@ private:
 	highLightingRule			multiLineCommentStart;
 	highLightingRule			multiLineCommentStop;
 
-//plugins
-//vars
-	QHash<int,langPluginStruct>	langPlugins;
 	int							currentPlug=-1;
 //functions
 	bool						loadLangPlug(langPluginStruct *ps);

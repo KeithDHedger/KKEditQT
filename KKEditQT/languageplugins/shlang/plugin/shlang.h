@@ -34,19 +34,12 @@ class cpplang : public QObject, SyntaxHighlitePluginInterface
 		void					unloadPlug(void) override;
 //theme
 		virtual void			setTheme(QHash<int,themeStruct> newtheme) override;
-//set individual rule
-		void					setFunctionRule(QVector<highLightingRule> *rules) override;
-		void					setClassRule(QVector<highLightingRule> *rules) override;
-		void					setTypeRule(QVector<highLightingRule> *rules) override;
-		void					setSingleLineCommentRule(QVector<highLightingRule> *rules) override;
-		void					setDoubleQuotesRule(QVector<highLightingRule> *rules) override;
-		void					setIncludesRule(QVector<highLightingRule> *rules) override;
-		void					setNumberRule(QVector<highLightingRule> *rules) override;
-		void					setKeywordRule(QVector<highLightingRule> *rules) override;
-		void					setCustomRule(QVector<highLightingRule> *rules) override;
+//new rules format
+		void					setLanguageRules(QVector<highLightingRule> *rules) override;
 //odd single formats
 		void					setMultLineFormatStart(highLightingRule *hr) override;
 		void					setMultLineFormatStop(highLightingRule *hr) override;
+
 	private:
 		QString					plugPath;
 		QHash<int,themeStruct>	theme;

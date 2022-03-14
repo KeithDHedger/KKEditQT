@@ -34,118 +34,90 @@ void cpplang::unloadPlug(void)
 {
 }
 
-//individual rules
-void cpplang::setFunctionRule(QVector<highLightingRule> *rules)
+//new format
+void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 {
 	highLightingRule	hr;
 
+//functions
 	hr.format.setFontItalic(this->theme[FUNCTIONTHEME].italic);
 	hr.format.setFontWeight(this->theme[FUNCTIONTHEME].weight);
 	hr.format.setForeground(this->theme[FUNCTIONTHEME].colour);
 
 	hr.pattern=QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
 	rules->append(hr);
-}
 
-void cpplang::setClassRule(QVector<highLightingRule> *rules)
-{
-	highLightingRule	hr;
-
+//classes
 	hr.format.setForeground(this->theme[CLASSTHEME].colour);
 	hr.format.setFontWeight(this->theme[CLASSTHEME].weight);
 	hr.format.setFontItalic(this->theme[CLASSTHEME].italic);
 	hr.pattern=QRegularExpression("(\\bQ[A-Za-z]+\\b)|(\\b[A-Za-z]+\\b(?=::))");
 	rules->append(hr);
-}
 
-void cpplang::setSingleLineCommentRule(QVector<highLightingRule> *rules)
-{
-	highLightingRule	hr;
-
-	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
-	hr.pattern=QRegularExpression("//[^\n]*");
-	rules->append(hr);
-}
-
-void cpplang::setDoubleQuotesRule(QVector<highLightingRule> *rules)
-{
-	highLightingRule	hr;
-
+//quotes
 	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
 	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
 	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
 	hr.pattern = QRegularExpression("(\".*\")|('.*')");
 	rules->append(hr);
-}
 
-void cpplang::setIncludesRule(QVector<highLightingRule> *rules)
-{
-	highLightingRule	hr;
-
-	hr.format.setForeground(this->theme[INCLUDETHEME].colour);
-	hr.format.setFontWeight(this->theme[INCLUDETHEME].weight);
-	hr.format.setFontItalic(this->theme[INCLUDETHEME].italic);
-	hr.pattern=QRegularExpression("#[a-zA-Z]+.*$");
-	rules->append(hr);
-}
-
-void cpplang::setNumberRule(QVector<highLightingRule> *rules)
-{
-	highLightingRule	hr;
-
+//numbers
 	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
 	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
 	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
 	hr.pattern=QRegularExpression("([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)");
 	rules->append(hr);
-}
 
-void cpplang::setKeywordRule(QVector<highLightingRule> *rules)
-{
-	highLightingRule	hr;
-
+//keywords
 	hr.format.setForeground(this->theme[KEYWORDTHEME].colour);
 	hr.format.setFontWeight(this->theme[KEYWORDTHEME].weight);
 	hr.format.setFontItalic(this->theme[KEYWORDTHEME].italic);
 	hr.pattern=QRegularExpression("\\b(__asm|__cdecl|__declspec|__export|__far16|__fastcall|__fortran|__import|__pascal|__rtti|__stdcall|_asm|_cdecl|__except|_export|_far16|_fastcall|__finally|_fortran|_import|_pascal|_stdcall|__thread|__try|asm|auto|break|case|catch|cdecl|continue|default|do|else|enum|extern|goto|pascal|register|return|sizeof|static|struct|switch|typedef|union|volatile|class|const_cast|delete|dynamic_cast|explicit|friend|inline|mutable|namespace|new|operator|private|protected|public|reinterpret_cast|static_cast|template|this|throw|try|typeid|typename|using|virtual|for|if|while)\\b");
 	rules->append(hr);
-}
 
-void cpplang::setTypeRule(QVector<highLightingRule> *rules)
-{
-	highLightingRule	hr;
+//includes
+	hr.format.setForeground(this->theme[INCLUDETHEME].colour);
+	hr.format.setFontWeight(this->theme[INCLUDETHEME].weight);
+	hr.format.setFontItalic(this->theme[INCLUDETHEME].italic);
+	hr.pattern=QRegularExpression("#[a-zA-Z]+.*$");
+	rules->append(hr);
 
+//types
 	hr.format.setForeground(this->theme[TYPETHEME].colour);
 	hr.format.setFontWeight(this->theme[TYPETHEME].weight);
 	hr.format.setFontItalic(this->theme[TYPETHEME].italic);
 	hr.pattern=QRegularExpression("\\b(bool|char|double|float|int|long|short|signed|unsigned|void|wchar_t|const)|\\b");
 	rules->append(hr);
-}
 
-void cpplang::setCustomRule(QVector<highLightingRule> *rules)
-{
-	highLightingRule	hr;
-
+//custom
 	hr.format.setForeground(this->theme[CUSTOMTHEME].colour);
 	hr.format.setFontWeight(this->theme[CUSTOMTHEME].weight);
 	hr.format.setFontItalic(this->theme[CUSTOMTHEME].italic);
 	hr.pattern=QRegularExpression("NULL|nullptr|true|false|TRUE|FALSE");
 	rules->append(hr);
+
+//single line comment
+	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.pattern=QRegularExpression("//[^\n]*");
+	rules->append(hr);
+
 }
 
-//odd single formats
+//odd single formats //TODO//HHmmmmm.....
 void cpplang::setMultLineFormatStart(highLightingRule *hr)
 {
 	hr->format.setForeground(this->theme[COMMENTTHEME].colour);
 	hr->format.setFontWeight(this->theme[COMMENTTHEME].weight);
 	hr->format.setFontItalic(this->theme[COMMENTTHEME].italic);
+//	hr->pattern = QRegularExpression("(/\\*)|(#if 0)");
 	hr->pattern = QRegularExpression("/\\*");
 }
 
 void cpplang::setMultLineFormatStop(highLightingRule *hr)
 {
+//	hr->pattern = QRegularExpression("(\\*/)|(#endif)");
 	hr->pattern = QRegularExpression("\\*/");
 }
 

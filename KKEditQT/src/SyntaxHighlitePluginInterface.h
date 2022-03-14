@@ -48,19 +48,12 @@ class SyntaxHighlitePluginInterface
 		virtual void	unloadPlug(void)=0;
 //theme
 		virtual void	setTheme(QHash<int,themeStruct>	newtheme)=0;
-//set individual rule
-		virtual void	setFunctionRule(QVector<highLightingRule> *rules)=0;
-		virtual void	setClassRule(QVector<highLightingRule> *rules)=0;
-		virtual void	setTypeRule(QVector<highLightingRule> *rules)=0;
-		virtual void	setSingleLineCommentRule(QVector<highLightingRule> *rules)=0;
-		virtual void	setDoubleQuotesRule(QVector<highLightingRule> *rules)=0;
-		virtual void	setIncludesRule(QVector<highLightingRule> *rules)=0;
-		virtual void	setNumberRule(QVector<highLightingRule> *rules)=0;
-		virtual void	setKeywordRule(QVector<highLightingRule> *rules)=0;
-		virtual void	setCustomRule(QVector<highLightingRule> *rules)=0;
+
+//new rules format
+		virtual void	setLanguageRules(QVector<highLightingRule> *rules)=0;
 
 //odd single formats
-		virtual void	setMultLineFormatStart(highLightingRule *hr)=0;
+		virtual void	setMultLineFormatStart(highLightingRule *hr)=0;//TODO//
 		virtual void	setMultLineFormatStop(highLightingRule *hr)=0;
 };
 

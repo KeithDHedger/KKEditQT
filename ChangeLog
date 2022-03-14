@@ -1,4 +1,6 @@
 0.5.3
+New format for lang plugs.
+Include mime types in lang plugs.
 Added sh language file.
 Fixed setting bookmark on empty line.
 Done plain text.

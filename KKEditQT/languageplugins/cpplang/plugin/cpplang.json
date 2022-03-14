@@ -1,5 +1,6 @@
 {
 "name" : "C++ Language Plugin",
 "version" : "0.0.1",
-"langname" : "C++"
+"langname" : "C++",
+"mimetypes" : "text/x-c++src;text/x-csrc;text/x-c++hdr;text/x-chdr"
 }
