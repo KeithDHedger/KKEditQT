@@ -43,30 +43,6 @@ void Highlighter::resetRules(void)
 
 //new format
 	this->langPlugins[this->currentPlug].instance->setLanguageRules(&(this->highlightingRules));
-//	return;
-
-#if 0
-//functions
-	this->langPlugins[this->currentPlug].instance->setFunctionRule(&(this->highlightingRules));
-//keywords
-	this->langPlugins[this->currentPlug].instance->setKeywordRule(&(this->highlightingRules));
-//class rule
-	this->langPlugins[this->currentPlug].instance->setClassRule(&(this->highlightingRules));
-//maths
-	this->langPlugins[this->currentPlug].instance->setNumberRule(&(this->highlightingRules));
-//types
-	this->langPlugins[this->currentPlug].instance->setTypeRule(&(this->highlightingRules));
-//double quotes
-	this->langPlugins[this->currentPlug].instance->setDoubleQuotesRule(&(this->highlightingRules));
-//includes
-	this->langPlugins[this->currentPlug].instance->setIncludesRule(&(this->highlightingRules));
-//custom rule
-	this->langPlugins[this->currentPlug].instance->setCustomRule(&(this->highlightingRules));
-
-//comments
-//single line comment
-	this->langPlugins[this->currentPlug].instance->setSingleLineCommentRule(&(this->highlightingRules));
-#endif
 
 //mult line comment format
 	this->langPlugins[this->currentPlug].instance->setMultLineFormatStart(&(this->multiLineCommentStart));
@@ -82,6 +58,7 @@ Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHig
 
 void Highlighter::highlightBlock(const QString &text)
 {
+
 	if(this->currentPlug==-1)
 		return;
 	QRegularExpression	startExpression(this->multiLineCommentStart.pattern);
@@ -91,7 +68,7 @@ void Highlighter::highlightBlock(const QString &text)
 	foreach (const highLightingRule &rule,highlightingRules)
 		{
 			QRegularExpression expression(rule.pattern);
-			QRegularExpressionMatchIterator i = expression.globalMatch(text);
+			QRegularExpressionMatchIterator i=expression.globalMatch(text);
 			while(i.hasNext())
 				{
 					QRegularExpressionMatch	match=i.next();
@@ -101,15 +78,28 @@ void Highlighter::highlightBlock(const QString &text)
 
 	setCurrentBlockState(0);
 
+	int		offset=0;
+	bool	addoffset=false;
+
+	if(startExpression.pattern().compare(endExpression.pattern())==0)//fix for start/stop patterns the same ( a la bloody awaful python )
+		offset=startExpression.pattern().length();
+
 	if(previousBlockState()!=1)
-		startIndex=text.indexOf(startExpression);
+		{
+			startIndex=text.indexOf(startExpression);
+			if(startIndex!=-1)
+				{
+					addoffset=true;
+					startIndex+=offset;
+				}
+		}
 
 	while(startIndex>=0)
 		{
 			QRegularExpressionMatch endMatch;
 			int endIndex=text.indexOf(endExpression,startIndex,&endMatch);
 			int commentLength;
-			if (endIndex==-1)
+			if(endIndex==-1)
 				{
 					setCurrentBlockState(1);
 					commentLength=text.length()-startIndex;
@@ -118,8 +108,11 @@ void Highlighter::highlightBlock(const QString &text)
 				{
 					commentLength=endIndex-startIndex+endMatch.capturedLength();
 				}
-			setFormat(startIndex,commentLength,this->multiLineCommentStart.format);
-			startIndex = text.indexOf(startExpression,startIndex + commentLength);
+			if(addoffset==false)
+				setFormat(startIndex,commentLength,this->multiLineCommentStart.format);
+			else
+				setFormat(startIndex-offset,commentLength+offset,this->multiLineCommentStart.format);
+			startIndex=text.indexOf(startExpression,startIndex + commentLength);
 		}
 }
 
@@ -158,10 +151,9 @@ void Highlighter::loadLangPlugins(void)
 	SyntaxHighlitePluginInterface	*plugtest;
 	int 							cnt=0;
 
-	//QDir 					pluginsDir("/home/keithhedger/.KKEditQT/langplugins/");
-	QDir 					pluginsDir(QString("%1/langplugins/").arg(DATADIR));
+	QDir 							pluginsDir(QString("%1/langplugins/").arg(DATADIR));
 
-	QDirIterator			git(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	QDirIterator					git(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (git.hasNext())
 		{
 			QString				s=git.next();
@@ -177,12 +169,11 @@ void Highlighter::loadLangPlugins(void)
 		}
 
 	pluginsDir.setPath(QString("%1/.KKEditQT/langplugins").arg(pluginsDir.homePath()));
-//	this->homeDataFolder=QString("%1/%2").arg(this->homeFolder).arg(KKEDITFOLDER);
-	QDirIterator			lit(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	QDirIterator					lit(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (lit.hasNext())
 		{
-			QString				s=lit.next();
-			langPluginStruct	ps;
+			QString					s=lit.next();
+			langPluginStruct		ps;
 
 			ps.plugPath=s;
 			if(this->loadLangPlug(&ps)==false)
@@ -192,7 +183,6 @@ void Highlighter::loadLangPlugins(void)
 				}
 			this->langPlugins[cnt++]=ps;
 		}
-
 }
 
 void Highlighter::setTheme(QString themename)//TODO//load from file
@@ -205,7 +195,7 @@ void Highlighter::setTheme(QString themename)//TODO//load from file
 	QJsonDocument			doc;
     QVariantMap				mainMap;
     QByteArray				data;
-	const char				*entrynames[]={"functions","class","types","comments","quotes","includes","numbers","keywords","custom",NULL};
+	const char				*entrynames[]={"functions","class","types","comments","quotes","includes","numbers","keywords","custom","lanuageextra",NULL};
 
 	themepath=QString("%1/themes/%2.json").arg(DATADIR).arg(themename);
 

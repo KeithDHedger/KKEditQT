@@ -1,4 +1,7 @@
 0.5.3
+Lanuage plugins code clean.
+Added "lanuageextra" styling to style files.
+Added python lang plugin.
 New format for language plugs.
 Include mime types in lang plugs.
 Added sh language file.

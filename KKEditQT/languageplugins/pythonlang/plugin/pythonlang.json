@@ -1,0 +1,6 @@
+{
+"name" : "Python Language Plugin",
+"version" : "0.0.1",
+"langname" : "Python",
+"mimetypes" : "text/x-python3"
+}

@@ -85,5 +85,13 @@
 				"italic":false,
 				"bold":true
 			}
+		],
+	"lanuageextra":
+		[
+			{
+				"colour":"#ff0000",
+				"italic":true,
+				"bold":true
+			}
 		]
 }

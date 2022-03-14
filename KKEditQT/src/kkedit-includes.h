@@ -21,7 +21,7 @@
 #ifndef _KKEDIT_INCLUDES_
 #define _KKEDIT_INCLUDES_
 
-//#define _USEPLUGINS_
+#define _USEPLUGINS_
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -32,13 +32,20 @@ void cpplang::initPlug(QString pathtoplug)
 
 void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 {
-
 	highLightingRule	hr;
+
 //keywords rule
 	hr.format.setForeground(this->theme[KEYWORDTHEME].colour);
 	hr.format.setFontWeight(this->theme[KEYWORDTHEME].weight);
 	hr.format.setFontItalic(this->theme[KEYWORDTHEME].italic);
 	hr.pattern=QRegularExpression("\\b(alias|bg|bind|break|builtin|caller|case|command|compgen|complete|continue|declare|dirs|disown|do|done|elif|else|enable|esac|eval|exec|exit|export|false|fc|fg|fi|for|getopts|hash|help|history|if|in|jobs|let|local|logout|popd|printf|pushd|read|readonly|return|select|set|shift|shopt|suspend|test|then|times|trap|true|type|typeset|umask|unalias|unset|until|wait|while|echo)\\b");
+	rules->append(hr);
+
+//numbers rule
+	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
+	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
+	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
+	hr.pattern=QRegularExpression("([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)");
 	rules->append(hr);
 
 //quotes rule
@@ -55,11 +62,25 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.pattern=QRegularExpression("^[[:blank:]]*(\\.[^\\n]*|source[^\\n]*)");
 	rules->append(hr);
 
-//numbers rule
-	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
-	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
-	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
-	hr.pattern=QRegularExpression("([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)");
+//variables
+	hr.format.setForeground(this->theme[CUSTOMTHEME].colour);
+	hr.format.setFontWeight(this->theme[CUSTOMTHEME].weight);
+	hr.format.setFontItalic(this->theme[CUSTOMTHEME].italic);
+	hr.pattern=QRegularExpression("([[:word:]]*)(?==)");
+	rules->append(hr);
+
+//angle brackets
+	hr.format.setForeground(this->theme[CLASSTHEME].colour);
+	hr.format.setFontWeight(this->theme[CLASSTHEME].weight);
+	hr.format.setFontItalic(this->theme[CLASSTHEME].italic);
+	hr.pattern=QRegularExpression("(\\${[[:print:]]*}|\\$\\([[:print:]]*\\))");
+	rules->append(hr);
+
+//function dec
+	hr.format.setForeground(this->theme[FUNCTIONTHEME].colour);
+	hr.format.setFontWeight(this->theme[FUNCTIONTHEME].weight);
+	hr.format.setFontItalic(this->theme[FUNCTIONTHEME].italic);
+	hr.pattern=QRegularExpression("^(function[[:blank:]]*[[:word:]]*|[[:word:]]*)([[:blank:]]*\\([[:blank:]]*\\))");
 	rules->append(hr);
 
 //single line comment
