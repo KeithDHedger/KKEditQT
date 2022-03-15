@@ -1,0 +1,6 @@
+{
+"name" : "Makefile Language Plugin",
+"version" : "0.0.1",
+"langname" : "Makefile",
+"mimetypes" : "text/x-makefile"
+}

@@ -54,6 +54,7 @@ Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHig
 	this->loadLangPlugins();
 	this->setLanguage("SH");//TODO//default??
 	this->resetRules();
+	this->document=doc;
 }
 
 void Highlighter::highlightBlock(const QString &text)
@@ -75,6 +76,10 @@ void Highlighter::highlightBlock(const QString &text)
 					setFormat(match.capturedStart(),match.capturedLength(),rule.format);
 				}
 		}
+
+//no multi line comment
+	if(startExpression.pattern().length()==0)
+		return;
 
 	setCurrentBlockState(0);
 
@@ -151,7 +156,7 @@ void Highlighter::loadLangPlugins(void)
 	SyntaxHighlitePluginInterface	*plugtest;
 	int 							cnt=0;
 
-	QDir 							pluginsDir(QString("%1/langplugins/").arg(DATADIR));
+	QDir 							pluginsDir(QString("%1/.KKEditQT/langplugins").arg(pluginsDir.homePath()));
 
 	QDirIterator					git(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (git.hasNext())
@@ -168,7 +173,7 @@ void Highlighter::loadLangPlugins(void)
 			this->langPlugins[cnt++]=ps;
 		}
 
-	pluginsDir.setPath(QString("%1/.KKEditQT/langplugins").arg(pluginsDir.homePath()));
+	pluginsDir.setPath(QString("%1/langplugins/").arg(DATADIR));
 	QDirIterator					lit(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (lit.hasNext())
 		{
@@ -185,7 +190,7 @@ void Highlighter::loadLangPlugins(void)
 		}
 }
 
-void Highlighter::setTheme(QString themename)//TODO//load from file
+void Highlighter::setTheme(QString themename)
 {
 	QString					themepath;
 	QHash<int,themeStruct>	theme;
@@ -228,7 +233,6 @@ void Highlighter::setTheme(QString themename)//TODO//load from file
 
 	localList=mainMap["document"].toList();    
 	map=localList[0].toMap();
-
 	this->docbackground=QString("QPlainTextEdit {background-color: %1;}").arg(map["colour"].toString());
 	localList=mainMap["linenumbers"].toList();    
 	map=localList[0].toMap();
@@ -239,6 +243,7 @@ void Highlighter::setTheme(QString themename)//TODO//load from file
 
 	if(this->currentPlug!=-1)
 		{
+			const QSignalBlocker block(this->document);
 			this->langPlugins[this->currentPlug].instance->setTheme(theme);
 			this->resetRules();
 			this->rehighlight();

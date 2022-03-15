@@ -1,4 +1,9 @@
 0.5.3
+Languages installed in ~/.KKEditQT/langplugins now take precedence.
+Fixed languages that g=have no multi line comment.
+Fixed marking document dirty if changing highlighting.
+Fixed ste syntax language in tab menu.
+Added makefile language plugin.
 Added red ( root ) theme.
 Added grey theme.
 Lanuage plugins code clean.

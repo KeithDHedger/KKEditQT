@@ -83,7 +83,6 @@ enum {FRCASE=0,FRUSEREGEX,FRWRAP,FRALLFILES,FRHIGHLIGHTALL,FRREPLACEALL,FRMAXSWI
 #include "QT_notebook.h"
 
 #include "kkeditqtPluginInterface.h"
-//#include "SyntaxHighlitePluginInterface.h"
 
 class NoteBookClass;
 class MenuItemClass;

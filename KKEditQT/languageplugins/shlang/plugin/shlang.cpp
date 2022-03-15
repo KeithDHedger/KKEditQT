@@ -95,7 +95,7 @@ void cpplang::unloadPlug(void)
 {
 }
 
-//odd single formats
+//odd single formats set to "" for no multiline comment
 void cpplang::setMultLineFormatStart(highLightingRule *hr)
 {
 	hr->format.setForeground(this->theme[COMMENTTHEME].colour);

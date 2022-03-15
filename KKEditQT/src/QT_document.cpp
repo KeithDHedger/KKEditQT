@@ -525,7 +525,6 @@ bool retval=false;
 #ifdef _USEPLUGINS_
 	for(int j=0;j<this->highlighter->langPlugins.count();j++)
 		{
-//		qDebug() << this->highlighter->langPlugins[j].mimeType << " " << this->mimeType << " " << this->highlighter->langPlugins[j].langName;
 			if(this->highlighter->langPlugins[j].mimeType.contains(this->mimeType)==true)
 				{
 					retval=this->highlighter->setLanguage(this->highlighter->langPlugins[j].langName);
@@ -535,22 +534,6 @@ bool retval=false;
 		}
 	retval=this->highlighter->setLanguage("plaintext");
 	this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
-return;
-	if(this->mimeType.compare("text/x-c++src",Qt::CaseInsensitive)==0)
-		retval=this->highlighter->setLanguage("C++");
-	else if(this->mimeType.compare("text/x-c++hdr",Qt::CaseInsensitive)==0)
-			retval=this->highlighter->setLanguage("C++");
-	else if(this->mimeType.compare("text/x-csrc",Qt::CaseInsensitive)==0)
-			retval=this->highlighter->setLanguage("C++");
-	else if(this->mimeType.compare("text/x-chdr",Qt::CaseInsensitive)==0)
-			retval=this->highlighter->setLanguage("C++");
-	else if(this->mimeType.compare("application/x-shellscript",Qt::CaseInsensitive)==0)
-			retval=this->highlighter->setLanguage("SH");
-	else
-		retval=this->highlighter->setLanguage("plaintext");
-
-	this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
-	
 #else
 	QSourceHighliter::Themes	theme=(QSourceHighliter::Themes)2;
 

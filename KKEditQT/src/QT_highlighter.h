@@ -68,7 +68,7 @@ protected:
 private:
 
 	QVector<highLightingRule>	highlightingRules;
-	//QPlainTextEdit				*document;
+	QPlainTextEdit				*document;
 
 	highLightingRule			multiLineCommentStart;
 	highLightingRule			multiLineCommentStop;

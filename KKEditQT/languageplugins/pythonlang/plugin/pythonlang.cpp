@@ -67,6 +67,13 @@ void pythonlang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.pattern = QRegularExpression("(\".*\")|('.*')");
 	rules->append(hr);
 
+//variables
+	hr.format.setForeground(this->theme[CUSTOMTHEME].colour);
+	hr.format.setFontWeight(this->theme[CUSTOMTHEME].weight);
+	hr.format.setFontItalic(this->theme[CUSTOMTHEME].italic);
+	hr.pattern=QRegularExpression("([[:word:]_]*)(?=[[:space:]]*=)");
+	rules->append(hr);
+
 //numbers
 	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
 	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
@@ -96,7 +103,7 @@ void pythonlang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 }
 
-//odd single formats //TODO//HHmmmmm.....
+//odd single formats set to "" for no multiline comment
 void pythonlang::setMultLineFormatStart(highLightingRule *hr)
 {
 	hr->format.setForeground(this->theme[COMMENTTHEME].colour);
