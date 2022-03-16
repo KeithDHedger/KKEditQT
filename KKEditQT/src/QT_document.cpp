@@ -488,17 +488,6 @@ void DocumentClass::setFilePrefs(void)
 	this->setTabStopDistance(fm.horizontalAdvance(" ")*this->mainKKEditClass->prefsTabWidth);
 }
 
-/*
-Mime type: "text/x-c++src"
-Mime type: "application/x-shellscript"
-Mime type: "text/x-csrc"
-Mime type: "text/x-c++src"
-Mime type: "text/x-c++src"
-Mime type: "text/x-c++src"
-Mime type: "text/plain"
-text/x-c++hdr
-text/x-chdr
-*/
 void DocumentClass::setHiliteLanguage(void)
 {
 	bool retval=false;
