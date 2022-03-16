@@ -505,7 +505,7 @@ void DocumentClass::setHiliteLanguage(void)
 
 	for(int j=0;j<this->highlighter->langPlugins.count();j++)
 		{
-		qDebug() << this->getFilePath() << " = " << this->mimeType;
+		//qDebug() << this->getFilePath() << " = " << this->mimeType;
 			if(this->highlighter->langPlugins[j].mimeType.contains(this->mimeType)==true)
 				{
 					retval=this->highlighter->setLanguage(this->highlighter->langPlugins[j].langName);
