@@ -69,10 +69,6 @@ enum {HIDETABSHORTCUT=0,DELETELINESHORTCUT,DELETETOEOLSHORTCUT,DELETETOSOLSHORTC
 
 enum {FRCASE=0,FRUSEREGEX,FRWRAP,FRALLFILES,FRHIGHLIGHTALL,FRREPLACEALL,FRMAXSWITCHES};
 
-#include "qsourcehighliter.h"
-#include "qsourcehighliterthemes.h"
-#include "languagedata.h"
-
 #include "QT_AboutBox.h"
 #include "QT_menuitem.h"
 #include "QT_historyClass.h"
@@ -478,7 +474,6 @@ class KKEditClass : public QObject
 
 		void						doFindButton(void);
 		void						tabContextMenu(const QPoint &pt);
-		void						doTabBarContextMenuSetHilite(void);
 
 		void						doAppShortCuts(void);
 

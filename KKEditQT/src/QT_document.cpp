@@ -46,11 +46,8 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 		return;
 
 	QPainter painter(this->lineNumberArea);
-#ifdef _USEPLUGINS_
+
 	painter.fillRect(event->rect(),this->highlighter->lineNumbersBackground);
-#else
-	painter.fillRect(event->rect(),Qt::lightGray);
-#endif
 	QTextBlock block=this->firstVisibleBlock();
 	int blockNumber=block.blockNumber();
 	int top=(int) blockBoundingGeometry(block).translated(contentOffset()).top();
@@ -60,27 +57,16 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 		{
 			if(block.isVisible() && bottom>=event->rect().top())
 				{
-#ifdef _USEPLUGINS_
 					painter.setPen(this->highlighter->lineNumbersForeground);
-#else
-					painter.setPen(Qt::black);
-#endif
 					foreach(bookMarkStruct value,this->mainKKEditClass->bookMarks)
 						{
 							if((value.docIndex==this->pageIndex) && (value.line==blockNumber+1))
 								{
-#ifdef _USEPLUGINS_
 									painter.fillRect(QRect(0,top,lineNumberArea->width(),fontMetrics().height()),this->highlighter->bookMarkBGColour);
-#else
-									painter.fillRect(QRect(0,top,lineNumberArea->width(),fontMetrics().height()),Qt::darkGray);
-#endif
 								}
 						}
-#ifdef _USEPLUGINS_
+
 					QString number=QString::number(blockNumber+1);painter.setPen(this->highlighter->lineNumbersForeground);
-#else
-					QString number=QString::number(blockNumber+1);painter.setPen(Qt::black);
-#endif
 					painter.drawText(0,top,lineNumberArea->width(),fontMetrics().height(),Qt::AlignRight,number);
 				}
 
@@ -340,11 +326,7 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	this->mainKKEditClass=kk;
 	this->setAcceptDrops(true);
 
-#ifdef _USEPLUGINS_
 	this->highlighter=new Highlighter(this->document(),this);
-#else
-	this->highlighter=new QSourceHighlite::QSourceHighliter(this->document());
-#endif
 	this->setCenterOnScroll(true);
 	lineNumberArea=new LineNumberArea(this);
 
@@ -481,11 +463,9 @@ void DocumentClass::setFilePrefs(void)
 	this->setTabStopDistance(1.0);
 	this->dirty=true;
 
-#ifdef _USEPLUGINS_
 	this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
-	//this->highlighter->setTheme("default");
 	this->setStyleSheet(this->highlighter->docbackground);
-#endif
+
 
 	this->dirty=holddirty;
 	this->updateLineNumberAreaWidth();
@@ -521,10 +501,11 @@ text/x-chdr
 */
 void DocumentClass::setHiliteLanguage(void)
 {
-bool retval=false;
-#ifdef _USEPLUGINS_
+	bool retval=false;
+
 	for(int j=0;j<this->highlighter->langPlugins.count();j++)
 		{
+	//	qDebug() << this->getFilePath() << " = " << this->mimeType;
 			if(this->highlighter->langPlugins[j].mimeType.contains(this->mimeType)==true)
 				{
 					retval=this->highlighter->setLanguage(this->highlighter->langPlugins[j].langName);
@@ -534,49 +515,6 @@ bool retval=false;
 		}
 	retval=this->highlighter->setLanguage("plaintext");
 	this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
-#else
-	QSourceHighliter::Themes	theme=(QSourceHighliter::Themes)2;
-
-	if(this->mainKKEditClass->prefsSyntaxHilighting==false)
-		{
-			theme=(QSourceHighliter::Themes)-1;
-			return;
-		}
-	if(this->mimeType.compare("text/plain",Qt::CaseInsensitive)==0)
-		theme=(QSourceHighliter::Themes)-1;
-	if(this->mimeType.compare("text/x-c++src",Qt::CaseInsensitive)==0)
-		this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeCpp);
-	else if(this->mimeType.compare("text/x-c++hdr",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeCpp);
-	else if(this->mimeType.compare("text/x-csrc",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeC);
-	else if(this->mimeType.compare("text/x-chdr",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeC);
-	else if(this->mimeType.compare("application/x-shellscript",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeBash);
-	else if(this->mimeType.compare("text/x-python",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodePython);
-	else if(this->mimeType.compare("text/x-go",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeGo);
-	else if(this->mimeType.compare("text/x-lua",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeLua);
-	else if(this->mimeType.compare("application/x-yaml",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeYAML);
-	else if(this->mimeType.compare("application/x-php",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodePHP);
-	else if(this->mimeType.compare("application/xhtml+xml",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeXML);
-	else if(this->mimeType.compare("text/css",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeCSS);
-	else if(this->mimeType.compare("application/javascript",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeJs);
-	else if(this->mimeType.compare("text/x-makefile",Qt::CaseInsensitive)==0)
-			this->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeMake);
-	else
-		theme=(QSourceHighliter::Themes)-1;
-
-	this->highlighter->setTheme(theme);
-#endif
 }
 
 void DocumentClass::setUndo(bool avail)
@@ -628,14 +566,6 @@ void DocumentClass::dropEvent(QDropEvent* event)
 							this->mimeType=type.name();
 							this->setPlainText(content);
 							this->setFilePrefs();
-//#ifndef _USEPLUGINS_
-//			//doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeCpp);
-////			QSourceHighliter::Themes theme=(QSourceHighliter::Themes)-1;
-////			if(this->prefsSyntaxHilighting==true)
-////				theme=(QSourceHighliter::Themes)2;//TODO//get theme from file
-////
-////			doc->highlighter->setTheme(theme);
-//#endif
 							this->highlighter->rehighlight();
 							this->dirty=true;
 							file.close();

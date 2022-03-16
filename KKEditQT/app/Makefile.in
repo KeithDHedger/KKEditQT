@@ -114,8 +114,7 @@ am__objects_1 = ../src/KKEditClassCallbacks.$(OBJEXT) \
 	../src/KKEditClassGUIs.$(OBJEXT) \
 	../src/KKEditClassMenus.$(OBJEXT) \
 	../src/KKEditClassSearch.$(OBJEXT) \
-	../src/KKEditClassTools.$(OBJEXT) \
-	../src/languagedata.$(OBJEXT) ../src/main.$(OBJEXT) \
+	../src/KKEditClassTools.$(OBJEXT) ../src/main.$(OBJEXT) \
 	../src/moc_KKEditClass.$(OBJEXT) \
 	../src/moc_kkeditqtPluginInterface.$(OBJEXT) \
 	../src/moc_QT_AboutBox.$(OBJEXT) \
@@ -125,11 +124,8 @@ am__objects_1 = ../src/KKEditClassCallbacks.$(OBJEXT) \
 	../src/moc_QT_menuitem.$(OBJEXT) \
 	../src/moc_QT_notebook.$(OBJEXT) \
 	../src/moc_QT_recentMenu.$(OBJEXT) \
-	../src/moc_QT_toolbar.$(OBJEXT) \
-	../src/qsourcehighliter.$(OBJEXT) \
-	../src/qsourcehighliterthemes.$(OBJEXT) \
-	../src/QT_AboutBox.$(OBJEXT) ../src/QT_document.$(OBJEXT) \
-	../src/QT_highlighter.$(OBJEXT) \
+	../src/moc_QT_toolbar.$(OBJEXT) ../src/QT_AboutBox.$(OBJEXT) \
+	../src/QT_document.$(OBJEXT) ../src/QT_highlighter.$(OBJEXT) \
 	../src/QT_historyClass.$(OBJEXT) ../src/QT_menuitem.$(OBJEXT) \
 	../src/QT_notebook.$(OBJEXT) ../src/QT_recentMenu.$(OBJEXT) \
 	../src/QT_toolbar.$(OBJEXT) \
@@ -198,8 +194,7 @@ am__depfiles_remade = ../pole/$(DEPDIR)/main.Po \
 	../src/$(DEPDIR)/QT_recentMenu.Po \
 	../src/$(DEPDIR)/QT_toolbar.Po \
 	../src/$(DEPDIR)/SingleInstanceClass.Po \
-	../src/$(DEPDIR)/languagedata.Po ../src/$(DEPDIR)/main.Po \
-	../src/$(DEPDIR)/moc_KKEditClass.Po \
+	../src/$(DEPDIR)/main.Po ../src/$(DEPDIR)/moc_KKEditClass.Po \
 	../src/$(DEPDIR)/moc_QT_AboutBox.Po \
 	../src/$(DEPDIR)/moc_QT_document.Po \
 	../src/$(DEPDIR)/moc_QT_highlighter.Po \
@@ -208,9 +203,7 @@ am__depfiles_remade = ../pole/$(DEPDIR)/main.Po \
 	../src/$(DEPDIR)/moc_QT_notebook.Po \
 	../src/$(DEPDIR)/moc_QT_recentMenu.Po \
 	../src/$(DEPDIR)/moc_QT_toolbar.Po \
-	../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po \
-	../src/$(DEPDIR)/qsourcehighliter.Po \
-	../src/$(DEPDIR)/qsourcehighliterthemes.Po
+	../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -380,7 +373,7 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 			-DLIBDIR=\""${libdir}/${PACKAGE}"\" \
 			-fPIC
 
-COMMONSRC = ../src/KKEditClassCallbacks.cpp ../src/KKEditClass.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/languagedata.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_kkeditqtPluginInterface.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_toolbar.cpp ../src/qsourcehighliter.cpp ../src/qsourcehighliterthemes.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp
+COMMONSRC = ../src/KKEditClassCallbacks.cpp ../src/KKEditClass.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_kkeditqtPluginInterface.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_toolbar.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp
 kkeditqt_SOURCES = $(COMMONSRC)
 KKEditQTProgressBar_SOURCES = ../pole/main.cpp
 pixfilesdir = $(pkgdatadir)/pixmaps
@@ -503,8 +496,6 @@ KKEditQTProgressBar$(EXEEXT): $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressB
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/KKEditClassTools.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
-../src/languagedata.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/main.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/moc_KKEditClass.$(OBJEXT): ../src/$(am__dirstamp) \
@@ -526,10 +517,6 @@ KKEditQTProgressBar$(EXEEXT): $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressB
 ../src/moc_QT_recentMenu.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/moc_QT_toolbar.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/qsourcehighliter.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/qsourcehighliterthemes.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/QT_AboutBox.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
@@ -615,7 +602,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/QT_recentMenu.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/QT_toolbar.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/SingleInstanceClass.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/languagedata.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_KKEditClass.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_AboutBox.Po@am__quote@ # am--include-marker
@@ -627,8 +613,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_recentMenu.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_toolbar.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/qsourcehighliter.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/qsourcehighliterthemes.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -885,7 +869,6 @@ distclean: distclean-am
 	-rm -f ../src/$(DEPDIR)/QT_recentMenu.Po
 	-rm -f ../src/$(DEPDIR)/QT_toolbar.Po
 	-rm -f ../src/$(DEPDIR)/SingleInstanceClass.Po
-	-rm -f ../src/$(DEPDIR)/languagedata.Po
 	-rm -f ../src/$(DEPDIR)/main.Po
 	-rm -f ../src/$(DEPDIR)/moc_KKEditClass.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_AboutBox.Po
@@ -897,8 +880,6 @@ distclean: distclean-am
 	-rm -f ../src/$(DEPDIR)/moc_QT_recentMenu.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_toolbar.Po
 	-rm -f ../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po
-	-rm -f ../src/$(DEPDIR)/qsourcehighliter.Po
-	-rm -f ../src/$(DEPDIR)/qsourcehighliterthemes.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -965,7 +946,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ../src/$(DEPDIR)/QT_recentMenu.Po
 	-rm -f ../src/$(DEPDIR)/QT_toolbar.Po
 	-rm -f ../src/$(DEPDIR)/SingleInstanceClass.Po
-	-rm -f ../src/$(DEPDIR)/languagedata.Po
 	-rm -f ../src/$(DEPDIR)/main.Po
 	-rm -f ../src/$(DEPDIR)/moc_KKEditClass.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_AboutBox.Po
@@ -977,8 +957,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ../src/$(DEPDIR)/moc_QT_recentMenu.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_toolbar.Po
 	-rm -f ../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po
-	-rm -f ../src/$(DEPDIR)/qsourcehighliter.Po
-	-rm -f ../src/$(DEPDIR)/qsourcehighliterthemes.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

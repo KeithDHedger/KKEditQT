@@ -669,16 +669,6 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 							menu.addMenu(&srcmenu);
 							itemicon=QIcon::fromTheme(this->tabContextMenuItems[cnt].icon);
 							srcmenu.setIcon(itemicon);
-#ifndef _USEPLUGINS_
-							while(this->srcMenuNames[srccnt]!=NULL)
-								{
-									menuitem1=new MenuItemClass(this->srcMenuNames[srccnt]);
-									menuitem1->setMenuID(((srccnt)*0x100)+tabIndex);
-									srcmenu.addAction(menuitem1);
-									QObject::connect(menuitem1,SIGNAL(triggered()),this,SLOT(doTabBarContextMenuSetHilite()));
-									srccnt++;
-								}
-#else
 							for(int j=0;j<doc->highlighter->langPlugins.count();j++)
 								{
 									menuitem1=new MenuItemClass(doc->highlighter->langPlugins[j].langName);
@@ -689,7 +679,6 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 											doc->highlighter->setTheme(doc->mainKKEditClass->prefStyleName);
 										});
 								}
-#endif
 							continue;
 						}
 

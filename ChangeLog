@@ -1,3 +1,7 @@
+0.6.0
+Added html language plugin.
+Switched to sytntax highlighting plugins.
+
 0.5.3
 Languages installed in ~/.KKEditQT/langplugins now take precedence.
 Fixed languages that g=have no multi line comment.

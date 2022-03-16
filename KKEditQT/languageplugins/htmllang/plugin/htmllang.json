@@ -1,0 +1,6 @@
+{
+"name" : "HTML/XML Language Plugin",
+"version" : "0.0.1",
+"langname" : "HTML",
+"mimetypes" : "text/xml;text/html;application/xml;application/xhtml+xml"
+}

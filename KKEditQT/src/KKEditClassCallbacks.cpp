@@ -794,69 +794,6 @@ void KKEditClass::doTabBarContextMenu(void)
 	this->setToolbarSensitive();
 }
 
-void KKEditClass::doTabBarContextMenuSetHilite(void)
-{
-#ifdef _USEPLUGINS_
-return;
-#else
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	DocumentClass	*doc;
-	int				themenum=2;
-	bool			holdsb=this->sessionBusy;
-
-	doc=this->getDocumentForTab((mc->getMenuID() & 0xff));
-	if(doc==NULL)
-		return;
-
-	this->sessionBusy=true;
-	switch(mc->getMenuID() & 0xfff00)
-		{
-			case NONESRCCODE:
-				themenum=-1;
-				break;
-			case CPPSRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeCpp);
-				break;
-			case CSRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeC);
-				break;
-			case BASHSRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeBash);
-				break;
-			case PYTHONSRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodePython);
-				break;
-			case GOSRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeGo);
-				break;
-			case LUASRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeLua);
-				break;
-			case YAMLSRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeYAML);
-				break;
-			case PHPSRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodePHP);
-				break;
-			case XMLSRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeXML);
-				break;
-			case CSSSRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeCSS);
-				break;
-			case JSSRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeJs);
-				break;
-			case MAKESRCCODE:
-				doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeMake);
-				break;
-		}
-	doc->highlighter->setTheme((QSourceHighliter::Themes)themenum);
-	//this->sessionBusy=false;
-	this->sessionBusy=holdsb;
-#endif
-}
-
 void KKEditClass::doOddMenuItems(void)
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());

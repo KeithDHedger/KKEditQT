@@ -23,8 +23,6 @@
 
 #include "KKEditClass.h"
 
-using namespace QSourceHighlite;
-
 class LineNumberArea;
 
 class DocumentClass : public QPlainTextEdit
@@ -63,11 +61,8 @@ class DocumentClass : public QPlainTextEdit
 		void								addXtraSelections(void);
 		void								clearHilites(void);
 
-#ifdef _USEPLUGINS_
 		Highlighter							*highlighter;
-#else
-		QSourceHighlite::QSourceHighliter	*highlighter;
-#endif
+
 		KKEditClass							*mainKKEditClass=NULL;
 		QColor								prefsHiLiteLineColor;
 		QColor								bookmarkLineColor;

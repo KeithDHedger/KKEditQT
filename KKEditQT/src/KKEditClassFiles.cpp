@@ -295,20 +295,10 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
 			this->mainNotebook->setTabToolTip(tabnum,doc->getFilePath());
 			this->mainNotebook->setCurrentIndex(tabnum);
 			this->gotoLine(linenumber);
-			//doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 			doc->setHiliteLanguage();
-#ifndef _USEPLUGINS_
-			//doc->highlighter->setCurrentLanguage(QSourceHighlite::QSourceHighliter::CodeCpp);
-//			QSourceHighliter::Themes theme=(QSourceHighliter::Themes)-1;
-//			if(this->prefsSyntaxHilighting==true)
-//				theme=(QSourceHighliter::Themes)2;//TODO//get theme from file
-//
-//			doc->highlighter->setTheme(theme);
-#endif
 			doc->highlighter->rehighlight();
 			doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 			doc->dirty=false;
-			//doc->setCompleter();
 			retval=true;
 			file.close();
 			this->recentFiles->addFilePath(filepath);
