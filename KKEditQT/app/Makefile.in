@@ -116,7 +116,6 @@ am__objects_1 = ../src/KKEditClassCallbacks.$(OBJEXT) \
 	../src/KKEditClassSearch.$(OBJEXT) \
 	../src/KKEditClassTools.$(OBJEXT) ../src/main.$(OBJEXT) \
 	../src/moc_KKEditClass.$(OBJEXT) \
-	../src/moc_kkeditqtPluginInterface.$(OBJEXT) \
 	../src/moc_QT_AboutBox.$(OBJEXT) \
 	../src/moc_QT_document.$(OBJEXT) \
 	../src/moc_QT_highlighter.$(OBJEXT) \
@@ -202,8 +201,7 @@ am__depfiles_remade = ../pole/$(DEPDIR)/main.Po \
 	../src/$(DEPDIR)/moc_QT_menuitem.Po \
 	../src/$(DEPDIR)/moc_QT_notebook.Po \
 	../src/$(DEPDIR)/moc_QT_recentMenu.Po \
-	../src/$(DEPDIR)/moc_QT_toolbar.Po \
-	../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po
+	../src/$(DEPDIR)/moc_QT_toolbar.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -373,7 +371,7 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 			-DLIBDIR=\""${libdir}/${PACKAGE}"\" \
 			-fPIC
 
-COMMONSRC = ../src/KKEditClassCallbacks.cpp ../src/KKEditClass.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_kkeditqtPluginInterface.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_toolbar.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp
+COMMONSRC = ../src/KKEditClassCallbacks.cpp ../src/KKEditClass.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_toolbar.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp
 kkeditqt_SOURCES = $(COMMONSRC)
 KKEditQTProgressBar_SOURCES = ../pole/main.cpp
 pixfilesdir = $(pkgdatadir)/pixmaps
@@ -500,8 +498,6 @@ KKEditQTProgressBar$(EXEEXT): $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressB
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/moc_KKEditClass.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_kkeditqtPluginInterface.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/moc_QT_AboutBox.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/moc_QT_document.$(OBJEXT): ../src/$(am__dirstamp) \
@@ -612,7 +608,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_notebook.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_recentMenu.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_toolbar.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -879,7 +874,6 @@ distclean: distclean-am
 	-rm -f ../src/$(DEPDIR)/moc_QT_notebook.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_recentMenu.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_toolbar.Po
-	-rm -f ../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -956,7 +950,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ../src/$(DEPDIR)/moc_QT_notebook.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_recentMenu.Po
 	-rm -f ../src/$(DEPDIR)/moc_QT_toolbar.Po
-	-rm -f ../src/$(DEPDIR)/moc_kkeditqtPluginInterface.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
