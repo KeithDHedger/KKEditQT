@@ -20,7 +20,7 @@
 
 #include "jslang.h"
 
-void cpplang::initPlug(QString pathtoplug)
+void jslang::initPlug(QString pathtoplug)
 {
 	themeStruct	blank={Qt::black,QFont::Normal,false};
 
@@ -30,12 +30,12 @@ void cpplang::initPlug(QString pathtoplug)
 			this->theme[j]=blank;
 }
 
-void cpplang::unloadPlug(void)
+void jslang::unloadPlug(void)
 {
 }
 
 //new format
-void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
+void jslang::setLanguageRules(QVector<highLightingRule> *rules)
 {
 	highLightingRule	hr;
 
@@ -98,7 +98,7 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 }
 
 //odd single formats set to "" for no multiline comment
-void cpplang::setMultLineFormatStart(highLightingRule *hr)
+void jslang::setMultLineFormatStart(highLightingRule *hr)
 {
 	hr->format.setForeground(this->theme[COMMENTTHEME].colour);
 	hr->format.setFontWeight(this->theme[COMMENTTHEME].weight);
@@ -106,12 +106,12 @@ void cpplang::setMultLineFormatStart(highLightingRule *hr)
 	hr->pattern = QRegularExpression("/\\*");
 }
 
-void cpplang::setMultLineFormatStop(highLightingRule *hr)
+void jslang::setMultLineFormatStop(highLightingRule *hr)
 {
 	hr->pattern = QRegularExpression("\\*/");
 }
 
-void cpplang::setTheme(QHash<int,themeStruct> newtheme)
+void jslang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }

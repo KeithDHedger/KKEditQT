@@ -20,7 +20,7 @@
 
 #include "makelang.h"
 
-void cpplang::initPlug(QString pathtoplug)
+void makelang::initPlug(QString pathtoplug)
 {
 	themeStruct	blank={Qt::black,QFont::Normal,false};
 
@@ -30,12 +30,12 @@ void cpplang::initPlug(QString pathtoplug)
 			this->theme[j]=blank;
 }
 
-void cpplang::unloadPlug(void)
+void makelang::unloadPlug(void)
 {
 }
 
 //new format
-void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
+void makelang::setLanguageRules(QVector<highLightingRule> *rules)
 {
 	highLightingRule	hr;
 
@@ -111,17 +111,17 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 }
 
 //odd single formats set to "" for no multiline comment
-void cpplang::setMultLineFormatStart(highLightingRule *hr)
+void makelang::setMultLineFormatStart(highLightingRule *hr)
 {
 	hr->pattern = QRegularExpression("");
 }
 
-void cpplang::setMultLineFormatStop(highLightingRule *hr)
+void makelang::setMultLineFormatStop(highLightingRule *hr)
 {
 	hr->pattern = QRegularExpression("");
 }
 
-void cpplang::setTheme(QHash<int,themeStruct> newtheme)
+void makelang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }

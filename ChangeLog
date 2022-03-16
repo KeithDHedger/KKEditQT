@@ -1,4 +1,6 @@
 0.6.0
+Code clean in lang plugs.
+Added PHP language plugin.
 Added javascript language plugin.
 Added html language plugin.
 Switched to sytntax highlighting plugins.

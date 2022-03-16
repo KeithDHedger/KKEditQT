@@ -20,7 +20,7 @@
 
 #include "shlang.h"
 
-void cpplang::initPlug(QString pathtoplug)
+void shlang::initPlug(QString pathtoplug)
 {
 	themeStruct	blank={Qt::black,QFont::Normal,false};
 
@@ -30,7 +30,7 @@ void cpplang::initPlug(QString pathtoplug)
 			this->theme[j]=blank;
 }
 
-void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
+void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 {
 	highLightingRule	hr;
 
@@ -91,12 +91,12 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 }
 
-void cpplang::unloadPlug(void)
+void shlang::unloadPlug(void)
 {
 }
 
 //odd single formats set to "" for no multiline comment
-void cpplang::setMultLineFormatStart(highLightingRule *hr)
+void shlang::setMultLineFormatStart(highLightingRule *hr)
 {
 	hr->format.setForeground(this->theme[COMMENTTHEME].colour);
 	hr->format.setFontWeight(this->theme[COMMENTTHEME].weight);
@@ -104,12 +104,12 @@ void cpplang::setMultLineFormatStart(highLightingRule *hr)
 	hr->pattern = QRegularExpression("if false;then");
 }
 
-void cpplang::setMultLineFormatStop(highLightingRule *hr)
+void shlang::setMultLineFormatStop(highLightingRule *hr)
 {
 	hr->pattern = QRegularExpression("fi");
 }
 
-void cpplang::setTheme(QHash<int,themeStruct> newtheme)
+void shlang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }

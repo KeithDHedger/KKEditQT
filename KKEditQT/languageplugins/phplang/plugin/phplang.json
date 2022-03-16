@@ -1,0 +1,6 @@
+{
+"name" : "PHP Language Plugin",
+"version" : "0.0.1",
+"langname" : "PHP",
+"mimetypes" : "application/x-php"
+}

@@ -23,7 +23,7 @@
 
 #include "../../../src/SyntaxHighlitePluginInterface.h"
 
-class cpplang : public QObject, SyntaxHighlitePluginInterface
+class makelang : public QObject, SyntaxHighlitePluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "org.KKEditQT.SyntaxHighlitePluginInterface" FILE "makelang.json")
