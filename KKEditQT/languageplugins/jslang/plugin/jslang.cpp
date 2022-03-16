@@ -1,24 +1,24 @@
 /*
  *
- * ©K. D. Hedger. Wed 16 Mar 14:08:07 GMT 2022 keithdhedger@gmail.com
+ * ©K. D. Hedger. Wed 16 Mar 14:07:43 GMT 2022 keithdhedger@gmail.com
 
- * This file (cpplang.cpp) is part of cpplang.
+ * This file (jslang.cpp) is part of jslang.
 
- * cpplang is free software: you can redistribute it and/or modify
+ * jslang is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
 
- * cpplang is distributed in the hope that it will be useful,
+ * jslang is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with cpplang.  If not, see <http://www.gnu.org/licenses/>.
+ * along with jslang.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "cpplang.h"
+#include "jslang.h"
 
 void cpplang::initPlug(QString pathtoplug)
 {
@@ -47,13 +47,6 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.pattern=QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
 	rules->append(hr);
 
-//classes
-	hr.format.setForeground(this->theme[CLASSTHEME].colour);
-	hr.format.setFontWeight(this->theme[CLASSTHEME].weight);
-	hr.format.setFontItalic(this->theme[CLASSTHEME].italic);
-	hr.pattern=QRegularExpression("(\\bQ[A-Za-z]+\\b)|(\\b[A-Za-z]+\\b(?=::))");
-	rules->append(hr);
-
 //quotes
 	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
 	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
@@ -72,28 +65,28 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[KEYWORDTHEME].colour);
 	hr.format.setFontWeight(this->theme[KEYWORDTHEME].weight);
 	hr.format.setFontItalic(this->theme[KEYWORDTHEME].italic);
-	hr.pattern=QRegularExpression("\\b(__asm|__cdecl|__declspec|__export|__far16|__fastcall|__fortran|__import|__pascal|__rtti|__stdcall|_asm|_cdecl|__except|_export|_far16|_fastcall|__finally|_fortran|_import|_pascal|_stdcall|__thread|__try|asm|auto|break|case|catch|cdecl|continue|default|do|else|enum|extern|goto|pascal|register|return|sizeof|static|struct|switch|typedef|union|volatile|class|const_cast|delete|dynamic_cast|explicit|friend|inline|mutable|namespace|new|operator|private|protected|public|reinterpret_cast|static_cast|template|this|throw|try|typeid|typename|using|virtual|for|if|while)\\b");
-	rules->append(hr);
-
-//includes
-	hr.format.setForeground(this->theme[INCLUDETHEME].colour);
-	hr.format.setFontWeight(this->theme[INCLUDETHEME].weight);
-	hr.format.setFontItalic(this->theme[INCLUDETHEME].italic);
-	hr.pattern=QRegularExpression("#[a-zA-Z]+.*$");
+	hr.pattern=QRegularExpression("\\b(let|abstract|break|case|catch|const|continue|debugger|default|delete|do|else|enum|export|extends|final|finally|for|function|goto|if|implements|in|instanceof|interface|native|new|private|protected|prototype|public|return|super|switch|synchronized|throw|throws|this|transient|try|typeof|var|volatile|while|with)\\b");
 	rules->append(hr);
 
 //types
 	hr.format.setForeground(this->theme[TYPETHEME].colour);
 	hr.format.setFontWeight(this->theme[TYPETHEME].weight);
 	hr.format.setFontItalic(this->theme[TYPETHEME].italic);
-	hr.pattern=QRegularExpression("\\b(bool|char|double|float|int|long|short|signed|unsigned|void|wchar_t|const)|\\b");
+	hr.pattern=QRegularExpression("\\b(NULL|null|true|false|TRUE|FALSE)\\b");
 	rules->append(hr);
 
 //custom
 	hr.format.setForeground(this->theme[CUSTOMTHEME].colour);
 	hr.format.setFontWeight(this->theme[CUSTOMTHEME].weight);
 	hr.format.setFontItalic(this->theme[CUSTOMTHEME].italic);
-	hr.pattern=QRegularExpression("NULL|nullptr|true|false|TRUE|FALSE");
+	hr.pattern=QRegularExpression("\\b(Infinity|Math|NaN|NEGATIVE_INFINITY|POSITIVE_INFINITY|null|undefined|false|true)\\b");
+	rules->append(hr);
+
+//java script extras
+	hr.format.setForeground(this->theme[LANGUAGEEXTRAS].colour);
+	hr.format.setFontWeight(this->theme[LANGUAGEEXTRAS].weight);
+	hr.format.setFontItalic(this->theme[LANGUAGEEXTRAS].italic);
+	hr.pattern=QRegularExpression("\\b(abstract|boolean|byte|char|class|debugger|double|enum|extends|final|float|goto|implements|interface|int|long|native|package|private|protected|public|short|static|super|synchronized|throws|transient|volatile)\\b");
 	rules->append(hr);
 
 //single line comment
