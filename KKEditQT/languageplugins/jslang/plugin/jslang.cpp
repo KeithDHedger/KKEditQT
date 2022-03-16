@@ -72,14 +72,14 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[TYPETHEME].colour);
 	hr.format.setFontWeight(this->theme[TYPETHEME].weight);
 	hr.format.setFontItalic(this->theme[TYPETHEME].italic);
-	hr.pattern=QRegularExpression("\\b(NULL|null|true|false|TRUE|FALSE)\\b");
+	hr.pattern=QRegularExpression("\\b(NULL|null|true|false|null|undefined)\\b");
 	rules->append(hr);
 
 //custom
 	hr.format.setForeground(this->theme[CUSTOMTHEME].colour);
 	hr.format.setFontWeight(this->theme[CUSTOMTHEME].weight);
 	hr.format.setFontItalic(this->theme[CUSTOMTHEME].italic);
-	hr.pattern=QRegularExpression("\\b(Infinity|Math|NaN|NEGATIVE_INFINITY|POSITIVE_INFINITY|null|undefined|false|true)\\b");
+	hr.pattern=QRegularExpression("\\b(Infinity|Math|NaN|NEGATIVE_INFINITY|POSITIVE_INFINITY)\\b");
 	rules->append(hr);
 
 //java script extras
