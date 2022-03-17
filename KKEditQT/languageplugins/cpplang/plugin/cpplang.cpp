@@ -43,8 +43,9 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setFontItalic(this->theme[FUNCTIONTHEME].italic);
 	hr.format.setFontWeight(this->theme[FUNCTIONTHEME].weight);
 	hr.format.setForeground(this->theme[FUNCTIONTHEME].colour);
-
-	hr.pattern=QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
+	//hr.pattern=QRegularExpression("([[:word:]]+(\\.|\\-\\>|\\(\\)))+([[:word:]_]+(?=[[:space:]]*(\\(|=)))");
+	//hr.pattern=QRegularExpression("([[:word:]]+(\\.|\\-\\>))+(?=[[:space:]]*\\()?");
+	hr.pattern=QRegularExpression("([[:word:]]+(\\.|\\-\\>|([[:space:]]*\\()))+");
 	rules->append(hr);
 
 //classes
@@ -58,7 +59,7 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
 	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
 	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
-	hr.pattern = QRegularExpression("(\".*\")|('.*')");
+	hr.pattern = QRegularExpression("(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\")|('\\\\.')|('.')");
 	rules->append(hr);
 
 //numbers
@@ -86,7 +87,7 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[TYPETHEME].colour);
 	hr.format.setFontWeight(this->theme[TYPETHEME].weight);
 	hr.format.setFontItalic(this->theme[TYPETHEME].italic);
-	hr.pattern=QRegularExpression("\\b(bool|char|double|float|int|long|short|signed|unsigned|void|wchar_t|const)|\\b");
+	hr.pattern=QRegularExpression("\\b(bool|char|double|float|int|long|short|signed|unsigned|void|wchar_t|const)\\b");
 	rules->append(hr);
 
 //custom
