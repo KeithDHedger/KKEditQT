@@ -73,7 +73,7 @@ void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[CLASSTHEME].colour);
 	hr.format.setFontWeight(this->theme[CLASSTHEME].weight);
 	hr.format.setFontItalic(this->theme[CLASSTHEME].italic);
-	hr.pattern=QRegularExpression("(\\${[[:print:]]*}|\\$\\([[:print:]]*\\))");
+	hr.pattern=QRegularExpression("(\\${[[:print:]]*}|\\$\\([[:print:]]*\\)|\\$[[:word:]_]+)");
 	rules->append(hr);
 
 //function dec
