@@ -59,7 +59,7 @@ void htmllang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
 	hr.pattern = QRegularExpression("(\".*\")|('.*')");
 	rules->append(hr);
-//
+
 ////variables
 	hr.format.setForeground(this->theme[CUSTOMTHEME].colour);
 	hr.format.setFontWeight(this->theme[CUSTOMTHEME].weight);
@@ -71,9 +71,9 @@ void htmllang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
 	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
 	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
-	hr.pattern=QRegularExpression("([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)");
+	hr.pattern=QRegularExpression(NUMBERSREGEX);
 	rules->append(hr);
-//
+
 //types
 	hr.format.setForeground(this->theme[TYPETHEME].colour);
 	hr.format.setFontWeight(this->theme[TYPETHEME].weight);
@@ -89,7 +89,6 @@ void htmllang::setMultLineFormatStart(highLightingRule *hr)
 	hr->format.setFontWeight(this->theme[COMMENTTHEME].weight);
 	hr->format.setFontItalic(this->theme[COMMENTTHEME].italic);
 	hr->pattern = QRegularExpression("<!--");
-
 }
 
 void htmllang::setMultLineFormatStop(highLightingRule *hr)

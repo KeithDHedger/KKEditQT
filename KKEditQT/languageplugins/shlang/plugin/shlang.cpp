@@ -45,7 +45,7 @@ void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
 	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
 	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
-	hr.pattern=QRegularExpression("([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)");
+	hr.pattern=QRegularExpression(NUMBERSREGEX);
 	rules->append(hr);
 
 //quotes rule

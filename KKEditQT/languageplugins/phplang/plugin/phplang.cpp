@@ -43,7 +43,6 @@ void phplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setFontItalic(this->theme[FUNCTIONTHEME].italic);
 	hr.format.setFontWeight(this->theme[FUNCTIONTHEME].weight);
 	hr.format.setForeground(this->theme[FUNCTIONTHEME].colour);
-//	hr.pattern=QRegularExpression("\\b[A-Za-z0-9_]+[[:space:]]*(?=\\()");
 	hr.pattern=QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
 	rules->append(hr);
 
@@ -58,14 +57,14 @@ void phplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
 	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
 	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
-	hr.pattern = QRegularExpression("(\".*\")|('.*')");
+	hr.pattern = QRegularExpression("(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\")|('([^'\\\\]*(\\\\.[^'\\\\]*)*)')");
 	rules->append(hr);
 
 //numbers
 	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
 	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
 	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
-	hr.pattern=QRegularExpression("([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)");
+	hr.pattern=QRegularExpression(NUMBERSREGEX);
 	rules->append(hr);
 
 //keywords

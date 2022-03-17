@@ -1,26 +1,26 @@
 /*
  *
- * ©K. D. Hedger. Wed 16 Mar 14:07:43 GMT 2022 keithdhedger@gmail.com
+ * ©K. D. Hedger. Wed 16 Mar 16:31:43 GMT 2022 keithdhedger@gmail.com
 
- * This file (jslang.cpp) is part of jslang.
+ * This file (javalang.cpp) is part of javalang.
 
- * jslang is free software: you can redistribute it and/or modify
+ * javalang is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
 
- * jslang is distributed in the hope that it will be useful,
+ * javalang is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with jslang.  If not, see <http://www.gnu.org/licenses/>.
+ * along with javalang.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "jslang.h"
+#include "javalang.h"
 
-void jslang::initPlug(QString pathtoplug)
+void javalang::initPlug(QString pathtoplug)
 {
 	themeStruct	blank={Qt::black,QFont::Normal,false};
 
@@ -30,12 +30,12 @@ void jslang::initPlug(QString pathtoplug)
 			this->theme[j]=blank;
 }
 
-void jslang::unloadPlug(void)
+void javalang::unloadPlug(void)
 {
 }
 
 //new format
-void jslang::setLanguageRules(QVector<highLightingRule> *rules)
+void javalang::setLanguageRules(QVector<highLightingRule> *rules)
 {
 	highLightingRule	hr;
 
@@ -43,14 +43,22 @@ void jslang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setFontItalic(this->theme[FUNCTIONTHEME].italic);
 	hr.format.setFontWeight(this->theme[FUNCTIONTHEME].weight);
 	hr.format.setForeground(this->theme[FUNCTIONTHEME].colour);
-	hr.pattern=QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
+
+	hr.pattern=QRegularExpression("\\b[[:word:]\\.]*[[:word:]_]+(?=\\()");
+	rules->append(hr);
+
+//classes
+	hr.format.setForeground(this->theme[CLASSTHEME].colour);
+	hr.format.setFontWeight(this->theme[CLASSTHEME].weight);
+	hr.format.setFontItalic(this->theme[CLASSTHEME].italic);
+	hr.pattern=QRegularExpression("(class|enum|extends|implements|instanceof|interface|native|throws|private|protected|public)");
 	rules->append(hr);
 
 //quotes
 	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
 	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
 	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
-	hr.pattern = QRegularExpression("(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\")|('([^'\\\\]*(\\\\.[^'\\\\]*)*)')");
+	hr.pattern = QRegularExpression("(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\")|('\\\\.')|('.')");
 	rules->append(hr);
 
 //numbers
@@ -64,28 +72,28 @@ void jslang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[KEYWORDTHEME].colour);
 	hr.format.setFontWeight(this->theme[KEYWORDTHEME].weight);
 	hr.format.setFontItalic(this->theme[KEYWORDTHEME].italic);
-	hr.pattern=QRegularExpression("\\b(let|abstract|break|case|catch|const|continue|debugger|default|delete|do|else|enum|export|extends|final|finally|for|function|goto|if|implements|in|instanceof|interface|native|new|private|protected|prototype|public|return|super|switch|synchronized|throw|throws|this|transient|try|typeof|var|volatile|while|with)\\b");
+	hr.pattern=QRegularExpression("\\b(assert|break|case|catch|continue|default|do|else|finally|for|if|return|throw|switch|try|while|new|super|this|goto|abstract|final|static|strictfp|synchronized|transient|volatile|class|enum|extends|implements|instanceof|interface|native|throws)\\b");
+	rules->append(hr);
+
+//includes
+	hr.format.setForeground(this->theme[INCLUDETHEME].colour);
+	hr.format.setFontWeight(this->theme[INCLUDETHEME].weight);
+	hr.format.setFontItalic(this->theme[INCLUDETHEME].italic);
+	hr.pattern=QRegularExpression("\\b(import|package)\\b");
 	rules->append(hr);
 
 //types
 	hr.format.setForeground(this->theme[TYPETHEME].colour);
 	hr.format.setFontWeight(this->theme[TYPETHEME].weight);
 	hr.format.setFontItalic(this->theme[TYPETHEME].italic);
-	hr.pattern=QRegularExpression("\\b(NULL|null|true|false|null|undefined)\\b");
+	hr.pattern=QRegularExpression("\\b(boolean|byte|char|double|float|int|long|short|void)\\b");
 	rules->append(hr);
 
-//custom
+//java extras
 	hr.format.setForeground(this->theme[CUSTOMTHEME].colour);
 	hr.format.setFontWeight(this->theme[CUSTOMTHEME].weight);
 	hr.format.setFontItalic(this->theme[CUSTOMTHEME].italic);
-	hr.pattern=QRegularExpression("\\b(Infinity|Math|NaN|NEGATIVE_INFINITY|POSITIVE_INFINITY)\\b");
-	rules->append(hr);
-
-//java script extras
-	hr.format.setForeground(this->theme[LANGUAGEEXTRAS].colour);
-	hr.format.setFontWeight(this->theme[LANGUAGEEXTRAS].weight);
-	hr.format.setFontItalic(this->theme[LANGUAGEEXTRAS].italic);
-	hr.pattern=QRegularExpression("\\b(abstract|boolean|byte|char|class|debugger|double|enum|extends|final|float|goto|implements|interface|int|long|native|package|private|protected|public|short|static|super|synchronized|throws|transient|volatile)\\b");
+	hr.pattern=QRegularExpression("\\b(abstract|final|static|strictfp|synchronized|transient|volatile)\\b");
 	rules->append(hr);
 
 //single line comment
@@ -97,7 +105,7 @@ void jslang::setLanguageRules(QVector<highLightingRule> *rules)
 }
 
 //odd single formats set to "" for no multiline comment
-void jslang::setMultLineFormatStart(highLightingRule *hr)
+void javalang::setMultLineFormatStart(highLightingRule *hr)
 {
 	hr->format.setForeground(this->theme[COMMENTTHEME].colour);
 	hr->format.setFontWeight(this->theme[COMMENTTHEME].weight);
@@ -105,12 +113,12 @@ void jslang::setMultLineFormatStart(highLightingRule *hr)
 	hr->pattern = QRegularExpression("/\\*");
 }
 
-void jslang::setMultLineFormatStop(highLightingRule *hr)
+void javalang::setMultLineFormatStop(highLightingRule *hr)
 {
 	hr->pattern = QRegularExpression("\\*/");
 }
 
-void jslang::setTheme(QHash<int,themeStruct> newtheme)
+void javalang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }
