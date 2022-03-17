@@ -43,8 +43,6 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setFontItalic(this->theme[FUNCTIONTHEME].italic);
 	hr.format.setFontWeight(this->theme[FUNCTIONTHEME].weight);
 	hr.format.setForeground(this->theme[FUNCTIONTHEME].colour);
-	//hr.pattern=QRegularExpression("([[:word:]]+(\\.|\\-\\>|\\(\\)))+([[:word:]_]+(?=[[:space:]]*(\\(|=)))");
-	//hr.pattern=QRegularExpression("([[:word:]]+(\\.|\\-\\>))+(?=[[:space:]]*\\()?");
 	hr.pattern=QRegularExpression("([[:word:]]+(\\.|\\-\\>|([[:space:]]*\\()))+");
 	rules->append(hr);
 
@@ -66,7 +64,8 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
 	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
 	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
-	hr.pattern=QRegularExpression("([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)");
+	//hr.pattern=QRegularExpression("([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)");
+	hr.pattern=QRegularExpression(NUMBERSREGEX);
 	rules->append(hr);
 
 //keywords

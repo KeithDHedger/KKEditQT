@@ -37,6 +37,8 @@ struct themeStruct
 	bool				italic;
 };
 
+#define NUMBERSREGEX "([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)"
+
 enum {FUNCTIONTHEME=0,CLASSTHEME,TYPETHEME,COMMENTTHEME,QUOTESTHEME,INCLUDETHEME,NUMBERTHEME,KEYWORDTHEME,CUSTOMTHEME,LANGUAGEEXTRAS,THEMEDONE};
 
 class SyntaxHighlitePluginInterface
