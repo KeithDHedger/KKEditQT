@@ -200,7 +200,7 @@ void Highlighter::setTheme(QString themename)
 	QJsonDocument			doc;
     QVariantMap				mainMap;
     QByteArray				data;
-	const char				*entrynames[]={"functions","class","types","comments","quotes","includes","numbers","keywords","custom","lanuageextra",NULL};
+	const char				*entrynames[]={"functions","class","types","comments","quotes","includes","numbers","keywords","custom","lanuageextra","variables",NULL};
 
 	themepath=QString("%1/themes/%2.json").arg(DATADIR).arg(themename);
 

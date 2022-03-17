@@ -93,5 +93,13 @@
 				"italic":true,
 				"bold":true
 			}
+		],
+	"variables":
+		[
+			{
+				"colour":"#424242",
+				"italic":false,
+				"bold":true
+			}
 		]
 }

@@ -63,9 +63,9 @@ void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 
 //variables
-	hr.format.setForeground(this->theme[CUSTOMTHEME].colour);
-	hr.format.setFontWeight(this->theme[CUSTOMTHEME].weight);
-	hr.format.setFontItalic(this->theme[CUSTOMTHEME].italic);
+	hr.format.setForeground(this->theme[VARIABLETHEME].colour);
+	hr.format.setFontWeight(this->theme[VARIABLETHEME].weight);
+	hr.format.setFontItalic(this->theme[VARIABLETHEME].italic);
 	hr.pattern=QRegularExpression("([[:word:]]*)(?==)");
 	rules->append(hr);
 

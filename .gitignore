@@ -12,7 +12,7 @@ configure
 autom4te.cache
 *.m4
 Makefile.in
-./config.h
+/config.h
 *.so
 config.h.in
 *~
