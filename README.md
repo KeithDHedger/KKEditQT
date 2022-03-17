@@ -34,7 +34,6 @@ TODO ( in no particular order ):
 
 Search forward/back checkbox ( Minor )<br>
 Global tools ( Minor )<br>
-Hilighting ( Major )<br>
 Interaction with built document ( Major )<br>
 Scripting ( Major )<br>
 
