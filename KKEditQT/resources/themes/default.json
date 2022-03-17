@@ -65,9 +65,9 @@
 	"numbers":
 		[
 			{
-				"colour":"#ff00ff",
+				"colour":"#008080",
 				"italic":false,
-				"bold":false
+				"bold":true
 			}
 		],
 	"keywords":
