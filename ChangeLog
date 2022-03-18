@@ -1,4 +1,6 @@
 0.6.0
+Updated theme json files.
+Fixed truning off syntax highlighting for view menu.
 Added json lang plug.
 Added variables colour to themes.
 Added java lang plug.

@@ -463,21 +463,18 @@ void DocumentClass::setFilePrefs(void)
 	this->setTabStopDistance(1.0);
 	this->dirty=true;
 
+	this->highlighter->syntaxHighlighting=this->realSyntaxHighlighting();
 	this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
-	this->setStyleSheet(this->highlighter->docbackground);
-
+	this->setStyleSheet(this->highlighter->docBackgroundCSS);
 
 	this->dirty=holddirty;
 	this->updateLineNumberAreaWidth();
-	
+
 	this->setFont(this->mainKKEditClass->prefsDocumentFont);
 	this->setLineWrapMode(static_cast<QPlainTextEdit::LineWrapMode>(this->mainKKEditClass->wrapLine));
 	this->prefsHiLiteLineColor=this->mainKKEditClass->prefsHiLiteLineColor;
 	this->bookmarkLineColor=this->mainKKEditClass->prefsBookmarkHiLiteColor;
 	this->highlightCurrentLine();
-
-	if(this->realSyntaxHighlighting()==false)
-		opts.setFlags(QTextOption::SuppressColors);
 
 	if(this->mainKKEditClass->showWhiteSpace==true)
 		opts.setFlags(opts.flags()|QTextOption::ShowLineAndParagraphSeparators | QTextOption::ShowTabsAndSpaces|QTextOption::ShowDocumentTerminator);

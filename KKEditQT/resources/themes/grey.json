@@ -11,7 +11,8 @@
 	"document":
 		[
 			{
-				"colour":"#7f7f7f"
+				"bgcolour":"#7f7f7f",
+				"fgcolour":"#000000"
 			}
 		],
 	"functions":

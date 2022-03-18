@@ -62,6 +62,9 @@ void Highlighter::highlightBlock(const QString &text)
 
 	if(this->currentPlug==-1)
 		return;
+	if(this->syntaxHighlighting==false)
+		return;
+
 	QRegularExpression	startExpression(this->multiLineCommentStart.pattern);
 	QRegularExpression	endExpression(this->multiLineCommentStop.pattern);
 	int					startIndex=0;
@@ -233,7 +236,7 @@ void Highlighter::setTheme(QString themename)
 
 	localList=mainMap["document"].toList();    
 	map=localList[0].toMap();
-	this->docbackground=QString("QPlainTextEdit {background-color: %1;}").arg(map["colour"].toString());
+	this->docBackgroundCSS=QString("QPlainTextEdit {background-color: %1; color: %2;}").arg(map["bgcolour"].toString()).arg(map["fgcolour"].toString());
 	localList=mainMap["linenumbers"].toList();    
 	map=localList[0].toMap();
 	this->lineNumbersBackground=map["bgcolour"].toString();

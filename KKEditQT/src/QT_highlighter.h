@@ -56,12 +56,13 @@ public:
 //vars
 	QHash<int,langPluginStruct>	langPlugins;
 
-	QString						docbackground;
+	QString						docBackgroundCSS;
 	QString						lineNumbersBackground;
 	QString						lineNumbersForeground;
 	QString						bookMarkBGColour;
 	QString						bookMarkFGColour;
 
+	bool						syntaxHighlighting=true;
 protected:
 	void						highlightBlock(const QString &text);
 
