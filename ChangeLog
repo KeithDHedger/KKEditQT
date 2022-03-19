@@ -1,4 +1,5 @@
 0.6.0
+Added theme to 'View' menu.
 Updated theme json files.
 Fixed turning off syntax highlighting from view menu.
 Added json lang plug.

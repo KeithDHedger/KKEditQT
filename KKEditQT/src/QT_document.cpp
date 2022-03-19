@@ -464,7 +464,7 @@ void DocumentClass::setFilePrefs(void)
 	this->dirty=true;
 
 	this->highlighter->syntaxHighlighting=this->realSyntaxHighlighting();
-	this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
+	this->highlighter->setTheme(this->mainKKEditClass->prefStyleNameHold);
 	this->setStyleSheet(this->highlighter->docBackgroundCSS);
 
 	this->dirty=holddirty;

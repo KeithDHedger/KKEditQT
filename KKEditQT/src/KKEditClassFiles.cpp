@@ -302,6 +302,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
 			retval=true;
 			file.close();
 			this->recentFiles->addFilePath(filepath);
+			doc->setFilePrefs();
 		}
 
 	this->rebuildTabsMenu();

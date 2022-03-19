@@ -154,6 +154,7 @@ void KKEditClass::buildPrefsWindow(void)
 	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
 		{
 			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
+			this->prefStyleNameHold=this->prefStyleName;
 		});
 	qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->setCurrentText(this->prefStyleName);
 
@@ -765,6 +766,24 @@ void KKEditClass::buildMainGui(void)
 //view menu
 	this->viewMenu=new QMenu("&View");
 	this->menuBar->addMenu(this->viewMenu);
+
+	QDir			languagesDir(QString("%1/themes/").arg(DATADIR));
+	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
+
+	QMenu			*thememenu;
+	thememenu=new QMenu("Theme");
+	this->viewMenu->addMenu(thememenu);
+	while (it.hasNext())
+		{
+			QString	s=it.next();
+			QAction	*menuitem=new QAction(QFileInfo(s).baseName());
+			thememenu->addAction(menuitem);
+			QObject::connect(menuitem,&QAction::triggered,[this,s]()
+				{
+					this->prefStyleNameHold=QFileInfo(s).baseName();
+					this->resetAllFilePrefs();
+				});
+		}
 
 //show docs
 	menuItemSink=this->makeMenuItemClass(VIEWMENU,"Show Documentation",0,NULL,SHOWDOCSMENUNAME,DOCSMENUITEM);

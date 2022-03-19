@@ -627,6 +627,7 @@ void KKEditClass::readConfigs(void)
 
 //theme
 	this->prefStyleName=this->prefs.value("theme/style","default").toString();
+	this->prefStyleNameHold=this->prefStyleName;
 	this->prefsHiLiteLineColor=this->prefs.value("theme/hilitelinecol",QVariant(QColor(0xff,0xff,0xff,0x40))).value<QColor>();
 	this->prefsBookmarkHiLiteColor=this->prefs.value("theme/bmhilitecol",QVariant(QColor(0,0,0,0x40))).value<QColor>();
 

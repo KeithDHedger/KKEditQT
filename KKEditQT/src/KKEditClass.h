@@ -198,6 +198,7 @@ class KKEditClass : public QObject
 		QColor						prefsHiLiteLineColor;
 		QColor						prefsBookmarkHiLiteColor;
 		QString						prefStyleName;
+		QString						prefStyleNameHold;
 //editor
 		int							prefsFunctionMenuLayout=0;
 		unsigned int				prefsDepth=1;
