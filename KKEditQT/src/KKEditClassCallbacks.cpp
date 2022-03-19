@@ -32,15 +32,21 @@ void KKEditClass::doSessionsMenuItems(void)
 	MenuItemClass	*menuItemSink;
 	unsigned int	sessionnumber=mc->getMenuID();
 
-	if(sender()->objectName().compare(SAVESESSIONMENUNAME)==0)
+	if((sender()->objectName().compare(SAVESESSIONMENUNAME)==0) || (sender()->objectName().compare(QUITMENUNAME)==0))
 		{
-			if(sessionnumber==CURRENTSESSION)
+			if(sender()->objectName().compare(QUITMENUNAME)==0)
 				{
-					if(this->currentSessionNumber==0xdeadbeef)
-						return;
-					sessionnumber=this->currentSessionNumber;
+					sessionnumber=0;
 				}
-
+			else
+				{
+					if(sessionnumber==CURRENTSESSION)
+						{
+							if(this->currentSessionNumber==0xdeadbeef)
+								return;
+							sessionnumber=this->currentSessionNumber;
+						}
+				}
 			sessionname=QString("Session-%1").arg(sessionnumber);
 			file.setFileName(QString("%1/Session-%2").arg(this->sessionFolder).arg(sessionnumber));
 //get sesion name
@@ -65,12 +71,15 @@ void KKEditClass::doSessionsMenuItems(void)
 
 					if(mc->getMenuID()!=CURRENTSESSION)
 						{
-							QString	text=QInputDialog::getText(this->mainWindow,"Session Name","Enter Session Name",QLineEdit::Normal,sessionname,&ok);
-							if ((ok==true) && (!text.isEmpty()))
+							if(sender()->objectName().compare(QUITMENUNAME)!=0)
 								{
-									sessionname=(text);
-									mc->setText(sessionname);
-									this->sessionNames[mc->getMenuID()]=sessionname;
+									QString	text=QInputDialog::getText(this->mainWindow,"Session Name","Enter Session Name",QLineEdit::Normal,sessionname,&ok);
+									if ((ok==true) && (!text.isEmpty()))
+										{
+											sessionname=(text);
+											mc->setText(sessionname);
+											this->sessionNames[mc->getMenuID()]=sessionname;
+										}
 								}
 						}
 					else
@@ -112,7 +121,8 @@ void KKEditClass::doSessionsMenuItems(void)
 			this->sessionBusy=true;
 			sessionnumber=mc->getMenuID();
 			if(sessionnumber==CURRENTSESSION)
-				return;
+				sessionnumber=0;
+
 			this->closeAllTabs();
 			this->sessionBusy=true;
 			file.setFileName(QString("%1/Session-%2").arg(this->sessionFolder).arg(sessionnumber));
@@ -668,6 +678,8 @@ void KKEditClass::setPreferences(void)
 	this->recentFiles->maxFiles=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXRECENTS])->value();
 	this->autoShowMinChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[COMPLETIONSIZE])->value();
 	this->recentFiles->updateRecents();
+
+	this->onExitSaveSession=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSAVE])->checkState();
 
 //term command
 	this->prefsTerminalCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSTERMCOMMAND])->text();

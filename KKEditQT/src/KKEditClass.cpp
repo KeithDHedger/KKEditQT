@@ -277,7 +277,7 @@ void KKEditClass::rebuildBookMarkMenu()
 	MenuItemClass	*menuItemSink;
 
 	this->bookMarkMenu->clear();
-	menuItemSink=this->makeMenuItemClass(BOOKMARKSMENU,"Remove All Bookmarks",0,"window-close",REMOVEALLBOOKMARKS,REMOVEALLBOOKMARKSMENUITEM);
+	menuItemSink=this->makeMenuItemClass(BOOKMARKSMENU,"Remove All Bookmarks",0,"list-remove",REMOVEALLBOOKMARKS,REMOVEALLBOOKMARKSMENUITEM);
 	menuItemSink=this->makeMenuItemClass(BOOKMARKSMENU,"Toggle Bookmark",QKeySequence::fromString("Ctrl+T"),DATADIR"/pixmaps/BookMark.png",TOGGLEBOOKMARK,TOGGLEBOOKMARKMENUITEM);
 
 	this->bookMarkMenu->addSeparator();
@@ -638,7 +638,8 @@ void KKEditClass::readConfigs(void)
 	this->findList=this->prefs.value("app/findlist").toStringList();
 	this->replaceList=this->prefs.value("app/replacelist").toStringList();
 	this->defaultShortCutsList=this->prefs.value("app/shortcuts",QVariant(QStringList({"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'"}))).toStringList();
-	
+
+	this->onExitSaveSession=this->prefs.value("app/onexitsavesession",QVariant(bool(true))).value<bool>();
 	this->disabledPlugins=this->prefs.value("app/disabledplugins").toStringList();
 
 	this->setAppShortcuts();	
@@ -775,6 +776,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/shortcuts",this->defaultShortCutsList);
 	this->prefs.setValue("app/findlist",this->findList);
 	this->prefs.setValue("app/replacelist",this->replaceList);
+	this->prefs.setValue("app/onexitsavesession",this->onExitSaveSession);
 
 	this->disabledPlugins.clear();
 	for(int j=0;j<this->plugins.count();j++)
@@ -969,12 +971,9 @@ void KKEditClass::shutDownApp()
 {
 	if(this->forcedMultInst==false)
 		this->writeExitData();
-//TODO
-	//if(onExitSaveSession)
-	//	saveSession(NULL,0);
-	//if(doSaveAll(widget,(uPtr)true)==false)
-	//	return;
-	//g_list_foreach(globalPlugins->plugins,releasePlugs,NULL);
+
+	if(this->onExitSaveSession==true)
+		this->doSessionsMenuItems();
 
 	if(this->saveAllFiles()==true)
 		{
@@ -1046,7 +1045,7 @@ void KKEditClass::setToolbarSensitive(void)
 	else
 		this->saveCurrentSessionMenuItem->setEnabled(true);
 		
-	this->restoreDefaultSessionMenuItem->setEnabled(false);//TODO//
+	this->restoreDefaultSessionMenuItem->setEnabled(this->onExitSaveSession);//TODO//
 
 	this->pluginMenu->setEnabled(!this->pluginMenu->isEmpty());
 

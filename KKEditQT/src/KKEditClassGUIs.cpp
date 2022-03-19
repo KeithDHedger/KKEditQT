@@ -684,7 +684,7 @@ void KKEditClass::buildMainGui(void)
 //restore session
 	this->restoreSessionsMenu=new QMenu("&Restore Session");
 	this->fileMenu->addMenu(this->restoreSessionsMenu);
-	this->restoreDefaultSessionMenuItem=this->makeMenuItemClass(RESTORESESSIONSMENU,"Restore Default Session",0,NULL,RESTORESESSIONMENUNAME,CURRENTSESSION);
+	this->restoreDefaultSessionMenuItem=this->makeMenuItemClass(RESTORESESSIONSMENU,"Restore Autosave Session",0,NULL,RESTORESESSIONMENUNAME,CURRENTSESSION);
 	this->restoreSessionsMenu->addSeparator();
 	for(int j=1;j<MAXSESSIONS;j++)
 		{
