@@ -634,6 +634,7 @@ void KKEditClass::doTimer(void)
 								this->gotoLine(strtol(buffer.mText,NULL,0));
 								break;
 							case SEARCHDEFMSG:
+								this->goToDefinition(buffer.mText);
 								qDebug() << "SEARCHDEFMSG";
 								break;
 							case SELECTTABMSG:
