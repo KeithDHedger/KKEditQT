@@ -88,7 +88,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = kkeditqt$(EXEEXT) KKEditQTProgressBar$(EXEEXT)
+bin_PROGRAMS = kkeditqt$(EXEEXT) KKEditQTProgressBar$(EXEEXT) \
+	kkeditqtmsg$(EXEEXT)
 subdir = KKEditQT/app
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -132,6 +133,9 @@ am__objects_1 = ../src/KKEditClassCallbacks.$(OBJEXT) \
 am_kkeditqt_OBJECTS = $(am__objects_1)
 kkeditqt_OBJECTS = $(am_kkeditqt_OBJECTS)
 kkeditqt_LDADD = $(LDADD)
+am_kkeditqtmsg_OBJECTS = ../kkeditqtmsg/main.$(OBJEXT)
+kkeditqtmsg_OBJECTS = $(am_kkeditqtmsg_OBJECTS)
+kkeditqtmsg_LDADD = $(LDADD)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -175,8 +179,8 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ../pole/$(DEPDIR)/main.Po \
-	../src/$(DEPDIR)/KKEditClass.Po \
+am__depfiles_remade = ../kkeditqtmsg/$(DEPDIR)/main.Po \
+	../pole/$(DEPDIR)/main.Po ../src/$(DEPDIR)/KKEditClass.Po \
 	../src/$(DEPDIR)/KKEditClassCallbacks.Po \
 	../src/$(DEPDIR)/KKEditClassDocuments.Po \
 	../src/$(DEPDIR)/KKEditClassFiles.Po \
@@ -216,8 +220,10 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(KKEditQTProgressBar_SOURCES) $(kkeditqt_SOURCES)
-DIST_SOURCES = $(KKEditQTProgressBar_SOURCES) $(kkeditqt_SOURCES)
+SOURCES = $(KKEditQTProgressBar_SOURCES) $(kkeditqt_SOURCES) \
+	$(kkeditqtmsg_SOURCES)
+DIST_SOURCES = $(KKEditQTProgressBar_SOURCES) $(kkeditqt_SOURCES) \
+	$(kkeditqtmsg_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -374,6 +380,7 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 COMMONSRC = ../src/KKEditClassCallbacks.cpp ../src/KKEditClass.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_toolbar.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp
 kkeditqt_SOURCES = $(COMMONSRC)
 KKEditQTProgressBar_SOURCES = ../pole/main.cpp
+kkeditqtmsg_SOURCES = ../kkeditqtmsg/main.cpp
 pixfilesdir = $(pkgdatadir)/pixmaps
 pixfiles_DATA = ../resources/pixmaps/*
 helpfilesdir = $(pkgdatadir)/help
@@ -536,6 +543,18 @@ KKEditQTProgressBar$(EXEEXT): $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressB
 kkeditqt$(EXEEXT): $(kkeditqt_OBJECTS) $(kkeditqt_DEPENDENCIES) $(EXTRA_kkeditqt_DEPENDENCIES) 
 	@rm -f kkeditqt$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(kkeditqt_OBJECTS) $(kkeditqt_LDADD) $(LIBS)
+../kkeditqtmsg/$(am__dirstamp):
+	@$(MKDIR_P) ../kkeditqtmsg
+	@: > ../kkeditqtmsg/$(am__dirstamp)
+../kkeditqtmsg/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) ../kkeditqtmsg/$(DEPDIR)
+	@: > ../kkeditqtmsg/$(DEPDIR)/$(am__dirstamp)
+../kkeditqtmsg/main.$(OBJEXT): ../kkeditqtmsg/$(am__dirstamp) \
+	../kkeditqtmsg/$(DEPDIR)/$(am__dirstamp)
+
+kkeditqtmsg$(EXEEXT): $(kkeditqtmsg_OBJECTS) $(kkeditqtmsg_DEPENDENCIES) $(EXTRA_kkeditqtmsg_DEPENDENCIES) 
+	@rm -f kkeditqtmsg$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(kkeditqtmsg_OBJECTS) $(kkeditqtmsg_LDADD) $(LIBS)
 install-scriptfilesSCRIPTS: $(scriptfiles_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	@list='$(scriptfiles_SCRIPTS)'; test -n "$(scriptfilesdir)" || list=; \
@@ -574,12 +593,14 @@ uninstall-scriptfilesSCRIPTS:
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f ../kkeditqtmsg/*.$(OBJEXT)
 	-rm -f ../pole/*.$(OBJEXT)
 	-rm -f ../src/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@../kkeditqtmsg/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../pole/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/KKEditClass.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/KKEditClassCallbacks.Po@am__quote@ # am--include-marker
@@ -833,6 +854,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f ../kkeditqtmsg/$(DEPDIR)/$(am__dirstamp)
+	-rm -f ../kkeditqtmsg/$(am__dirstamp)
 	-rm -f ../pole/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ../pole/$(am__dirstamp)
 	-rm -f ../src/$(DEPDIR)/$(am__dirstamp)
@@ -846,7 +869,8 @@ clean: clean-am
 clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ../pole/$(DEPDIR)/main.Po
+		-rm -f ../kkeditqtmsg/$(DEPDIR)/main.Po
+	-rm -f ../pole/$(DEPDIR)/main.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClass.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClassCallbacks.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClassDocuments.Po
@@ -922,7 +946,8 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ../pole/$(DEPDIR)/main.Po
+		-rm -f ../kkeditqtmsg/$(DEPDIR)/main.Po
+	-rm -f ../pole/$(DEPDIR)/main.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClass.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClassCallbacks.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClassDocuments.Po

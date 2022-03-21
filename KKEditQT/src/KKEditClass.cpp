@@ -1148,7 +1148,7 @@ void KKEditClass::runCLICommands(int quid)
 			if(this->parser.isSet("quit"))
 				{
  					msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","quit");
-					message.mType=QUITAPP;
+					message.mType=QUITAPPMSG;
 					msgsnd(quid,&message,msglen,0);
 				}
 
@@ -1156,7 +1156,7 @@ void KKEditClass::runCLICommands(int quid)
 				{
 					opensessionname=this->parser.value("restore-session");
  					msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s",opensessionname.toStdString().c_str());
-					message.mType=OPENSESSION;
+					message.mType=OPENSESSIONMSG;
 					msgsnd(quid,&message,msglen,0);
 				}
 
@@ -1164,11 +1164,11 @@ void KKEditClass::runCLICommands(int quid)
 			for(int j=0;j<list.count();j++)
 				{
 					msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s",list.at(j).toStdString().c_str());
-					message.mType=OPENFILE;
+					message.mType=OPENFILEMSG;
 					msgsnd(quid,&message,msglen,0);
 				}
 			msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","ACTIVATE");
-			message.mType=ACTIVATEAPP;
+			message.mType=ACTIVATEAPPMSG;
 			msgsnd(quid,&message,msglen,0);
 		}
 }

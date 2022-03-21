@@ -1,4 +1,8 @@
 0.6.0
+Done gotoline msg.
+kkeditmsg now accepts hex/decimal/octal numbers for key.
+Added kkeeditqtmsg.
+Started scripting.
 Done autosave session.
 Added theme to 'View' menu.
 Updated theme json files.

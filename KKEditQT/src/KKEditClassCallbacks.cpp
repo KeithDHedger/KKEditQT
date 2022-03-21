@@ -30,10 +30,17 @@ void KKEditClass::doSessionsMenuItems(void)
 	QString			sessionname;
 	QString			tempstr;
 	MenuItemClass	*menuItemSink;
-	unsigned int	sessionnumber=mc->getMenuID();
+	unsigned int	sessionnumber;
+//this is crappy needs redoing
+	if(mc==NULL)
+		sessionnumber=0;
+	else
+		sessionnumber=mc->getMenuID();
 
-	if((sender()->objectName().compare(SAVESESSIONMENUNAME)==0) || (sender()->objectName().compare(QUITMENUNAME)==0))
+	if((sessionnumber==0) || (sender()->objectName().compare(SAVESESSIONMENUNAME)==0) || (sender()->objectName().compare(QUITMENUNAME)==0))
 		{
+			if(sessionnumber!=0)
+			{
 			if(sender()->objectName().compare(QUITMENUNAME)==0)
 				{
 					sessionnumber=0;
@@ -47,6 +54,7 @@ void KKEditClass::doSessionsMenuItems(void)
 							sessionnumber=this->currentSessionNumber;
 						}
 				}
+			}
 			sessionname=QString("Session-%1").arg(sessionnumber);
 			file.setFileName(QString("%1/Session-%2").arg(this->sessionFolder).arg(sessionnumber));
 //get sesion name
@@ -69,7 +77,7 @@ void KKEditClass::doSessionsMenuItems(void)
 					bool	visible=true;
 					bool	ok;
 
-					if(mc->getMenuID()!=CURRENTSESSION)
+					if((sessionnumber!=0) && (mc->getMenuID()!=CURRENTSESSION))
 						{
 							if(sender()->objectName().compare(QUITMENUNAME)!=0)
 								{
@@ -601,6 +609,8 @@ void KKEditClass::doFileMenuItems()
 		}
 }
 
+//enum msgActions {OPENFILEMSG=100,SAVEFILEMSG,QUITAPPMSG,ACTIVATEAPPMSG,OPENSESSIONMSG,GOTOLINEMSG,SEARCHDEFMSG,SELECTTABMSG,SELECTTABBYPATHMSG,BOOKMARKMSG,CLOSETABMSG,SETUSERMARKMSG,UNSETUSERMARKMASG,MOVETOMSG,SELECTBETWEENMSG,PASTEMSG,COPYMSG,CUTMSG,INSERTTEXTMSG,INSERTNLMSG,INSERTFILEMSG,PRINTFILESMSG,WAITFORKKEDITQTMSG,SHOWCONTINUEMSG,RUNTOOLMSG,ACTIVATEMENUNAMEDMSG,ACTIVATEMENULABELEDMSG,SENDPOSDATAMSG,SENDSELECTEDTEXTMSG,LASTMSG};
+
 void KKEditClass::doTimer(void)
 {
 	int			retcode=0;
@@ -615,23 +625,97 @@ void KKEditClass::doTimer(void)
 			buffer.mText[0]=0;
 			retcode=msgrcv(this->queueID,&buffer,MAXMSGSIZE,MSGANY,IPC_NOWAIT);
 			buffer.mText[retcode]=0;
+			//qDebug() << "type=" << buffer.mType << " message=" << buffer.mText;
 			if(retcode!=-1)
 				{
 					switch(buffer.mType)
 						{
-							case OPENFILE:
+							case GOTOLINEMSG:
+								this->gotoLine(strtol(buffer.mText,NULL,0));
+								break;
+							case SEARCHDEFMSG:
+								qDebug() << "SEARCHDEFMSG";
+								break;
+							case SELECTTABMSG:
+								qDebug() << "SELECTTABMSG";
+								break;
+							case SELECTTABBYPATHMSG:
+								qDebug() << "SELECTTABBYPATHMSG";
+								break;
+							case BOOKMARKMSG:
+								qDebug() << "BOOKMARKMSG";
+								break;
+							case CLOSETABMSG:
+								qDebug() << "CLOSETABMSG";
+								break;
+							case SETUSERMARKMSG:
+								qDebug() << "SETUSERMARKMSG";
+								break;
+							case UNSETUSERMARKMASG:
+								qDebug() << "UNSETUSERMARKMASG";
+								break;
+							case MOVETOMSG:
+								qDebug() << "MOVETOMSG";
+								break;
+							case SELECTBETWEENMSG:
+								qDebug() << "SELECTBETWEENMSG";
+								break;
+							case PASTEMSG:
+								qDebug() << "PASTEMSG";
+								break;
+							case COPYMSG:
+								qDebug() << "COPYMSG";
+								break;
+							case CUTMSG:
+								qDebug() << "CUTMSG";
+								break;
+							case INSERTTEXTMSG:
+								qDebug() << "INSERTTEXTMSG";
+								break;
+							case INSERTNLMSG:
+								qDebug() << "INSERTNLMSG";
+								break;
+							case INSERTFILEMSG:
+								qDebug() << "INSERTFILEMSG";
+								break;
+							case PRINTFILESMSG:
+								qDebug() << "PRINTFILESMSG";
+								break;
+							case WAITFORKKEDITQTMSG:
+								qDebug() << "WAITFORKKEDITQTMSG";
+								break;
+							case SHOWCONTINUEMSG:
+								qDebug() << "SHOWCONTINUEMSG";
+								break;
+							case RUNTOOLMSG:
+								qDebug() << "RUNTOOLMSG";
+								break;
+							case ACTIVATEMENUNAMEDMSG:
+								qDebug() << "ACTIVATEMENUNAMEDMSG";
+								break;
+							case ACTIVATEMENULABELEDMSG:
+								qDebug() << "ACTIVATEMENULABELEDMSG";
+								break;
+							case SENDPOSDATAMSG:
+								qDebug() << "SENDPOSDATAMSG";
+								break;
+							case SENDSELECTEDTEXTMSG:
+								qDebug() << "SENDSELECTEDTEXTMSG";
+								break;
+							case OPENFILEMSG:
 								this->openFile(buffer.mText);
 								break;
-							case SAVEFILE:
+							case SAVEFILEMSG:
+								qDebug() << "SAVEFILEMSG";
 								break;
-							case QUITAPP:
+							case QUITAPPMSG:
 								this->shutDownApp();
 								break;
-							case ACTIVATEAPP://TODO//minimized
+							case ACTIVATEAPPMSG://TODO//minimized
 								this->application->setActiveWindow(this->mainWindow);
 								this->mainWindow->activateWindow();
 								break;
-							case OPENSESSION:
+							case OPENSESSIONMSG:
 								for(int j=0;j<this->restoreSessionMenuItemsList.count();j++)
 									{
 										if(QString(buffer.mText).compare(this->restoreSessionMenuItemsList.at(j)->text())==0)

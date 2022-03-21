@@ -155,11 +155,18 @@ void KKEditClass::gotoLine(int linenumber)
 	DocumentClass	*doc=NULL;
 	QTextBlock		block;
 	QTextCursor		cursor;
+	int				theline=linenumber;
+
+	if(theline<1)
+		theline=1;
 
 	doc=this->getDocumentForTab(-1);
 	if(doc==NULL)
 		return;
-	block=doc->document()->findBlockByNumber(linenumber-1);
+	block=doc->document()->findBlockByNumber(theline-1);
+
+	if(block.isValid()==false)
+		block=doc->document()->lastBlock();
 	cursor=doc->textCursor();
 	cursor.setPosition(block.position());
 	doc->setTextCursor(cursor);
