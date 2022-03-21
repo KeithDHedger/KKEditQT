@@ -635,10 +635,32 @@ void KKEditClass::doTimer(void)
 								break;
 							case SEARCHDEFMSG:
 								this->goToDefinition(buffer.mText);
-								qDebug() << "SEARCHDEFMSG";
 								break;
 							case SELECTTABMSG:
-								qDebug() << "SELECTTABMSG";
+								{
+									long	tabnum=strtol(buffer.mText,NULL,0);
+									QTabBar	*bar=this->mainNotebook->tabBar();
+									if(1+tabnum>bar->count())
+										tabnum=bar->count()-1;
+									if(tabnum<0)
+										tabnum=0;
+									bar->setTabVisible(tabnum,true);
+									bar->setCurrentIndex(tabnum);
+								}
+								break;
+							case SELECTTABBYNAMEMSG:
+								{
+									QTabBar	*bar=this->mainNotebook->tabBar();
+									for(int j=0;j<bar->count();j++)
+										{
+											if(bar->tabText(j).compare(buffer.mText,Qt::CaseInsensitive)==0)
+												{
+													bar->setTabVisible(j,true);
+													bar->setCurrentIndex(j);
+													return;
+												}
+										}
+								}
 								break;
 							case SELECTTABBYPATHMSG:
 								qDebug() << "SELECTTABBYPATHMSG";

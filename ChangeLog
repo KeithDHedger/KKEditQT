@@ -1,4 +1,7 @@
 0.6.0
+Done selecttabbyname msg.
+Done selecttab msg.
+Done search for define msg.
 Done gotoline msg.
 kkeditmsg now accepts hex/decimal/octal numbers for key.
 Added kkeeditqtmsg.
