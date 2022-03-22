@@ -74,7 +74,7 @@ bool		doRemove=false;
 bool		waitFirst=false;
 int			sinkReturn;
 
-const char	*commandList[]={"activate","openfile","savefile","quit","opensession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","bookmark","closetab","setusermark","unsetusermark","moveto","selectbetween","paste","copy","cut","inserttext","insertnl","insertfile","printfile","waitforkkeditqt","showcontinue","runtool","activatemenunamed","activatemenulabeled","sendposdata","sendselectedtext",NULL};
+const char	*commandList[]={"activate","openfile","savefile","quit","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","bookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","selectbetween","paste","copy","cut","inserttext","insertnl","insertfile","printfile","waitforkkeditqt","showcontinue","runtool","activatemenubylabel","sendposdata","sendselectedtext",NULL};
 
 void printHelp()
 {

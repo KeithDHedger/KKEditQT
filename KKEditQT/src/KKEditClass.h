@@ -492,6 +492,9 @@ class KKEditClass : public QObject
 
 	protected:
 	private:
+//menu functions
+		void						clickMenu(QMenu *menu,QString name);
+		void						notDoneYet(QString string);
 };
 
 #endif

@@ -609,7 +609,30 @@ void KKEditClass::doFileMenuItems()
 		}
 }
 
-//enum msgActions {OPENFILEMSG=100,SAVEFILEMSG,QUITAPPMSG,ACTIVATEAPPMSG,OPENSESSIONMSG,GOTOLINEMSG,SEARCHDEFMSG,SELECTTABMSG,SELECTTABBYPATHMSG,BOOKMARKMSG,CLOSETABMSG,SETUSERMARKMSG,UNSETUSERMARKMASG,MOVETOMSG,SELECTBETWEENMSG,PASTEMSG,COPYMSG,CUTMSG,INSERTTEXTMSG,INSERTNLMSG,INSERTFILEMSG,PRINTFILESMSG,WAITFORKKEDITQTMSG,SHOWCONTINUEMSG,RUNTOOLMSG,ACTIVATEMENUNAMEDMSG,ACTIVATEMENULABELEDMSG,SENDPOSDATAMSG,SENDSELECTEDTEXTMSG,LASTMSG};
+//enum msgActions {OPENFILEMSG=100,SAVEFILEMSG,QUITAPPMSG,ACTIVATEAPPMSG,RESTORESESSIONMSG,GOTOLINEMSG,SEARCHDEFMSG,SELECTTABMSG,SELECTTABBYPATHMSG,BOOKMARKMSG,CLOSETABMSG,SETUSERMARKMSG,UNSETUSERMARKMASG,MOVETOMSG,SELECTBETWEENMSG,PASTEMSG,COPYMSG,CUTMSG,INSERTTEXTMSG,INSERTNLMSG,INSERTFILEMSG,PRINTFILESMSG,WAITFORKKEDITQTMSG,SHOWCONTINUEMSG,RUNTOOLMSG,ACTIVATEMENUBYLABELEDMSG,ACTIVATEMENULABELEDMSG,SENDPOSDATAMSG,SENDSELECTEDTEXTMSG,LASTMSG};
+
+
+void KKEditClass::clickMenu(QMenu *menu,QString name)
+{
+	foreach (QAction *action,menu->actions())
+		{
+			if(action->menu())
+				this->clickMenu(action->menu(),name);
+			else
+				if(action->text().compare(name)==0)
+					action->triggered();
+		}
+}
+
+void KKEditClass::notDoneYet(QString string)
+{
+	QTextCursor tc=this->toolsOPText->textCursor();
+	tc.movePosition(QTextCursor::End,QTextCursor::MoveAnchor);
+	this->toolsOPText->setTextCursor(tc);
+	this->toolsOPText->insertPlainText(QString("%1\n").arg(string));
+	this->toolOutputWindow->setWindowTitle("Information");
+	this->toolOutputWindow->show();
+}
 
 void KKEditClass::doTimer(void)
 {
@@ -653,7 +676,7 @@ void KKEditClass::doTimer(void)
 									QTabBar	*bar=this->mainNotebook->tabBar();
 									for(int j=0;j<bar->count();j++)
 										{
-											if(bar->tabText(j).compare(buffer.mText,Qt::CaseInsensitive)==0)
+											if(bar->tabText(j).compare(buffer.mText)==0)
 												{
 													bar->setTabVisible(j,true);
 													bar->setCurrentIndex(j);
@@ -663,72 +686,108 @@ void KKEditClass::doTimer(void)
 								}
 								break;
 							case SELECTTABBYPATHMSG:
-								qDebug() << "SELECTTABBYPATHMSG";
+								{
+									QTabBar	*bar=this->mainNotebook->tabBar();
+									for(int j=0;j<bar->count();j++)
+										{
+											if(bar->tabToolTip(j).compare(buffer.mText)==0)
+												{
+													bar->setTabVisible(j,true);
+													bar->setCurrentIndex(j);
+													return;
+												}
+										}
+								}
 								break;
 							case BOOKMARKMSG:
+								this->notDoneYet("BOOKMARKMSG not yet implemented");
 								qDebug() << "BOOKMARKMSG";
 								break;
 							case CLOSETABMSG:
-								qDebug() << "CLOSETABMSG";
+								this->closingAllTabs=false;
+								this->closeTab(atoi(buffer.mText));
+								break;
+							case CLOSEALLTABSMSG:
+								this->closeAllTabs();
 								break;
 							case SETUSERMARKMSG:
+								this->notDoneYet("SETUSERMARKMSG not yet implemented");
 								qDebug() << "SETUSERMARKMSG";
 								break;
 							case UNSETUSERMARKMASG:
+								this->notDoneYet("UNSETUSERMARKMASG not yet implemented");
 								qDebug() << "UNSETUSERMARKMASG";
 								break;
 							case MOVETOMSG:
+								this->notDoneYet("MOVETOMSG not yet implemented");
 								qDebug() << "MOVETOMSG";
 								break;
 							case SELECTBETWEENMSG:
+								this->notDoneYet("SELECTBETWEENMSG not yet implemented");
 								qDebug() << "SELECTBETWEENMSG";
 								break;
 							case PASTEMSG:
+								this->notDoneYet("PASTEMSG not yet implemented");
 								qDebug() << "PASTEMSG";
 								break;
 							case COPYMSG:
+								this->notDoneYet("COPYMSG not yet implemented");
 								qDebug() << "COPYMSG";
 								break;
 							case CUTMSG:
+								this->notDoneYet("CUTMSG not yet implemented");
 								qDebug() << "CUTMSG";
 								break;
 							case INSERTTEXTMSG:
+								this->notDoneYet("INSERTTEXTMSG not yet implemented");
 								qDebug() << "INSERTTEXTMSG";
 								break;
 							case INSERTNLMSG:
+								this->notDoneYet("INSERTNLMSG not yet implemented");
 								qDebug() << "INSERTNLMSG";
 								break;
 							case INSERTFILEMSG:
+								this->notDoneYet("INSERTFILEMSG not yet implemented");
 								qDebug() << "INSERTFILEMSG";
 								break;
 							case PRINTFILESMSG:
+								this->notDoneYet("PRINTFILESMSG not yet implemented");
 								qDebug() << "PRINTFILESMSG";
 								break;
 							case WAITFORKKEDITQTMSG:
+								this->notDoneYet("WAITFORKKEDITQTMSG not yet implemented");
 								qDebug() << "WAITFORKKEDITQTMSG";
 								break;
 							case SHOWCONTINUEMSG:
+								this->notDoneYet("SHOWCONTINUEMSG not yet implemented");
 								qDebug() << "SHOWCONTINUEMSG";
 								break;
 							case RUNTOOLMSG:
+								this->notDoneYet("RUNTOOLMSG not yet implemented");
 								qDebug() << "RUNTOOLMSG";
 								break;
-							case ACTIVATEMENUNAMEDMSG:
-								qDebug() << "ACTIVATEMENUNAMEDMSG";
-								break;
-							case ACTIVATEMENULABELEDMSG:
-								qDebug() << "ACTIVATEMENULABELEDMSG";
+							case ACTIVATEMENUBYLABELEDMSG:
+								foreach(QAction *action,this->menuBar->actions())
+									{
+										if(action->menu())
+											{
+												this->clickMenu(action->menu(),QString(buffer.mText));
+											}
+									}
 								break;
 							case SENDPOSDATAMSG:
+								this->notDoneYet("SENDPOSDATAMSG not yet implemented");
 								qDebug() << "SENDPOSDATAMSG";
 								break;
 							case SENDSELECTEDTEXTMSG:
+								this->notDoneYet("SENDSELECTEDTEXTMSG not yet implemented");
 								qDebug() << "SENDSELECTEDTEXTMSG";
 								break;
 							case OPENFILEMSG:
 								this->openFile(buffer.mText);
 								break;
 							case SAVEFILEMSG:
+								this->notDoneYet("SAVEFILEMSG not yet implemented");
 								qDebug() << "SAVEFILEMSG";
 								break;
 							case QUITAPPMSG:
@@ -738,7 +797,7 @@ void KKEditClass::doTimer(void)
 								this->application->setActiveWindow(this->mainWindow);
 								this->mainWindow->activateWindow();
 								break;
-							case OPENSESSIONMSG:
+							case RESTORESESSIONMSG:
 								for(int j=0;j<this->restoreSessionMenuItemsList.count();j++)
 									{
 										if(QString(buffer.mText).compare(this->restoreSessionMenuItemsList.at(j)->text())==0)

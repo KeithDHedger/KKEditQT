@@ -1156,7 +1156,7 @@ void KKEditClass::runCLICommands(int quid)
 				{
 					opensessionname=this->parser.value("restore-session");
  					msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s",opensessionname.toStdString().c_str());
-					message.mType=OPENSESSIONMSG;
+					message.mType=RESTORESESSIONMSG;
 					msgsnd(quid,&message,msglen,0);
 				}
 
