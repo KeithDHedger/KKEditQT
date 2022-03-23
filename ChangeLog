@@ -1,4 +1,5 @@
 0.6.0
+Gui fixes for jumping to book mark.
 Fixed passing hex/octal/decimal number to -key.
 Changed restore short option from -s to -r.
 Fixed tab visisiblity when saving/restoring sessions.

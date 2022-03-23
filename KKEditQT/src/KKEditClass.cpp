@@ -353,6 +353,9 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 				bms=this->bookMarks.value(what);
 				doc=this->pages.value(bms.docIndex);
 				this->mainNotebook->setCurrentWidget(doc);
+				this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
+				this->mainNotebook->repaint();
+				this->tabBar->repaint();
 				this->gotoLine(bms.line);
 				break;
 		}
@@ -906,6 +909,8 @@ void KKEditClass::closeAllTabs(void)
 	this->currentSessionNumber=0xdeadbeef;
 	this->closingAllTabs=false;
 	this->setToolbarSensitive();
+	this->pages.clear();
+	this->newPageIndex=1;
 	this->sessionBusy=false;
 }
 

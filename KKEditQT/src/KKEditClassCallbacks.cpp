@@ -110,7 +110,6 @@ void KKEditClass::doSessionsMenuItems(void)
 						{
 							doc=this->getDocumentForTab(j);
 							linenumber=doc->getCurrentLineNumber();
-qDebug() << linenumber << " " << doc->visible << " " << doc->getFilePath();
 							QTextStream(&file) << linenumber << " " << doc->visible << " " << doc->getFilePath() << Qt::endl;
 							foreach(bookMarkStruct bm, this->bookMarks)
 								{
@@ -195,8 +194,10 @@ void KKEditClass::doSelectTab()
 
 	bar->setTabVisible(mc->getMenuID(),true);
 	bar->setCurrentIndex(mc->getMenuID());
+	//bar->repaint();
 	document=this->getDocumentForTab(-1);
 	document->visible=true;
+	bar->repaint();
 }
 
 void KKEditClass::doBookmarkMenuItems()
