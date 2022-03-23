@@ -30,7 +30,7 @@
 class SingleInstanceClass
 {
 	public:
-		SingleInstanceClass(QApplication *app,bool forcem);
+		SingleInstanceClass(QApplication *app,int key,bool forcem);
 		~SingleInstanceClass();
 
 		long			getSIWorkSpace(void);
@@ -41,6 +41,7 @@ class SingleInstanceClass
 		int				workspace=-1;
 		bool			isOnX11=true;
 		int				queueID=-1;
+		int				useKey=-1;
 
 	private:
 		bool			deleteComfiles=false;

@@ -20,7 +20,7 @@
 
 #include "SingleInstanceClass.h"
 
-SingleInstanceClass::SingleInstanceClass(QApplication *app,bool forcem)
+SingleInstanceClass::SingleInstanceClass(QApplication *app,int key,bool forcem)
 {
 	QSettings	prefs;
 	bool		single=prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
@@ -36,6 +36,9 @@ SingleInstanceClass::SingleInstanceClass(QApplication *app,bool forcem)
 		}
 	else
 		this->workspace=this->getSIWorkSpace();
+
+	if(key!=-1)
+		this->useKey=key;
 }
 
 SingleInstanceClass::~SingleInstanceClass()
@@ -90,7 +93,13 @@ bool SingleInstanceClass::getRunning(void)
 					msgStruct	message;
 					int			msglen;
 					QString		content=this->fileMsg.readAll();
-					this->queueID=msgget(content.toInt(nullptr,10),IPC_CREAT|0660);
+					if(this->useKey==-1)
+						{
+							this->useKey=content.toInt(nullptr,10);
+							this->queueID=msgget(content.toInt(nullptr,10),IPC_CREAT|0660);
+						}
+					else
+						this->queueID=msgget(this->useKey,IPC_CREAT|0660);
 					this->fileMsg.close();
 					isrunning=true;
 				}
@@ -101,8 +110,17 @@ bool SingleInstanceClass::getRunning(void)
 			if(retval==true)
 				{
 					QTextStream	out(&this->fileMsg);
-					out << MSGKEY+this->workspace << "\n";
-					this->queueID=msgget(MSGKEY+this->workspace,IPC_CREAT|0660);
+					if(this->useKey==-1)
+						{
+							out << MSGKEY+this->workspace << "\n";
+							this->queueID=msgget(MSGKEY+this->workspace,IPC_CREAT|0660);
+							this->useKey=MSGKEY+this->workspace;
+						}
+					else
+						{
+							out << this->useKey << "\n";
+							this->queueID=msgget(this->useKey,IPC_CREAT|0660);
+						}
 					this->fileMsg.close();
 				}
 			retval=this->filePID.open(QIODevice::Text | QIODevice::WriteOnly);

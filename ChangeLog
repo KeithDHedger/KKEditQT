@@ -1,4 +1,8 @@
 0.6.0
+Fixed passing hex/octal/decimal number to -key.
+Changed restore short option from -s to -r.
+Fixed tab visisiblity when saving/restoring sessions.
+Done runtool msg.
 Done selecttabbylabel msg.
 Done selecttab msg.
 Done search for define msg.

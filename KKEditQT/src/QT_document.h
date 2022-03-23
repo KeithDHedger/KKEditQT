@@ -80,6 +80,7 @@ class DocumentClass : public QPlainTextEdit
 		bool								gotUndo=false;
 		bool								gotRedo=false;
 		int									pageIndex;
+		bool								visible=true;
 
 	protected:
 	    void								resizeEvent(QResizeEvent *event);

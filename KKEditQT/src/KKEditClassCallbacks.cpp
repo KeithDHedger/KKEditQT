@@ -110,8 +110,8 @@ void KKEditClass::doSessionsMenuItems(void)
 						{
 							doc=this->getDocumentForTab(j);
 							linenumber=doc->getCurrentLineNumber();
-
-							QTextStream(&file) << linenumber << " " << visible << " " << doc->getFilePath() << Qt::endl;
+qDebug() << linenumber << " " << doc->visible << " " << doc->getFilePath();
+							QTextStream(&file) << linenumber << " " << doc->visible << " " << doc->getFilePath() << Qt::endl;
 							foreach(bookMarkStruct bm, this->bookMarks)
 								{
 									if(doc->pageIndex==bm.docIndex)
@@ -164,6 +164,7 @@ void KKEditClass::doSessionsMenuItems(void)
 										}
 								}
 							while(linenumber!=-1);
+							this->mainNotebook->setTabVisible(this->mainNotebook->currentIndex(),visible);
 							this->gotoLine(mainline);
 						}
 					this->currentSessionNumber=sessionnumber;
@@ -175,6 +176,7 @@ void KKEditClass::doSessionsMenuItems(void)
 					doc=this->getDocumentForTab(j);
 					doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 					doc->dirty=false;
+					doc->visible=this->mainNotebook->isTabVisible(j);
 				}
 
 		}
@@ -189,9 +191,12 @@ void KKEditClass::doSelectTab()
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
 	QTabBar			*bar=this->mainNotebook->tabBar();
+	DocumentClass	*document;
 
 	bar->setTabVisible(mc->getMenuID(),true);
 	bar->setCurrentIndex(mc->getMenuID());
+	document=this->getDocumentForTab(-1);
+	document->visible=true;
 }
 
 void KKEditClass::doBookmarkMenuItems()
@@ -536,7 +541,11 @@ void KKEditClass::doEditMenuItems()
 				break;
 			case SHOWALLTABSMENUITEM:
 				for(int j=0;j<this->mainNotebook->count();j++)
-					this->mainNotebook->setTabVisible(j,true);
+					{
+						this->mainNotebook->setTabVisible(j,true);
+						document=this->getDocumentForTab(j);
+						document->visible=true;
+					}
 				break;
 			case PREFSMENUITEM:
 				this->doPrefs();
@@ -763,8 +772,7 @@ void KKEditClass::doTimer(void)
 								qDebug() << "SHOWCONTINUEMSG";
 								break;
 							case RUNTOOLMSG:
-								this->notDoneYet("RUNTOOLMSG not yet implemented");
-								qDebug() << "RUNTOOLMSG";
+								this->clickMenu(this->toolsMenu,QString(buffer.mText));
 								break;
 							case ACTIVATEMENUBYLABELEDMSG:
 								foreach(QAction *action,this->menuBar->actions())
@@ -957,6 +965,7 @@ void KKEditClass::doTabBarContextMenu(void)
 				break;
 			case HIDETAB:
 				this->mainNotebook->setTabVisible(mc->getMenuID() & 0xff,false);
+				doc->visible=false;
 				break;
 			case LOCKCONTENTS:
 				doc->setReadOnly(!doc->isReadOnly());

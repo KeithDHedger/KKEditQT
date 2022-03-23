@@ -509,6 +509,7 @@ void KKEditClass::doAppShortCuts(void)
 		{
 			case HIDETABSHORTCUT:
 				this->mainNotebook->setTabVisible(this->mainNotebook->currentIndex(),false);
+				doc->visible=false;
 				break;
 			case DELETELINESHORTCUT:
 				cursor.select(QTextCursor::LineUnderCursor);

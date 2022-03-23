@@ -61,14 +61,17 @@ int main (int argc, char **argv)
 
 	kkedit->parser.addOptions(
 		{
+			{{"k","key"},"KeyID","Force key ID."},
 			{{"m","multi"},"Force multiple instance."},
 			{{"q","quit"},"Quit app."},
-			{{"s","restore-session"},"SessionName","Open session by name."}
+			{{"r","restore-session"},"SessionName","Open session by name."}
 		});
 
 	kkedit->parser.process(app);
+	if(kkedit->parser.isSet("key"))
+		kkedit->sessionID=kkedit->parser.value("key").toInt(nullptr,0);
 
-	SingleInstanceClass siapp(&app,kkedit->parser.isSet("multi"));
+	SingleInstanceClass siapp(&app,kkedit->sessionID,kkedit->parser.isSet("multi"));
 
 	if(siapp.getRunning()==true)
 		{
@@ -78,13 +81,13 @@ int main (int argc, char **argv)
 
 	kkedit->queueID=siapp.queueID;
 	kkedit->forcedMultInst=kkedit->parser.isSet("multi");
-	kkedit->currentWorkSpace=siapp.workspace;;
-	kkedit->sessionID=kkedit->currentWorkSpace+MSGKEY;
+	kkedit->currentWorkSpace=siapp.workspace;
+	kkedit->sessionID=siapp.useKey;
 	kkedit->forceDefaultGeom=!siapp.isOnX11;
 
 	kkedit->initApp(argc,argv);
 //load plugins
-//	loadPlugins();
+//	kkedit->loadPlugins();
 //test plugs
 #if 0
 	for(int j=0;j<kkedit->plugins.count();j++)
