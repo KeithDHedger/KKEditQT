@@ -1,4 +1,6 @@
 0.6.0
+Fixed current session not being changed.
+Changed session file format use:sed -i '1a 50 50 800 600\n#RESERVED\n#RESERVED\n#RESERVED' ~.KKEditQT/sesssions/Session-1 to convert session file ( change 'Session-1' to suit ).
 Gui fixes for jumping to book mark.
 Fixed passing hex/octal/decimal number to -key.
 Changed restore short option from -s to -r.
