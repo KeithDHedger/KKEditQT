@@ -34,8 +34,7 @@ class kkeditQTexamplePlug : public QObject, kkEditQTPluginInterface
 		void			unloadPlug(void) override;
 		void			plugAbout(void) override;
 		void			plugSettings(void) override;
-		void			plugRun(unsigned int what) override;
-		void			plugAddToContextMenu(QMenu *menu,DocumentClass *document) override;
+		void			plugRun(plugData *data) override;
 		unsigned int	plugWants(void) override;
 
 	private:

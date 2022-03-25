@@ -29,12 +29,36 @@
 #define DOSAVESESSION DORESSESSION << 1
 #define DOCONTEXTMENU DOSAVESESSION << 1
 #define DOTABPOPUP DOCONTEXTMENU << 1
-#define DOABOUT DOTABPOPUP << 1
+#define DOSETSENSITVE DOTABPOPUP << 1
+#define DOSWITCHPAGE DOSETSENSITVE << 1
+#define DONEWDOCUMENT DOSWITCHPAGE << 1
+#define DOSHUTDOWN DONEWDOCUMENT << 1
+#define DOABOUT DOSHUTDOWN << 1
 #define DOSETTINGS DOABOUT << 1
+
+//show side
+//hide side
+//show hide top
 
 class KKEditClass;
 
 #include "kkedit-includes.h"
+
+struct plugData
+{
+	QMenu			*menu=NULL;
+	DocumentClass	*doc=NULL;//can only use parent functions ( QPlainTextEdit ).
+	int				tabNumber=-1;
+	bool			enabled=true;
+	int				userIntData1=-1;
+	int				userIntData2=-1;
+	int				userIntData3=-1;
+	QString			userStrData1;
+	QString			userStrData2;
+	QString			userStrData3;
+	unsigned int	what=DONONE;
+};
+
 
 class kkEditQTPluginInterface
 {
@@ -45,8 +69,7 @@ class kkEditQTPluginInterface
 		virtual void			unloadPlug(void)=0;
 		virtual void			plugAbout(void)=0;
 		virtual void			plugSettings(void)=0;
-		virtual void			plugRun(unsigned int what)=0;
-		virtual void			plugAddToContextMenu(QMenu *menu,DocumentClass *document)=0;
+		virtual void			plugRun(plugData *data)=0;
 		virtual unsigned int	plugWants(void)=0;
 };
 

@@ -124,6 +124,18 @@ void KKEditClass::doSessionsMenuItems(void)
 							QTextStream(&file) << "-1 endmarks" << Qt::endl;
 						}
 					file.close();
+//plugins
+					for(int j=0;j<this->plugins.count();j++)
+						{
+							if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSAVESESSION)==DOSAVESESSION))
+								{
+									plugData	pd;
+									pd.userStrData1=sessionname;
+									pd.userIntData1=sessionnumber;
+									pd.what=DOSAVESESSION;
+									this->plugins[j].instance->plugRun(&pd);
+								}
+						}
 				}
 			return;
 		}
@@ -189,6 +201,18 @@ void KKEditClass::doSessionsMenuItems(void)
 					file.close();
 					this->runPipe(QString("echo quit>\"%1/session\"").arg(this->tmpFolderName));
 					this->mainWindow->setGeometry(x,y,w,h);
+//plugins
+					for(int j=0;j<this->plugins.count();j++)
+						{
+							if((this->plugins[j].loaded) && ((this->plugins[j].wants & DORESSESSION)==DORESSESSION))
+								{
+									plugData	pd;
+									pd.userStrData1=sessionname;
+									pd.userIntData1=sessionnumber;
+									pd.what=DORESSESSION;
+									this->plugins[j].instance->plugRun(&pd);
+								}
+						}
 				}
 			for(int j=0;j<this->mainNotebook->count();j++)
 				{

@@ -37,11 +37,6 @@ void kkeditQTexamplePlug::initPlug(KKEditClass *kk,QString pathtoplug)
 		});
 }
 
-void kkeditQTexamplePlug::plugAddToContextMenu(QMenu *menu,DocumentClass *document)
-{
-	DEBUGSTR("void kkeditQTexamplePlug::plugAddToContextMenu(QMenu *menu,DocumentClass *document)")
-}
-
 void kkeditQTexamplePlug::unloadPlug(void)
 {
 	this->mainKKEditClass->pluginMenu->removeAction(this->exampleMenuitem);
@@ -65,12 +60,46 @@ void kkeditQTexamplePlug::plugSettings(void)
 	DEBUGSTR("void kkeditQTexamplePlug::plugSettings(void)")
 }
 
-void kkeditQTexamplePlug::plugRun(unsigned int)
+void kkeditQTexamplePlug::plugRun(plugData *data)
 {
-	DEBUGSTR("void kkeditQTexamplePlug::plugRun(whatIWant)")
+//	DEBUGSTR("void kkeditQTexamplePlug::plugRun(whatIWant)")
+//settings and about handled seperatly
+	switch(data->what)
+		{
+			case DOSAVE:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DOSAVE" << "\nNot using this on " << this->mainKKEditClass->mainNotebook->tabToolTip(data->tabNumber);
+				break;
+			case DOLOAD:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DOLOAD" << "\nNot using this on " << this->mainKKEditClass->mainNotebook->tabToolTip(data->tabNumber);
+				break;
+			case DOCLOSE:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DOCLOSE" << "\nNot using this on " << this->mainKKEditClass->mainNotebook->tabToolTip(data->tabNumber) << "\nDOCLOSE is called BEFORE closing tab";
+				break;
+			case DORESSESSION:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DORESSESSION" << "\nNot using this on session " << data->userIntData1 << " named " << data->userStrData1;
+				break;
+			case DOSAVESESSION:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DOSAVESESSION" << "\nNot using this on session " << data->userIntData1 << " named " << data->userStrData1;
+				break;
+			case DOCONTEXTMENU:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DOCONTEXTMENU" << "\nNot using this on " << this->mainKKEditClass->mainNotebook->tabToolTip(data->tabNumber);
+				break;
+			case DOTABPOPUP:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DOTABPOPUP" << "\nNot using this on tab named" << this->mainKKEditClass->mainNotebook->tabText(data->tabNumber);
+				break;
+			case DOSETSENSITVE:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DOSETSENSITVE" << "\nNot using this";
+				break;
+			case DOSWITCHPAGE:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DOSWITCHPAGE" << "\nNot using this index " << data->userIntData1 << " on " << this->mainKKEditClass->mainNotebook->tabToolTip(data->tabNumber);
+				break;
+			case DONEWDOCUMENT:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DONEWDOCUMENT" << "\nNot using this on " << this->mainKKEditClass->mainNotebook->tabToolTip(data->tabNumber);
+				break;
+		}
 }
 
 unsigned int kkeditQTexamplePlug::plugWants(void)
 {
-	return(DOABOUT);
+	return(DOSAVE|DOLOAD|DOCLOSE|DORESSESSION|DOSAVESESSION|DOCONTEXTMENU|DOTABPOPUP|DOSETSENSITVE|DOSWITCHPAGE|DONEWDOCUMENT|DOABOUT);
 }

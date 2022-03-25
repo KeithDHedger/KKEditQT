@@ -115,3 +115,4 @@ void jslang::setTheme(QHash<int,themeStruct> newtheme)
 	this->theme=newtheme;
 }
 
+

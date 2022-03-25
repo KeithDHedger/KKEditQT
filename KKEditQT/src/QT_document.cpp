@@ -449,7 +449,14 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	for(int j=0;j<this->mainKKEditClass->plugins.count();j++)
 		{
 			if((this->mainKKEditClass->plugins[j].loaded) && ((this->mainKKEditClass->plugins[j].wants & DOCONTEXTMENU)==DOCONTEXTMENU))
-				this->mainKKEditClass->plugins[j].instance->plugAddToContextMenu(&menu,this);
+				{
+					plugData	pd;
+					pd.menu=&menu;
+					pd.doc=this;
+					pd.tabNumber=this->mainKKEditClass->mainNotebook->currentIndex();
+					pd.what=DOCONTEXTMENU;
+					this->mainKKEditClass->plugins[j].instance->plugRun(&pd);
+				}
 		}
 
 	menu.setStyleSheet("QMenu { menu-scrollable: true ;}");

@@ -229,47 +229,62 @@ void KKEditClass::switchPage(int index)
 	if(sl.isEmpty()==true)
 		{
 			this->funcMenu->setEnabled(false);
-			return;
 		}
-
-	for(int j=0;j<sl.count();j++)
+	else
 		{
-			linenumber=sl.at(j).section(" ",2,2).toInt();
-			label=sl.at(j).section(" ",4);
-			entrytype=sl.at(j).section(" ",1,1);
-
-			if(entrytype.isEmpty()==false)
+			for(int j=0;j<sl.count();j++)
 				{
-					if(this->prefsFunctionMenuLayout==4)
+					linenumber=sl.at(j).section(" ",2,2).toInt();
+					label=sl.at(j).section(" ",4);
+					entrytype=sl.at(j).section(" ",1,1);
+
+					if(entrytype.isEmpty()==false)
 						{
-							entrytype=entrytype.left(1).toUpper()+entrytype.mid(1) +"s";
-							menuitem=new MenuItemClass(this->truncateWithElipses(label,this->prefsMaxFuncChars));
-						}
-					else
-						menuitem=new MenuItemClass(this->truncateWithElipses(entrytype.toUpper() + " " +label,this->prefsMaxFuncChars));
-				
-					menuitem->setMenuID(linenumber);
-					menuitem->mainKKEditClass=this;
-					QObject::connect(menuitem,SIGNAL(triggered()),menuitem,SLOT(menuClickedGotoLine()));			
-					if(this->prefsFunctionMenuLayout==4)
-						{
-							if(menus.contains(entrytype)==false)
+							if(this->prefsFunctionMenuLayout==4)
 								{
-									menus[entrytype]=new QMenu(entrytype);
-									this->funcMenu->addMenu(menus.value(entrytype));
-									menus.value(entrytype)->setStyleSheet("QMenu { menu-scrollable: true ;}");
+									entrytype=entrytype.left(1).toUpper()+entrytype.mid(1) +"s";
+									menuitem=new MenuItemClass(this->truncateWithElipses(label,this->prefsMaxFuncChars));
 								}
-							menus.value(entrytype)->addAction(menuitem);
+							else
+								menuitem=new MenuItemClass(this->truncateWithElipses(entrytype.toUpper() + " " +label,this->prefsMaxFuncChars));
+				
+							menuitem->setMenuID(linenumber);
+							menuitem->mainKKEditClass=this;
+							QObject::connect(menuitem,SIGNAL(triggered()),menuitem,SLOT(menuClickedGotoLine()));			
+							if(this->prefsFunctionMenuLayout==4)
+								{
+									if(menus.contains(entrytype)==false)
+										{
+											menus[entrytype]=new QMenu(entrytype);
+											this->funcMenu->addMenu(menus.value(entrytype));
+											menus.value(entrytype)->setStyleSheet("QMenu { menu-scrollable: true ;}");
+										}
+									menus.value(entrytype)->addAction(menuitem);
+								}
+							else
+								{
+									this->funcMenu->addAction(menuitem);
+								}
 						}
-					else
-						{
-							this->funcMenu->addAction(menuitem);
-						}
+				}
+
+			this->rebuildTabsMenu();
+			this->funcMenu->setEnabled(true);
+		}
+//plugins
+	for(int j=0;j<this->plugins.count();j++)
+		{
+			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSWITCHPAGE)==DOSWITCHPAGE))
+				{
+					plugData	pd;
+					pd.doc=doc;
+					pd.tabNumber=this->mainNotebook->currentIndex();
+					pd.userIntData1=index;
+					pd.what=DOSWITCHPAGE;
+					this->plugins[j].instance->plugRun(&pd);
 				}
 		}
 
-	this->rebuildTabsMenu();
-	this->funcMenu->setEnabled(true);
 }
 
 void KKEditClass::rebuildBookMarkMenu()
@@ -730,6 +745,19 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 					menuitem->setIcon(itemicon);
 					QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doTabBarContextMenu()));
 				}
+//plugins
+			for(int j=0;j<this->plugins.count();j++)
+				{
+					if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOTABPOPUP)==DOTABPOPUP))
+						{
+							plugData	pd;
+							pd.menu=&menu;
+							pd.tabNumber=tabIndex;
+							pd.what=DOTABPOPUP;
+							this->plugins[j].instance->plugRun(&pd);
+						}
+				}
+
 			menu.exec(this->tabBar->mapToGlobal(pt));
 		}
 }
@@ -932,6 +960,19 @@ bool KKEditClass::closeTab(int index)
 				thispage=index;
 		}
 
+//plugins
+	for(int j=0;j<this->plugins.count();j++)
+		{
+			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOCLOSE)==DOCLOSE))
+				{
+					plugData	pd;
+					pd.doc=doc;
+					pd.tabNumber=thispage;
+					pd.what=DOCLOSE;
+					this->plugins[j].instance->plugRun(&pd);
+				}
+		}
+
 	doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(thispage));
 	if(doc!=0)
 		{
@@ -956,8 +997,8 @@ bool KKEditClass::closeTab(int index)
 						}
 				}
 
-	if(this->closingAllTabs==false)
-			this->handleBMMenu(this->mainNotebook->widget(thispage),REMOVEBOOKMARKSFROMPAGE,tc);
+			if(this->closingAllTabs==false)
+				this->handleBMMenu(this->mainNotebook->widget(thispage),REMOVEBOOKMARKSFROMPAGE,tc);
 
 			this->mainNotebook->removeTab(thispage);
 			delete doc;
@@ -1134,6 +1175,18 @@ void KKEditClass::setToolbarSensitive(void)
 						break;
 				}
 		}
+//plugins
+	for(int j=0;j<this->plugins.count();j++)
+		{
+			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSETSENSITVE)==DOSETSENSITVE))
+				{
+					plugData	pd;
+					pd.tabNumber=this->mainNotebook->currentIndex();
+					pd.what=DOSETSENSITVE;
+					this->plugins[j].instance->plugRun(&pd);
+				}
+		}
+
 }
 
 void KKEditClass::debugSignalSlot(int what)

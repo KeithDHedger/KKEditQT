@@ -96,6 +96,19 @@ void KKEditClass::newFile(const QString data,const QString filename)
 	this->rebuildTabsMenu();
 	this->sessionBusy=holdsb;
 	this->setToolbarSensitive();
+//plugins
+	for(int j=0;j<this->plugins.count();j++)
+		{
+			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DONEWDOCUMENT)==DONEWDOCUMENT))
+				{
+					plugData	pd;
+					pd.doc=doc;
+					pd.tabNumber=this->mainNotebook->currentIndex();
+					pd.what=DONEWDOCUMENT;
+					this->plugins[j].instance->plugRun(&pd);
+				}
+		}
+
 }
 
 int KKEditClass::askSaveDialog(const QString filename)
@@ -208,6 +221,19 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 					delete msg;
 				}
 		}
+//plugins
+	for(int j=0;j<this->plugins.count();j++)
+		{
+			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSAVE)==DOSAVE))
+				{
+					plugData	pd;
+					pd.doc=doc;
+					pd.tabNumber=this->mainNotebook->currentIndex();
+					pd.what=DOSAVE;
+					this->plugins[j].instance->plugRun(&pd);
+				}
+		}
+
 	return true;
 }
 
@@ -257,6 +283,9 @@ bool KKEditClass::checkForOpenFile(QString filepath)
 			if((doc->filePath!=NULL) && (doc->filePath.compare(filepath)==0))
 				{
 					this->mainNotebook->setCurrentIndex(tabs);
+					this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);//TODO//
+					this->mainNotebook->repaint();
+					this->tabBar->repaint();
 					return(true);
 				}
 		}
@@ -314,6 +343,19 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
 	this->setToolbarSensitive();
 	if(this->sessionBusy==false)
 		this->setCompWordList();
+
+//plugins
+	for(int j=0;j<this->plugins.count();j++)
+		{
+			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOLOAD)==DOLOAD))
+				{
+					plugData	pd;
+					pd.doc=doc;
+					pd.tabNumber=this->mainNotebook->currentIndex();
+					pd.what=DOLOAD;
+					this->plugins[j].instance->plugRun(&pd);
+				}
+		}
 
 	return(retval);
 }

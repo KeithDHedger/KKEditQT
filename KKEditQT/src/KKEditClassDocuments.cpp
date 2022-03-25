@@ -108,6 +108,8 @@ void KKEditClass::goToDefinition(const QString txt)
 											label=sl.at(loop).section(" ",3,3);
 											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
 											this->mainNotebook->setCurrentIndex(tabs);
+											this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
+											this->mainNotebook->repaint();
 											this->gotoLine(linenumber);
 											return;
 										}
@@ -326,3 +328,5 @@ void KKEditClass::checkDoc(DocumentClass *doc)
 	doc->setPlainText(line);
 #endif
 }
+
+

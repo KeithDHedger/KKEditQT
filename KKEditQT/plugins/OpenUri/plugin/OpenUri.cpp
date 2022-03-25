@@ -31,20 +31,20 @@ void OpenUri::initPlug(KKEditClass *kk,QString pathtoplug)
 		});
 }
 
+void OpenUri::plugRun(plugData *data)
+{
+	QTextCursor	tc=data->doc->textCursor();
+	if(tc.hasSelection()==true)
+		{
+			this->selection=tc.selectedText().trimmed();
+			data->menu->addAction(this->openUriMenuitem);
+		}
+}
+
 void OpenUri::openUri(void)
 {
 	QString command=QString("xdg-open %1 &").arg(this->selection);
 	system(command.toStdString().c_str());
-}
-
-void OpenUri::plugAddToContextMenu(QMenu *menu,DocumentClass *document)
-{
-	QTextCursor	tc=document->textCursor();
-	if(tc.hasSelection()==true)
-		{
-			this->selection=tc.selectedText().trimmed();
-			menu->addAction(this->openUriMenuitem);
-		}
 }
 
 void OpenUri::plugAbout(void)
