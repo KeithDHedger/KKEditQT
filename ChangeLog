@@ -1,4 +1,5 @@
 0.6.0
+Added clipboard plugin.
 Done calling plugrun functions on all plugins at certain poiints ( save/load/switch page etc ).
 Fixed current session not being changed.
 Changed session file format use:sed -i '1a 50 50 800 600\n#RESERVED\n#RESERVED\n#RESERVED' ~.KKEditQT/sesssions/Session-1 to convert session file ( change 'Session-1' to suit ).
