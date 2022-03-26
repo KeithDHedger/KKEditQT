@@ -352,7 +352,7 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 								}
 						}
 
-					bms.bmLabel=cursor.block().text().simplified();
+					bms.bmLabel=this->truncateWithElipses(cursor.block().text().simplified(),this->maxBMChars);
 					bms.line=cursor.blockNumber()+1;
 					if(bms.bmLabel.isEmpty()==true)
 						bms.bmLabel=doc->getFileName() + QString(" Line %1").arg(bms.line); 
@@ -627,6 +627,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsToolBarLayout=this->prefs.value("editor/toolbarlayout","NSOsURsBWsFGsE9ELEDEE").toString();
 	this->prefsMaxTabChars=this->prefs.value("editor/maxtabchars",20).toInt();
 	this->prefsMaxFuncChars=this->prefs.value("editor/maxfuncchars",64).toInt();
+	this->maxBMChars=this->prefs.value("editor/maxbmchars",64).toInt();
 	this->prefsTerminalCommand=this->prefs.value("editor/terminalcommand","xterm -e").toString();
 	this->prefsRootCommand=this->prefs.value("editor/rootcommand","gtksu -- ").toString();
 	this->prefsQtDocDir=this->prefs.value("editor/qtdocdir","/usr/share/doc/qt5").toString();
@@ -776,6 +777,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("editor/prefsdepth",this->prefsDepth);
 	this->prefs.setValue("editor/toolbarlayout",this->prefsToolBarLayout);
 	this->prefs.setValue("editor/maxtabchars",this->prefsMaxTabChars);
+	this->prefs.setValue("editor/maxbmchars",this->maxBMChars);
 	this->prefs.setValue("editor/maxfuncchars",this->prefsMaxFuncChars);
 	this->prefs.setValue("editor/terminalcommand",this->prefsTerminalCommand);
 	this->prefs.setValue("editor/rootcommand",this->prefsRootCommand);

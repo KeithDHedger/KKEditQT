@@ -888,6 +888,7 @@ void KKEditClass::setPreferences(void)
 	this->prefsTabWidth=qobject_cast<QSpinBox*>(this->prefsIntWidgets[TABWIDTH])->value();
 	this->prefsMaxTabChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXTABCHARS])->value();
 	this->prefsMaxFuncChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MENUWIDTH])->value();
+	this->maxBMChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXBMWIDTH])->value();
 	this->prefsFunctionMenuLayout=qobject_cast<QComboBox*>(this->prefsOtherWidgets[FUNCTIONCOMBO])->currentIndex();
 	this->prefsSyntaxHilighting=qobject_cast<QCheckBox*>(this->prefsWidgets[SYNTAXHILITE])->checkState();
 	this->prefsAutoShowCompletions=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSHOW])->checkState();
