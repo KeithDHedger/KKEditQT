@@ -23,7 +23,7 @@
 
 #include "../../../src/kkeditqtPluginInterface.h"
 
-#define MAXCLIPMENULEN 32
+#define MAXCLIPMENULEN 48
 #define MAXCLIPS 32
 
 class ClipboardPlug : public QObject, kkEditQTPluginInterface

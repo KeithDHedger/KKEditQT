@@ -23,10 +23,12 @@
 QString ClipboardPlug::truncateWithElipses(const QString str)
 {
 	QString newlabel;
-	if(str.length()>MAXCLIPMENULEN)
-		newlabel=str.left((MAXCLIPMENULEN-3)/2)+"..."+str.right((MAXCLIPMENULEN-3)/2);
+	QString tempstr=str.trimmed();
+
+	if(tempstr.length()>MAXCLIPMENULEN)
+		newlabel=tempstr.left((MAXCLIPMENULEN-3)/2)+"..."+tempstr.right((MAXCLIPMENULEN-3)/2);
 	else
-		newlabel=str;
+		newlabel=tempstr;
 
 	return(newlabel);
 }
