@@ -79,7 +79,6 @@ void KKEditClass::goToDefinition(const QString txt)
 									if( ((sens<2) && (label.compare(searchfor,casesens)==0)) || ((sens==2) && (label.contains(searchfor,casesens)==true)))
 										{
 											linenumber=sl.at(loop).section(" ",2,2).toInt();
-											this->mainNotebook->setCurrentIndex(loop);
 											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
 											this->gotoLine(linenumber);
 											return;
@@ -328,5 +327,6 @@ void KKEditClass::checkDoc(DocumentClass *doc)
 	doc->setPlainText(line);
 #endif
 }
+
 
 

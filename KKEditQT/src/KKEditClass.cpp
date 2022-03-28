@@ -140,6 +140,7 @@ void KKEditClass::setUpToolBar(void)
 						this->lineNumberWidget->setToolTip("Go To Line");
 						this->lineNumberWidget->setMaximumWidth(48);
 						QObject::connect(this->lineNumberWidget,SIGNAL(textEdited(const QString)),this,SLOT(doSearchFromBar(const QString)));
+						QObject::connect(this->lineNumberWidget,SIGNAL(returnPressed()),this,SLOT(doSearchFromBar()));
 						this->toolBar->addWidget(this->lineNumberWidget);
 						break;
 //find in gtkdoc
