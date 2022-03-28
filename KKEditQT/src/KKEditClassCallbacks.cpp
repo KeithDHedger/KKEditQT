@@ -1182,3 +1182,4 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+

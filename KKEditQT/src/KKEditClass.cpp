@@ -334,7 +334,7 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 							if(cursor.block().text().simplified().compare("")==0)
 								testtext=doc->getFileName() + QString(" Line %1").arg(cursor.blockNumber()+1);
 							else
-								testtext=cursor.block().text().simplified();
+								testtext=this->truncateWithElipses(cursor.block().text().simplified(),this->maxBMChars);
 
 							if((value.bmLabel.compare(testtext)==0) && (value.docIndex==doc->pageIndex))
 								{
@@ -1417,4 +1417,5 @@ bool KKEditClass::unloadPlug(pluginStruct *ps)
 
 	return(true);
 }
+
 

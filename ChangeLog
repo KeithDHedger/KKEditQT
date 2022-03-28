@@ -1,4 +1,5 @@
 0.6.0
+Fixed toggle bookmark.
 Fixed bookmark menu width prefs.
 Added clipboard plugin.
 Done calling plugrun functions on all plugins at certain poiints ( save/load/switch page etc ).
@@ -768,3 +769,4 @@ Updated Help file.
 
 0.0.4
 1st release
+
