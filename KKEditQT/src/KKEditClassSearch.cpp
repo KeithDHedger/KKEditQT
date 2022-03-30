@@ -56,12 +56,12 @@ void KKEditClass::doFindReplace(int response_id)
 
 	rx.setPattern(this->findDropBox->currentText());
 
-//save combos
 	if(this->insensitiveSearch==true)
 		rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
 	else
 		flags|=QTextDocument::FindCaseSensitively;
 
+//save combos
 	box=this->findDropBox;
 	list=&(this->findList);
 	for(int k=0;k<2;k++)
@@ -84,6 +84,7 @@ void KKEditClass::doFindReplace(int response_id)
 			list=&(this->replaceList);
 		}
 
+//flags+=(((response_id==FINDPREV)<<((QTextDocument::FindBackward)-1)));
 	switch(response_id)
 		{
 			case FINDREPLACE:
@@ -141,6 +142,8 @@ void KKEditClass::doFindReplace(int response_id)
 							}
 					}
 				
+			case FINDPREV:
+				flags|=QTextDocument::FindBackward;
 			case FINDNEXT:
 				if(this->useRegex==false)
 					foundmatch=document->find(this->findDropBox->currentText(),flags);
