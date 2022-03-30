@@ -84,7 +84,6 @@ void KKEditClass::doFindReplace(int response_id)
 			list=&(this->replaceList);
 		}
 
-//flags+=(((response_id==FINDPREV)<<((QTextDocument::FindBackward)-1)));
 	switch(response_id)
 		{
 			case FINDREPLACE:
@@ -160,7 +159,10 @@ void KKEditClass::doFindReplace(int response_id)
 								case 1://wrap only
 									position=document->textCursor().position();
 									thiscursor=document->textCursor();
-									thiscursor.setPosition(0);
+									if(response_id==FINDNEXT)
+										thiscursor.movePosition(QTextCursor::Start);
+									else
+										thiscursor.movePosition(QTextCursor::End);
 									document->setTextCursor(thiscursor);
 									if(this->useRegex==false)
 										foundmatch=document->find(this->findDropBox->currentText(),flags);
@@ -176,15 +178,29 @@ void KKEditClass::doFindReplace(int response_id)
 									break;
 								case 2:	//all files implies wrap
 								case 3:
-									this->currentTab++;
-									if(this->currentTab==this->mainNotebook->count())
-										this->currentTab=0;
+									if(response_id==FINDNEXT)
+										{
+											this->currentTab++;
+											if(this->currentTab==this->mainNotebook->count())
+												this->currentTab=0;
+											//if(this->currentTab==this->startingTab)
+											//	return;
+										}
+									else
+										{
+											this->currentTab--;
+											if(this->currentTab<0)
+												this->currentTab=this->mainNotebook->count()-1;
+										}
 									if(this->currentTab==this->startingTab)
 										return;
 
 									document=this->getDocumentForTab(this->currentTab);
 									thiscursor=document->textCursor();
-									thiscursor.setPosition(0);
+									if(response_id==FINDNEXT)
+										thiscursor.movePosition(QTextCursor::Start);
+									else
+										thiscursor.movePosition(QTextCursor::End);
 									document->setTextCursor(thiscursor);
 									if(this->useRegex==false)
 										foundmatch=document->find(this->findDropBox->currentText(),flags);
