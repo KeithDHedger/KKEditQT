@@ -497,6 +497,8 @@ class KKEditClass : public QObject
 //menu functions
 		void						clickMenu(QMenu *menu,QString name);
 		void						notDoneYet(QString string);
+//search functions
+		void						setHighlightAll(void);
 };
 
 #endif

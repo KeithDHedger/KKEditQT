@@ -27,16 +27,54 @@ void KKEditClass::doFindButton(void)
 	this->doFindReplace(sender()->objectName().toInt());
 }
 
-#if 1
+void KKEditClass::setHighlightAll(void)
+{
+	DocumentClass				*document=this->getDocumentForTab(-1);
+	QTextDocument				*doc;
+	QTextDocument::FindFlags	hflags;
+	QTextCursor					thiscursor;
+	QRegularExpression			rx;
+
+	if(this->hightlightAll==false)
+		{
+			document->clearHilites();
+			return;
+		}
+
+	rx.setPattern(this->findDropBox->currentText());
+
+	if(this->insensitiveSearch==true)
+		rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+	else
+		hflags|=QTextDocument::FindCaseSensitively;
+
+	doc=document->document();
+	thiscursor=document->textCursor();
+	thiscursor.movePosition(QTextCursor::Start);
+	document->clearHilites();
+	document->selection.format.setBackground(QColor(document->highlighter->documentForeground));//TODO// add to theme?
+	document->selection.format.setForeground(QColor(document->highlighter->documentBackground));
+	if(this->insensitiveSearch==false)
+		hflags|=QTextDocument::FindCaseSensitively;
+
+	while(!thiscursor.isNull() && !thiscursor.atEnd())
+		{
+			if(this->useRegex==false)
+				thiscursor=doc->find(this->findDropBox->currentText(),thiscursor,hflags);
+			else
+				thiscursor=doc->find(rx,thiscursor,hflags);
+
+			if(!thiscursor.isNull())
+				{
+					document->selection.cursor=thiscursor;
+					document->hilightSelections.append(document->selection);
+				}
+		}
+	document->setXtraSelections();
+}
+
 void KKEditClass::doFindReplace(int response_id)
 {
-
-/*
-#define FINDNEXTOBJECTNAME "1"
-#define FINDPREVOBJECTNAME "2"
-#define FINDREPLACEOBJECTNAME "3"
-
-*/
 	unsigned int				whattodo=0;
 	bool						flag=false;
 	DocumentClass				*document=this->getDocumentForTab(this->currentTab);
@@ -84,6 +122,7 @@ void KKEditClass::doFindReplace(int response_id)
 			list=&(this->replaceList);
 		}
 
+	this->setHighlightAll();
 	switch(response_id)
 		{
 			case FINDREPLACE:
@@ -183,8 +222,6 @@ void KKEditClass::doFindReplace(int response_id)
 											this->currentTab++;
 											if(this->currentTab==this->mainNotebook->count())
 												this->currentTab=0;
-											//if(this->currentTab==this->startingTab)
-											//	return;
 										}
 									else
 										{
@@ -210,6 +247,7 @@ void KKEditClass::doFindReplace(int response_id)
 										{
 											this->mainNotebook->setCurrentIndex(this->currentTab);
 											this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
+											this->setHighlightAll();
 											this->mainNotebook->repaint();
 										}
 									else
@@ -222,214 +260,6 @@ void KKEditClass::doFindReplace(int response_id)
 				break;
 		}
 }
-#else
-void KKEditClass::doFindReplace(int response_id)
-{
-	int									flags=0;
-	DocumentClass						*document=this->getDocumentForTab(-1);
-	char								*currentfindtext;//TODO//
-	char								*currentreplacetext;
-	const char							*thetext;
-	QStringList							*tlist;
-	QStringList							*list;
-	QComboBox							*combo;
-	bool								flag=false;
-	int									cnt;
-	QString								str;
-	bool								gotresult;
-	QColor								lineColor=QColor(Qt::green);
-	QTextDocument						*doc;
-	QTextCursor							newCursor;
-	QRegularExpression					rx;
-	int									currentline;
-	int									comboindex;
-
-	if(document==NULL)
-		return;
-
-	doc=document->document();
-
-	this->setSearchPrefs(0);
-
-	currentline=document->getCurrentLineNumber();
-	newCursor=document->textCursor();
-	currentfindtext=strdup(this->findDropBox->currentText().toUtf8().constData());
-	currentreplacetext=strdup(this->replaceDropBox->currentText().toUtf8().constData());
-
-	rx.setPattern(currentfindtext);
-
-	if(this->insensitiveSearch==true)
-		rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
-	else
-		{
-			flags+=QTextDocument::FindCaseSensitively;
-		}
-
-	flags+=(((response_id==FINDPREV)<<((QTextDocument::FindBackward)-1)));//TODO// wrap backwards do all files
-
-	if((response_id==FINDNEXT) && (this->hightlightAll==true))
-		{
-			document->clearHilites();
-			document->selection.format.setBackground(lineColor);
-			while(!newCursor.isNull() && !newCursor.atEnd())
-				{
-					if(this->useRegex==false)
-						newCursor=doc->find(currentfindtext,newCursor,(QTextDocument::FindFlags)flags);
-					else
-						newCursor=doc->find(rx,newCursor,(QTextDocument::FindFlags)flags);
-					
-					if(!newCursor.isNull())
-						{
-							document->selection.cursor=newCursor;
-							document->hilightSelections.append(document->selection);
-						}
-				}
-				document->setXtraSelections();
-		}
-
-	if(this->hightlightAll==false)
-		{
-			document->clearHilites();
-		}
-
-	if(response_id!=FINDREPLACE)
-		{
-			combo=this->findDropBox;
-			list=&this->findList;
-			comboindex=combo->currentIndex();
-			thetext=currentfindtext;
-			if(this->useRegex==false)
-				gotresult=document->find(thetext,(QTextDocument::FindFlags)flags);
-			else
-				gotresult=document->find(rx,(QTextDocument::FindFlags)flags);
-
-			if((this->wrapSearch==true) && (gotresult==false))
-				{qDebug() << " 1 " << gotresult;
-					if(this->findInAllFiles==true)
-					{
-						int tabnum=this->tabBar->currentIndex()+1;
-						if(tabnum==this->startingTab)
-							return;
-						if(tabnum>this->tabBar->count())
-							{
-								tabnum=0;
-							}
-						document=this->getDocumentForTab(tabnum);
-					}
-					
-					int ln=document->getCurrentLineNumber();
-					this->gotoLine(0);
-					if(this->useRegex==false)
-						gotresult=document->find(thetext,(QTextDocument::FindFlags)flags);
-					else
-						gotresult=document->find(rx,(QTextDocument::FindFlags)flags);
-					if(gotresult==false)
-					{
-						qDebug() << " 2 " << gotresult;
-						this->gotoLine(ln);
-					}
-				}
-			
-			if((this->wrapSearch==true) && (gotresult==false) && (response_id==FINDPREV))
-				{
-					int ln=document->blockCount();
-					this->gotoLine(ln);
-					if(this->useRegex==false)
-						gotresult=document->find(thetext,(QTextDocument::FindFlags)flags);
-					else
-						gotresult=document->find(rx,(QTextDocument::FindFlags)flags);
-					if(gotresult==false)
-						this->gotoLine(0);
-				}
-		}
-	else
-		{
-			combo=this->replaceDropBox;
-			list=&this->replaceList;
-			thetext=currentreplacetext;
-			if(this->replaceAll==false)
-				{
-					if(this->useRegex==false)
-						{
-							if(document->textCursor().hasSelection())
-								document->textCursor().insertText(thetext);
-							gotresult=document->find(currentfindtext,(QTextDocument::FindFlags)flags);
-						}
-					else
-						{
-							if(document->textCursor().hasSelection())
-								{
-									str=document->textCursor().selectedText();
-									str.replace(rx,thetext);
-									document->textCursor().insertText(str);
-								}
-							gotresult=document->find(rx,(QTextDocument::FindFlags)flags);
-							
-						}
-//				if((this->wrapSearch==true) && (gotresult==false) && (response_id==FINDREPLACE))
-//				{
-//								fprintf(stderr,"FINDNEXT\n");
-//								//this->gotoLine(1);
-//				//this->doFindReplace(FINDREPLACE);
-//				}
-
-				}
-			else
-				{
-					cnt=0;
-					this->gotoLine(0);
-						newCursor=document->textCursor();
-					if(this->useRegex==false)
-						document->find(currentfindtext,(QTextDocument::FindFlags)flags);
-					else
-						document->find(rx,(QTextDocument::FindFlags)flags);
-
-					while(!newCursor.isNull() && !newCursor.atEnd())
-						{
-							if(this->useRegex==false)
-								newCursor=doc->find(currentfindtext,newCursor,(QTextDocument::FindFlags)flags);
-							else
-								newCursor=doc->find(rx,newCursor,(QTextDocument::FindFlags)flags);
-					
-							if(!newCursor.isNull())
-								{
-									if(this->useRegex==false)
-										{
-											newCursor.insertText(thetext);
-											cnt++;
-										}
-									else
-										{
-											str=newCursor.selectedText();
-											str.replace(rx,thetext);
-											newCursor.insertText(str);
-											cnt++;
-										}
-								}
-						}
-					this->statusBar->showMessage(QString("Replaced %1 occurrances of %2 with %3").arg(cnt).arg(currentfindtext).arg(thetext),STATUSBARTIMEOUT);
-				}
-		}
-qDebug() << " 3 " << gotresult;
-	if(QString(thetext).isEmpty()==false)
-		{
-			flag=false;
-			for(int j=0;j<list->count();j++)
-				{
-					if(list->at(j).compare(thetext)==0)
-						flag=true;
-				}
-			if(flag==false)
-				{
-					list->append(thetext);
-					combo->addItem(thetext);
-				}
-		}
-
-	if (currentfindtext!=NULL) free(currentfindtext);currentfindtext=NULL;//TODO//
-	if (currentreplacetext!=NULL) free(currentreplacetext);currentreplacetext=NULL;
-}
-#endif
 
 void KKEditClass::searchAPIDocs(const QString txt,int what)
 {

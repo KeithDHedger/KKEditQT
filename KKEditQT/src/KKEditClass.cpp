@@ -221,6 +221,7 @@ void KKEditClass::switchPage(int index)
 	doc->setStatusBarText();
 	this->funcMenu->clear();
 	//doc->setCompleter();
+	doc->clearHilites();
 
 	sl=this->getNewRecursiveTagList(doc->getFilePath());
 	if(sl.isEmpty()==true)

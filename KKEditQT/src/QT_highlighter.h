@@ -57,6 +57,8 @@ public:
 	QHash<int,langPluginStruct>	langPlugins;
 
 	QString						docBackgroundCSS;
+	QString						documentBackground;
+	QString						documentForeground;
 	QString						lineNumbersBackground;
 	QString						lineNumbersForeground;
 	QString						bookMarkBGColour;

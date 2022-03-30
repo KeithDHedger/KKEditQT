@@ -1,4 +1,6 @@
 0.6.0
+Done find/replace.
+Fixed highlight all.
 Fixed backward search.
 Fixed saving find/replace lists.
 Redone find/replace/replace all/, also in multiple files, wrap etc, TODO backwards.

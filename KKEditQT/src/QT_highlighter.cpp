@@ -237,6 +237,8 @@ void Highlighter::setTheme(QString themename)
 	localList=mainMap["document"].toList();    
 	map=localList[0].toMap();
 	this->docBackgroundCSS=QString("QPlainTextEdit {background-color: %1; color: %2;}").arg(map["bgcolour"].toString()).arg(map["fgcolour"].toString());
+	this->documentBackground=map["bgcolour"].toString();
+	this->documentForeground=map["fgcolour"].toString();
 	localList=mainMap["linenumbers"].toList();    
 	map=localList[0].toMap();
 	this->lineNumbersBackground=map["bgcolour"].toString();
