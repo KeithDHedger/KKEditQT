@@ -577,6 +577,7 @@ void KKEditClass::doEditMenuItems()
 				break;
 			case FINDMENUITEM:
 				this->findReplaceDialog->show();
+				break;
 			case FINDNEXTMENUITEM:
 				doFindReplace(FINDNEXT);
 				break;

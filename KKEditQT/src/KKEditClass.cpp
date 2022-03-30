@@ -52,17 +52,6 @@ KKEditClass::~KKEditClass()
 	if (command!=NULL) free(command);command=NULL;
 }
 
-void KKEditClass::doSearchFromBar(const QString txt)
-{
-	fprintf(stderr,"void KKEditClass::doSearchFromBar(const QString txt)=%s\n",txt.toStdString().c_str());
-	switch(sender()->objectName().toInt())
-		{
-			case DOLINEBOX:
-				this->gotoLine(txt.toInt());
-				break;
-		}
-}
-
 void KKEditClass::setUpToolBar(void)
 {
 	this->toolBar->clear();
@@ -139,8 +128,15 @@ void KKEditClass::setUpToolBar(void)
 						this->lineNumberWidget->setObjectName(QString("%1").arg(DOLINEBOX));
 						this->lineNumberWidget->setToolTip("Go To Line");
 						this->lineNumberWidget->setMaximumWidth(48);
-						QObject::connect(this->lineNumberWidget,SIGNAL(textEdited(const QString)),this,SLOT(doSearchFromBar(const QString)));
-						//QObject::connect(this->lineNumberWidget,SIGNAL(returnPressed()),this,SLOT(doSearchFromBar()));
+						QObject::connect(this->lineNumberWidget,&QLineEdit::returnPressed,[this]()
+							{
+								this->gotoLine(this->lineNumberWidget->text().toInt());
+							});
+						QObject::connect(this->lineNumberWidget,&QLineEdit::textEdited,[this](const QString)
+							{
+								this->gotoLine(this->lineNumberWidget->text().toInt());
+							});
+
 						this->toolBar->addWidget(this->lineNumberWidget);
 						break;
 //find in gtkdoc
@@ -656,12 +652,20 @@ void KKEditClass::readConfigs(void)
 	this->prefsMsgTimer=this->prefs.value("app/msgtimer",1000).toInt();
 	this->prefsUseSingle=this->prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
 	this->prefsNagScreen=this->prefs.value("app/bekind",QVariant(bool(false))).value<bool>();
-	this->findList=this->prefs.value("app/findlist").toStringList();
-	this->replaceList=this->prefs.value("app/replacelist").toStringList();
 	this->defaultShortCutsList=this->prefs.value("app/shortcuts",QVariant(QStringList({"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'"}))).toStringList();
 
 	this->onExitSaveSession=this->prefs.value("app/onexitsavesession",QVariant(bool(true))).value<bool>();
 	this->disabledPlugins=this->prefs.value("app/disabledplugins").toStringList();
+
+//find
+	this->findList=this->prefs.value("find/findlist").toStringList();
+	this->replaceList=this->prefs.value("find/replacelist").toStringList();
+	this->wrapSearch=this->prefs.value("find/wrapsearch",QVariant(bool(false))).value<bool>();
+	this->findInAllFiles=this->prefs.value("find/findinallfiles",QVariant(bool(false))).value<bool>();
+	this->insensitiveSearch=this->prefs.value("find/insensitivesearch",QVariant(bool(false))).value<bool>();
+	this->useRegex=this->prefs.value("find/useregex",QVariant(bool(false))).value<bool>();
+	this->hightlightAll=this->prefs.value("find/hightlightall",QVariant(bool(false))).value<bool>();
+	this->replaceAll=this->prefs.value("find/replaceall",QVariant(bool(false))).value<bool>();
 
 	this->setAppShortcuts();	
 }
@@ -809,9 +813,18 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/bekind",this->prefsNagScreen);
 	this->prefs.setValue("app/toolsopgeometry",this->toolOutputWindow->geometry());
 	this->prefs.setValue("app/shortcuts",this->defaultShortCutsList);
-	this->prefs.setValue("app/findlist",this->findList);
-	this->prefs.setValue("app/replacelist",this->replaceList);
 	this->prefs.setValue("app/onexitsavesession",this->onExitSaveSession);
+
+//find
+	this->prefs.setValue("find/findlist",this->findList);
+	this->prefs.setValue("find/replacelist",this->replaceList);
+	this->prefs.setValue("find/wrapsearch",this->wrapSearch);
+	this->prefs.setValue("find/findinallfiles",this->findInAllFiles);
+	this->prefs.setValue("find/insensitivesearch",this->insensitiveSearch);
+	this->prefs.setValue("find/useregex",this->useRegex);
+	this->prefs.setValue("find/hightlightall",this->hightlightAll);
+	this->prefs.setValue("find/replaceall",this->replaceAll);
+	
 
 	this->disabledPlugins.clear();
 	for(int j=0;j<this->plugins.count();j++)

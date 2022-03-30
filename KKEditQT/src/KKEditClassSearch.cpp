@@ -22,9 +22,188 @@
 
 void KKEditClass::doFindButton(void)
 {
+	this->startingTab=this->tabBar->currentIndex();
+	this->currentTab=this->startingTab;
 	this->doFindReplace(sender()->objectName().toInt());
 }
 
+#if 1
+void KKEditClass::doFindReplace(int response_id)
+{
+
+/*
+#define FINDNEXTOBJECTNAME "1"
+#define FINDPREVOBJECTNAME "2"
+#define FINDREPLACEOBJECTNAME "3"
+
+*/
+	unsigned int				whattodo=0;
+	bool						flag=false;
+	DocumentClass				*document=this->getDocumentForTab(this->currentTab);
+	QTextCursor					thiscursor;
+	QTextDocument::FindFlags	flags;
+	bool						foundmatch=false;
+	int							position;
+	QRegularExpression			rx;
+	QComboBox					*box;
+	QStringList					*list;
+
+	this->setSearchPrefs(0);
+
+	whattodo+=(this->wrapSearch);//+1
+	whattodo+=(this->findInAllFiles<<1);//+2
+	whattodo+=(this->replaceAll<<2);//+4
+
+	rx.setPattern(this->findDropBox->currentText());
+
+//save combos
+	if(this->insensitiveSearch==true)
+		rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+	else
+		flags|=QTextDocument::FindCaseSensitively;
+
+	box=this->findDropBox;
+	list=&(this->findList);
+	for(int k=0;k<2;k++)
+		{
+			if(box->currentText().isEmpty()==false)
+				{
+					for(int j=0;j<box->count();j++)
+						{
+							if(box->currentText().compare(box->itemText(j))==0)
+								flag=true;
+						}
+					if(flag==false)
+						box->addItem(box->currentText());
+				}
+
+			for(int j=0;j<box->count();j++)
+				list->append(box->itemText(j));
+			list->removeDuplicates();
+			box=this->replaceDropBox;
+			list=&(this->replaceList);
+		}
+
+	switch(response_id)
+		{
+			case FINDREPLACE:
+				if((whattodo & 4)==4)
+					{
+						QString	txt;
+						QString	newstr;
+						int		start=this->mainNotebook->currentIndex();
+						int		end=this->mainNotebook->currentIndex()+1;
+
+						if((whattodo & 2)==2)
+							{
+								start=0;
+								end=this->mainNotebook->count();
+							}
+
+						for(int j=start;j<end;j++)
+							{
+								document=this->getDocumentForTab(j);
+								txt=document->toPlainText();
+								newstr=document->toPlainText();
+								if(this->useRegex==false)
+									txt.replace(this->findDropBox->currentText(),this->replaceDropBox->currentText(),(Qt::CaseSensitivity)!this->insensitiveSearch);
+								else
+									txt.replace(rx,this->replaceDropBox->currentText());
+
+								if(txt.compare(newstr)!=0)
+									{
+										thiscursor=document->textCursor();
+										thiscursor.beginEditBlock();
+											thiscursor.select(QTextCursor::Document);
+											thiscursor.removeSelectedText();
+											thiscursor.insertText(txt);
+										thiscursor.endEditBlock();
+									}
+							}
+						break;
+					}
+
+				if(this->useRegex==false)
+					{
+						if(document->textCursor().hasSelection())
+							{
+								if(document->textCursor().selectedText().compare(this->findDropBox->currentText())==0)
+									document->textCursor().insertText(this->replaceDropBox->currentText());
+							}
+					}
+				else
+					{
+						if(document->textCursor().hasSelection())
+							{
+								QString	str=document->textCursor().selectedText();
+								str.replace(rx,this->replaceDropBox->currentText());
+								document->textCursor().insertText(str);
+							}
+					}
+				
+			case FINDNEXT:
+				if(this->useRegex==false)
+					foundmatch=document->find(this->findDropBox->currentText(),flags);
+				else
+					foundmatch=document->find(rx,flags);
+
+				if(foundmatch==false)//now what?
+					{
+						switch(whattodo & 3)
+							{
+								case 0:
+									return;
+									break;
+								case 1://wrap only
+									position=document->textCursor().position();
+									thiscursor=document->textCursor();
+									thiscursor.setPosition(0);
+									document->setTextCursor(thiscursor);
+									if(this->useRegex==false)
+										foundmatch=document->find(this->findDropBox->currentText(),flags);
+									else
+										foundmatch=document->find(rx,flags);
+
+									if(foundmatch==false)
+										{
+											thiscursor=document->textCursor();
+											thiscursor.setPosition(position);
+											document->setTextCursor(thiscursor);
+										}
+									break;
+								case 2:	//all files implies wrap
+								case 3:
+									this->currentTab++;
+									if(this->currentTab==this->mainNotebook->count())
+										this->currentTab=0;
+									if(this->currentTab==this->startingTab)
+										return;
+
+									document=this->getDocumentForTab(this->currentTab);
+									thiscursor=document->textCursor();
+									thiscursor.setPosition(0);
+									document->setTextCursor(thiscursor);
+									if(this->useRegex==false)
+										foundmatch=document->find(this->findDropBox->currentText(),flags);
+									else
+										foundmatch=document->find(rx,flags);
+									if(foundmatch==true)
+										{
+											this->mainNotebook->setCurrentIndex(this->currentTab);
+											this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
+											this->mainNotebook->repaint();
+										}
+									else
+										{
+											this->doFindReplace(response_id);
+										}
+									break;
+							}
+					}
+				break;
+		}
+}
+#else
 void KKEditClass::doFindReplace(int response_id)
 {
 	int									flags=0;
@@ -106,7 +285,19 @@ void KKEditClass::doFindReplace(int response_id)
 				gotresult=document->find(rx,(QTextDocument::FindFlags)flags);
 
 			if((this->wrapSearch==true) && (gotresult==false))
-				{
+				{qDebug() << " 1 " << gotresult;
+					if(this->findInAllFiles==true)
+					{
+						int tabnum=this->tabBar->currentIndex()+1;
+						if(tabnum==this->startingTab)
+							return;
+						if(tabnum>this->tabBar->count())
+							{
+								tabnum=0;
+							}
+						document=this->getDocumentForTab(tabnum);
+					}
+					
 					int ln=document->getCurrentLineNumber();
 					this->gotoLine(0);
 					if(this->useRegex==false)
@@ -114,7 +305,10 @@ void KKEditClass::doFindReplace(int response_id)
 					else
 						gotresult=document->find(rx,(QTextDocument::FindFlags)flags);
 					if(gotresult==false)
+					{
+						qDebug() << " 2 " << gotresult;
 						this->gotoLine(ln);
+					}
 				}
 			
 			if((this->wrapSearch==true) && (gotresult==false) && (response_id==FINDPREV))
@@ -126,7 +320,7 @@ void KKEditClass::doFindReplace(int response_id)
 					else
 						gotresult=document->find(rx,(QTextDocument::FindFlags)flags);
 					if(gotresult==false)
-							this->gotoLine(0);
+						this->gotoLine(0);
 				}
 		}
 	else
@@ -197,7 +391,7 @@ void KKEditClass::doFindReplace(int response_id)
 					this->statusBar->showMessage(QString("Replaced %1 occurrances of %2 with %3").arg(cnt).arg(currentfindtext).arg(thetext),STATUSBARTIMEOUT);
 				}
 		}
-
+qDebug() << " 3 " << gotresult;
 	if(QString(thetext).isEmpty()==false)
 		{
 			flag=false;
@@ -216,6 +410,7 @@ void KKEditClass::doFindReplace(int response_id)
 	if (currentfindtext!=NULL) free(currentfindtext);currentfindtext=NULL;//TODO//
 	if (currentreplacetext!=NULL) free(currentreplacetext);currentreplacetext=NULL;
 }
+#endif
 
 void KKEditClass::searchAPIDocs(const QString txt,int what)
 {

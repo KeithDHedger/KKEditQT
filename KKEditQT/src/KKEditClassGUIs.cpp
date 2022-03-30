@@ -519,6 +519,7 @@ void KKEditClass::buildFindReplace(void)
 	this->findDropBox=new QComboBox;
 	reinterpret_cast<QComboBox*>(this->findDropBox)->setEditable(true);
 	reinterpret_cast<QComboBox*>(this->findDropBox)->setCompleter(0);
+	reinterpret_cast<QComboBox*>(this->findDropBox)->setInsertPolicy(QComboBox::InsertAtBottom);
 	this->findDropBox->addItems(this->findList);
 	vlayout->addWidget(this->findDropBox);
 
@@ -530,6 +531,7 @@ void KKEditClass::buildFindReplace(void)
 	this->replaceDropBox=new QComboBox;
 	reinterpret_cast<QComboBox*>(this->replaceDropBox)->setEditable(true);
 	reinterpret_cast<QComboBox*>(this->replaceDropBox)->setCompleter(0);
+	reinterpret_cast<QComboBox*>(this->replaceDropBox)->setInsertPolicy(QComboBox::InsertAtBottom);
 	this->replaceDropBox->addItems(this->replaceList);
 	vlayout->addWidget(replaceDropBox);
 

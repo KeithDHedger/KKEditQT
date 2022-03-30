@@ -423,6 +423,9 @@ class KKEditClass : public QObject
 		QStringList					findList;
 		QStringList					replaceList;
 		unsigned int				maxFRHistory=5;
+		int							startingTab=0;
+		int							currentTab=0;
+
 //find replace functions
 		void						buildFindReplace(void);
 		void						doFindReplace(int response_id);
@@ -478,7 +481,6 @@ class KKEditClass : public QObject
 
 		void						doAppShortCuts(void);
 
-		void						doSearchFromBar(const QString txt);
 		void						setSearchPrefs(int state);
 
 		void						doSessionsMenuItems(void);
