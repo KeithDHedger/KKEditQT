@@ -118,91 +118,41 @@ void KKEditClass::goToDefinition(const QString txt)
 				}
 			casesens=Qt::CaseInsensitive;
 		}
+//check in folder of current tab
+	QString		command;
+	QStringList	list;
+	QString		results;
+	int			start=this->mainNotebook->currentIndex();
+	int			end=start+1;
 
-/*
-	command=QString("find \"%1\" -maxdepth %2|ctags -L - -x|%3|sed 's@ \\+@ @g'").arg(filepath).arg(this->prefsDepth).arg(sort);
-	results=this->runPipeAndCapture(command);
-	retval=results.split("\n",Qt::SkipEmptyParts);
-
-*/
-//	doc=this->getDocumentForTab(-1);
-//	if(doc->filePath!=NULL)
-//		{
-//
-//		QStringList	flist
-//			QString
-//			QDir		dir(doc->getDirPath());
-//
-//		}
-//
-//return;
-//check current tab folder 1st
-	doc=this->getDocumentForTab(-1);
-	if(doc->filePath!=NULL)
+	for(int k=0;k<2;k++)
 		{
-			QDir			dir(doc->getDirPath());
-			QStringList	flist=dir.entryList(QDir::Files);
-			for(int k=0;k<flist.count();k++)
-				{
-					if(!flist.at(k).endsWith(".o"))
-						{
-							int holdsort=this->prefsFunctionMenuLayout;
-							this->prefsFunctionMenuLayout=-1;
-							sl=this->getNewRecursiveTagList(doc->getDirPath() + "/" + flist.at(k));
-							this->prefsFunctionMenuLayout=holdsort;
-							if(sl.isEmpty()==true)
-								continue;
-//exact match
-							for(int j=0;j<sl.count();j++)
-								{
-									label=sl.at(j).section(" ",0,0);
-									if(label.compare(searchfor,Qt::CaseInsensitive)==0)
-										{
-											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
-											linenumber=sl.at(j).section(" ",2,2).toInt();
-											this->openFile(doc->getDirPath() + "/" + flist.at(k),linenumber);
-											return;
-										}
-								}
-						}									
-				}
-		}
-
-//others
-			for(int loop=0;loop<this->mainNotebook->count();loop++)
+			for(int loop=start;loop<end;loop++)
 				{
 					doc=this->getDocumentForTab(loop);
 					if(doc->filePath!=NULL)
 						{
-							QDir			dir(doc->getDirPath());
-							QStringList	flist=dir.entryList(QDir::Files);
-							for(int k=0;k<flist.count();k++)
+							command=QString("ctags -R -x '%1'|sed 's@ \\+@ @g'").arg(doc->getDirPath());
+							results=this->runPipeAndCapture(command);
+							list=results.split("\n",Qt::SkipEmptyParts);
+
+							for(int j=0;j<list.count();j++)
 								{
-									if(!flist.at(k).endsWith(".o"))
+									label=list.at(j).section(" ",0,0);
+									if(label.compare(searchfor,Qt::CaseInsensitive)==0)
 										{
-											int holdsort=this->prefsFunctionMenuLayout;
-											this->prefsFunctionMenuLayout=-1;
-											sl=this->getNewRecursiveTagList(doc->getDirPath() + "/" + flist.at(k));
-											this->prefsFunctionMenuLayout=holdsort;
-											if(sl.isEmpty()==true)
-												continue;
-//exact match
-											for(int j=0;j<sl.count();j++)
-												{
-													label=sl.at(j).section(" ",0,0);
-													if(label.compare(searchfor,Qt::CaseInsensitive)==0)
-														{
-															this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
-															linenumber=sl.at(j).section(" ",2,2).toInt();
-															this->openFile(doc->getDirPath() + "/" + flist.at(k),linenumber);
-															return;
-														}
-												}
+											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
+											linenumber=list.at(j).section(" ",2,2).toInt();
+											this->openFile(list.at(j).section(" ",3,3),linenumber);
+											return;
 										}
 								}
 						}
 				}
-
+//last try check in folders of all tabs ... slow
+			start=0;
+			end=this->mainNotebook->count();
+		}
 	this->statusBar->showMessage(QString("Couldn't find definition for %1").arg(searchfor),STATUSBARTIMEOUT);
 }
 

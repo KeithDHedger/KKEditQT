@@ -389,6 +389,5 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	command=QString("find \"%1\" -maxdepth %2|ctags -L - -x|%3|sed 's@ \\+@ @g'").arg(filepath).arg(this->prefsDepth).arg(sort);
 	results=this->runPipeAndCapture(command);
 	retval=results.split("\n",Qt::SkipEmptyParts);
-
 	return(retval);
 }
