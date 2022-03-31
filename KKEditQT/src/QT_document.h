@@ -33,53 +33,55 @@ class DocumentClass : public QPlainTextEdit
 		explicit DocumentClass(KKEditClass *kk,QWidget *parent=0);
 		~DocumentClass();
 
-		void								setFileName(const QString filename);
-		const QString						getFileName(void);
-		void								setFilePath(const QString filename);
-		const QString						getFilePath(void);
-		void								setDirPath(const QString dirname);
-		const QString						getDirPath(void);
-		void								setTabName(QString tabname);
-		const QString						getTabName(void);
-		int									getCurrentLineNumber(void);
-
-		void								setFilePrefs(void);
-		void								setHiliteLanguage(void);
-
-		void								lineNumberAreaPaintEvent(QPaintEvent *event);
-		int									lineNumberAreaWidth(void);
-		void								setStatusBarText(void);
-
+		KKEditClass						*mainKKEditClass=NULL;
+//highlighting
+		Highlighter						*highlighter;
 		QList<QTextEdit::ExtraSelection>	extraSelections;
 		QList<QTextEdit::ExtraSelection>	extraBMSelections;
 		QList<QTextEdit::ExtraSelection>	hilightSelections;
+		QList<QTextEdit::ExtraSelection>	bracketMatch;
 		
-		QTextEdit::ExtraSelection			selection;
-		QTextEdit::ExtraSelection			selectedLine;
+		QTextEdit::ExtraSelection		selection;
+		QTextEdit::ExtraSelection		selectedLine;
+		QColor							prefsHiLiteLineColor;
+		QColor							bookmarkLineColor;
 
+
+		void								setHiliteLanguage(void);
+		void								lineNumberAreaPaintEvent(QPaintEvent *event);
+		int								lineNumberAreaWidth(void);
 		void								setXtraSelections(void);
 		void								addXtraSelections(void);
 		void								clearHilites(void);
 
-		Highlighter							*highlighter;
+		void								setFileName(const QString filename);
+		const QString					getFileName(void);
+		void								setFilePath(const QString filename);
+		const QString					getFilePath(void);
+		void								setDirPath(const QString dirname);
+		const QString					getDirPath(void);
+		void								setTabName(QString tabname);
+		const QString					getTabName(void);
+		int								getCurrentLineNumber(void);
 
-		KKEditClass							*mainKKEditClass=NULL;
-		QColor								prefsHiLiteLineColor;
-		QColor								bookmarkLineColor;
+		void								setFilePrefs(void);
+
+		void								setStatusBarText(void);
+
 		void								setBMFromLineBar(QMouseEvent *event);
 
 //pageStruct
-		QString								fileName;
-		QString								filePath;
-		QString								dirPath;
-		QString								tabName;
+		QString							fileName;
+		QString							filePath;
+		QString							dirPath;
+		QString							tabName;
 		bool								doneHighlightAll;
 		char								*lastFind;
 		bool								dirty=false;
-		QString								mimeType="text/plain";
+		QString							mimeType="text/plain";
 		bool								gotUndo=false;
 		bool								gotRedo=false;
-		int									pageIndex;
+		int								pageIndex;
 		bool								visible=true;
 
 	protected:
@@ -102,15 +104,14 @@ class DocumentClass : public QPlainTextEdit
 		void								setRedo(bool avail);
 
 	private:
-		void								clearXtraSelections(void);
 		QWidget 							*lineNumberArea;
-		QString								indentPad;
+		QString							indentPad;
+		void								clearXtraSelections(void);
 		bool								realShowLineNumbers(void);
 		bool								realHiliteLine(void);
 		bool								realSyntaxHighlighting(void);
-		const QString						textUnderCursor();
+		const QString					textUnderCursor();
 };
-
 
 class LineNumberArea : public QWidget
 {
@@ -142,3 +143,4 @@ class LineNumberArea : public QWidget
 };
 
 #endif
+

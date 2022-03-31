@@ -179,6 +179,7 @@ void DocumentClass::setXtraSelections(void)
 	this->extraSelections=this->extraSelections+this->hilightSelections;
 	this->extraSelections.append(this->selectedLine);
 	this->extraSelections.append(this->extraBMSelections);
+	this->extraSelections.append(this->bracketMatch);
 	this->setExtraSelections(this->extraSelections);
 }
 
@@ -246,13 +247,18 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 	if((event->key()==Qt::Key_Return) && (this->mainKKEditClass->prefsIndent==true))
 		{
 			int j=0;
-			QTextCursor cursor=this->textCursor();
-			QTextBlock tb=cursor.block();
+			QTextCursor	cursor=this->textCursor();
+			QTextBlock	tb=cursor.block();
+			QString		data=tb.text();
+			int			posinblock=cursor.positionInBlock();
 			this->indentPad="";
-			QString data=tb.text();
-			while((j<data.length()) && ((data.at(j)=='\t') || (data.at(j)==' ')))
+			while((j<posinblock) && ((data.at(j)=='\t') || (data.at(j)==' ')))
+				this->indentPad+=data.at(j++);
+
+			if(this->mainKKEditClass->completer && (this->mainKKEditClass->completer->popup()->isVisible()==false))//pass return to completer
 				{
-						this->indentPad+=data.at(j++);
+					cursor.insertText(QString("\n%1").arg(this->indentPad));
+					return;
 				}
 		}
 
@@ -309,11 +315,12 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 
 void DocumentClass::keyReleaseEvent(QKeyEvent *event)
 {
-	if((event->key()==Qt::Key_Return)&& (this->mainKKEditClass->prefsIndent==true))
-		{
-			QTextCursor cursor=this->textCursor();
-			this->insertPlainText(this->indentPad);
-		}
+//	if((event->key()==Qt::Key_Return)&& (this->mainKKEditClass->prefsIndent==true))
+//		{
+//			QTextCursor cursor=this->textCursor();
+//			cursor.insertText(this->indentPad);
+//			//this->insertPlainText(this->indentPad);
+//		}
 	//this->dirty=true;
 	this->mainKKEditClass->setToolbarSensitive();
 	QPlainTextEdit::keyReleaseEvent(event);
@@ -582,3 +589,4 @@ void DocumentClass::setBMFromLineBar(QMouseEvent *event)
 	this->mainKKEditClass->handleBMMenu(this,TOGGLEBOOKMARKMENUITEM,cursor);
 	this->highlightCurrentLine();
 }
+

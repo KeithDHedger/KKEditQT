@@ -1059,9 +1059,9 @@ void KKEditClass::doOddButtons(void)
 				saveas=true;
 			case TOOLSSAVE:
 				{
-					int		flags=0;
-					QFile	file;
-					bool	retval;
+					int			flags=0;
+					QFile		file;
+					bool			retval;
 					QPushButton	*savebutton;
 	
 					if(saveas==false)
@@ -1183,4 +1183,5 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
 
