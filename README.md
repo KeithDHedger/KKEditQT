@@ -32,11 +32,10 @@ This is the QT5 version of KKEDit and is not yet as full featured as the gtk ver
 
 TODO ( in no particular order ):
 
-Search forward/back checkbox ( Minor )<br>
-Search find in multiple files etc.
+Search within buitltin doc viewer ( Medium )<br>
 Global tools ( Minor )<br>
 Interaction with built document ( Major )<br>
 Scripting ( Major, mostly done )<br>
-
+Bracket matching ( Medium )<br>
 
 
