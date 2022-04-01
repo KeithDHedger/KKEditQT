@@ -1245,6 +1245,7 @@ void KKEditClass::buildDocViewer(void)
 	QVBoxLayout	*docvlayout=new QVBoxLayout;
 	QHBoxLayout	*dochlayout=new QHBoxLayout;
 	QWidget		*widget;
+	QLineEdit	*findbox;
 	QPushButton	*button;
 	QRect		r;
 
@@ -1275,19 +1276,39 @@ void KKEditClass::buildDocViewer(void)
 
 	dochlayout->addStretch(1);
 
+	findbox=new QLineEdit;
+	QObject::connect(findbox,&QLineEdit::returnPressed,[this,findbox]()
+		{
+			this->htmlURI=QString("https://duckduckgo.com/?q=%1&ia=web").arg(findbox->text());
+			this->showWebPage("Results for: " + findbox->text(),this->htmlURI);
+		});
+
 	button=new QPushButton(QIcon::fromTheme("edit-find"),"Find");
-	QObject::connect(button,&QPushButton::clicked,[=]() {QTextStream(stderr) << "find" << Qt::endl;});
+	QObject::connect(button,&QPushButton::clicked,[this,findbox]()
+		{
+			this->htmlURI=QString("https://duckduckgo.com/?q=%1&ia=web").arg(findbox->text());
+			this->showWebPage("Results for: " + findbox->text(),this->htmlURI);
+		});
 	dochlayout->addWidget(button);
 
-	widget=new QLineEdit;
-	dochlayout->addWidget(widget);
+	dochlayout->addWidget(findbox);
 
 	button=new QPushButton(QIcon::fromTheme("go-down"),"Down");
-	QObject::connect(button,&QPushButton::clicked,[=]() {QTextStream(stderr) << "Down" << Qt::endl;});
+	QObject::connect(button,&QPushButton::clicked,[this,findbox]()
+		{
+			this->webView->page()->findText("",QWebPage::HighlightAllOccurrences);
+			this->webView->page()->findText(findbox->text(),QWebPage::HighlightAllOccurrences);
+			this->webView->page()->findText(findbox->text(),QWebPage::FindWrapsAroundDocument);
+		});
 	dochlayout->addWidget(button);
-	
+
 	button=new QPushButton(QIcon::fromTheme("go-up"),"Up");
-	QObject::connect(button,&QPushButton::clicked,[=]() {QTextStream(stderr) << "Up" << Qt::endl;});
+	QObject::connect(button,&QPushButton::clicked,[this,findbox]()
+		{
+			this->webView->page()->findText("",QWebPage::HighlightAllOccurrences);
+			this->webView->page()->findText(findbox->text(),QWebPage::HighlightAllOccurrences);
+			this->webView->page()->findText(findbox->text(),QWebPage::FindBackward|QWebPage::FindWrapsAroundDocument);
+		});
 	dochlayout->addWidget(button);
 
 	dochlayout->addStretch(1);

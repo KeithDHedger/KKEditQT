@@ -1,4 +1,7 @@
 0.6.0
+Done docviewer find.
+Changed web search to duckduckgo ( google to agrresive about cookies ).
+Done search forward/backward in doc viewer.
 Fixed tools run sync/async.
 Speed tweaks for find definition.
 Fixed auto indent.

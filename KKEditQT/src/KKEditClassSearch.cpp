@@ -282,9 +282,9 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 	else
 		{
 			if(txt.isEmpty()==true)
-				searchfor=doc->textCursor().selectedText();
+				searchfor=doc->textCursor().selectedText().trimmed();
 			else
-				searchfor=txt;
+				searchfor=txt.trimmed();
 		}
 
 	switch(what)
@@ -300,36 +300,44 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 	results=this->runPipeAndCapture(searchcommand);
 	reslist=results.split("\n",Qt::SkipEmptyParts);
 
-	if(html.open(QFile::WriteOnly|QFile::Truncate))
+	if(reslist.isEmpty()==true)
 		{
-     		QTextStream out(&html);
-			out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">" << Qt::endl;
-			out << "<html>" << Qt::endl;
-			out << "<head>" << Qt::endl;
-			out << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" << Qt::endl;
-			out << "</head>" << Qt::endl;
-			out << "<body>" << Qt::endl;
-
-			for(int loop=0;loop<reslist.count();loop++)
+			this->htmlURI=QString("https://duckduckgo.com/?q=%1&ia=web").arg(searchfor);
+		}
+	else
+		{
+			if(html.open(QFile::WriteOnly|QFile::Truncate))
 				{
-					switch(what)
+    		 		QTextStream out(&html);
+					out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">" << Qt::endl;
+					out << "<html>" << Qt::endl;
+					out << "<head>" << Qt::endl;
+					out << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" << Qt::endl;
+					out << "</head>" << Qt::endl;
+					out << "<body>" << Qt::endl;
+
+					for(int loop=0;loop<reslist.count();loop++)
 						{
-							case 0:
-								funcname=reslist.at(loop).section("\" link=",0,0).section("name=\"",1,1);
-								link=reslist.at(loop).section("link=\"",1,1).section("\"",0,0);
-								basefile=reslist.at(loop).section(":",0,0).section("/",0,-2);
-								out << "<a href=\"file://" << basefile << "/" << link << "\">" << funcname << "</a><br>" << Qt::endl;
-								break;
-							case 1:
-								link="file://" + reslist.at(loop) + ".html";
-								funcname=reslist.at(loop).section("/",-1,-1);
-								out << "<a href=\"" << link << "\">" << funcname << "</a><br>" << Qt::endl;
-								break;
+							switch(what)
+								{
+									case 0:
+										funcname=reslist.at(loop).section("\" link=",0,0).section("name=\"",1,1);
+										link=reslist.at(loop).section("link=\"",1,1).section("\"",0,0);
+										basefile=reslist.at(loop).section(":",0,0).section("/",0,-2);
+										out << "<a href=\"file://" << basefile << "/" << link << "\">" << funcname << "</a><br>" << Qt::endl;
+										break;
+									case 1:
+										link="file://" + reslist.at(loop) + ".html";
+										funcname=reslist.at(loop).section("/",-1,-1);
+										out << "<a href=\"" << link << "\">" << funcname << "</a><br>" << Qt::endl;
+										break;
+								}
 						}
+					out << "</body>" << Qt::endl;
+					out << "</html>" << Qt::endl;
+					html.close();
+					this->htmlURI="file://"+this->htmlFile;
 				}
-			out << "</body>" << Qt::endl;
-			out << "</html>" << Qt::endl;
-			html.close();
 		}
 
 	this->showWebPage("Results for: " + searchfor,this->htmlURI);
