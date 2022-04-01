@@ -21,7 +21,7 @@
 #include "KKEditClass.h"
 #define VISIBLE __attribute__((visibility("default")))
 
-VISIBLE void KKEditClass::runPipe(QString command)
+void KKEditClass::runPipe(QString command)
 {
 	FILE		*fp=NULL;
 	char		line[1024];

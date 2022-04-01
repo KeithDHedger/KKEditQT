@@ -295,11 +295,11 @@ void KKEditClass::doToolsMenuItems()
 								str.replace("%f",document->getFilePath());
 								//%t selected text
 										setenv("KKEDIT_SELECTION",document->textCursor().selectedText().replace(QRegularExpression("\u2029|\\r\\n|\\r"),"\n").toStdString().c_str(),1);
-										str.replace("%t",document->textCursor().selectedText());
-										//%m
-										setenv("KKEDIT_MIMETYPE",document->mimeType.toStdString().c_str(),1);
-										str.replace("%m",document->mimeType);
-									}
+								str.replace("%t",document->textCursor().selectedText());
+								//%m
+								setenv("KKEDIT_MIMETYPE",document->mimeType.toStdString().c_str(),1);
+								str.replace("%m",document->mimeType);
+							}
 
 								//%h html file
 								setenv("KKEDIT_HTMLFILE",this->htmlFile.toStdString().c_str(),1);
@@ -355,22 +355,25 @@ void KKEditClass::doToolsMenuItems()
 
 								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==TOOL_ASYNC)
 									{
-										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										str=runPipeAndCapture(str);
+										str=QString("cd %1;%2 &").arg(this->toolsFolder).arg(str);
+										runPipe(str);
 										return;
 									}
 	
 								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_SHOW_DOC)==TOOL_SHOW_DOC)
 									{
 										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										DEBUGSTR( str )
 										runPipe(str);
 										this->showWebPage(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"file://" + this->htmlFile);
 										return;
 									}
 
-								DEBUGSTR( str )
-								runPipe(str);
+								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==0)
+									{
+										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
+										runPipe(str);
+										return;
+									}
 							}
 			 	break;
 		}
