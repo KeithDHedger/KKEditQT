@@ -1,4 +1,5 @@
 0.6.0
+Added 'Edit Tool' to manage tools, if tool command is a file, opens it, else copies command to clipboard.
 Done bracket matching.
 Done docviewer find.
 Changed web search to duckduckgo ( google to agrresive about cookies ).

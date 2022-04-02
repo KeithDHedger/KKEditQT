@@ -1080,6 +1080,12 @@ void KKEditClass::buildTools(void)
 	hbox->addWidget(button);
 
 	hbox->addStretch(1);
+	button=new QPushButton("Edit Tool");
+	button->setObjectName(QString("%1").arg(TOOLSEDIT));
+	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+	hbox->addWidget(button);
+
+	hbox->addStretch(1);
 	button=new QPushButton("Dismiss");
 	button->setObjectName(QString("%1").arg(TOOLSCANCEL));
 	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));

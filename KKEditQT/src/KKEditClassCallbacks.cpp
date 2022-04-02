@@ -1058,6 +1058,19 @@ void KKEditClass::doOddButtons(void)
 
 	switch(sender()->objectName().toInt())
 		{
+			case TOOLSEDIT:
+				{
+					QFile	file;
+					file.setFileName(QString("%1/%2").arg(this->toolsFolder).arg(this->toolsWindow->findChild<QLineEdit*>(TOOLCOMMAND)->text()));
+					if(file.exists())
+						this->openFile(file.fileName());
+					else
+						{
+							this->application->clipboard()->setText(this->toolsWindow->findChild<QLineEdit*>(TOOLCOMMAND)->text());
+						}
+				}
+				this->toolsWindow->hide();
+				break;
 			case TOOLSSAVEAS:
 				saveas=true;
 			case TOOLSSAVE:
@@ -1074,7 +1087,6 @@ void KKEditClass::doOddButtons(void)
 					retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 					if(retval==true)
 						{
-
 							this->showBarberPole("Rebuild Tools Menu","Rebuilding tools menu, please wait ...","Cancel",QString("%1/tools").arg(this->tmpFolderName));
 							QTextStream(&file) << TOOLALWAYSINPOPUP << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLALWAYSINPOPUP)->isChecked() << Qt::endl;
 							QTextStream(&file) << TOOLCLEAROP << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLCLEAROP)->isChecked() << Qt::endl;
