@@ -135,7 +135,7 @@ void DocumentClass::highlightCurrentLine()
 {
 	QTextEdit::ExtraSelection	bmselect;
 	bool						holdsb=this->mainKKEditClass->sessionBusy;
-	QTextCursor	cursor=this->textCursor();
+	QTextCursor					cursor=this->textCursor();
 
 	this->setStatusBarText();
 	this->extraBMSelections.clear();
@@ -161,6 +161,101 @@ void DocumentClass::highlightCurrentLine()
 	this->selectedLine.cursor.movePosition(QTextCursor::StartOfBlock,QTextCursor::MoveAnchor);
 	this->selectedLine.cursor.movePosition(QTextCursor::NextBlock,QTextCursor::KeepAnchor);
 
+//bracket match
+//forward
+	this->bracketMatch.clear();
+	QString			txt=this->toPlainText();
+	QTextCursor		bracketcursor=this->textCursor();
+	const QString	openbrackets("({[<");
+	const QString	closebrackets(")}]>");
+	int				pos;
+	int				whatbracket;
+	int				stack;
+	int				cnt;
+	bool			gotone=false;
+
+	if(txt.length()>1)
+		{
+			pos=bracketcursor.position();
+			whatbracket=-1;
+
+			if(pos>=txt.length())
+				pos=txt.length()-1;
+
+			for(int j=0;j<openbrackets.length();j++)
+				{
+					if(txt.at(pos)==openbrackets.at(j))
+						whatbracket=j;
+				}
+
+			if(whatbracket!=-1)
+				{
+					gotone=true;
+					stack=1;
+					cnt=pos;
+					do
+						{
+							cnt++;
+							if(cnt==txt.length())
+								break;
+							if(txt.at(cnt)==openbrackets.at(whatbracket))
+								stack++;
+							if(txt.at(cnt)==closebrackets.at(whatbracket))
+								stack--;
+						}
+					while(stack!=0);
+				}
+
+//backwards
+			if(gotone==false)
+				{
+					pos=bracketcursor.position()-1;
+					whatbracket=-1;
+
+					if(pos<0)
+						pos=0;
+
+					for(int j=0;j<closebrackets.length();j++)
+						{
+							if(txt.at(pos)==closebrackets.at(j))
+								whatbracket=j;
+						}
+
+					if(whatbracket!=-1)
+						{
+							stack=1;
+							cnt=pos;
+							do
+								{
+									cnt--;
+									if(cnt==-1)
+										break;
+									if(txt.at(cnt)==closebrackets.at(whatbracket))
+										stack++;
+									if(txt.at(cnt)==openbrackets.at(whatbracket))
+										stack--;
+								}
+							while(stack!=0);
+						}
+				}
+
+			if(stack==0)
+				{
+					QTextEdit::ExtraSelection	bmselect;
+					bracketcursor.setPosition(pos);
+					bmselect.format.setBackground(QColor(this->highlighter->documentForeground));
+					bmselect.format.setForeground(QColor(this->highlighter->documentBackground));
+					bracketcursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor);
+					bmselect.cursor=bracketcursor;
+					this->bracketMatch.append(bmselect);
+
+					bracketcursor.setPosition(cnt);
+					bracketcursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor);
+					bmselect.cursor=bracketcursor;
+					this->bracketMatch.append(bmselect);
+				}
+		}
+
 	if(this->realHiliteLine()==false)
 		{
 			this->extraSelections.clear();
@@ -168,6 +263,7 @@ void DocumentClass::highlightCurrentLine()
 		}
 	else
 		this->setXtraSelections();
+
 
 	this->mainKKEditClass->sessionBusy=holdsb;
 	this->mainKKEditClass->setToolbarSensitive();
@@ -589,4 +685,9 @@ void DocumentClass::setBMFromLineBar(QMouseEvent *event)
 	this->mainKKEditClass->handleBMMenu(this,TOGGLEBOOKMARKMENUITEM,cursor);
 	this->highlightCurrentLine();
 }
+
+//void DocumentClass::cursorChanged(void)
+//{
+//	qDebug() << "void DocumentClass::cursorChanged(void)";
+//}
 

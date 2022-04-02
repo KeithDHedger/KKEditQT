@@ -1,13 +1,13 @@
 /*
  *
- * ©K. D. Hedger. Wed 16 Mar 16:31:43 GMT 2022 keithdhedger@gmail.com
+ * ©K. D. Hedger. Sat  2 Apr 15:09:51 BST 2022 keithdhedger@gmail.com
 
  * This file (javalang.cpp) is part of javalang.
 
  * javalang is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
+ * (at your option) any later version.
 
  * javalang is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of

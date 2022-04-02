@@ -35,6 +35,6 @@ TODO ( in no particular order ):
 Global tools ( Minor )<br>
 Interaction with built document ( Major )<br>
 Scripting ( Major, mostly done )<br>
-Bracket matching ( Medium )<br>
+
 
 

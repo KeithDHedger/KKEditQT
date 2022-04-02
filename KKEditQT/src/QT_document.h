@@ -33,9 +33,9 @@ class DocumentClass : public QPlainTextEdit
 		explicit DocumentClass(KKEditClass *kk,QWidget *parent=0);
 		~DocumentClass();
 
-		KKEditClass						*mainKKEditClass=NULL;
+		KKEditClass							*mainKKEditClass=NULL;
 //highlighting
-		Highlighter						*highlighter;
+		Highlighter							*highlighter;
 		QList<QTextEdit::ExtraSelection>	extraSelections;
 		QList<QTextEdit::ExtraSelection>	extraBMSelections;
 		QList<QTextEdit::ExtraSelection>	hilightSelections;
@@ -47,69 +47,69 @@ class DocumentClass : public QPlainTextEdit
 		QColor							bookmarkLineColor;
 
 
-		void								setHiliteLanguage(void);
-		void								lineNumberAreaPaintEvent(QPaintEvent *event);
+		void							setHiliteLanguage(void);
+		void							lineNumberAreaPaintEvent(QPaintEvent *event);
 		int								lineNumberAreaWidth(void);
-		void								setXtraSelections(void);
-		void								addXtraSelections(void);
-		void								clearHilites(void);
+		void							setXtraSelections(void);
+		void							addXtraSelections(void);
+		void							clearHilites(void);
 
-		void								setFileName(const QString filename);
+		void							setFileName(const QString filename);
 		const QString					getFileName(void);
-		void								setFilePath(const QString filename);
+		void							setFilePath(const QString filename);
 		const QString					getFilePath(void);
-		void								setDirPath(const QString dirname);
+		void							setDirPath(const QString dirname);
 		const QString					getDirPath(void);
-		void								setTabName(QString tabname);
+		void							setTabName(QString tabname);
 		const QString					getTabName(void);
 		int								getCurrentLineNumber(void);
 
-		void								setFilePrefs(void);
+		void							setFilePrefs(void);
 
-		void								setStatusBarText(void);
+		void							setStatusBarText(void);
 
-		void								setBMFromLineBar(QMouseEvent *event);
+		void							setBMFromLineBar(QMouseEvent *event);
 
 //pageStruct
 		QString							fileName;
 		QString							filePath;
 		QString							dirPath;
 		QString							tabName;
-		bool								doneHighlightAll;
-		char								*lastFind;
-		bool								dirty=false;
+		bool							doneHighlightAll;
+		char							*lastFind;
+		bool							dirty=false;
 		QString							mimeType="text/plain";
-		bool								gotUndo=false;
-		bool								gotRedo=false;
+		bool							gotUndo=false;
+		bool							gotRedo=false;
 		int								pageIndex;
-		bool								visible=true;
+		bool							visible=true;
 
 	protected:
-	    void								resizeEvent(QResizeEvent *event);
-		void								keyPressEvent(QKeyEvent *event);
-		void								keyReleaseEvent(QKeyEvent *event);
-		void								focusInEvent(QFocusEvent *e);
-		void								contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
+	    void							resizeEvent(QResizeEvent *event);
+		void							keyPressEvent(QKeyEvent *event);
+		void							keyReleaseEvent(QKeyEvent *event);
+		void							focusInEvent(QFocusEvent *e);
+		void							contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
 //dand
-		void								dragEnterEvent(QDragEnterEvent* event);
-		void								dropEvent(QDropEvent* event);
-		void								dragMoveEvent(QDragMoveEvent *event);
+		void							dragEnterEvent(QDragEnterEvent* event);
+		void							dropEvent(QDropEvent* event);
+		void							dragMoveEvent(QDragMoveEvent *event);
 
 	private slots:
-		void								highlightCurrentLine();
-		void								updateLineNumberAreaWidth(void);
-		void								updateLineNumberArea(const QRect &, int);
-		void								modified();
-		void								setUndo(bool avail);
-		void								setRedo(bool avail);
+		void							highlightCurrentLine();
+		void							updateLineNumberAreaWidth(void);
+		void							updateLineNumberArea(const QRect &, int);
+		void							modified();
+		void							setUndo(bool avail);
+		void							setRedo(bool avail);
 
 	private:
-		QWidget 							*lineNumberArea;
+		QWidget 						*lineNumberArea;
 		QString							indentPad;
-		void								clearXtraSelections(void);
-		bool								realShowLineNumbers(void);
-		bool								realHiliteLine(void);
-		bool								realSyntaxHighlighting(void);
+		void							clearXtraSelections(void);
+		bool							realShowLineNumbers(void);
+		bool							realHiliteLine(void);
+		bool							realSyntaxHighlighting(void);
 		const QString					textUnderCursor();
 };
 
