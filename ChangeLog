@@ -1,4 +1,5 @@
 0.6.0
+Double clicking in white space now selects the white space.
 Code clean.
 CPP highlight plugin tweaks.
 Fixed minor ui glitch with hilighting 'c' functions.

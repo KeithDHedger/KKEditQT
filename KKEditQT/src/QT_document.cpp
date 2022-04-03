@@ -686,8 +686,25 @@ void DocumentClass::setBMFromLineBar(QMouseEvent *event)
 	this->highlightCurrentLine();
 }
 
-//void DocumentClass::cursorChanged(void)
-//{
-//	qDebug() << "void DocumentClass::cursorChanged(void)";
-//}
+void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
+{
+	QTextCursor	cursor=this->textCursor();
+	int			pos=cursor.position();
+
+	QPlainTextEdit::mouseDoubleClickEvent(event);
+
+	if(pos>=this->toPlainText().length())
+		pos=this->toPlainText().length()-1;
+
+	if((this->toPlainText().at(pos)==" ") || (this->toPlainText().at(pos)=="\t"))
+		{
+			if(cursor.atBlockStart()==false)
+				{
+					cursor.movePosition(QTextCursor::PreviousWord,QTextCursor::MoveAnchor);
+					cursor.movePosition(QTextCursor::EndOfWord,QTextCursor::MoveAnchor);
+				}
+			cursor.movePosition(QTextCursor::NextWord,QTextCursor::KeepAnchor);
+			this->setTextCursor(cursor);
+		}
+}
 
