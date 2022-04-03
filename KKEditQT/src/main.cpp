@@ -86,17 +86,15 @@ int main (int argc, char **argv)
 	kkedit->forceDefaultGeom=!siapp.isOnX11;
 
 	kkedit->initApp(argc,argv);
-//load plugins
-//	kkedit->loadPlugins();
 //test plugs
 #if 0
 	for(int j=0;j<kkedit->plugins.count();j++)
 		{
-			DEBUGSTR(kkedit->plugins[j].plugName);
-			DEBUGSTR(kkedit->plugins[j].plugVersion);
-			DEBUGSTR(kkedit->plugins[j].plugPath);
-			DEBUGSTR(kkedit->plugins[j].wants);
-			DEBUGSTR(kkedit->plugins[j].loaded);
+			qDebug()<<kkedit->plugins[j].plugName;
+			qDebug()<<kkedit->plugins[j].plugVersion;
+			qDebug()<<kkedit->plugins[j].plugPath;
+			qDebug()<<kkedit->plugins[j].wants;
+			qDebug()<<kkedit->plugins[j].loaded;
 			if(kkedit->plugins[j].plugName.compare("Example Plugin")==0)
 				{
 					kkedit->plugins[j].instance->unloadPlug();

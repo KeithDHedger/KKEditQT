@@ -74,14 +74,13 @@ QStringList KKEditClass::verifyTool(QString filepath)
 
 	if((sl.indexOf(QRegularExpression("^name.*$"))==-1) && (sl.indexOf(QRegularExpression("^command.*$"))==-1) && (sl.indexOf(QRegularExpression("^flags.*$"))==-1))
 		{
-			//DEBUGSTR( "This doesn't look like a tools file not fixing ... " << filepath )
 			sl.clear();
 			return(sl);
 		}
 
 	if(sl.count()<TOOL_END)
 		{
-			DEBUGSTR( "Possible error with " << filepath )
+			qDebug()<< "Possible error with " << filepath;
 			int		cnt=0;
 			while(cnt<TOOL_END)
 				{
@@ -219,7 +218,6 @@ void KKEditClass::setToolsData(int what)
 		{
 			if(what==0)
 				{
-					DEBUGSTR("new tool")
 					sl.clear();
 					sl<<QString("%1\t0").arg(TOOLALWAYSINPOPUP);
 					sl<<QString("%1\t0").arg(TOOLCLEAROP);
@@ -239,7 +237,7 @@ void KKEditClass::setToolsData(int what)
 					sl=this->verifyTool(this->toolSelect->currentData().toString());
 					if(sl.isEmpty()==true)
 						{
-							DEBUGSTR("Tool empty ...")
+							qDebug()<<"Tool empty ...";
 							return;
 						}
 				}
@@ -256,7 +254,6 @@ void KKEditClass::setToolsData(int what)
 
 	if(sender()->objectName().compare(TOOLCOMBOBOX)==0)
 		{
-			DEBUGSTR( "from box " << sender()->objectName() )
 			flags=sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).toInt();
 			runintermcheck->setEnabled(true);
 			inpopupcheck->setEnabled(true);
@@ -350,7 +347,6 @@ void KKEditClass::setToolsData(int what)
 			bool	termflag=false;
 			bool	docflag=false;
 
-			DEBUGSTR( "other " << sender()->objectName() )
 //run in term
 			if(sender()->objectName().compare(TOOLRUNINTERM)==0)
 				resetradios=true;

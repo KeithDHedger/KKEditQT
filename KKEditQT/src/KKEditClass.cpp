@@ -1355,7 +1355,7 @@ void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
 
 			ps.plugPath=s;
 			if(this->loadPlug(&ps)==false)
-				DEBUGSTR("Error loading plug > " << s)
+				qDebug()<<"Error loading plug > " << s;
 
 			this->plugins[cnt++]=ps;
 		}
@@ -1371,7 +1371,7 @@ void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
 
 			ps.plugPath=s;
 			if(this->loadPlug(&ps)==false)
-				DEBUGSTR("Error loading plug > " << s)
+				qDebug()<<"Error loading plug > " << s;
 
 			this->plugins[cnt++]=ps;
 		}

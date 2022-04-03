@@ -57,12 +57,11 @@ void kkeditQTexamplePlug::plugAbout(void)
 
 void kkeditQTexamplePlug::plugSettings(void)
 {
-	DEBUGSTR("void kkeditQTexamplePlug::plugSettings(void)")
+	qDebug()<<"void kkeditQTexamplePlug::plugSettings(void)";
 }
 
 void kkeditQTexamplePlug::plugRun(plugData *data)
 {
-//	DEBUGSTR("void kkeditQTexamplePlug::plugRun(whatIWant)")
 //settings and about handled seperatly
 	switch(data->what)
 		{

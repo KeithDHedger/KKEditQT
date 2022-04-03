@@ -903,8 +903,6 @@ void KKEditClass::buildMainGui(void)
 //help
 	menuItemSink=this->makeMenuItemClass(HELPMENU,"Help",0,"help-contents",HELPMENUNAME,HELPMENUITEM);
 	menuItemSink=this->makeMenuItemClass(HELPMENU,"Online Help",0,"help-contents",ONLINEHELPMENUNAME,ONLINEHELPMENUITEM);
-//get plugins
-	menuItemSink=this->makeMenuItemClass(HELPMENU,"Get Plugins",0,DATADIR"/pixmaps/KKEditQTPlugMenu.png",GETPLUGSMENUNAME,GETPLUGSMENUITEM);
 
 	this->setUpToolBar();
 	this->mainWindow->setMenuBar(qobject_cast<QMenuBar*>(this->menuBar));

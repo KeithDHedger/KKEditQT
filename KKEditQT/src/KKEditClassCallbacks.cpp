@@ -40,21 +40,21 @@ void KKEditClass::doSessionsMenuItems(void)
 	if((sessionnumber==0) || (sender()->objectName().compare(SAVESESSIONMENUNAME)==0) || (sender()->objectName().compare(QUITMENUNAME)==0))
 		{
 			if(sessionnumber!=0)
-			{
-			if(sender()->objectName().compare(QUITMENUNAME)==0)
 				{
-					sessionnumber=0;
-				}
-			else
-				{
-					if(sessionnumber==CURRENTSESSION)
+					if(sender()->objectName().compare(QUITMENUNAME)==0)
 						{
-							if(this->currentSessionNumber==0xdeadbeef)
-								return;
-							sessionnumber=this->currentSessionNumber;
+							sessionnumber=0;
+						}
+					else
+						{
+							if(sessionnumber==CURRENTSESSION)
+								{
+									if(this->currentSessionNumber==0xdeadbeef)
+										return;
+									sessionnumber=this->currentSessionNumber;
+								}
 						}
 				}
-			}
 			sessionname=QString("Session-%1").arg(sessionnumber);
 			file.setFileName(QString("%1/Session-%2").arg(this->sessionFolder).arg(sessionnumber));
 //get sesion name
@@ -411,11 +411,7 @@ void KKEditClass::doHelpMenuItems()
 			 	this->showWebPage("Help For " PACKAGE,"file://" DATADIR "/help/index.html");
 			 	break;
 			 case ONLINEHELPMENUITEM:
-			 DEBUGSTR(KKEDITQTPAGE)
 			 	this->showWebPage("Online Help For " PACKAGE,KKEDITQTPAGE);
-			 	break;
-			 case GETPLUGSMENUITEM:
-				DEBUGSTR("TODO get plugins ...")
 			 	break;
 		}
 }
@@ -666,9 +662,6 @@ void KKEditClass::doFileMenuItems()
 		}
 }
 
-//enum msgActions {OPENFILEMSG=100,SAVEFILEMSG,QUITAPPMSG,ACTIVATEAPPMSG,RESTORESESSIONMSG,GOTOLINEMSG,SEARCHDEFMSG,SELECTTABMSG,SELECTTABBYPATHMSG,BOOKMARKMSG,CLOSETABMSG,SETUSERMARKMSG,UNSETUSERMARKMASG,MOVETOMSG,SELECTBETWEENMSG,PASTEMSG,COPYMSG,CUTMSG,INSERTTEXTMSG,INSERTNLMSG,INSERTFILEMSG,PRINTFILESMSG,WAITFORKKEDITQTMSG,SHOWCONTINUEMSG,RUNTOOLMSG,ACTIVATEMENUBYLABELEDMSG,ACTIVATEMENULABELEDMSG,SENDPOSDATAMSG,SENDSELECTEDTEXTMSG,LASTMSG};
-
-
 void KKEditClass::clickMenu(QMenu *menu,QString name)
 {
 	foreach (QAction *action,menu->actions())
@@ -699,13 +692,11 @@ void KKEditClass::doTimer(void)
 #ifdef _BUILDDOCVIEWER_
 	this->setDocMenu();
 #endif
-
 	while(retcode!=-1)
 		{
 			buffer.mText[0]=0;
 			retcode=msgrcv(this->queueID,&buffer,MAXMSGSIZE,MSGANY,IPC_NOWAIT);
 			buffer.mText[retcode]=0;
-			//qDebug() << "type=" << buffer.mType << " message=" << buffer.mText;
 			if(retcode!=-1)
 				{
 					switch(buffer.mType)
@@ -1198,6 +1189,7 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
 
 
 
