@@ -1,4 +1,5 @@
 0.6.0
+CPP highlight plugin tweaks.
 Fixed minor ui glitch with hilighting 'c' functions.
 Added 'Edit Tool' to manage tools, if tool command is a file, opens it, else copies command to clipboard.
 Done bracket matching.
