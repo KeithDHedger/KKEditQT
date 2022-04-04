@@ -33,7 +33,7 @@
 #define KKEDITQTPAGE "https://keithdhedger.github.io/KKEditQT/"
 #define KKTERMINALPAGE GLOBALWEBSITE "/pages/kkterminal/kkterminal.html"
 
-#define COPYRITE "Copyright © 2013-2021 K.D.Hedger"
+#define COPYRITE "Copyright © 2013-2022 K.D.Hedger"
 
 #endif
 
