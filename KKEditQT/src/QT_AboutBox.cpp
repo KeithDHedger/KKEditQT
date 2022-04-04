@@ -54,7 +54,7 @@ void AboutBoxClass::showCredits(void)
 	hbox=new QWidget;
 	hbox->setLayout(hlayout);
 
-	QTextBrowser*	text=new QTextBrowser;
+	QTextBrowser	*text=new QTextBrowser;
 	text->setText(this->authors);
 	text->setReadOnly(true);
 	text->setOpenExternalLinks(true);
