@@ -29,6 +29,7 @@ Ported to QT5.<br>
 + When building from a fesh clone for the first time, please use ./autogen.sh instead of ./configure, args passed to autogen.sh are the same for configure, this only needs to be done on a fresh clone<br>
 
 This is the QT5 version of KKEDit and is not yet as full featured as the gtk version that it will soon replace.<br>
+I now consider this version to be fully functional ( if not fully featured ).<br>
 
 TODO ( in no particular order ):
 

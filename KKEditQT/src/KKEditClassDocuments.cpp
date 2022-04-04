@@ -108,6 +108,7 @@ void KKEditClass::goToDefinition(const QString txt)
 											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
 											this->mainNotebook->setCurrentIndex(tabs);
 											this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
+											doc->visible=true;
 											this->mainNotebook->repaint();
 											this->gotoLine(linenumber);
 											return;

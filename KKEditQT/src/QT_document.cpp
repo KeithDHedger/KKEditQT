@@ -381,7 +381,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 		}
 
 	isshortcut=((event->modifiers() & Qt::ControlModifier) && event->key()== Qt::Key_E); // CTRL+E//TODO//
-	if (!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer
+	if(!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer
 		QPlainTextEdit::keyPressEvent(event);
 
 	ctrlorshift=event->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
@@ -707,4 +707,5 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 			this->setTextCursor(cursor);
 		}
 }
+
 

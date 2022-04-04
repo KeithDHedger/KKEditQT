@@ -200,12 +200,6 @@ void KKEditClass::setUpToolBar(void)
 void KKEditClass::switchPage(int index)
 {
 	DocumentClass			*doc=NULL;
-	MenuItemClass			*menuitem;
-	int						linenumber;
-	QString					label="";
-	QString					entrytype="";
-	QStringList				sl;
-	QHash<QString,QMenu*>	menus;
 
 	if(this->sessionBusy==true)
 		return;
@@ -216,59 +210,12 @@ void KKEditClass::switchPage(int index)
 	if(doc==NULL)
 		return;
 
-	menus.clear();
-	sl.clear();
 	doc->setStatusBarText();
-	this->funcMenu->clear();
-	//doc->setCompleter();
 	doc->clearHilites();
 
-	sl=this->getNewRecursiveTagList(doc->getFilePath());
-	if(sl.isEmpty()==true)
-		{
-			this->funcMenu->setEnabled(false);
-		}
-	else
-		{
-			for(int j=0;j<sl.count();j++)
-				{
-					linenumber=sl.at(j).section(" ",2,2).toInt();
-					label=sl.at(j).section(" ",4);
-					entrytype=sl.at(j).section(" ",1,1);
+	this->rebuildFunctionMenu(index);
+	this->rebuildTabsMenu();
 
-					if(entrytype.isEmpty()==false)
-						{
-							if(this->prefsFunctionMenuLayout==4)
-								{
-									entrytype=entrytype.left(1).toUpper()+entrytype.mid(1) +"s";
-									menuitem=new MenuItemClass(this->truncateWithElipses(label,this->prefsMaxFuncChars));
-								}
-							else
-								menuitem=new MenuItemClass(this->truncateWithElipses(entrytype.toUpper() + " " +label,this->prefsMaxFuncChars));
-				
-							menuitem->setMenuID(linenumber);
-							menuitem->mainKKEditClass=this;
-							QObject::connect(menuitem,SIGNAL(triggered()),menuitem,SLOT(menuClickedGotoLine()));			
-							if(this->prefsFunctionMenuLayout==4)
-								{
-									if(menus.contains(entrytype)==false)
-										{
-											menus[entrytype]=new QMenu(entrytype);
-											this->funcMenu->addMenu(menus.value(entrytype));
-											menus.value(entrytype)->setStyleSheet("QMenu { menu-scrollable: true ;}");
-										}
-									menus.value(entrytype)->addAction(menuitem);
-								}
-							else
-								{
-									this->funcMenu->addAction(menuitem);
-								}
-						}
-				}
-
-			this->rebuildTabsMenu();
-			this->funcMenu->setEnabled(true);
-		}
 //plugins
 	for(int j=0;j<this->plugins.count();j++)
 		{
@@ -282,7 +229,6 @@ void KKEditClass::switchPage(int index)
 					this->plugins[j].instance->plugRun(&pd);
 				}
 		}
-
 }
 
 void KKEditClass::rebuildBookMarkMenu()
@@ -367,6 +313,7 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 				doc=this->pages.value(bms.docIndex);
 				this->mainNotebook->setCurrentWidget(doc);
 				this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
+				doc->visible=true;
 				this->mainNotebook->repaint();
 				this->tabBar->repaint();
 				this->gotoLine(bms.line);
@@ -949,6 +896,7 @@ void KKEditClass::closeAllTabs(void)
 				}
 		}
 
+	this->sessionBusy=false;
 	this->rebuildBookMarkMenu();
 	this->rebuildTabsMenu();
 	this->currentSessionNumber=0xdeadbeef;
@@ -956,7 +904,7 @@ void KKEditClass::closeAllTabs(void)
 	this->setToolbarSensitive();
 	this->pages.clear();
 	this->newPageIndex=1;
-	this->sessionBusy=false;
+	this->rebuildFunctionMenu(-1);
 }
 
 bool KKEditClass::closeTab(int index)
@@ -1023,11 +971,27 @@ bool KKEditClass::closeTab(int index)
 
 	if(this->closingAllTabs==false)
 		{
+			bool flag=false;
+			this->sessionBusy=false;
+			for(int j=0;j<this->mainNotebook->count();j++)
+				{
+					if(this->mainNotebook->isTabVisible(j)==true)
+						{
+							flag=true;
+							break;
+						}
+				}
+			if((flag==false) && (this->mainNotebook->count()>0))
+				{
+					this->mainNotebook->setTabVisible(this->mainNotebook->count()-1,true);
+					doc=this->getDocumentForTab(this->mainNotebook->count()-1);
+					doc->visible=true;
+				}
 			this->rebuildTabsMenu();
 			this->setToolbarSensitive();
+			this->rebuildFunctionMenu(-1);
 		}
 
-	this->sessionBusy=false;
 	return(true);
 }
 

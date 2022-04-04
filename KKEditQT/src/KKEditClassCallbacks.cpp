@@ -195,6 +195,8 @@ void KKEditClass::doSessionsMenuItems(void)
 								}
 							while(linenumber!=-1);
 							this->mainNotebook->setTabVisible(this->mainNotebook->currentIndex(),visible);
+							doc=this->getDocumentForTab(this->mainNotebook->currentIndex());
+							doc->visible=true;
 							this->gotoLine(mainline);
 						}
 					this->currentSessionNumber=sessionnumber;
@@ -225,7 +227,18 @@ void KKEditClass::doSessionsMenuItems(void)
 
 	this->sessionBusy=false;
 	this->setCompWordList();
-	this->switchPage(this->mainNotebook->count()-1);
+//TODO//rebuild func menu
+	for(int j=this->mainNotebook->count()-1;j>-1;j--)
+		{
+			if(this->mainNotebook->isTabVisible(j)==true)
+				{
+					this->switchPage(j);
+					break;
+				}
+		}
+	//this->switchPage(0);
+	//this->switchPage(this->mainNotebook->count()-1);
+	this->rebuildTabsMenu();
 	this->setToolbarSensitive();
 }
 
@@ -237,7 +250,6 @@ void KKEditClass::doSelectTab()
 
 	bar->setTabVisible(mc->getMenuID(),true);
 	bar->setCurrentIndex(mc->getMenuID());
-	//bar->repaint();
 	document=this->getDocumentForTab(-1);
 	document->visible=true;
 	bar->repaint();
@@ -686,9 +698,9 @@ void KKEditClass::notDoneYet(QString string)
 
 void KKEditClass::doTimer(void)
 {
-	int			retcode=0;
-	msgStruct	buffer;
-
+	int				retcode=0;
+	msgStruct		buffer;
+	DocumentClass	*doc;
 #ifdef _BUILDDOCVIEWER_
 	this->setDocMenu();
 #endif
@@ -717,6 +729,8 @@ void KKEditClass::doTimer(void)
 										tabnum=0;
 									bar->setTabVisible(tabnum,true);
 									bar->setCurrentIndex(tabnum);
+									doc=getDocumentForTab(tabnum);
+									doc->visible=true;
 								}
 								break;
 							case SELECTTABBYNAMEMSG:
@@ -728,6 +742,8 @@ void KKEditClass::doTimer(void)
 												{
 													bar->setTabVisible(j,true);
 													bar->setCurrentIndex(j);
+													doc=getDocumentForTab(j);
+													doc->visible=true;
 													return;
 												}
 										}
@@ -742,6 +758,8 @@ void KKEditClass::doTimer(void)
 												{
 													bar->setTabVisible(j,true);
 													bar->setCurrentIndex(j);
+													doc=getDocumentForTab(j);
+													doc->visible=true;
 													return;
 												}
 										}

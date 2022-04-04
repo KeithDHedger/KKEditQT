@@ -81,7 +81,7 @@ void KKEditClass::buildPrefsWindow(void)
 	this->listWidget->setGridSize(QSize(32,32));
 	this->listWidget->setSizePolicy (QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored));
 	this->listWidget->setMinimumHeight(48);
-	this->listWidget->setMinimumWidth(32*(strlen(this->prefsToolBarLayout.toStdString().c_str()))+4);//TODO//
+	this->listWidget->setMinimumWidth(32*(strlen(this->prefsToolBarLayout.toStdString().c_str()))+4);
 
 	mainvbox->addWidget(this->listWidget,2);
 	mainvbox->addWidget(this->fromHBox);
@@ -135,7 +135,6 @@ void KKEditClass::buildPrefsWindow(void)
 	posy=0;
 	makePrefsDial(TABWIDTH,"Tab width:",this->prefsTabWidth,2,64,posy);
 
-//TODO//
 //style
 	posy++;
 	prefsOtherWidgets[THEMECOMBO]=new QComboBox;
@@ -143,7 +142,7 @@ void KKEditClass::buildPrefsWindow(void)
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[THEMECOMBO],posy,1,posy,-1,Qt::AlignVCenter);
 
-	QDir			languagesDir(QString("%1/themes/").arg(DATADIR));
+	QDir		languagesDir(QString("%1/themes/").arg(DATADIR));
 	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
 
 	while (it.hasNext())
@@ -172,7 +171,7 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
 	widgetlabel = new QLabel("Font:");
 	prefsOtherWidgets[PREFSCURRENTFONT]=new QLabel(QString("%1 %2").arg(this->prefsDocumentFont.family()).arg(this->prefsDocumentFont.pointSize()));
-	int frameStyle1 = QFrame::Sunken|QFrame::Panel;//TODO//
+	int frameStyle1 = QFrame::Sunken|QFrame::Panel;
 	qobject_cast<QLabel*>(prefsOtherWidgets[PREFSCURRENTFONT])->setFrameStyle(frameStyle1);
     QPushButton *fontbutton = new QPushButton("Set Font");
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
@@ -791,7 +790,7 @@ void KKEditClass::buildMainGui(void)
 	menuItemSink=this->makeMenuItemClass(VIEWMENU,"Show Documentation",0,NULL,SHOWDOCSMENUNAME,DOCSMENUITEM);
 
 //toggle toolbar bar
-	if(this->toolbarVisible)//TODO//
+	if(this->toolbarVisible)
 		toggleToolBarMenuItem=this->makeMenuItemClass(VIEWMENU,"Hide Tool Bar",0,NULL,SHOWTOOLBARMENUNAME,TOGGLETOOLBARMENUITEM);
 	else
 		toggleToolBarMenuItem=this->makeMenuItemClass(VIEWMENU,"Show Tool Bar",0,NULL,SHOWTOOLBARMENUNAME,TOGGLETOOLBARMENUITEM);
@@ -886,7 +885,6 @@ void KKEditClass::buildMainGui(void)
 	this->menuBar->addMenu(this->toolsMenu);
 	this->buildTools();
 
-//TODO//
 //plugin menu
 	this->pluginMenu=new QMenu("&Plugins");
 	this->menuBar->addMenu(this->pluginMenu);
@@ -1427,7 +1425,7 @@ void KKEditClass::buildPlugPrefs(void)
 
 			btn=new QPushButton("Settings");
 			dochlayout->addWidget(btn);
-			if(((this->plugins[j].wants & DOSETTINGS)!=DOSETTINGS) || (this->plugins[j].loaded==false))//TODO//setup
+			if(((this->plugins[j].wants & DOSETTINGS)!=DOSETTINGS) || (this->plugins[j].loaded==false))
 				btn->setEnabled(false);
 			QObject::connect(btn,&QPushButton::clicked,[this,j]()
 				{
@@ -1480,5 +1478,77 @@ void KKEditClass::buildPlugPrefs(void)
 	docvlayout->addLayout(dochlayout);
 	this->pluginPrefsWindow->setLayout(docvlayout);
 }
+
+void KKEditClass::rebuildFunctionMenu(int tab)
+{
+	DocumentClass			*doc=NULL;
+	MenuItemClass			*menuitem;
+	int						linenumber;
+	QString					label="";
+	QString					entrytype="";
+	QStringList				sl;
+	QHash<QString,QMenu*>	menus;
+
+	if(this->sessionBusy==true)
+		return;
+
+	this->funcMenu->clear();
+	this->funcMenu->setEnabled(false);
+
+	if(tab==-1)
+		doc=this->getDocumentForTab(-1);
+	else
+		doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(tab));
+	if(doc==0)
+		return;
+	if(doc==NULL)
+		return;
+
+	sl=this->getNewRecursiveTagList(doc->getFilePath());
+	if(sl.isEmpty()==true)
+		{
+			this->funcMenu->setEnabled(false);
+		}
+	else
+		{
+			for(int j=0;j<sl.count();j++)
+				{
+					linenumber=sl.at(j).section(" ",2,2).toInt();
+					label=sl.at(j).section(" ",4);
+					entrytype=sl.at(j).section(" ",1,1);
+
+					if(entrytype.isEmpty()==false)
+						{
+							if(this->prefsFunctionMenuLayout==4)
+								{
+									entrytype=entrytype.left(1).toUpper()+entrytype.mid(1) +"s";
+									menuitem=new MenuItemClass(this->truncateWithElipses(label,this->prefsMaxFuncChars));
+								}
+							else
+								menuitem=new MenuItemClass(this->truncateWithElipses(entrytype.toUpper() + " " +label,this->prefsMaxFuncChars));
+				
+							menuitem->setMenuID(linenumber);
+							menuitem->mainKKEditClass=this;
+							QObject::connect(menuitem,SIGNAL(triggered()),menuitem,SLOT(menuClickedGotoLine()));			
+							if(this->prefsFunctionMenuLayout==4)
+								{
+									if(menus.contains(entrytype)==false)
+										{
+											menus[entrytype]=new QMenu(entrytype);
+											this->funcMenu->addMenu(menus.value(entrytype));
+											menus.value(entrytype)->setStyleSheet("QMenu { menu-scrollable: true ;}");
+										}
+									menus.value(entrytype)->addAction(menuitem);
+								}
+							else
+								{
+									this->funcMenu->addAction(menuitem);
+								}
+						}
+				}
+			this->funcMenu->setEnabled(true);
+		}
+}
+
 
 

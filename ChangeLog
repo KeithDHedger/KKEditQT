@@ -1,4 +1,9 @@
+0.7.0
+Now fully usable.
+
 0.6.0
+Fixed document visibility.
+Fixed incorrect function menu while closing tab with hidden tabs,
 Double clicking in white space now selects the white space.
 Code clean.
 CPP highlight plugin tweaks.

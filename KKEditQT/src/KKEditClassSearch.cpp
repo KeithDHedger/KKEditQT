@@ -247,6 +247,7 @@ void KKEditClass::doFindReplace(int response_id)
 										{
 											this->mainNotebook->setCurrentIndex(this->currentTab);
 											this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
+											document->visible=true;
 											this->setHighlightAll();
 											this->mainNotebook->repaint();
 										}

@@ -283,7 +283,8 @@ bool KKEditClass::checkForOpenFile(QString filepath)
 			if((doc->filePath!=NULL) && (doc->filePath.compare(filepath)==0))
 				{
 					this->mainNotebook->setCurrentIndex(tabs);
-					this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);//TODO//
+					this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
+					doc->visible=true;
 					this->mainNotebook->repaint();
 					this->tabBar->repaint();
 					return(true);
@@ -391,3 +392,4 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
