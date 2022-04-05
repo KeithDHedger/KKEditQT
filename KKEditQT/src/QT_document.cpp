@@ -351,7 +351,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 			while((j<posinblock) && ((data.at(j)=='\t') || (data.at(j)==' ')))
 				this->indentPad+=data.at(j++);
 
-			if(this->mainKKEditClass->completer && (this->mainKKEditClass->completer->popup()->isVisible()==false))//pass return to completer
+			if(this->mainKKEditClass->completer && (this->mainKKEditClass->completer->popup()->isVisible()==false))
 				{
 					cursor.insertText(QString("\n%1").arg(this->indentPad));
 					return;
@@ -366,7 +366,6 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 					case Qt::Key_Enter:
 					case Qt::Key_Return:
 					case Qt::Key_Escape:
-					case Qt::Key_Tab:
 					case Qt::Key_Backtab:
 						event->ignore();
 						return; // let the completer do default behavior
@@ -380,7 +379,9 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 			return;
 		}
 
+	//QString completerkey=QKeySequence(this->mainKKEditClass->defaultShortCutsList.at(NOMORESHORTCUT),QKeySequence::PortableText).toString();
 	isshortcut=((event->modifiers() & Qt::ControlModifier) && event->key()== Qt::Key_E); // CTRL+E//TODO//
+	//isshortcut=((event->modifiers() & Qt::ControlModifier) && completerkey.compare(this->mainKKEditClass->defaultShortCutsList.at(NOMORESHORTCUT))==0);
 	if(!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer
 		QPlainTextEdit::keyPressEvent(event);
 
@@ -707,5 +708,6 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 			this->setTextCursor(cursor);
 		}
 }
+
 
 

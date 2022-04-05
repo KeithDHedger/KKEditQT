@@ -34,7 +34,7 @@ KKEditClass::~KKEditClass()
 {
 	char*	command=NULL;
 
-	for(int j=0;j<SHORTCUTSCOUNT;j++)
+	for(int j=0;j<NOMORESHORTCUT;j++)
 		delete this->appShortcuts[j];
 	delete this->recentFiles;
 	delete this->history;
@@ -380,21 +380,18 @@ void KKEditClass::initApp(int argc,char** argv)
 //	else
 //		styleName="Root Source";
 	//this->highlightColour="#808080";
-
 	this->mainWindow=new QMainWindow;
-	for(int j=0;j<SHORTCUTSCOUNT;j++)
+	for(int j=0;j<NOMORESHORTCUT;j++)
 		this->appShortcuts[j]=new QShortcut(this->mainWindow);
 
 	this->setAppShortcuts();
 
 	this->readConfigs();
-
 	if(this->queueID==-1)
 		{
 			if((this->queueID=msgget(this->sessionID,IPC_CREAT|0660))==-1)
 				fprintf(stderr,"Can't create message queue, scripting wont work :( ...\n");
 		}
-
 	this->checkMessages=new QTimer();
 //linle a symlink.
 //					 vv from object      vv signal 	  	   vv to object   vv func slot must inherit QObject
@@ -405,6 +402,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->buildPrefsWindow();
 	this->buildToolOutputWindow();
 	this->loadPlugins();
+
 //	this->buildPlugPrefs();
 
 //TODO//
@@ -615,6 +613,7 @@ void KKEditClass::readConfigs(void)
 	this->hightlightAll=this->prefs.value("find/hightlightall",QVariant(bool(false))).value<bool>();
 	this->replaceAll=this->prefs.value("find/replaceall",QVariant(bool(false))).value<bool>();
 
+qDebug()<<this->defaultShortCutsList;
 	this->setAppShortcuts();	
 }
 
@@ -1026,7 +1025,7 @@ QString KKEditClass::truncateWithElipses(const QString str,unsigned int maxlen)
 
 void KKEditClass::setAppShortcuts(void)
 {
-	for(int j=0;j<SHORTCUTSCOUNT;j++)
+	for(int j=0;j<NOMORESHORTCUT;j++)
 		{
 			if(this->appShortcuts[j]!=NULL)
 				{

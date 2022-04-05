@@ -54,9 +54,9 @@ class AboutBoxClass : public QObject
 		void killAboutBox(void);
 
 	private:
-		QDialog*	aboutdialog;
-		QDialog*	licencedialog;
-		QDialog*	creditsdialog;
+		QDialog*	aboutDialog;
+		QDialog*	licenceDialog;
+		QDialog*	creditsDialog;
 		QString		licence;
 		QString		authors;
 };

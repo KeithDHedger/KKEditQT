@@ -422,9 +422,6 @@ void KKEditClass::doHelpMenuItems()
 			 case HELPMENUITEM:
 			 	this->showWebPage("Help For " PACKAGE,"file://" DATADIR "/help/index.html");
 			 	break;
-			 case ONLINEHELPMENUITEM:
-			 	this->showWebPage("Online Help For " PACKAGE,KKEDITQTPAGE);
-			 	break;
 		}
 }
 

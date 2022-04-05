@@ -1,4 +1,8 @@
 0.7.0
+Fixed tab key auto completing ( unwanted behaviour ).
+Removed redundant help item.
+Cleaned up kkeditqtmsg app ( see kkeditqtmsg -h ).
+About class clean.
 Now fully usable.
 
 0.6.0

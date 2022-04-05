@@ -28,7 +28,7 @@ void AboutBoxClass::setAuthors(QString authors)
 
 void AboutBoxClass::runAbout(void)
 {
-	this->aboutdialog->exec();
+	this->aboutDialog->exec();
 }
 
 void AboutBoxClass::setLicence(QString licence)
@@ -48,8 +48,8 @@ void AboutBoxClass::showCredits(void)
 	QVBoxLayout	*vlayout=new QVBoxLayout;
 	QTabWidget	*tabWidget=new QTabWidget;
 
-	this->creditsdialog=new QDialog(this->aboutdialog);
-	this->creditsdialog->setWindowTitle("Credits");
+	this->creditsDialog=new QDialog(this->aboutDialog);
+	this->creditsDialog->setWindowTitle("Credits");
 	hlayout=new QHBoxLayout;
 	hbox=new QWidget;
 	hbox->setLayout(hlayout);
@@ -65,28 +65,28 @@ void AboutBoxClass::showCredits(void)
 //close
 	hlayout->setContentsMargins(0,0,0,0);
 	button=new QPushButton("&Close");
-	QObject::connect(button,&QPushButton::clicked,[=]() {this->creditsdialog->close();});
+	QObject::connect(button,&QPushButton::clicked,[=]() {this->creditsDialog->close();});
 	hlayout->addWidget(button);
 
 	button->setIcon(QIcon::fromTheme("window-close"));
 	hlayout->insertStretch(0,1);
 	vlayout->addWidget(hbox);
 
-	creditsdialog->setLayout((QLayout*)vlayout);
-	creditsdialog->setModal(true);
-	creditsdialog->resize(500,320);
-	creditsdialog->exec();
+	creditsDialog->setLayout((QLayout*)vlayout);
+	creditsDialog->setModal(true);
+	creditsDialog->resize(500,320);
+	creditsDialog->exec();
 
 	delete text;
 	delete button;
 	delete hlayout;
 	delete vlayout;
-	delete this->creditsdialog;
+	delete this->creditsDialog;
 }
 
 void AboutBoxClass::killAboutBox(void)
 {
-	this->aboutdialog->close();
+	this->aboutDialog->close();
 	delete this;
 }
 
@@ -98,12 +98,12 @@ void AboutBoxClass::showLicence(void)
 	QVBoxLayout		*vlayout=new QVBoxLayout;
 	QPlainTextEdit	*text=new QPlainTextEdit;
 
-	this->licencedialog=new QDialog(this->aboutdialog);
+	this->licenceDialog=new QDialog(this->aboutDialog);
 	hlayout=new QHBoxLayout;
 	hbox=new QWidget;
 	hbox->setLayout(hlayout);
 
-	this->licencedialog->setWindowTitle("Licence");
+	this->licenceDialog->setWindowTitle("Licence");
 	vlayout->setContentsMargins(0,4,4,4);
 	text->setPlainText(this->licence);
 	text->setReadOnly(true);
@@ -114,23 +114,23 @@ void AboutBoxClass::showLicence(void)
 	hlayout->setContentsMargins(0,0,0,0);
 
 	button=new QPushButton("&Close");
-	QObject::connect(button,&QPushButton::clicked,[=]() {this->licencedialog->close();});
+	QObject::connect(button,&QPushButton::clicked,[=]() {this->licenceDialog->close();});
 	button->setIcon(QIcon::fromTheme("window-close"));
 	hlayout->addWidget(button);
 
 	hlayout->insertStretch(0,1);
 	vlayout->addWidget(hbox);
 
-	this->licencedialog->setLayout((QLayout*)vlayout);
-	this->licencedialog->setModal(true);
-	this->licencedialog->resize(500,320);
-	this->licencedialog->exec();
+	this->licenceDialog->setLayout((QLayout*)vlayout);
+	this->licenceDialog->setModal(true);
+	this->licenceDialog->resize(500,320);
+	this->licenceDialog->exec();
 
 	delete text;
 	delete button;
 	delete hlayout;
 	delete vlayout;
-	delete this->licencedialog;
+	delete this->licenceDialog;
 }
 
 AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
@@ -142,10 +142,10 @@ AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
 	QPixmap		pic(pixpath);
 	QLabel		*label=new QLabel;
 
-	this->aboutdialog=new QDialog(window);
-	this->aboutdialog->setWindowTitle("About");
-	this->aboutdialog->resize(320,128);
-	this->aboutdialog->setModal(true);
+	this->aboutDialog=new QDialog(window);
+	this->aboutDialog->setWindowTitle("About");
+	this->aboutDialog->resize(320,128);
+	this->aboutDialog->setModal(true);
 
 	vlayout->setContentsMargins(0,4,0,0);
 	hlayout=new QHBoxLayout;
@@ -195,5 +195,5 @@ AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
 	button->setIcon(QIcon::fromTheme("window-close"));
 
 	vlayout->addWidget(hbox);
-	this->aboutdialog->setLayout((QLayout*)vlayout);
+	this->aboutDialog->setLayout((QLayout*)vlayout);
 }

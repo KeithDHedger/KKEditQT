@@ -151,7 +151,6 @@ enum  utilVarType {BOOLVAR=0,INTVAR,CHARVAR,MULTVAR,BADTYPE,DECIMALOUT,HEXOUT,OC
 #define ABOUTMENUNAME "aboutmenu"
 #define ABOUTQTMENUNAME "aboutmenuqt"
 #define HELPMENUNAME "helpmenu"
-#define ONLINEHELPMENUNAME "onlinehelpmenu"
 #define GETPLUGSMENUNAME "getplugsmenu"
 #define REMOVEALLBOOKMARKS "removeallbookmarks"
 #define TOGGLEBOOKMARK "togglebookmark"
