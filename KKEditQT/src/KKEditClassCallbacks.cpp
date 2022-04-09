@@ -74,7 +74,7 @@ void KKEditClass::doSessionsMenuItems(void)
 			if(retval==true)
 				{
 					int		linenumber=10;
-					bool	visible=true;
+					bool		visible=true;
 					bool	ok;
 					if((sessionnumber!=0) && (mc->getMenuID()!=CURRENTSESSION))
 						{
@@ -194,9 +194,7 @@ void KKEditClass::doSessionsMenuItems(void)
 										}
 								}
 							while(linenumber!=-1);
-							this->mainNotebook->setTabVisible(this->mainNotebook->currentIndex(),visible);
-							doc=this->getDocumentForTab(this->mainNotebook->currentIndex());
-							doc->visible=true;
+							this->setTabVisibilty(this->mainNotebook->currentIndex(),visible);
 							this->gotoLine(mainline);
 						}
 					this->currentSessionNumber=sessionnumber;
@@ -240,19 +238,6 @@ void KKEditClass::doSessionsMenuItems(void)
 	//this->switchPage(this->mainNotebook->count()-1);
 	this->rebuildTabsMenu();
 	this->setToolbarSensitive();
-}
-
-void KKEditClass::doSelectTab()
-{
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	QTabBar			*bar=this->mainNotebook->tabBar();
-	DocumentClass	*document;
-
-	bar->setTabVisible(mc->getMenuID(),true);
-	bar->setCurrentIndex(mc->getMenuID());
-	document=this->getDocumentForTab(-1);
-	document->visible=true;
-	bar->repaint();
 }
 
 void KKEditClass::doBookmarkMenuItems()
@@ -595,9 +580,7 @@ void KKEditClass::doEditMenuItems()
 			case SHOWALLTABSMENUITEM:
 				for(int j=0;j<this->mainNotebook->count();j++)
 					{
-						this->mainNotebook->setTabVisible(j,true);
-						document=this->getDocumentForTab(j);
-						document->visible=true;
+						this->setTabVisibilty(j,true);
 					}
 				break;
 			case PREFSMENUITEM:
@@ -673,7 +656,7 @@ void KKEditClass::doFileMenuItems()
 
 void KKEditClass::clickMenu(QMenu *menu,QString name)
 {
-	foreach (QAction *action,menu->actions())
+	foreach(QAction *action,menu->actions())
 		{
 			if(action->menu())
 				this->clickMenu(action->menu(),name);
@@ -708,7 +691,7 @@ void KKEditClass::doTimer(void)
 			buffer.mText[retcode]=0;
 			if(retcode!=-1)
 				{
-					switch(buffer.mType)
+					switch(buffer.mType & ALLMSGTYPES)
 						{
 							case GOTOLINEMSG:
 								this->gotoLine(strtol(buffer.mText,NULL,0));
@@ -724,10 +707,7 @@ void KKEditClass::doTimer(void)
 										tabnum=bar->count()-1;
 									if(tabnum<0)
 										tabnum=0;
-									bar->setTabVisible(tabnum,true);
-									bar->setCurrentIndex(tabnum);
-									doc=getDocumentForTab(tabnum);
-									doc->visible=true;
+									this->setTabVisibilty(tabnum,true);
 								}
 								break;
 							case SELECTTABBYNAMEMSG:
@@ -737,11 +717,9 @@ void KKEditClass::doTimer(void)
 										{
 											if(bar->tabText(j).compare(buffer.mText)==0)
 												{
-													bar->setTabVisible(j,true);
-													bar->setCurrentIndex(j);
-													doc=getDocumentForTab(j);
-													doc->visible=true;
-													return;
+													this->setTabVisibilty(j,true);
+													break;
+//													return;
 												}
 										}
 								}
@@ -753,11 +731,8 @@ void KKEditClass::doTimer(void)
 										{
 											if(bar->tabToolTip(j).compare(buffer.mText)==0)
 												{
-													bar->setTabVisible(j,true);
-													bar->setCurrentIndex(j);
-													doc=getDocumentForTab(j);
-													doc->visible=true;
-													return;
+													this->setTabVisibilty(j,true);
+													break;
 												}
 										}
 								}
@@ -817,14 +792,6 @@ void KKEditClass::doTimer(void)
 								this->notDoneYet("PRINTFILESMSG not yet implemented");
 								qDebug() << "PRINTFILESMSG";
 								break;
-							case WAITFORKKEDITQTMSG:
-								this->notDoneYet("WAITFORKKEDITQTMSG not yet implemented");
-								qDebug() << "WAITFORKKEDITQTMSG";
-								break;
-							case SHOWCONTINUEMSG:
-								this->notDoneYet("SHOWCONTINUEMSG not yet implemented");
-								qDebug() << "SHOWCONTINUEMSG";
-								break;
 							case RUNTOOLMSG:
 								this->clickMenu(this->toolsMenu,QString(buffer.mText));
 								break;
@@ -842,6 +809,13 @@ void KKEditClass::doTimer(void)
 								qDebug() << "SENDPOSDATAMSG";
 								break;
 							case SENDSELECTEDTEXTMSG:
+								strcpy(buffer.mText,"test return message\n");
+								buffer.mType=SENDMSG;
+								if((msgsnd(queueID,&buffer,strlen(buffer.mText)+1,0))==-1)
+									{
+										fprintf(stderr,"Can't send message :(\n");
+										exit(NOSENDMSG);
+									}
 								this->notDoneYet("SENDSELECTEDTEXTMSG not yet implemented");
 								qDebug() << "SENDSELECTEDTEXTMSG";
 								break;
@@ -866,6 +840,13 @@ void KKEditClass::doTimer(void)
 											emit this->restoreSessionMenuItemsList.at(j)->triggered();
 									}
 								break;
+						}
+
+					if((buffer.mType & CONTINUEMSG)==CONTINUEMSG)
+						{
+							buffer.mText[0]=0;
+							buffer.mType=CONTINUEMSG;
+							msgsnd(this->queueID,&buffer,0,0);
 						}
 				}
 		}
@@ -1019,8 +1000,7 @@ void KKEditClass::doTabBarContextMenu(void)
 				this->openFile(QString("%1/%2").arg(doc->getDirPath()).arg(mc->text()));
 				break;
 			case HIDETAB:
-				this->mainNotebook->setTabVisible(mc->getMenuID() & 0xff,false);
-				doc->visible=false;
+				this->setTabVisibilty(mc->getMenuID() & 0xff,false);
 				break;
 			case LOCKCONTENTS:
 				doc->setReadOnly(!doc->isReadOnly());
@@ -1204,6 +1184,11 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
+
+
+
+
 
 
 

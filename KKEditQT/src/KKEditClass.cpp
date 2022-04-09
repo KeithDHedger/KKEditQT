@@ -23,11 +23,7 @@
 KKEditClass::KKEditClass(QApplication *app)
 {
 	this->application=app;
-//	this->recentFiles=new RecentMenuClass(this);
-//	this->recentFiles->updateRecents();
-//	this->history=new HistoryClass;
 	this->history=new HistoryClass(this);
-
 }
 
 KKEditClass::~KKEditClass()
@@ -199,7 +195,7 @@ void KKEditClass::setUpToolBar(void)
 
 void KKEditClass::switchPage(int index)
 {
-	DocumentClass			*doc=NULL;
+	DocumentClass	*doc=NULL;
 
 	if(this->sessionBusy==true)
 		return;
@@ -312,10 +308,7 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 				bms=this->bookMarks.value(what);
 				doc=this->pages.value(bms.docIndex);
 				this->mainNotebook->setCurrentWidget(doc);
-				this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
-				doc->visible=true;
-				this->mainNotebook->repaint();
-				this->tabBar->repaint();
+				this->setTabVisibilty(this->mainNotebook->currentIndex(),true);
 				this->gotoLine(bms.line);
 				break;
 		}
@@ -469,8 +462,7 @@ void KKEditClass::doAppShortCuts(void)
 	switch(sc->objectName().toInt())
 		{
 			case HIDETABSHORTCUT:
-				this->mainNotebook->setTabVisible(this->mainNotebook->currentIndex(),false);
-				doc->visible=false;
+				this->setTabVisibilty(this->mainNotebook->currentIndex(),false);
 				break;
 			case DELETELINESHORTCUT:
 				cursor.select(QTextCursor::LineUnderCursor);
@@ -612,8 +604,8 @@ void KKEditClass::readConfigs(void)
 	this->useRegex=this->prefs.value("find/useregex",QVariant(bool(false))).value<bool>();
 	this->hightlightAll=this->prefs.value("find/hightlightall",QVariant(bool(false))).value<bool>();
 	this->replaceAll=this->prefs.value("find/replaceall",QVariant(bool(false))).value<bool>();
+	this->searchBack=this->prefs.value("find/searchback",QVariant(bool(false))).value<bool>();
 
-qDebug()<<this->defaultShortCutsList;
 	this->setAppShortcuts();	
 }
 
@@ -629,11 +621,13 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 	if(pt.isNull())
 		return;
 
-	tabIndex=this->tabBar->tabAt(pt);
+	//xxxtabIndex=this->tabBar->tabAt(pt);
+	tabIndex=this->mainNotebook->tabBar()->tabAt(pt);
 
 	if (tabIndex!=-1)
 		{
-			QMenu	menu(this->tabBar);
+			//xxxQMenu	menu(this->tabBar);
+			QMenu	menu(this->mainNotebook);
 			QMenu	srcmenu(this->tabContextMenuItems[(SRCHILTIE-COPYFOLDERPATH)/0x100].label);
 			QMenu	filemenu(this->tabContextMenuItems[(OPENFROMHERE-COPYFOLDERPATH)/0x100].label);
 			for(int cnt=0;cnt<TABCONTEXTMENUCNT;cnt++)
@@ -710,8 +704,7 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 							this->plugins[j].instance->plugRun(&pd);
 						}
 				}
-
-			menu.exec(this->tabBar->mapToGlobal(pt));
+			menu.exec(this->mainNotebook->mapToGlobal(pt));
 		}
 }
 
@@ -771,8 +764,8 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("find/useregex",this->useRegex);
 	this->prefs.setValue("find/hightlightall",this->hightlightAll);
 	this->prefs.setValue("find/replaceall",this->replaceAll);
+	this->prefs.setValue("find/searchback",this->searchBack);
 	
-
 	this->disabledPlugins.clear();
 	for(int j=0;j<this->plugins.count();j++)
 		{
@@ -980,11 +973,10 @@ bool KKEditClass::closeTab(int index)
 							break;
 						}
 				}
+
 			if((flag==false) && (this->mainNotebook->count()>0))
 				{
-					this->mainNotebook->setTabVisible(this->mainNotebook->count()-1,true);
-					doc=this->getDocumentForTab(this->mainNotebook->count()-1);
-					doc->visible=true;
+					this->setTabVisibilty(this->mainNotebook->count()-1,true);
 				}
 			this->rebuildTabsMenu();
 			this->setToolbarSensitive();
@@ -1019,7 +1011,6 @@ QString KKEditClass::truncateWithElipses(const QString str,unsigned int maxlen)
 		newlabel=str.left((maxlen-3)/2)+"..."+str.right((maxlen-3)/2);
 	else
 		newlabel=str;
-
 	return(newlabel);
 }
 
@@ -1166,7 +1157,6 @@ void KKEditClass::setToolbarSensitive(void)
 					this->plugins[j].instance->plugRun(&pd);
 				}
 		}
-
 }
 
 void KKEditClass::debugSignalSlot(int what)
@@ -1395,5 +1385,42 @@ bool KKEditClass::unloadPlug(pluginStruct *ps)
 
 	return(true);
 }
+
+
+void KKEditClass::setTabVisibilty(int tab,bool visible)
+{
+	DocumentClass	*doc;
+	int				tabnum=tab;
+	bool				vis=visible;
+
+//TODO//
+	if(this->sessionBusy==false)
+		if(tabnum==this->mainNotebook->count()-1)//ui bug fix no last tab invisible
+			vis=true;
+
+	this->mainNotebook->setTabVisible(tabnum,vis);
+	doc=this->getDocumentForTab(tabnum);
+	doc->visible=vis;
+
+//	if(vis==false)
+//		{
+//			while((tabnum<this->mainNotebook->count()) && (this->mainNotebook->isTabVisible(tabnum)==false))
+//				tabnum++;
+//			if(tabnum>=this->mainNotebook->count())
+//				{
+//					tabnum=this->mainNotebook->count()-1;
+//					this->mainNotebook->setTabVisible(tabnum,true);
+//					doc=this->getDocumentForTab(tabnum);
+//					doc->visible=true;
+//				}
+//		}
+
+//	this->mainNotebook->setCurrentIndex(tabnum-1);
+	this->mainNotebook->setCurrentIndex(tabnum);
+}
+
+
+
+
 
 

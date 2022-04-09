@@ -22,7 +22,8 @@
 
 void KKEditClass::doFindButton(void)
 {
-	this->startingTab=this->tabBar->currentIndex();
+//xxx	this->startingTab=this->tabBar->currentIndex();
+	this->startingTab=this->mainNotebook->currentIndex();
 	this->currentTab=this->startingTab;
 	this->doFindReplace(sender()->objectName().toInt());
 }
@@ -77,14 +78,14 @@ void KKEditClass::doFindReplace(int response_id)
 {
 	unsigned int				whattodo=0;
 	bool						flag=false;
-	DocumentClass				*document=this->getDocumentForTab(this->currentTab);
-	QTextCursor					thiscursor;
+	DocumentClass			*document=this->getDocumentForTab(this->currentTab);
+	QTextCursor				thiscursor;
 	QTextDocument::FindFlags	flags;
 	bool						foundmatch=false;
-	int							position;
-	QRegularExpression			rx;
-	QComboBox					*box;
-	QStringList					*list;
+	int						position;
+	QRegularExpression		rx;
+	QComboBox				*box;
+	QStringList				*list;
 
 	this->setSearchPrefs(0);
 
@@ -98,6 +99,9 @@ void KKEditClass::doFindReplace(int response_id)
 		rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
 	else
 		flags|=QTextDocument::FindCaseSensitively;
+
+	if(this->searchBack==true)
+		flags|=QTextDocument::FindBackward;
 
 //save combos
 	box=this->findDropBox;
@@ -123,6 +127,7 @@ void KKEditClass::doFindReplace(int response_id)
 		}
 
 	this->setHighlightAll();
+
 	switch(response_id)
 		{
 			case FINDREPLACE:
@@ -179,9 +184,11 @@ void KKEditClass::doFindReplace(int response_id)
 								document->textCursor().insertText(str);
 							}
 					}
+				//break;
 				
-			case FINDPREV:
-				flags|=QTextDocument::FindBackward;
+//			case FINDPREV:
+//				if(this->searchBack==true)
+//					flags|=QTextDocument::FindBackward;
 			case FINDNEXT:
 				if(this->useRegex==false)
 					foundmatch=document->find(this->findDropBox->currentText(),flags);
@@ -198,7 +205,8 @@ void KKEditClass::doFindReplace(int response_id)
 								case 1://wrap only
 									position=document->textCursor().position();
 									thiscursor=document->textCursor();
-									if(response_id==FINDNEXT)
+	//								if(response_id==FINDNEXT)
+									if(this->searchBack==false)
 										thiscursor.movePosition(QTextCursor::Start);
 									else
 										thiscursor.movePosition(QTextCursor::End);
@@ -217,7 +225,8 @@ void KKEditClass::doFindReplace(int response_id)
 									break;
 								case 2:	//all files implies wrap
 								case 3:
-									if(response_id==FINDNEXT)
+									if(this->searchBack==false)
+								//	if(response_id==FINDNEXT)
 										{
 											this->currentTab++;
 											if(this->currentTab==this->mainNotebook->count())
@@ -234,7 +243,8 @@ void KKEditClass::doFindReplace(int response_id)
 
 									document=this->getDocumentForTab(this->currentTab);
 									thiscursor=document->textCursor();
-									if(response_id==FINDNEXT)
+									if(this->searchBack==false)
+								//	if(response_id==FINDNEXT)
 										thiscursor.movePosition(QTextCursor::Start);
 									else
 										thiscursor.movePosition(QTextCursor::End);
@@ -245,11 +255,12 @@ void KKEditClass::doFindReplace(int response_id)
 										foundmatch=document->find(rx,flags);
 									if(foundmatch==true)
 										{
-											this->mainNotebook->setCurrentIndex(this->currentTab);
-											this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
-											document->visible=true;
+											//this->mainNotebook->setCurrentIndex(this->currentTab);
+											//this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
+											//document->visible=true;
+											this->setTabVisibilty(this->currentTab,true);
 											this->setHighlightAll();
-											this->mainNotebook->repaint();
+											//this->mainNotebook->repaint();
 										}
 									else
 										{
@@ -372,6 +383,9 @@ void KKEditClass::setSearchPrefs(int state)
 						else
 							this->frReplace->setText("Replace All");
 						break;
+					case FRSEARCHBACK:
+						this->searchBack=this->frSwitches[FRSEARCHBACK]->isChecked();
+						break;
 				}
 		}
 }
@@ -429,3 +443,6 @@ void KKEditClass::doLiveSearch(const QString text)
 	if(retval==false)
 		doc->setTextCursor(savetc);
 }
+
+
+

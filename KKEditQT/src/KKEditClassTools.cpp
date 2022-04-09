@@ -395,3 +395,5 @@ void KKEditClass::setToolsData(int what)
 				}
 		}
 }
+
+

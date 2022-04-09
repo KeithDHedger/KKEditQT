@@ -1,9 +1,19 @@
 0.7.0
+Dirty document now shows red text in tab.
+Fixed jumpy tabs.
+Added tab bar scroll buttons.
+Removed redundant "enumerator" entries from function menu.
+Fixed blank item in function menu representing anonymous functions( lambdas ).
+Redone find replace dialog.
+Fixed replace backwards.
+Fixed line wrap from view menu.
+Updates to messaging.
 Fixed tab key auto completing ( unwanted behaviour ).
 Removed redundant help item.
 Cleaned up kkeditqtmsg app ( see kkeditqtmsg -h ).
 About class clean.
 Now fully usable.
+
 
 0.6.0
 Fixed document visibility.
@@ -795,4 +805,9 @@ Updated Help file.
 
 0.0.4
 1st release
+
+
+
+
+
 

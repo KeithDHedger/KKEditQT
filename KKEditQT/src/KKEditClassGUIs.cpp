@@ -574,6 +574,11 @@ void KKEditClass::buildFindReplace(void)
 	this->frSwitches[FRREPLACEALL]->setChecked(this->replaceAll);
 	QObject::connect(this->frSwitches[FRREPLACEALL],SIGNAL(stateChanged(int)),this,SLOT(setSearchPrefs(int)));
 	hlayout->addWidget(this->frSwitches[FRREPLACEALL]);
+//search back
+	this->frSwitches[FRSEARCHBACK]=new QCheckBox("Search Backwards");
+	this->frSwitches[FRSEARCHBACK]->setChecked(this->searchBack);
+	QObject::connect(this->frSwitches[FRSEARCHBACK],SIGNAL(stateChanged(int)),this,SLOT(setSearchPrefs(int)));
+	hlayout->addWidget(this->frSwitches[FRSEARCHBACK]);
 
 	vlayout->addWidget(hbox);
 
@@ -583,17 +588,10 @@ void KKEditClass::buildFindReplace(void)
 	hbox=new QWidget;
 	hbox->setLayout(hlayout);
 
-	button=new QPushButton("Forward");
+	button=new QPushButton("Find");
 	button->setObjectName(FINDNEXTOBJECTNAME);
 	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doFindButton()));
-	icon=QIcon::fromTheme("go-next");
-	button->setIcon(icon);
-	hlayout->addWidget(button);
-
-	button=new QPushButton("Back");
-	button->setObjectName(FINDPREVOBJECTNAME);
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doFindButton()));
-	icon=QIcon::fromTheme("go-previous");
+	icon=QIcon::fromTheme("edit-find");
 	button->setIcon(icon);
 	hlayout->addWidget(button);
 
@@ -618,15 +616,15 @@ void KKEditClass::buildMainGui(void)
 
 	this->mainNotebook=new NoteBookClass(this);
 
-//contextMenuEvent
-	this->tabBar=this->mainNotebook->tabBar();
-	this->tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
-	QObject::connect(this->tabBar,SIGNAL(customContextMenuRequested(const QPoint &)),SLOT(tabContextMenu(const QPoint &)));
+//this->mainNotebook->setStyleSheet(QString("QTabBar::tab {width: 256;}"));//TODO//
+	this->mainNotebook->setContextMenuPolicy(Qt::CustomContextMenu);
+	QObject::connect(this->mainNotebook,SIGNAL(customContextMenuRequested(const QPoint &)),SLOT(tabContextMenu(const QPoint &)));
 
-	this->mainNotebook->setDocumentMode(true);
+	this->mainNotebook->setDocumentMode(false);
 	this->mainNotebook->setTabsClosable(true);
 	this->mainNotebook->setMovable(true);
 	QObject::connect(this->mainNotebook,SIGNAL(currentChanged(int)),this,SLOT(switchPage(int)));
+	//QObject::connect(this->mainNotebook,SIGNAL(tabBarClicked(int)),this,SLOT(switchPage(int)));
 	QObject::connect(this->mainNotebook,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));
 
 	this->menuBar=new QMenuBar;
@@ -1133,7 +1131,10 @@ void KKEditClass::rebuildTabsMenu(void)
 			menuitem=new MenuItemClass(doc->getFileName());
 			menuitem->setMenuID(j);
 			this->selectTabMenu->addAction(menuitem);
-			QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doSelectTab()));
+			QObject::connect(menuitem,&QAction::triggered,[this,j]()
+				{
+					this->setTabVisibilty(j,true);
+				});
 		}
 }
 
@@ -1518,36 +1519,60 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 
 					if(entrytype.isEmpty()==false)
 						{
-							if(this->prefsFunctionMenuLayout==4)
+							if(entrytype.contains("enumerator",Qt::CaseInsensitive)==false)
 								{
-									entrytype=entrytype.left(1).toUpper()+entrytype.mid(1) +"s";
-									menuitem=new MenuItemClass(this->truncateWithElipses(label,this->prefsMaxFuncChars));
-								}
-							else
-								menuitem=new MenuItemClass(this->truncateWithElipses(entrytype.toUpper() + " " +label,this->prefsMaxFuncChars));
-				
-							menuitem->setMenuID(linenumber);
-							menuitem->mainKKEditClass=this;
-							QObject::connect(menuitem,SIGNAL(triggered()),menuitem,SLOT(menuClickedGotoLine()));			
-							if(this->prefsFunctionMenuLayout==4)
-								{
-									if(menus.contains(entrytype)==false)
+									if(this->prefsFunctionMenuLayout==4)
 										{
-											menus[entrytype]=new QMenu(entrytype);
-											this->funcMenu->addMenu(menus.value(entrytype));
-											menus.value(entrytype)->setStyleSheet("QMenu { menu-scrollable: true ;}");
+											entrytype=entrytype.left(1).toUpper()+entrytype.mid(1) +"s";
+											if(label.length()<2)
+												{
+													entrytype="Anonymous Functions";
+													label=QString("%1 Line %2").arg(doc->getFileName()).arg(linenumber);
+												}
+											menuitem=new MenuItemClass(this->truncateWithElipses(label,this->prefsMaxFuncChars));
 										}
-									menus.value(entrytype)->addAction(menuitem);
-								}
-							else
-								{
-									this->funcMenu->addAction(menuitem);
+									else
+										{
+											if(label.length()<2)
+												menuitem=new MenuItemClass(QString("ANONYMOUS %1 Line %2").arg(doc->getFileName()).arg(linenumber));
+											else
+												menuitem=new MenuItemClass(this->truncateWithElipses(entrytype.toUpper() + " " +label,this->prefsMaxFuncChars));
+										}
+
+									menuitem->setMenuID(linenumber);
+									menuitem->mainKKEditClass=this;
+									QObject::connect(menuitem,SIGNAL(triggered()),menuitem,SLOT(menuClickedGotoLine()));			
+									if(this->prefsFunctionMenuLayout==4)
+										{
+											if(menus.contains(entrytype)==false)
+												{
+													menus[entrytype]=new QMenu(entrytype);
+													this->funcMenu->addMenu(menus.value(entrytype));
+													menus.value(entrytype)->setStyleSheet("QMenu { menu-scrollable: true ;}");
+												}
+											menus.value(entrytype)->addAction(menuitem);
+										}
+									else
+										{
+											this->funcMenu->addAction(menuitem);
+										}
 								}
 						}
 				}
 			this->funcMenu->setEnabled(true);
 		}
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -67,7 +67,7 @@ enum {NONESRCCODE=0,CPPSRCCODE=0x100,CSRCCODE=0x200,BASHSRCCODE=0x300,PYTHONSRCC
 
 enum {HIDETABSHORTCUT=0,DELETELINESHORTCUT,DELETETOEOLSHORTCUT,DELETETOSOLSHORTCUT,SELECTWORDSHORTCUT,DELETEWORDSHORTCUT,DUPLICATELINESHORTCUT,SELECTLINESHORTCUT,MOVELINEUPSHORTCUT,MOVELINEDOWNSHORTCUT,MOVESELECTIONUPSHORTCUT,MOVESELECTIONDOWNSHORTCUT,NOMORESHORTCUT};
 
-enum {FRCASE=0,FRUSEREGEX,FRWRAP,FRALLFILES,FRHIGHLIGHTALL,FRREPLACEALL,FRMAXSWITCHES};
+enum {FRCASE=0,FRUSEREGEX,FRWRAP,FRALLFILES,FRHIGHLIGHTALL,FRREPLACEALL,FRSEARCHBACK,FRMAXSWITCHES};
 
 #include "QT_AboutBox.h"
 #include "QT_menuitem.h"
@@ -89,15 +89,15 @@ class kkEditQTPluginInterface;
 
 struct pluginStruct
 {
-	QPluginLoader			*pluginLoader=NULL;
-	QString					plugPath="";
-	QString					plugName="";
-	QString					plugVersion="";
-	kkEditQTPluginInterface	*instance=NULL;
-	unsigned int			wants=DONONE;
-	bool					loaded=false;
-	bool					statusChanged=false;
-	bool					broken=false;
+	QPluginLoader					*pluginLoader=NULL;
+	QString							plugPath="";
+	QString							plugName="";
+	QString							plugVersion="";
+	kkEditQTPluginInterface			*instance=NULL;
+	unsigned int						wants=DONONE;
+	bool								loaded=false;
+	bool								statusChanged=false;
+	bool								broken=false;
 };
 
 class KKEditClass : public QObject
@@ -111,8 +111,8 @@ class KKEditClass : public QObject
 //app vars
 		QMainWindow					*mainWindow;
 		NoteBookClass				*mainNotebook=NULL;
-		QTabBar						*tabBar=NULL;
-		QApplication				*application;
+		//QTabBar						*tabBar=NULL;
+		QApplication					*application;
 		QTimer 						*checkMessages=NULL;
 		QString						tmpFolderName;
 		QString						htmlFile;
@@ -125,22 +125,22 @@ class KKEditClass : public QObject
 		int							sessionID=-1;
 		int							queueID=-1;
 		int							currentWorkSpace=-1;
-		bool						forcedMultInst=false;
-		bool						forceDefaultGeom=false;
-		bool						sessionBusy=false;
+		bool							forcedMultInst=false;
+		bool							forceDefaultGeom=false;
+		bool							sessionBusy=false;
 		tabMenuStruct				tabContextMenuItems[TABCONTEXTMENUCNT]={{COPYFOLDERPATH,"Copy Folder Path","edit-copy"},{COPYFILEPATH,"Copy File Path","edit-copy"},{COPYFILENAME,"Copy File Name","edit-copy"},{SPELLCHECKDOC,"Spellcheck Document","tools-check-spelling"},{SRCHILTIE,"Source Hilighting","text-x-script"},{HIDETAB,"Hide Tab","list-remove"},{LOCKCONTENTS,"Lock Contents","emblem-readonly"},{OPENFROMHERE,"Open From Here","document-open"}};
 		const char					*srcMenuNames[20]={"None","C++","C","SH","Python","Go","Lua","YAML","PHP","XML","CSS","Javascript","Make",NULL};
 #ifdef _ASPELL_
-		AspellConfig				*aspellConfig=NULL;
+		AspellConfig					*aspellConfig=NULL;
 		AspellSpeller				*spellChecker=0;
 		QDialog						*spellCheckGUI=NULL;
 		QComboBox					*wordDropBox;
 		QLabel						*infoLabel;
 		MenuItemClass				*spellCheckMenuItem;
-		bool						returnWord=false;
+		bool							returnWord=false;
 		QString						goodWord;
 		QString						badWord;
-		bool						cancelCheck=false;
+		bool							cancelCheck=false;
 #endif
 		QShortcut					*appShortcuts[NOMORESHORTCUT];
 		QStringList					defaultShortCutsList={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'"};
@@ -152,48 +152,48 @@ class KKEditClass : public QObject
 		QString						homeFolder;
 		QString						homeDataFolder;
 		QString						sessionFolder;
-		unsigned int				currentSessionNumber=0xdeadbeef;
+		unsigned int					currentSessionNumber=0xdeadbeef;
 		QString						toolsFolder;
 
 //app functions
-		void						initApp(int argc,char** argv);
-		void						buildMainGui(void);
-		void						readConfigs(void);
-		void						findFile(void);
-		void						buildTools(void);
-		void						showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString controlfile);
-		void						buildDocs(void);
-		void						showDocs(void);
-		void						shutDownApp(void);
+		void							initApp(int argc,char** argv);
+		void							buildMainGui(void);
+		void							readConfigs(void);
+		void							findFile(void);
+		void							buildTools(void);
+		void							showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString controlfile);
+		void							buildDocs(void);
+		void							showDocs(void);
+		void							shutDownApp(void);
 
-		void						buildSpellCheckerGUI(void);
-		void						setUpSpellGUI(QString word,DocumentClass *doc);
-		bool						checkSelection(QString selection);
-		void						checkDoc(DocumentClass *doc);
-		void						setAppShortcuts(void);
+		void							buildSpellCheckerGUI(void);
+		void							setUpSpellGUI(QString word,DocumentClass *doc);
+		bool							checkSelection(QString selection);
+		void							checkDoc(DocumentClass *doc);
+		void							setAppShortcuts(void);
 
-		void						setToolbarSensitive(void);
+		void							setToolbarSensitive(void);
 		QString						randomName(int len);
 
-		void						writeExitData(void);
+		void							writeExitData(void);
 		int							yesNoDialog(QString txt,QString info);
 
 //webpage
-		void						showWebPage(QString windowtitle,QString url);
+		void							showWebPage(QString windowtitle,QString url);
 //scripting
-		void						runCLICommands(int quid);
+		void							runCLICommands(int quid);
 		QCommandLineParser			parser;
 
 //app prefs
 //document
-		bool						prefsIndent=true;
-		bool						prefsShowLineNumbers=true;
-		bool						prefsLineWrap=true;
-		bool						prefsHighLightline=true;
-		bool						prefsSyntaxHilighting=true;
+		bool							prefsIndent=true;
+		bool							prefsShowLineNumbers=true;
+		bool							prefsLineWrap=true;
+		bool							prefsHighLightline=true;
+		bool							prefsSyntaxHilighting=true;
 		QFont						prefsDocumentFont;
-		unsigned int				prefsTabWidth=4;
-		bool						prefsAutoShowCompletions;
+		unsigned int					prefsTabWidth=4;
+		bool							prefsAutoShowCompletions;
 //theme
 		QColor						prefsHiLiteLineColor;
 		QColor						prefsBookmarkHiLiteColor;
@@ -201,48 +201,49 @@ class KKEditClass : public QObject
 		QString						prefStyleNameHold;
 //editor
 		int							prefsFunctionMenuLayout=0;
-		unsigned int				prefsDepth=1;
+		unsigned int					prefsDepth=1;
 		QString						prefsToolBarLayout;
-		unsigned int				prefsMaxTabChars=20;
-		unsigned int				prefsMaxFuncChars=MAXTEXTWIDTH;
+		unsigned int					prefsMaxTabChars=20;
+		unsigned int					prefsMaxFuncChars=MAXTEXTWIDTH;
 		QString						prefsTerminalCommand;
 		QString						prefsRootCommand;
 		QString						prefsQtDocDir;
-		bool						prefsNoOpenduplicate=false;
+		bool							prefsNoOpenduplicate=false;
 //app
 		int							prefsMsgTimer;
-		bool						prefsUseSingle=true;
-		bool						prefsNagScreen=false;
-		bool						onExitSaveSession=false;
+		bool							prefsUseSingle=true;
+		bool							prefsNagScreen=false;
+		bool							onExitSaveSession=false;
 
 //editor vars
 		QStatusBar					*statusBar;
 		QLabel						*statusText;
-		bool						wrapSearch=true;
-		bool						insensitiveSearch=true;
-		bool						useRegex=false;
-		bool						replaceAll=false;
-		bool						findInAllFiles=false;
-		bool						hightlightAll=true;
+		bool							wrapSearch=true;
+		bool							insensitiveSearch=true;
+		bool							useRegex=false;
+		bool							replaceAll=false;
+		bool							findInAllFiles=false;
+		bool							hightlightAll=true;
+		bool							searchBack=false;
 		int							currentPage=0;
-		bool						closingAllTabs=false;
-		bool						noWarnings=false;
-		unsigned int				autoShowMinChars=6;
-		unsigned int				maxBMChars;
+		bool							closingAllTabs=false;
+		bool							noWarnings=false;
+		unsigned int					autoShowMinChars=6;
+		unsigned int					maxBMChars;
 		unsigned int 				untitledNumber=1;
-		HistoryClass				*history;
+		HistoryClass					*history;
 
 //editor functions
 		QString						truncateWithElipses(const QString str,unsigned int maxlen);
-		void						sortTabs(void);
-		void						rebuildTabsMenu(void);
-		void						functionSearchDialog(void);
-		bool						checkForOpenFile(QString filepath);
-		void						printDocument(void);
-		void						rebuildFunctionMenu(int tab);
+		void							sortTabs(void);
+		void							rebuildTabsMenu(void);
+		void							functionSearchDialog(void);
+		bool							checkForOpenFile(QString filepath);
+		void							printDocument(void);
+		void							rebuildFunctionMenu(int tab);
 
 //menubar
-		QMenuBar					*menuBar;
+		QMenuBar						*menuBar;
 
 //menu vars
 //file menu
@@ -282,15 +283,15 @@ class KKEditClass : public QObject
 
 //view menu
 		QMenu						*viewMenu;
-		bool						toolbarVisible=true;
-		bool						toolWindowVisible=false;
-		bool						statusBarVisible=true;
-		bool						lineNumbersVisible;
-		bool						wrapLine;
-		bool						hiliteCurrentLine;
-		bool						showWhiteSpace=false;
-		bool						showHighLighting;
-		bool						showCompletions;
+		bool							toolbarVisible=true;
+		bool							toolWindowVisible=false;
+		bool							statusBarVisible=true;
+		bool							lineNumbersVisible;
+		bool							wrapLine;
+		bool							hiliteCurrentLine;
+		bool							showWhiteSpace=false;
+		bool							showHighLighting;
+		bool							showCompletions;
 		MenuItemClass				*toggleLineNumbersMenuItem;
 		MenuItemClass				*toggleWrapLineMenuItem;
 		MenuItemClass				*toggleHiliteCurrentLineMenuItem;
@@ -321,29 +322,27 @@ class KKEditClass : public QObject
 		MenuItemClass				*makeMenuItemClass(int mainmenu,const QString name,const QKeySequence key,const QString iconname,const QString objectname,int userdata);
 
 //toolbar vars
-		ToolBarClass				*toolBar=NULL;
+		ToolBarClass					*toolBar=NULL;
 		QLineEdit					*lineNumberWidget=NULL;
 		QLineEdit					*findGtkApiWidget=NULL;
 		QLineEdit					*findQtApiWidget=NULL;
 		QLineEdit					*findDefWidget=NULL;
 		QLineEdit					*liveSearchWidget=NULL;
 //toolbar functions
-		void						setUpToolBar(void);
-//		void						doLiveSearch(const QString text);
-
+		void							setUpToolBar(void);
 //file vars
-		bool						openFromDialog=false;
+		bool							openFromDialog=false;
 //file functions
-		void						newFile(const QString data="",const QString filename="");
-		bool						openFile(QString filepath,int linenumber=1,bool warn=false);
-		bool						openFileDialog(void);
-		void						openAsHexDump(void);
+		void							newFile(const QString data="",const QString filename="");
+		bool							openFile(QString filepath,int linenumber=1,bool warn=false);
+		bool							openFileDialog(void);
+		void							openAsHexDump(void);
 		QString						runPipeAndCapture(QString command);
-		bool						saveFile(int tabnum,bool ask=true);
-		void						newEditor(int what);
-		void						runPipe(QString command);
-		bool						saveAllFiles(void);
-		bool						saveFileAs(int tabnum);
+		bool							saveFile(int tabnum,bool ask=true);
+		void							newEditor(int what);
+		void							runPipe(QString command);
+		bool							saveAllFiles(void);
+		bool							saveFileAs(int tabnum);
 		int							askSaveDialog(const QString filename);
 		QStringList					getNewRecursiveTagList(QString filepath);
 
@@ -353,20 +352,20 @@ class KKEditClass : public QObject
 
 //document functions
 		DocumentClass				*getDocumentForTab(int tabnum);
-		void						resetAllFilePrefs(void);
-		void						goToDefinition(const QString txt);
-		void						showLineEntry(void);
-		void						gotoLine(int linenumber);
-		void						reloadDocument(void);
-		void						setCompWordList(void);
-		void						insertCompletion(const QString &completion);
+		void							resetAllFilePrefs(void);
+		void							goToDefinition(const QString txt);
+		void							showLineEntry(void);
+		void							gotoLine(int linenumber);
+		void							reloadDocument(void);
+		void							setCompWordList(void);
+		void							insertCompletion(const QString &completion);
 
 //bookmark vars
 		QHash<int,bookMarkStruct>	bookMarks;
 		int							bookMarksIndex=100;
 //bookmark functions
-		void						rebuildBookMarkMenu(void);
-		void						handleBMMenu(QWidget *widget,int what,QTextCursor curs);
+		void							rebuildBookMarkMenu(void);
+		void							handleBMMenu(QWidget *widget,int what,QTextCursor curs);
 
 //tools menu
 		QMenu						*toolsMenu;
@@ -377,20 +376,20 @@ class KKEditClass : public QObject
 		QPlainTextEdit				*toolsOPText=NULL;
 
 //tools functions
-		void						rebuildToolsMenu(void);
+		void							rebuildToolsMenu(void);
 		QStringList					verifyTool(QString filepath);
-		void						buildToolOutputWindow(void);
+		void							buildToolOutputWindow(void);
 
 //docviewer vars
 #ifdef _BUILDDOCVIEWER_
 		QMainWindow					*docView=NULL;
-		QWebView					*webView=NULL;
-		bool						docviewerVisible=false;
+		QWebView						*webView=NULL;
+		bool							docviewerVisible=false;
 		MenuItemClass				*toggleDocViewMenuItem;
 //docviewer functions
 #endif
-		void						buildDocViewer(void);
-		void						setDocMenu(void);
+		void							buildDocViewer(void);
+		void							setDocMenu(void);
 
 //prefswindow
 //prefswindow vars
@@ -400,20 +399,20 @@ class KKEditClass : public QObject
 		QGridLayout					*table;
 		QDialog						*prefsWindow;
 		QListWidget					*listWidget;
-		QToolBar					*fromHBox;
+		QToolBar						*fromHBox;
 		QAction						*tool[19];
 		QDialog						*keyShortcutsWindow;
 
 //prefswindow functions
-		void						makePrefsCheck(int widgnum,const QString label,bool onoff,int posx,int posy);
-		void						makePrefsDial(int widgnum,const QString label,int value,int minvalue,int maxvalue,int posy);
-		void						addIcon(const char* icon,const char* data,int toolnumber,const char* tooltip);
-		void						populateDnD(void);
-		void						buildPrefsWindow(void);
-		void						doPrefs(void);
-		void						addIconToList(const char* name,int type);
-		void						populateStore(void);
-		void						resetKeyCombo(void);
+		void							makePrefsCheck(int widgnum,const QString label,bool onoff,int posx,int posy);
+		void							makePrefsDial(int widgnum,const QString label,int value,int minvalue,int maxvalue,int posy);
+		void							addIcon(const char* icon,const char* data,int toolnumber,const char* tooltip);
+		void							populateDnD(void);
+		void							buildPrefsWindow(void);
+		void							doPrefs(void);
+		void							addIconToList(const char* name,int type);
+		void							populateStore(void);
+		void							resetKeyCombo(void);
 
 //find replace vars
 		QWidget						*findReplaceDialog;
@@ -423,17 +422,17 @@ class KKEditClass : public QObject
 		QPushButton					*frReplace;
 		QStringList					findList;
 		QStringList					replaceList;
-		unsigned int				maxFRHistory=5;
+		unsigned int					maxFRHistory=5;
 		int							startingTab=0;
 		int							currentTab=0;
 
 //find replace functions
-		void						buildFindReplace(void);
-		void						doFindReplace(int response_id);
+		void							buildFindReplace(void);
+		void							doFindReplace(int response_id);
 
 //search vars
 //search functions
-		void						searchAPIDocs(const QString txt,int what);
+		void							searchAPIDocs(const QString txt,int what);
 
 //plugins
 //plugin menu
@@ -445,61 +444,62 @@ class KKEditClass : public QObject
 		QHash<int,pluginStruct>		plugins;
 
 //plug functions
-		bool						loadPlug(pluginStruct *ps);
-		bool						unloadPlug(pluginStruct *ps);
-		void						loadPlugins(void);
-		void						buildPlugPrefs(void);
+		bool							loadPlug(pluginStruct *ps);
+		bool							unloadPlug(pluginStruct *ps);
+		void							loadPlugins(void);
+		void							buildPlugPrefs(void);
 
 	public slots:
-		void						debugSignalSlot(int);
-		void						doTimer(void);
-		void						doFileMenuItems();
-		void						doEditMenuItems();
-		void						doViewMenuItems();
-		void						doNavMenuItems();
-		void						doBookmarkMenuItems();
-		void						doHelpMenuItems();
-		void						doToolsMenuItems();
-		void						doSelectTab(void);
-		void						doTabBarContextMenu(void);
-		void						doOddMenuItems(void);
-		void						doOddButtons(void);
+		void							debugSignalSlot(int);
+		void							doTimer(void);
+		void							doFileMenuItems();
+		void							doEditMenuItems();
+		void							doViewMenuItems();
+		void							doNavMenuItems();
+		void							doBookmarkMenuItems();
+		void							doHelpMenuItems();
+		void							doToolsMenuItems();
+		void							doTabBarContextMenu(void);
+		void							doOddMenuItems(void);
+		void							doOddButtons(void);
 
-		void						doDoubleClickPrefs(QListWidgetItem *item);
-		void						setPreferences(void);
-		void						setBMColour(void);
-		void						setLineColour(void);
-		void						setFont(void);
-		void						addToToolBar(void);
-		void						buildGetKeyShortCut(int index);
+		void							doDoubleClickPrefs(QListWidgetItem *item);
+		void							setPreferences(void);
+		void							setBMColour(void);
+		void							setLineColour(void);
+		void							setFont(void);
+		void							addToToolBar(void);
+		void							buildGetKeyShortCut(int index);
 
-		void						switchPage(int index);
-		bool						closeTab(int index);
-		void						closeAllTabs(void);
+		void							switchPage(int index);
+		bool							closeTab(int index);
+		void							closeAllTabs(void);
 
-		void						doFindButton(void);
-		void						tabContextMenu(const QPoint &pt);
+		void							doFindButton(void);
+		void							tabContextMenu(const QPoint &pt);
 
-		void						doAppShortCuts(void);
+		void							doAppShortCuts(void);
 
-		void						setSearchPrefs(int state);
+		void							setSearchPrefs(int state);
 
-		void						doSessionsMenuItems(void);
+		void							doSessionsMenuItems(void);
 
-		void						setToolsData(int);
+		void							setToolsData(int);
 
-		void						doLiveSearch(const QString text);
-
-//	private slots:
-//		void						insertCompletion(const QString &completion);
+		void							doLiveSearch(const QString text);
 
 	protected:
 	private:
 //menu functions
-		void						clickMenu(QMenu *menu,QString name);
-		void						notDoneYet(QString string);
+		void							clickMenu(QMenu *menu,QString name);
+		void							notDoneYet(QString string);
 //search functions
-		void						setHighlightAll(void);
+		void							setHighlightAll(void);
+//editor functions
+		void							setTabVisibilty(int tab,bool visible);
 };
 
 #endif
+
+
+

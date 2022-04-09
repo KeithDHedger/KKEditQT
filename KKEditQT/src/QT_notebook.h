@@ -37,11 +37,22 @@ class NoteBookClass : public QTabWidget
 
 	protected:
 //dand
-		void		dragEnterEvent(QDragEnterEvent* event);
-		void		dropEvent(QDropEvent* event);
-		void		dragMoveEvent(QDragMoveEvent *event);
+		void			dragEnterEvent(QDragEnterEvent* event);
+		void			dropEvent(QDropEvent* event);
+		void			dragMoveEvent(QDragMoveEvent *event);
 
+//internals
+	private:
+		QToolButton	*scrollLeft;
+		QToolButton	*scrollRight;
+
+		void			scrollTabsLeft(void);
+		void			scrollTabsRight(void);
 };
 
-
 #endif
+
+
+
+
+

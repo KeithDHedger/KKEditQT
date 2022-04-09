@@ -117,11 +117,15 @@ void DocumentClass::updateLineNumberAreaWidth(void)
 
 void DocumentClass::modified()
 {
+	int	tabnum;
+
 	if((this->mainKKEditClass->sessionBusy==true) || (this->dirty==true))
 		return;
 
 	this->dirty=true;
-	this->setTabName(this->getTabName()+"*");
+
+	tabnum=this->mainKKEditClass->mainNotebook->indexOf(this);
+	this->mainKKEditClass->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::red));
 }
 
 void DocumentClass::setStatusBarText(void)
@@ -379,9 +383,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 			return;
 		}
 
-	//QString completerkey=QKeySequence(this->mainKKEditClass->defaultShortCutsList.at(NOMORESHORTCUT),QKeySequence::PortableText).toString();
 	isshortcut=((event->modifiers() & Qt::ControlModifier) && event->key()== Qt::Key_E); // CTRL+E//TODO//
-	//isshortcut=((event->modifiers() & Qt::ControlModifier) && completerkey.compare(this->mainKKEditClass->defaultShortCutsList.at(NOMORESHORTCUT))==0);
 	if(!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer
 		QPlainTextEdit::keyPressEvent(event);
 
@@ -394,8 +396,8 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 
     if(!isshortcut && (hasmodifier || event->text().isEmpty()|| completionPrefix.length() < this->mainKKEditClass->autoShowMinChars || eow.contains(event->text().right(1))))
 		{
-        	this->mainKKEditClass->completer->popup()->hide();
-        	return;
+      	  	this->mainKKEditClass->completer->popup()->hide();
+      	  	return;
 		}
 
 	if (completionPrefix!=this->mainKKEditClass->completer->completionPrefix())
@@ -412,13 +414,6 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 
 void DocumentClass::keyReleaseEvent(QKeyEvent *event)
 {
-//	if((event->key()==Qt::Key_Return)&& (this->mainKKEditClass->prefsIndent==true))
-//		{
-//			QTextCursor cursor=this->textCursor();
-//			cursor.insertText(this->indentPad);
-//			//this->insertPlainText(this->indentPad);
-//		}
-	//this->dirty=true;
 	this->mainKKEditClass->setToolbarSensitive();
 	QPlainTextEdit::keyReleaseEvent(event);
 }
@@ -479,6 +474,13 @@ const QString DocumentClass::getDirPath(void)
 void DocumentClass::setTabName(QString tabname)
 {
 	int tabnum=this->mainKKEditClass->mainNotebook->indexOf(this);
+
+	if(this->dirty==false)
+		this->mainKKEditClass->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(this->highlighter->documentForeground));
+
+	if(this->tabName.compare(tabname)==0)
+		return;
+
 	this->tabName=tabname;
 	this->mainKKEditClass->mainNotebook->setTabText(tabnum,tabname);
 }
@@ -582,14 +584,22 @@ void DocumentClass::setFilePrefs(void)
 	this->updateLineNumberAreaWidth();
 
 	this->setFont(this->mainKKEditClass->prefsDocumentFont);
-	this->setLineWrapMode(static_cast<QPlainTextEdit::LineWrapMode>(this->mainKKEditClass->wrapLine));
 	this->prefsHiLiteLineColor=this->mainKKEditClass->prefsHiLiteLineColor;
 	this->bookmarkLineColor=this->mainKKEditClass->prefsBookmarkHiLiteColor;
 	this->highlightCurrentLine();
 
-	if(this->mainKKEditClass->showWhiteSpace==true)
-		opts.setFlags(opts.flags()|QTextOption::ShowLineAndParagraphSeparators | QTextOption::ShowTabsAndSpaces|QTextOption::ShowDocumentTerminator);
+	this->setLineWrapMode(static_cast<QPlainTextEdit::LineWrapMode>(this->mainKKEditClass->wrapLine));
 
+	opts.setFlags(opts.flags());
+	if(this->mainKKEditClass->wrapLine==true)
+		opts.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+	else
+		opts.setWrapMode(QTextOption::NoWrap);
+		
+	if(this->mainKKEditClass->showWhiteSpace==true)
+		{
+			opts.setFlags(QTextOption::ShowLineAndParagraphSeparators | QTextOption::ShowTabsAndSpaces|QTextOption::ShowDocumentTerminator);
+		}
 	this->document()->setDefaultTextOption(opts);
 
 	QFontMetrics fm(this->mainKKEditClass->prefsDocumentFont);
@@ -708,6 +718,10 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 			this->setTextCursor(cursor);
 		}
 }
+
+
+
+
 
 
 

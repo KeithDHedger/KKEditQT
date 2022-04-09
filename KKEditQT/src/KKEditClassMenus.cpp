@@ -76,3 +76,4 @@ MenuItemClass* KKEditClass::makeMenuItemClass(int mainmenu,const QString name,co
 
 	return(menuitem);
 }
+

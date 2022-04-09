@@ -19,7 +19,6 @@
  */
 
 #include "KKEditClass.h"
-#define VISIBLE __attribute__((visibility("default")))
 
 void KKEditClass::runPipe(QString command)
 {
@@ -282,11 +281,8 @@ bool KKEditClass::checkForOpenFile(QString filepath)
 			doc=this->getDocumentForTab(tabs);
 			if((doc->filePath!=NULL) && (doc->filePath.compare(filepath)==0))
 				{
-					this->mainNotebook->setCurrentIndex(tabs);
-					this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
-					doc->visible=true;
-					this->mainNotebook->repaint();
-					this->tabBar->repaint();
+					if(this->mainNotebook->isTabVisible(tabs)==false)
+						this->setTabVisibilty(tabs,true);
 					return(true);
 				}
 		}
@@ -392,4 +388,9 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
+
+
+
+
 

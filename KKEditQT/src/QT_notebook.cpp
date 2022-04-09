@@ -18,7 +18,6 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- 
 #include "QT_toolbar.h"
 
 NoteBookClass::~NoteBookClass()
@@ -27,13 +26,40 @@ NoteBookClass::~NoteBookClass()
 
 NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent)
 {
+	QIcon	qicon;
+
 	this->mainKKEditClass=kk;
 	this->setAcceptDrops(true);
+	this->scrollLeft=new QToolButton(this);
+	this->scrollRight=new QToolButton(this);
+	qicon=QIcon::fromTheme("go-previous");
+	this->scrollLeft->setIcon(qicon);
+	qicon=QIcon::fromTheme("go-next");
+	this->scrollRight->setIcon(qicon);
+
+	this->setCornerWidget(this->scrollLeft,Qt::TopLeftCorner);
+	this->setCornerWidget(this->scrollRight,Qt::TopRightCorner);
+
+	this->scrollLeft->setAutoRepeat(true);
+	this->scrollRight->setAutoRepeat(true);
+	QObject::connect(this->scrollLeft,&QPushButton::clicked,[this]()
+		{
+			this->scrollTabsLeft();
+		});
+	QObject::connect(this->scrollRight,&QPushButton::clicked,[this]()
+		{
+			this->scrollTabsRight();
+		});
+	this->tabBar()->setExpanding(false);
+	this->tabBar()->setElideMode(Qt::ElideNone);
+
+//this->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 0px;}\nQTabBar::right-corner {height: 64px;bottom: 20px;}"));//TODO//
+	this->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 0px;}"));
 }
 
 void NoteBookClass::dragMoveEvent(QDragMoveEvent *event)
 {
-	int tabIndex=this->mainKKEditClass->tabBar->tabAt(event->pos());
+	int tabIndex=this->tabBar()->tabAt(event->pos());
 	this->setCurrentIndex(tabIndex);
 
 	if((event->mimeData()->hasUrls()==true) || (event->mimeData()->hasText()))
@@ -65,3 +91,33 @@ void NoteBookClass::dropEvent(QDropEvent* event)
 
 	QTabWidget::dropEvent(event);
 }
+
+void NoteBookClass::scrollTabsLeft(void)
+{
+	int	ctab=this->currentIndex()-1;
+
+	while((ctab>-1) && (this->isTabVisible(ctab)==false))
+		ctab--;
+
+	if(ctab==-1)
+		return;
+
+	this->setCurrentIndex(ctab);
+}
+
+void NoteBookClass::scrollTabsRight(void)
+{
+	int	ctab=this->currentIndex()+1;
+
+	while((ctab<this->count()) && (this->isTabVisible(ctab)==false))
+		ctab++;
+
+	if(ctab==this->count())
+		ctab=this->count()-1;
+	else
+		this->setCurrentIndex(ctab);
+}
+
+
+
+

@@ -30,24 +30,21 @@
 #define APPNAME "kkedtqtmsg"
 #define MSGVERSION "0.7.0"
 
-#define MAX_MSG_SIZE 4096
-
 #define ALLOK 0
 #define UNKNOWNARG 1
 #define NOMAKEQUEUE 2
-#define NOSENDMSG 3
-#define WAIT_MSG 0
+#define WAITFORMSG 0
 
-#define MSGANY 0
-#define LISTENMSG 50
+#define GETMSG 0x1000
 
 struct option long_options[] =
 {
 	{"command",1,0,'c'},
 	{"data",1,0,'d'},
 	{"key",1,0,'k'},
-	{"wait",0,0,'w'},
+	{"info",0,0,'i'},
 	{"flush",0,0,'f'},
+	{"autowait",0,0,'a'},
 	{"help",0,0,'?'},
 	{0, 0, 0, 0}
 };
@@ -55,7 +52,7 @@ struct option long_options[] =
 struct msgBuffer
 {
 	long mType;
-	char mText[MAX_MSG_SIZE];
+	char mText[MAXMSGSIZE];
 };
 
 int			queueID;
@@ -63,8 +60,11 @@ msgBuffer	buffer;
 bool		flushQueue=false;
 int			sinkReturn;
 bool		waitForMsg=false;
+bool		waitContinue=false;
 
-const char	*commandList[]={"activate","openfile","savefile","quit","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","bookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","selectbetween","paste","copy","cut","inserttext","insertnl","insertfile","printfile","waitforkkeditqt","showcontinue","runtool","activatemenubylabel","sendposdata","sendselectedtext",NULL};
+const char	*commandList[]={"activate","openfile","savefile","quit","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","bookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","insertfile","printfile","runtool","activatemenubylabel",NULL};
+
+const char	*infoList[]={"selectbetween","sendposdata","sendselectedtext",NULL};
 
 void printHelp()
 {
@@ -75,7 +75,8 @@ void printHelp()
 	       " -d, --data	Data to send [TEXT]\n"
 	       " -f, --flush	Flush message queue quietly\n"
 	       " -k, --key	Use key [INTEGER] instead of generated one\n"
-	       " -w, --wait	Wait for message's to arrive (blocking)\n"
+	       " -i, --info	Send information request and wait for reply to arrive, then print to stdout (blocking)\n"
+	       " -a, --autowait	Wait for command to complete (blocking, no output)\n"
 	       " -h, -?, --help	print this help\n\n"
 	       "Report bugs to keithdhedger@gmail.com\n"
 	       ,APPNAME,MSGVERSION);
@@ -86,22 +87,46 @@ void printHelp()
 			printf("%s ",commandList[cnt]);
 			cnt++;
 		}
+	cnt=0;
+	printf("\n\nInformation resquests recognised by KKEditQT:\n");
+	while(infoList[cnt]!=NULL)
+		{
+			printf("%s ",infoList[cnt]);
+			cnt++;
+		}
 	printf("\n");
+	printf("\nCommands that dont require a parameter:\n");
+	printf("activate,quit,bookmark,closetab,closealltabs,setusermark,unsetusermark,paste,copy,cut,insertnl,printfile\n");
 }
 
 void sendMsg()
 {
+	int	retcode;
+
+	if(waitContinue==true)
+		buffer.mType|=CONTINUEMSG;
+
 	if((msgsnd(queueID,&buffer,strlen(buffer.mText)+1,0))==-1)
 		{
 			fprintf(stderr,"Can't send message :(\n");
 			exit(NOSENDMSG);
 		}
+
+	if(waitContinue==true)
+		retcode=msgrcv(queueID,&buffer,MAXMSGSIZE,CONTINUEMSG,WAITFORMSG);
 }
 
-void readMsg()
+void waitMsg()
 {
 	int retcode;
-	retcode=msgrcv(queueID,&buffer,MAX_MSG_SIZE,LISTENMSG,WAIT_MSG);
+
+	buffer.mText[0]=0;
+	if((msgsnd(queueID,&buffer,0,0))==-1)
+		{
+			fprintf(stderr,"Can't send message :(\n");
+			exit(NOSENDMSG);
+		}
+	retcode=msgrcv(queueID,&buffer,MAXMSGSIZE,GETMSG,WAITFORMSG);
 
 	printf("%s",buffer.mText);
 }
@@ -109,14 +134,20 @@ void readMsg()
 int messageToType(const char *msgstring)
 {
 	int cnt=0;
-	if(strcasecmp(msgstring,"sendmsg")==0)
-		return(LISTENMSG);
+	int	cnt2=0;
 
 	while(commandList[cnt]!=NULL)
 		{
 			if(strcasecmp(msgstring,commandList[cnt])==0)
 				return(cnt+ACTIVATEAPPMSG);
 			cnt++;
+		}
+
+	while(infoList[cnt2]!=NULL)
+		{
+			if(strcasecmp(msgstring,infoList[cnt2])==0)
+				return(cnt+cnt2+ACTIVATEAPPMSG);
+			cnt2++;
 		}
 	return(ACTIVATEAPPMSG);
 }
@@ -126,7 +157,6 @@ int main(int argc, char **argv)
 	int	c;
 	int	key;
 	int	retcode;
-	const char *gg="G";
 
 	buffer.mType=ACTIVATEAPPMSG;
 	buffer.mText[0]=0;
@@ -135,7 +165,7 @@ int main(int argc, char **argv)
 	while (1)
 		{
 			int option_index = 0;
-			c = getopt_long (argc, argv, "?hwfad:k:c:",long_options, &option_index);
+			c = getopt_long (argc, argv, "?hfai:d:k:c:",long_options, &option_index);
 			if (c == -1)
 				break;
 
@@ -153,8 +183,13 @@ int main(int argc, char **argv)
 						flushQueue=true;
 						break;
 
-					case 'w':
+					case 'i':
+						buffer.mType=messageToType(optarg);
 						waitForMsg=true;
+						break;
+
+					case 'a':
+						waitContinue=true;
 						break;
 
 					case 'k':
@@ -192,22 +227,31 @@ int main(int argc, char **argv)
 			bool flag=false;
 			while(flag==false)
 				{
-					retcode=msgrcv(queueID,&buffer,MAX_MSG_SIZE,MSGANY,IPC_NOWAIT);
+					retcode=msgrcv(queueID,&buffer,MAXMSGSIZE,MSGANY,IPC_NOWAIT);
 					if(retcode<=1)
 						flag=true;
 				}
 			return(ALLOK);
 		}
 
-	if (waitForMsg==true)
+
+	if(waitForMsg==true)
 		{
-			readMsg();
+			waitContinue=false;
+			waitMsg();
 			return(ALLOK);
 		}
-
-	sendMsg();
+	else
+		sendMsg();
 
 	return(ALLOK);
 
 }
+
+
+
+
+
+
+
 
