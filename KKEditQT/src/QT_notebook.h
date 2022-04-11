@@ -34,6 +34,8 @@ class NoteBookClass : public QTabWidget
 		~NoteBookClass();
 
 		KKEditClass	*mainKKEditClass=NULL;
+		void			scrollTabsRight(void);
+		void			scrollTabsLeft(void);
 
 	protected:
 //dand
@@ -46,11 +48,10 @@ class NoteBookClass : public QTabWidget
 		QToolButton	*scrollLeft;
 		QToolButton	*scrollRight;
 
-		void			scrollTabsLeft(void);
-		void			scrollTabsRight(void);
 };
 
 #endif
+
 
 
 

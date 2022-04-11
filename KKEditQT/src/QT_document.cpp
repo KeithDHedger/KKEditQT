@@ -336,6 +336,9 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 	QString			completionPrefix;
 	const QString	eow("~!@#$%^&*()+{}|:\"<>?,./;'[]\\-="); // end of word;
 
+	if(this->isReadOnly()==true)
+		return;
+
 //fix for vnc/linuxfb tab key
 	if(((this->mainKKEditClass->application->platformName().compare("vnc")==0) || (this->mainKKEditClass->application->platformName().compare("linuxfb")==0)) && (event->key()==Qt::Key_Tab))
 		{
@@ -718,6 +721,7 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 			this->setTextCursor(cursor);
 		}
 }
+
 
 
 

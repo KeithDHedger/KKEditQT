@@ -206,6 +206,9 @@ void KKEditClass::switchPage(int index)
 	if(doc==NULL)
 		return;
 
+//	if(doc->visible==false)
+//		this->mainNotebook->scrollTabsLeft();
+
 	doc->setStatusBarText();
 	doc->clearHilites();
 
@@ -621,12 +624,10 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 	if(pt.isNull())
 		return;
 
-	//xxxtabIndex=this->tabBar->tabAt(pt);
 	tabIndex=this->mainNotebook->tabBar()->tabAt(pt);
 
 	if (tabIndex!=-1)
 		{
-			//xxxQMenu	menu(this->tabBar);
 			QMenu	menu(this->mainNotebook);
 			QMenu	srcmenu(this->tabContextMenuItems[(SRCHILTIE-COPYFOLDERPATH)/0x100].label);
 			QMenu	filemenu(this->tabContextMenuItems[(OPENFROMHERE-COPYFOLDERPATH)/0x100].label);
@@ -654,7 +655,7 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 						{
 							menu.addMenu(&filemenu);
 							DocumentClass	*doc=this->getDocumentForTab(tabIndex);
-							QDir			dir(doc->getDirPath());
+							QDir				dir(doc->getDirPath());
 							QStringList		flist=dir.entryList(QDir::Files);
 							itemicon=QIcon::fromTheme(this->tabContextMenuItems[cnt].icon);
 							filemenu.setIcon(itemicon);
@@ -904,6 +905,7 @@ bool KKEditClass::closeTab(int index)
 	DocumentClass	*doc=NULL;
 	int				thispage=index;
 	QTextCursor		tc;
+	bool				thisislasttab=false;
 
 	this->sessionBusy=true;
 
@@ -957,27 +959,18 @@ bool KKEditClass::closeTab(int index)
 			if(this->closingAllTabs==false)
 				this->handleBMMenu(this->mainNotebook->widget(thispage),REMOVEBOOKMARKSFROMPAGE,tc);
 
+			if(thispage==this->mainNotebook->count()-1)
+				thisislasttab=true;
+
 			this->mainNotebook->removeTab(thispage);
 			delete doc;
 		}
 
 	if(this->closingAllTabs==false)
 		{
-			bool flag=false;
+			if((thisislasttab==true) && (this->mainNotebook->count()>0))
+				this->setTabVisibilty(this->mainNotebook->count()-1,true);
 			this->sessionBusy=false;
-			for(int j=0;j<this->mainNotebook->count();j++)
-				{
-					if(this->mainNotebook->isTabVisible(j)==true)
-						{
-							flag=true;
-							break;
-						}
-				}
-
-			if((flag==false) && (this->mainNotebook->count()>0))
-				{
-					this->setTabVisibilty(this->mainNotebook->count()-1,true);
-				}
 			this->rebuildTabsMenu();
 			this->setToolbarSensitive();
 			this->rebuildFunctionMenu(-1);
@@ -1402,21 +1395,19 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 	doc=this->getDocumentForTab(tabnum);
 	doc->visible=vis;
 
-//	if(vis==false)
-//		{
-//			while((tabnum<this->mainNotebook->count()) && (this->mainNotebook->isTabVisible(tabnum)==false))
-//				tabnum++;
-//			if(tabnum>=this->mainNotebook->count())
-//				{
-//					tabnum=this->mainNotebook->count()-1;
-//					this->mainNotebook->setTabVisible(tabnum,true);
-//					doc=this->getDocumentForTab(tabnum);
-//					doc->visible=true;
-//				}
-//		}
-
-//	this->mainNotebook->setCurrentIndex(tabnum-1);
-	this->mainNotebook->setCurrentIndex(tabnum);
+	if(vis==false)//hacks for tab gliches
+		{
+			if(this->mainNotebook->currentIndex()==tabnum)
+				this->mainNotebook->scrollTabsLeft();
+			tabnum=this->mainNotebook->currentIndex();
+			this->mainNotebook->setCurrentIndex(0);
+			this->mainNotebook->setCurrentIndex(tabnum);
+		}
+	else
+		{
+			this->mainNotebook->setCurrentIndex(0);
+			this->mainNotebook->setCurrentIndex(tabnum);
+		}
 }
 
 

@@ -1,6 +1,9 @@
 0.7.0
+More tab fixes for qttabbar.
+Fixed size of tabbar scroll buttons.
 Dirty document now shows red text in tab.
 Fixed jumpy tabs.
+Added auto repeat to tab bar scroll buttons.
 Added tab bar scroll buttons.
 Removed redundant "enumerator" entries from function menu.
 Fixed blank item in function menu representing anonymous functions( lambdas ).
@@ -805,6 +808,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 

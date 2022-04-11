@@ -977,7 +977,7 @@ void KKEditClass::addToToolBar(void)
 void KKEditClass::doTabBarContextMenu(void)
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	bool			retval;
+	bool				retval;
 	QClipboard		*clipboard=this->application->clipboard();
 	DocumentClass	*doc;
 
@@ -1003,14 +1003,19 @@ void KKEditClass::doTabBarContextMenu(void)
 				this->setTabVisibilty(mc->getMenuID() & 0xff,false);
 				break;
 			case LOCKCONTENTS:
-				doc->setReadOnly(!doc->isReadOnly());
-				if(doc->isReadOnly()==true)
-						doc->setTabName(QString("+%1").arg(doc->getTabName()));
-				else
-					if(doc->dirty==true)
-						doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars)+"*");
+				{
+					int	tabnum=this->mainNotebook->currentIndex();
+					doc->setReadOnly(!doc->isReadOnly());
+					if(doc->isReadOnly()==true)
+						this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::darkGreen));
 					else
-						doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
+						{
+							if(doc->dirty==true)
+								this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::red));
+							else
+								this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(doc->highlighter->documentForeground));
+						}
+				}
 				break;
 		}
 	this->setToolbarSensitive();
@@ -1184,6 +1189,7 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
 
 
 

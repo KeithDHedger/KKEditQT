@@ -148,3 +148,4 @@ class LineNumberArea : public QWidget
 
 
 
+

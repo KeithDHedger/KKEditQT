@@ -26,7 +26,9 @@ NoteBookClass::~NoteBookClass()
 
 NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent)
 {
-	QIcon	qicon;
+	QIcon		qicon;
+	QWidget		*container;
+	QHBoxLayout	*layout;
 
 	this->mainKKEditClass=kk;
 	this->setAcceptDrops(true);
@@ -37,11 +39,35 @@ NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent
 	qicon=QIcon::fromTheme("go-next");
 	this->scrollRight->setIcon(qicon);
 
-	this->setCornerWidget(this->scrollLeft,Qt::TopLeftCorner);
-	this->setCornerWidget(this->scrollRight,Qt::TopRightCorner);
+//this->scrollRight->setMinimumSize(32,64);
+
+	container=new QWidget(this);
+	layout=new QHBoxLayout(container);
+//scroll rite
+	container->setFixedHeight(this->tabBar()->height());
+	container->setSizePolicy(QSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed));
+	layout->setContentsMargins(1,0,1,0);
+	this->scrollRight->setFixedHeight(tabBar()->height());
+	this->scrollRight->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+	this->scrollRight->setToolButtonStyle(Qt::ToolButtonIconOnly);
+	layout->addWidget(this->scrollRight);
+	this-> setCornerWidget(container, Qt::TopRightCorner);
+
+//scroll left
+	container=new QWidget(this);
+	layout=new QHBoxLayout(container);
+	container->setFixedHeight(this->tabBar()->height());
+	container->setSizePolicy(QSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed));
+	layout->setContentsMargins(1,0,1,0);
+	this->scrollLeft->setFixedHeight(tabBar()->height());
+	this->scrollLeft->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+	this->scrollLeft->setToolButtonStyle(Qt::ToolButtonIconOnly);
+	layout->addWidget(this->scrollLeft);
+	this-> setCornerWidget(container, Qt::TopLeftCorner);
 
 	this->scrollLeft->setAutoRepeat(true);
 	this->scrollRight->setAutoRepeat(true);
+
 	QObject::connect(this->scrollLeft,&QPushButton::clicked,[this]()
 		{
 			this->scrollTabsLeft();
@@ -50,11 +76,13 @@ NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent
 		{
 			this->scrollTabsRight();
 		});
-	this->tabBar()->setExpanding(false);
-	this->tabBar()->setElideMode(Qt::ElideNone);
+
+	this->setDocumentMode(true);
+	this->setTabsClosable(true);
+	this->setMovable(true);
 
 //this->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 0px;}\nQTabBar::right-corner {height: 64px;bottom: 20px;}"));//TODO//
-	this->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 0px;}"));
+	this->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 1px;}"));
 }
 
 void NoteBookClass::dragMoveEvent(QDragMoveEvent *event)
@@ -117,6 +145,12 @@ void NoteBookClass::scrollTabsRight(void)
 	else
 		this->setCurrentIndex(ctab);
 }
+
+
+
+
+
+
 
 
 

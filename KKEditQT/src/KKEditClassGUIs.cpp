@@ -620,9 +620,9 @@ void KKEditClass::buildMainGui(void)
 	this->mainNotebook->setContextMenuPolicy(Qt::CustomContextMenu);
 	QObject::connect(this->mainNotebook,SIGNAL(customContextMenuRequested(const QPoint &)),SLOT(tabContextMenu(const QPoint &)));
 
-	this->mainNotebook->setDocumentMode(false);
-	this->mainNotebook->setTabsClosable(true);
-	this->mainNotebook->setMovable(true);
+//	this->mainNotebook->setDocumentMode(true);
+//	this->mainNotebook->setTabsClosable(true);
+//	this->mainNotebook->setMovable(true);
 	QObject::connect(this->mainNotebook,SIGNAL(currentChanged(int)),this,SLOT(switchPage(int)));
 	//QObject::connect(this->mainNotebook,SIGNAL(tabBarClicked(int)),this,SLOT(switchPage(int)));
 	QObject::connect(this->mainNotebook,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));
@@ -1562,6 +1562,7 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
+
 
 
 

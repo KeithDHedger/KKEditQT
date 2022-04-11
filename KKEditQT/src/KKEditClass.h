@@ -111,7 +111,6 @@ class KKEditClass : public QObject
 //app vars
 		QMainWindow					*mainWindow;
 		NoteBookClass				*mainNotebook=NULL;
-		//QTabBar						*tabBar=NULL;
 		QApplication					*application;
 		QTimer 						*checkMessages=NULL;
 		QString						tmpFolderName;
@@ -500,6 +499,7 @@ class KKEditClass : public QObject
 };
 
 #endif
+
 
 
 
