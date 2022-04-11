@@ -1214,10 +1214,10 @@ void KKEditClass::setDocMenu(void)
 void KKEditClass::showWebPage(QString windowtitle,QString url)
 {
 #ifdef _BUILDDOCVIEWER_
-
 	if(windowtitle.isEmpty()==false)
 		this->docView->setWindowTitle(windowtitle);
-	this->webView->load(QUrl(url));
+	//this->webView->load(QUrl(url));
+	this->webView->load(QUrl::fromUserInput(url));
 	this->docView->show();
 	this->setDocMenu();
 #else
@@ -1409,6 +1409,7 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 			this->mainNotebook->setCurrentIndex(tabnum);
 		}
 }
+
 
 
 

@@ -1,4 +1,5 @@
 0.7.0
+Added openindocview to kkeditqtmsg.
 More tab fixes for qttabbar.
 Fixed size of tabbar scroll buttons.
 Dirty document now shows red text in tab.
@@ -808,6 +809,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 

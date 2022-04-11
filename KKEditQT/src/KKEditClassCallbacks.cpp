@@ -291,7 +291,7 @@ void KKEditClass::doToolsMenuItems()
 								setenv("KKEDIT_CURRENTFILE",document->getFilePath().toStdString().c_str(),1);
 								str.replace("%f",document->getFilePath());
 								//%t selected text
-										setenv("KKEDIT_SELECTION",document->textCursor().selectedText().replace(QRegularExpression("\u2029|\\r\\n|\\r"),"\n").toStdString().c_str(),1);
+								setenv("KKEDIT_SELECTION",document->textCursor().selectedText().replace(QRegularExpression("\u2029|\\r\\n|\\r"),"\n").toStdString().c_str(),1);
 								str.replace("%t",document->textCursor().selectedText());
 								//%m
 								setenv("KKEDIT_MIMETYPE",document->mimeType.toStdString().c_str(),1);
@@ -693,6 +693,9 @@ void KKEditClass::doTimer(void)
 				{
 					switch(buffer.mType & ALLMSGTYPES)
 						{
+							case OPENINDOCVIEWMSG:
+								this->showWebPage("",buffer.mText);
+								break;
 							case GOTOLINEMSG:
 								this->gotoLine(strtol(buffer.mText,NULL,0));
 								break;
@@ -1189,6 +1192,8 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
+
 
 
 
