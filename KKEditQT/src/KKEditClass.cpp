@@ -399,8 +399,6 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->buildToolOutputWindow();
 	this->loadPlugins();
 
-//	this->buildPlugPrefs();
-
 //TODO//
 //	if(onExitSaveSession==true)
 //		restoreSession(NULL,(void*)restoreBookmarks);
@@ -1289,9 +1287,8 @@ void KKEditClass::insertCompletion(const QString& completion)
 void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
 {
 	kkEditQTPluginInterface	*plugtest;
-	int 					cnt=0;
+	int 						cnt=0;
     QDir 					pluginsDir(this->homeDataFolder+"/plugins/");
-
 //local plugins
 	QDirIterator 			lit(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (lit.hasNext())
@@ -1309,7 +1306,7 @@ void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
 //global plugins
 //TODO//prefs dont allow plugs with same name
 	pluginsDir.setPath(QString("%1/plugins/").arg(DATADIR));
-	QDirIterator			git(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	QDirIterator				git(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (git.hasNext())
 		{
 			QString			s=git.next();
@@ -1409,6 +1406,7 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 			this->mainNotebook->setCurrentIndex(tabnum);
 		}
 }
+
 
 
 

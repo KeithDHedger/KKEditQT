@@ -693,6 +693,15 @@ void KKEditClass::doTimer(void)
 				{
 					switch(buffer.mType & ALLMSGTYPES)
 						{
+							case SENDCURRENTURL:
+								strcpy(buffer.mText,this->currentURL.toStdString().c_str());
+								buffer.mType=SENDMSG;
+								if((msgsnd(queueID,&buffer,strlen(buffer.mText)+1,0))==-1)
+									{
+										fprintf(stderr,"Can't send message :(\n");
+										exit(NOSENDMSG);
+									}
+								break;
 							case OPENINDOCVIEWMSG:
 								this->showWebPage("",buffer.mText);
 								break;
@@ -1192,6 +1201,10 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
+
+
+
 
 
 

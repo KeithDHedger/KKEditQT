@@ -49,9 +49,9 @@ class Highlighter : public QSyntaxHighlighter
 	Q_OBJECT
 
 public:
-	Highlighter(QTextDocument *parent,QPlainTextEdit *doc);
-	bool						setLanguage(QString lang);
-	void						setTheme(QString themename);
+	Highlighter(QTextDocument	*parent,QPlainTextEdit *doc);
+	bool							setLanguage(QString lang);
+	void							setTheme(QString themename);
 //plugins
 //vars
 	QHash<int,langPluginStruct>	langPlugins;
@@ -64,25 +64,25 @@ public:
 	QString						bookMarkBGColour;
 	QString						bookMarkFGColour;
 
-	bool						syntaxHighlighting=true;
+	bool							syntaxHighlighting=true;
 protected:
-	void						highlightBlock(const QString &text);
+	void							highlightBlock(const QString &text);
 
 private:
 
 	QVector<highLightingRule>	highlightingRules;
 	QPlainTextEdit				*document;
 
-	highLightingRule			multiLineCommentStart;
-	highLightingRule			multiLineCommentStop;
+	highLightingRule				multiLineCommentStart;
+	highLightingRule				multiLineCommentStop;
 
 	int							currentPlug=-1;
 //functions
-	bool						loadLangPlug(langPluginStruct *ps);
-	void						loadLangPlugins(void);
-	void						resetRules(void);
+	bool							loadLangPlug(langPluginStruct *ps);
+	void							loadLangPlugins(void);
+	void							resetRules(void);
 
 };
 
-
 #endif // HIGHLIGHTER_H
+

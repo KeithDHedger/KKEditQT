@@ -1263,6 +1263,11 @@ void KKEditClass::buildDocViewer(void)
 	this->webView=new QWebView(widget);
 	this->webView->load(QUrl("file://" DATADIR "/help/index.html"));
 
+	QObject::connect(this->webView,&QWebView::urlChanged,[this](const QUrl url)
+		{
+			this->currentURL=url.toString();
+		});
+
 	docvlayout->addWidget(this->webView);
 
 	button=new QPushButton(QIcon::fromTheme("go-previous"),"Back");
@@ -1562,6 +1567,8 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
+
+
 
 
 

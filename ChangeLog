@@ -1,4 +1,5 @@
 0.7.0
+Added getcurrenturl to kkeditqtmsg.
 Added openindocview to kkeditqtmsg.
 More tab fixes for qttabbar.
 Fixed size of tabbar scroll buttons.
@@ -17,7 +18,6 @@ Removed redundant help item.
 Cleaned up kkeditqtmsg app ( see kkeditqtmsg -h ).
 About class clean.
 Now fully usable.
-
 
 0.6.0
 Fixed document visibility.
@@ -809,6 +809,8 @@ Updated Help file.
 
 0.0.4
 1st release
+
+
 
 
 

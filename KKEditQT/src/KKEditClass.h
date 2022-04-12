@@ -385,6 +385,7 @@ class KKEditClass : public QObject
 		QWebView						*webView=NULL;
 		bool							docviewerVisible=false;
 		MenuItemClass				*toggleDocViewMenuItem;
+		QString						currentURL;
 //docviewer functions
 #endif
 		void							buildDocViewer(void);
@@ -499,6 +500,7 @@ class KKEditClass : public QObject
 };
 
 #endif
+
 
 
 
