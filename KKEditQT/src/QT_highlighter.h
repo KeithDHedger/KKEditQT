@@ -26,6 +26,7 @@
 #include <QPlainTextEdit>
 
 #include "SyntaxHighlitePluginInterface.h"
+#include "ToolkitHighlitePluginInterface.h"
 
 struct langPluginStruct
 {
@@ -36,8 +37,9 @@ struct langPluginStruct
 	QString							plugVersion="";
 	QString							mimeType="";
 	SyntaxHighlitePluginInterface	*instance=NULL;
-	bool							loaded=false;
-	bool							broken=false;
+	ToolkitHighlitePluginInterface	*instanceTK=NULL;
+	bool								loaded=false;
+	bool								broken=false;
 };
 
 QT_BEGIN_NAMESPACE
@@ -55,6 +57,7 @@ public:
 //plugins
 //vars
 	QHash<int,langPluginStruct>	langPlugins;
+	QHash<int,langPluginStruct>	toolkitPlugins;
 
 	QString						docBackgroundCSS;
 	QString						documentBackground;
@@ -78,8 +81,10 @@ private:
 
 	int							currentPlug=-1;
 //functions
-	bool							loadLangPlug(langPluginStruct *ps);
 	void							loadLangPlugins(void);
+	bool							loadLangPlug(langPluginStruct *ps);
+	void							loadToolkitPlugins(void);
+	bool							loadToolkitPlug(langPluginStruct *ps);
 	void							resetRules(void);
 
 };

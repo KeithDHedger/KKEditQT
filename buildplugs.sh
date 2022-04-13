@@ -84,10 +84,11 @@ if [ $BUILDTOOLKITPLUGS -eq 1 ];then
 						make -j3 install
 					popd
 				done < <(find -maxdepth 2 -iname "*.pro")
-		mkdir -p "${2}/plugins"
-		cp -rvp /tmp/toolkitplugins/* "${2}/plugins/"
+		mkdir -p "${2}/toolkitplugins"
+		cp -rvp /tmp/toolkitplugins/* "${2}/toolkitplugins/"
 		rm -rf /tmp/toolkitplugins/
 		fi
 	popd
 fi
+
 

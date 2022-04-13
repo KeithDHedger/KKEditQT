@@ -41,6 +41,13 @@ void Highlighter::resetRules(void)
 		return;
 	this->highlightingRules.clear();
 
+//toolkit
+	for(int j=0;j<this->toolkitPlugins.count();j++)
+		{
+			if(this->toolkitPlugins[j].langName.contains(this->langPlugins[this->currentPlug].langName)==true)
+				this->toolkitPlugins[j].instanceTK->setToolkitRules(&(this->highlightingRules));
+		}
+
 //new format
 	this->langPlugins[this->currentPlug].instance->setLanguageRules(&(this->highlightingRules));
 
@@ -52,6 +59,7 @@ void Highlighter::resetRules(void)
 Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHighlighter(parent)
 {
 	this->loadLangPlugins();
+	this->loadToolkitPlugins();
 	this->setLanguage("SH");//TODO//default??
 	this->resetRules();
 	this->document=doc;
@@ -157,14 +165,14 @@ bool Highlighter::loadLangPlug(langPluginStruct *ps)
 void Highlighter::loadLangPlugins(void)
 {
 	SyntaxHighlitePluginInterface	*plugtest;
-	int 							cnt=0;
+	int 								cnt=0;
 
 	QDir 							pluginsDir(QString("%1/.KKEditQT/langplugins").arg(pluginsDir.homePath()));
 
-	QDirIterator					git(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
-	while (git.hasNext())
+	QDirIterator						lit(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	while(lit.hasNext())
 		{
-			QString				s=git.next();
+			QString			s=lit.next();
 			langPluginStruct	ps;
 
 			ps.plugPath=s;
@@ -177,10 +185,10 @@ void Highlighter::loadLangPlugins(void)
 		}
 
 	pluginsDir.setPath(QString("%1/langplugins/").arg(DATADIR));
-	QDirIterator					lit(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
-	while (lit.hasNext())
+	QDirIterator					git(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	while (git.hasNext())
 		{
-			QString					s=lit.next();
+			QString				s=git.next();
 			langPluginStruct		ps;
 
 			ps.plugPath=s;
@@ -190,6 +198,76 @@ void Highlighter::loadLangPlugins(void)
 					continue;
 				}
 			this->langPlugins[cnt++]=ps;
+		}
+}
+
+bool Highlighter::loadToolkitPlug(langPluginStruct *ps)
+{
+	QObject	*plugininst=NULL;
+
+	if(ps->loaded==true)
+		return(true);
+
+	ps->pluginLoader=new QPluginLoader(ps->plugPath);
+	plugininst=ps->pluginLoader->instance();
+	if(plugininst!=nullptr)
+		{
+			ps->instanceTK=qobject_cast<ToolkitHighlitePluginInterface*>(plugininst);
+			ps->instanceTK->initPlug(ps->plugPath);//TODO//return false if cant init
+			ps->loaded=true;
+			ps->plugName=ps->pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
+			ps->langName=ps->pluginLoader->metaData().value("MetaData").toObject().value("usefor").toString();
+			ps->plugVersion=ps->pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
+			ps->mimeType=ps->pluginLoader->metaData().value("MetaData").toObject().value("mimetypes").toString();
+		}
+	else
+		{
+			ps->loaded=false;
+			ps->broken=true;
+			ps->plugName=QFileInfo(ps->plugPath).fileName();
+			return(false);
+		}
+
+	return(true);
+}
+
+void Highlighter::loadToolkitPlugins(void)
+{
+	ToolkitHighlitePluginInterface	*plugtest;
+	int 								cnt=0;
+	//QDir 							pluginsDir(QString("%1/.KKEditQT/toolkitplugins").arg(pluginsDir.homePath()));
+	QDir 							pluginsDir(QString("%1/toolkitplugins/").arg(DATADIR));
+	QDirIterator						lit(pluginsDir.canonicalPath(),QStringList("*.so"),QDir::Files,QDirIterator::Subdirectories);
+
+	while(lit.hasNext())
+		{
+			QString					s=lit.next();
+			langPluginStruct	ps;
+
+			ps.plugPath=s;
+			if(this->loadToolkitPlug(&ps)==false)
+				{
+					qDebug() << "Error loading plug " << s;
+					continue;
+				}
+			this->toolkitPlugins[cnt++]=ps;
+		}
+
+	//pluginsDir.setPath(QString("%1/toolkitplugins/").arg(DATADIR));
+	pluginsDir.setPath(QString("%1/.KKEditQT/toolkitplugins").arg(pluginsDir.homePath()));
+	QDirIterator						git(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	while(git.hasNext())
+		{
+			QString					s=git.next();
+			langPluginStruct			ps;
+
+			ps.plugPath=s;
+			if(this->loadToolkitPlug(&ps)==false)
+				{
+					qDebug() << "Error loading plug " << s;
+					continue;
+				}
+			this->toolkitPlugins[cnt++]=ps;
 		}
 }
 
@@ -203,7 +281,7 @@ void Highlighter::setTheme(QString themename)
 	QJsonDocument			doc;
     QVariantMap				mainMap;
     QByteArray				data;
-	const char				*entrynames[]={"functions","class","types","comments","quotes","includes","numbers","keywords","custom","lanuageextra","variables",NULL};
+	const char				*entrynames[]={"functions","class","types","comments","quotes","includes","numbers","keywords","custom","lanuageextra","variables","toolkit",NULL};
 
 	themepath=QString("%1/themes/%2.json").arg(DATADIR).arg(themename);
 
@@ -214,7 +292,7 @@ void Highlighter::setTheme(QString themename)
 
     doc=QJsonDocument::fromJson(data,&errorPtr);
 	if(doc.isNull())
-    	{
+		{
 			qDebug() << "Parse failed for " << themepath;
 			return;
 		}
@@ -248,6 +326,9 @@ void Highlighter::setTheme(QString themename)
 
 	if(this->currentPlug!=-1)
 		{
+			for(int j=0;j<this->toolkitPlugins.count();j++)
+				this->toolkitPlugins[j].instanceTK->setTheme(theme);
+
 			const QSignalBlocker block(this->document);
 			this->langPlugins[this->currentPlug].instance->setTheme(theme);
 			this->resetRules();
@@ -255,5 +336,9 @@ void Highlighter::setTheme(QString themename)
 		}
 
 	return;
-
 }
+
+
+
+
+

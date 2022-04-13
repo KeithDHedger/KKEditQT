@@ -18,18 +18,19 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SYNTAXHIGHLITEPLUGININTERFACE_H
-#define SYNTAXHIGHLITEPLUGININTERFACE_H
+#ifndef TOOLKITHIGHLITEPLUGININTERFACE_H
+#define TOOLKITHIGHLITEPLUGININTERFACE_H
 
 #include <QtCore>
 #include <QTextFormat>
 
 #include "PluginCommon.h"
 
-class SyntaxHighlitePluginInterface
+
+class ToolkitHighlitePluginInterface
 {
 	public:
-		virtual			~SyntaxHighlitePluginInterface()=default;
+		virtual			~ToolkitHighlitePluginInterface()=default;
 
 		virtual void	initPlug(QString pathtoplug)=0;
 		virtual void	unloadPlug(void)=0;
@@ -37,18 +38,14 @@ class SyntaxHighlitePluginInterface
 		virtual void	setTheme(QHash<int,themeStruct>	newtheme)=0;
 
 //new rules format
-		virtual void	setLanguageRules(QVector<highLightingRule> *rules)=0;
-
-//odd single formats
-		virtual void	setMultLineFormatStart(highLightingRule *hr)=0;//TODO//
-		virtual void	setMultLineFormatStop(highLightingRule *hr)=0;
+		virtual void	setToolkitRules(QVector<highLightingRule> *rules)=0;
 };
 
 QT_BEGIN_NAMESPACE
 
-#define SyntaxHighlitePluginInterface_iid "org.KKEditQT.SyntaxHighlitePluginInterface"
+#define ToolkitHighlitePluginInterface_iid "org.KKEditQT.ToolkitHighlitePluginInterface"
 
-Q_DECLARE_INTERFACE(SyntaxHighlitePluginInterface, SyntaxHighlitePluginInterface_iid)
+Q_DECLARE_INTERFACE(ToolkitHighlitePluginInterface,ToolkitHighlitePluginInterface_iid)
 QT_END_NAMESPACE
 
 #endif

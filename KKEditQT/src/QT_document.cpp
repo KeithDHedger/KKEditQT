@@ -574,8 +574,9 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 
 void DocumentClass::setFilePrefs(void)
 {
-	bool						holddirty=this->dirty;
-	QTextOption					opts;
+	bool			holddirty=this->dirty;
+	QTextOption	opts;
+
 	this->setTabStopDistance(1.0);
 	this->dirty=true;
 
@@ -721,6 +722,7 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 			this->setTextCursor(cursor);
 		}
 }
+
 
 
 

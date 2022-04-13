@@ -1,4 +1,7 @@
 0.7.0
+Updates to theme files.
+Fixed lock contents.
+Added toolkik highlighter plugin.
 Added getcurrenturl to kkeditqtmsg.
 Added openindocview to kkeditqtmsg.
 More tab fixes for qttabbar.
@@ -809,6 +812,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 
