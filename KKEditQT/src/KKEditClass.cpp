@@ -285,7 +285,6 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 									this->bookMarkMenu->removeAction(value.menu);
 									this->bookMarks.remove(value.bmKey);
 									return;
-									
 								}
 						}
 

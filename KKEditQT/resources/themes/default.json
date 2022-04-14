@@ -26,7 +26,7 @@
 	"class":
 		[
 			{
-				"colour":"#800080",
+				"colour":"#2C3DFF",
 				"italic":false,
 				"bold":true
 			}
@@ -112,4 +112,5 @@
 			}
 		]
 }
+
 
