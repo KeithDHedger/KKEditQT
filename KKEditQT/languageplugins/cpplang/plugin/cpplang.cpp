@@ -45,7 +45,13 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[FUNCTIONTHEME].colour);
 	hr.pattern=QRegularExpression("([[:word:]]+(\\.|\\-\\>|(?=[[:space:]]*\\()))+");
 	rules->append(hr);
-//
+//classes
+	hr.format.setForeground(this->theme[CLASSTHEME].colour);
+	hr.format.setFontWeight(this->theme[CLASSTHEME].weight);
+	hr.format.setFontItalic(this->theme[CLASSTHEME].italic);
+	hr.pattern=QRegularExpression("\\b[A-Za-z0-9_]+(?=::)\\b");
+	rules->append(hr);
+
 //variables
 	hr.format.setForeground(this->theme[VARIABLETHEME].colour);
 	hr.format.setFontWeight(this->theme[VARIABLETHEME].weight);
@@ -121,6 +127,9 @@ void cpplang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }
+
+
+
 
 
 

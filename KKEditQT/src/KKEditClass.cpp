@@ -247,7 +247,7 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 	DocumentClass	*doc=this->pages.value(qobject_cast<DocumentClass*>(widget)->pageIndex);
 	QTextCursor		cursor;
 	bookMarkStruct	bms;
-	bool			holdsb=this->sessionBusy;
+	bool				holdsb=this->sessionBusy;
 
 	if(curs.isNull()==true)
 		cursor=doc->textCursor();
@@ -274,24 +274,18 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 					QString testtext;
 					foreach(bookMarkStruct value,this->bookMarks)
 						{
-							if(cursor.block().text().simplified().compare("")==0)
-								testtext=doc->getFileName() + QString(" Line %1").arg(cursor.blockNumber()+1);
-							else
-								testtext=this->truncateWithElipses(cursor.block().text().simplified(),this->maxBMChars);
-
-							if((value.bmLabel.compare(testtext)==0) && (value.docIndex==doc->pageIndex))
+							if((value.docIndex==doc->pageIndex) && (value.line==cursor.blockNumber()+1))
 								{
-									this->sessionBusy=true;
 									QTextBlock			block=doc->document()->findBlockByLineNumber(value.line);
-									QTextBlockFormat	bf=block.blockFormat();
+									QTextBlockFormat		bf=block.blockFormat();
 
 									bf.clearBackground();
 									cursor.setBlockFormat(bf);
-									this->sessionBusy=holdsb;
 								
 									this->bookMarkMenu->removeAction(value.menu);
 									this->bookMarks.remove(value.bmKey);
 									return;
+									
 								}
 						}
 
@@ -1406,6 +1400,7 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 			this->mainNotebook->setCurrentIndex(tabnum);
 		}
 }
+
 
 
 

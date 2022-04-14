@@ -50,6 +50,12 @@ void Highlighter::resetRules(void)
 
 //new format
 	this->langPlugins[this->currentPlug].instance->setLanguageRules(&(this->highlightingRules));
+////toolkit
+//	for(int j=0;j<this->toolkitPlugins.count();j++)
+//		{
+//			if(this->toolkitPlugins[j].langName.contains(this->langPlugins[this->currentPlug].langName)==true)
+//				this->toolkitPlugins[j].instanceTK->setToolkitRules(&(this->highlightingRules));
+//		}
 
 //mult line comment format
 	this->langPlugins[this->currentPlug].instance->setMultLineFormatStart(&(this->multiLineCommentStart));
@@ -337,6 +343,7 @@ void Highlighter::setTheme(QString themename)
 
 	return;
 }
+
 
 
 
