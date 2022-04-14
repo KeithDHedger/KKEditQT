@@ -1,5 +1,6 @@
 0.7.0
 Added qt5toolkit plugin.
+Added gtk2toolkit plugin.
 Fixed toggle bookmark creating two or more bookmarks on the same line.
 Various theme/language/toolkit plug tweaks.
 Updates to theme files.
@@ -815,6 +816,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 
