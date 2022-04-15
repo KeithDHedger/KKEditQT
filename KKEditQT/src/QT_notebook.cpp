@@ -60,8 +60,6 @@ NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent
 	qicon=QIcon::fromTheme("go-next");
 	this->scrollRight->setIcon(qicon);
 
-//this->scrollRight->setMinimumSize(32,64);
-
 	container=new QWidget(this);
 	layout=new QHBoxLayout(container);
 //scroll rite
@@ -166,6 +164,7 @@ void NoteBookClass::scrollTabsRight(void)
 	else
 		this->setCurrentIndex(ctab);
 }
+
 
 
 
