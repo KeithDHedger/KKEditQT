@@ -24,6 +24,27 @@ NoteBookClass::~NoteBookClass()
 {
 }
 
+void NoteBookClass::setScrollButtonStatus(int btnnum,bool enabled,bool visible)
+{
+	switch(btnnum)
+		{
+			case LEFTSCROLLBUTTON:
+				this->scrollLeft->setVisible(visible);
+				this->scrollLeft->setEnabled(enabled);
+				break;
+			case RIGHTSCROLLBUTTON:
+				this->scrollRight->setVisible(visible);
+				this->scrollRight->setEnabled(enabled);
+				break;
+			case BOTHSCROLLBUTTONS:
+				this->scrollLeft->setVisible(visible);
+				this->scrollRight->setVisible(visible);
+				this->scrollLeft->setEnabled(enabled);
+				this->scrollRight->setEnabled(enabled);
+				break;
+		}
+}
+
 NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent)
 {
 	QIcon		qicon;
@@ -145,6 +166,7 @@ void NoteBookClass::scrollTabsRight(void)
 	else
 		this->setCurrentIndex(ctab);
 }
+
 
 
 

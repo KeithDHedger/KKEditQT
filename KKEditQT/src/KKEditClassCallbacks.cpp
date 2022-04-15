@@ -318,15 +318,19 @@ void KKEditClass::doToolsMenuItems()
 								if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_PASTE_OP)==TOOL_PASTE_OP) && (document!=NULL))
 									{
 										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										document->textCursor().removeSelectedText();
-										document->textCursor().insertText(runPipeAndCapture(str));
+										document->textCursor().beginEditBlock();
+											document->textCursor().removeSelectedText();
+											document->textCursor().insertText(runPipeAndCapture(str));
+										document->textCursor().endEditBlock();
 										return;
 									}
 
 								if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_REPLACE_OP)==TOOL_REPLACE_OP) && (document!=NULL))
 									{
 										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										document->setPlainText(runPipeAndCapture(str));
+										document->textCursor().beginEditBlock();
+											document->setPlainText(runPipeAndCapture(str));
+										document->textCursor().endEditBlock();
 										return;
 									}
 
@@ -1201,6 +1205,7 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
 
 
 

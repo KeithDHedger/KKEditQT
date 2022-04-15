@@ -1,6 +1,9 @@
 0.7.0
+Set tab scroll buttons enabled/visible.
+Exclude .o files from open from here tab menu.
+Wrapped tools that edit document begin/end editblock.
+Wrapped user shortcut editing keys in begin/end editblock.
 Added qt5toolkit plugin.
-Added gtk2toolkit plugin.
 Fixed toggle bookmark creating two or more bookmarks on the same line.
 Various theme/language/toolkit plug tweaks.
 Updates to theme files.
@@ -816,6 +819,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 

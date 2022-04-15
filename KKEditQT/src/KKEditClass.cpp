@@ -206,9 +206,6 @@ void KKEditClass::switchPage(int index)
 	if(doc==NULL)
 		return;
 
-//	if(doc->visible==false)
-//		this->mainNotebook->scrollTabsLeft();
-
 	doc->setStatusBarText();
 	doc->clearHilites();
 
@@ -453,6 +450,7 @@ void KKEditClass::doAppShortCuts(void)
 		return;
 
 	cursor=doc->textCursor();
+	cursor.beginEditBlock();
 	switch(sc->objectName().toInt())
 		{
 			case HIDETABSHORTCUT:
@@ -546,6 +544,7 @@ void KKEditClass::doAppShortCuts(void)
 				emit doc->cursorPositionChanged();
 				break;
 		}
+	cursor.endEditBlock();
 }
 
 void KKEditClass::readConfigs(void)
@@ -647,6 +646,9 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 							menu.addMenu(&filemenu);
 							DocumentClass	*doc=this->getDocumentForTab(tabIndex);
 							QDir				dir(doc->getDirPath());
+							QStringList filters;
+     						filters << "*.[^o]*";
+     						dir.setNameFilters(filters);
 							QStringList		flist=dir.entryList(QDir::Files);
 							itemicon=QIcon::fromTheme(this->tabContextMenuItems[cnt].icon);
 							filemenu.setIcon(itemicon);
@@ -1038,9 +1040,19 @@ void KKEditClass::setToolbarSensitive(void)
 		{
 			this->saveSessionsMenu->setEnabled(false);
 			this->currentSessionNumber=0xdeadbeef;
+			this->mainNotebook->setScrollButtonStatus(BOTHSCROLLBUTTONS,false,false);
 		}
 	else
-		this->saveSessionsMenu->setEnabled(true);
+		{
+			this->mainNotebook->setScrollButtonStatus(BOTHSCROLLBUTTONS,true,true);
+			if(this->mainNotebook->currentIndex()==0)
+				this->mainNotebook->setScrollButtonStatus(LEFTSCROLLBUTTON,false,true);
+			else if(this->mainNotebook->currentIndex()==this->mainNotebook->count()-1)
+				this->mainNotebook->setScrollButtonStatus(RIGHTSCROLLBUTTON,false,true);
+			if(this->mainNotebook->count()==1)
+				this->mainNotebook->setScrollButtonStatus(BOTHSCROLLBUTTONS,false,true);
+			this->saveSessionsMenu->setEnabled(true);
+		}
 
 	if(this->currentSessionNumber==0xdeadbeef)
 		this->saveCurrentSessionMenuItem->setEnabled(false);
@@ -1399,6 +1411,8 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 			this->mainNotebook->setCurrentIndex(tabnum);
 		}
 }
+
+
 
 
 

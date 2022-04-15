@@ -25,6 +25,10 @@ class KKEditClass;
 
 #include "KKEditClass.h"
 
+#define LEFTSCROLLBUTTON 1
+#define RIGHTSCROLLBUTTON 2
+#define BOTHSCROLLBUTTONS 4
+
 class NoteBookClass : public QTabWidget
 {
 	Q_OBJECT
@@ -36,6 +40,7 @@ class NoteBookClass : public QTabWidget
 		KKEditClass	*mainKKEditClass=NULL;
 		void			scrollTabsRight(void);
 		void			scrollTabsLeft(void);
+		void			setScrollButtonStatus(int btnnum,bool enabled,bool visible);
 
 	protected:
 //dand
@@ -51,6 +56,7 @@ class NoteBookClass : public QTabWidget
 };
 
 #endif
+
 
 
 
