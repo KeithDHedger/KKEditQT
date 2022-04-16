@@ -348,6 +348,8 @@ class KKEditClass : public QObject
 //document vars
 		QStringList					completionWords;
 		QCompleter					*completer=NULL;
+		QString						currentFilepath;
+		QString						currentFilename;
 
 //document functions
 		DocumentClass				*getDocumentForTab(int tabnum);
@@ -500,6 +502,7 @@ class KKEditClass : public QObject
 };
 
 #endif
+
 
 
 

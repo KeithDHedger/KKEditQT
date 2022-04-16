@@ -33,22 +33,23 @@ class SingleInstanceClass
 		SingleInstanceClass(QApplication *app,int key,bool forcem);
 		~SingleInstanceClass();
 
-		long			getSIWorkSpace(void);
+		long				getSIWorkSpace(void);
 		void*			getX11Prop(Window w,Atom prop,Atom type,int fmt,unsigned long *rcountp);
-		bool			getRunning(void);
+		bool				getRunning(void);
 
-		QApplication	*app;
+		QApplication		*app;
 		int				workspace=-1;
-		bool			isOnX11=true;
+		bool				isOnX11=true;
 		int				queueID=-1;
 		int				useKey=-1;
 
 	private:
-		bool			deleteComfiles=false;
+		bool				deleteComfiles=false;
 		QFile			fileMsg;
 		QFile			filePID;
-		bool			usingMulti=false;
+		bool				usingMulti=false;
 };
 
 
 #endif
+

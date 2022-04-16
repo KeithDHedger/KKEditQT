@@ -41,7 +41,7 @@ RecentMenuClass::RecentMenuClass(KKEditClass *kk)
 void RecentMenuClass::addFilePath(QString path)
 {
 	QFile			file;
-	bool			retval;
+	bool				retval;
 	QList<QAction*>	acts=this->recentMenu->actions(); 
 
 	for(int j=0;j<acts.count();j++)
@@ -97,3 +97,4 @@ void RecentMenuClass::menuClicked(QAction *action)
 {
 	this->mainKKEditClass->openFile(action->text());
 }
+

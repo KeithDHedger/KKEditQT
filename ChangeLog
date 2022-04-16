@@ -1,4 +1,5 @@
 0.7.0
+Added favourites menu plugin.
 Set tab scroll buttons enabled/visible.
 Exclude .o files from open from here tab menu.
 Wrapped tools that edit document begin/end editblock.
@@ -819,6 +820,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 

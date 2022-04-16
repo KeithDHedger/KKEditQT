@@ -212,6 +212,9 @@ void KKEditClass::switchPage(int index)
 	this->rebuildFunctionMenu(index);
 	this->rebuildTabsMenu();
 
+	this->currentFilepath=doc->getFilePath();
+	this->currentFilename=doc->getFileName();
+
 //plugins
 	for(int j=0;j<this->plugins.count();j++)
 		{
@@ -1411,6 +1414,7 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 			this->mainNotebook->setCurrentIndex(tabnum);
 		}
 }
+
 
 
 
