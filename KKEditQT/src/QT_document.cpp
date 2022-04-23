@@ -329,12 +329,13 @@ const QString DocumentClass::textUnderCursor()
 
 void DocumentClass::keyPressEvent(QKeyEvent *event)
 {
-	bool			isshortcut;
-	bool			ctrlorshift;
-	bool			hasmodifier;
+	bool				isshortcut;
+	bool				ctrlorshift;
+	bool				hasmodifier;
 	QRect			cr;
 	QString			completionPrefix;
-	const QString	eow("~!@#$%^&*()+{}|:\"<>?,./;'[]\\-="); // end of word;
+	const QString	eow("~!@#$%^&*()+{}|:\"<>?,./;'[]\\-= \t\n"); // end of word;
+	bool				popupflag=true;
 
 	if(this->isReadOnly()==true)
 		return;
@@ -364,6 +365,16 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 					return;
 				}
 		}
+		
+	switch (event->key())
+		{
+			case Qt::Key_Backspace:
+				popupflag=false;
+				break;
+		}
+
+	if((event->modifiers() & Qt::ControlModifier)==Qt::ControlModifier)
+		popupflag=false;
 
 	if(this->mainKKEditClass->completer && this->mainKKEditClass->completer->popup()->isVisible())
 		{
@@ -374,12 +385,14 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 					case Qt::Key_Return:
 					case Qt::Key_Escape:
 					case Qt::Key_Backtab:
+					case Qt::Key_Tab:
 						event->ignore();
 						return; // let the completer do default behavior
 					default:
 						break;
 				}
 		}
+
 	if(this->mainKKEditClass->showCompletions==false)
 		{
 			QPlainTextEdit::keyPressEvent(event);
@@ -397,7 +410,13 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 	hasmodifier=(event->modifiers() != Qt::NoModifier) && !ctrlorshift;
 	completionPrefix=this->textUnderCursor();
 
-    if(!isshortcut && (hasmodifier || event->text().isEmpty()|| completionPrefix.length() < this->mainKKEditClass->autoShowMinChars || eow.contains(event->text().right(1))))
+		if(popupflag==false)
+			{
+      	  		this->mainKKEditClass->completer->popup()->hide();
+      	  		return;
+     	  	}
+
+    if(!isshortcut && (hasmodifier || event->text().isEmpty()|| completionPrefix.length() < this->mainKKEditClass->autoShowMinChars || eow.contains(event->text().right(1))))//TODO//
 		{
       	  	this->mainKKEditClass->completer->popup()->hide();
       	  	return;
@@ -722,6 +741,8 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 			this->setTextCursor(cursor);
 		}
 }
+
+
 
 
 

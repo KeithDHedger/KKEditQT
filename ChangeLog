@@ -1,4 +1,5 @@
 0.7.0
+Completion popup ( mostly! ) only pops up at end of word not begining. 
 Added favourites menu plugin.
 Set tab scroll buttons enabled/visible.
 Exclude .o files from open from here tab menu.
@@ -820,6 +821,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 
