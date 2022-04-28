@@ -649,8 +649,8 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 							menu.addMenu(&filemenu);
 							DocumentClass	*doc=this->getDocumentForTab(tabIndex);
 							QDir				dir(doc->getDirPath());
-							QStringList filters;
-     						filters << "*.[^o]*";
+							QStringList		filters;
+     						filters << "*[^.o]";
      						dir.setNameFilters(filters);
 							QStringList		flist=dir.entryList(QDir::Files);
 							itemicon=QIcon::fromTheme(this->tabContextMenuItems[cnt].icon);
@@ -1414,6 +1414,7 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 			this->mainNotebook->setCurrentIndex(tabnum);
 		}
 }
+
 
 
 

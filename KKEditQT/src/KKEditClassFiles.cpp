@@ -326,7 +326,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
 			doc->dirty=false;
 			retval=true;
 			file.close();
-			this->recentFiles->addFilePath(filepath);
+			this->recentFiles->addFilePath(doc->getFilePath());
 			doc->setFilePrefs();
 		}
 
@@ -387,6 +387,7 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
 
 
 
