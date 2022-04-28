@@ -1,6 +1,6 @@
 0.7.0
 Recent files now use full filepath.
-Fixed openfrom here in tab context menu.
+Fixed open from here in tab context menu.
 Completion popup ( mostly! ) only pops up at end of word not begining. 
 Added favourites menu plugin.
 Set tab scroll buttons enabled/visible.
