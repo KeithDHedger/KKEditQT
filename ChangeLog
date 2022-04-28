@@ -1,4 +1,5 @@
 0.7.0
+Fixed spurious setting document dirty.
 Recent files now use full filepath.
 Fixed open from here in tab context menu.
 Completion popup ( mostly! ) only pops up at end of word not begining. 
@@ -823,6 +824,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 

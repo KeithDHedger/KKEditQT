@@ -288,10 +288,10 @@ bool KKEditClass::checkForOpenFile(QString filepath)
 	return(false);
 }
 
-bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
+bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtorecents)
 {
 	DocumentClass	*doc=new DocumentClass(this);
-	bool			retval=false;
+	bool				retval=false;
 	QFile			file(filepath);
 	QFileInfo		fileinfo(file);
 	int				tabnum;
@@ -319,14 +319,16 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn)
 			doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
 			this->mainNotebook->setTabToolTip(tabnum,doc->getFilePath());
 			this->mainNotebook->setCurrentIndex(tabnum);
-			this->gotoLine(linenumber);
+			if(linenumber>0)
+				this->gotoLine(linenumber);
 			doc->setHiliteLanguage();
 			doc->highlighter->rehighlight();
 			doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 			doc->dirty=false;
 			retval=true;
 			file.close();
-			this->recentFiles->addFilePath(doc->getFilePath());
+			if(addtorecents==true)
+				this->recentFiles->addFilePath(doc->getFilePath());
 			doc->setFilePrefs();
 		}
 
@@ -387,6 +389,8 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
+
 
 
 

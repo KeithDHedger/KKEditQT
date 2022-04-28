@@ -452,13 +452,16 @@ void KKEditClass::doAppShortCuts(void)
 	if(doc==NULL)
 		return;
 
+	if(sc->objectName().toInt()==HIDETABSHORTCUT)
+		{
+			this->setTabVisibilty(this->mainNotebook->currentIndex(),false);
+			return;
+		}
+
 	cursor=doc->textCursor();
 	cursor.beginEditBlock();
 	switch(sc->objectName().toInt())
 		{
-			case HIDETABSHORTCUT:
-				this->setTabVisibilty(this->mainNotebook->currentIndex(),false);
-				break;
 			case DELETELINESHORTCUT:
 				cursor.select(QTextCursor::LineUnderCursor);
 				cursor.removeSelectedText();
@@ -1414,6 +1417,7 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 			this->mainNotebook->setCurrentIndex(tabnum);
 		}
 }
+
 
 
 

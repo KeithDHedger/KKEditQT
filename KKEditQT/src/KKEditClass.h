@@ -333,7 +333,7 @@ class KKEditClass : public QObject
 		bool							openFromDialog=false;
 //file functions
 		void							newFile(const QString data="",const QString filename="");
-		bool							openFile(QString filepath,int linenumber=1,bool warn=false);
+		bool							openFile(QString filepath,int linenumber=1,bool warn=false,bool addtorecents=true);
 		bool							openFileDialog(void);
 		void							openAsHexDump(void);
 		QString						runPipeAndCapture(QString command);
@@ -502,6 +502,7 @@ class KKEditClass : public QObject
 };
 
 #endif
+
 
 
 

@@ -181,7 +181,8 @@ void KKEditClass::doSessionsMenuItems(void)
 							filename=in.readLine().trimmed();
 							linenumber=-1;
 							this->runPipe(QString("echo \"Opening %1 ...\">\"%2/session\" &").arg(filename.trimmed()).arg(this->tmpFolderName));
-							this->openFile(filename);
+							//this->openFile(filename);
+							this->openFile(filename,0,false,false);
 							do
 								{
 									in >> linenumber;
@@ -1205,6 +1206,7 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
 
 
 
