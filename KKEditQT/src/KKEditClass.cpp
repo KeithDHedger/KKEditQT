@@ -653,17 +653,18 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 							DocumentClass	*doc=this->getDocumentForTab(tabIndex);
 							QDir				dir(doc->getDirPath());
 							QStringList		filters;
-     						filters << "*[^.o]";
-     						dir.setNameFilters(filters);
 							QStringList		flist=dir.entryList(QDir::Files);
 							itemicon=QIcon::fromTheme(this->tabContextMenuItems[cnt].icon);
 							filemenu.setIcon(itemicon);
 							for(int k=0;k<flist.count();k++)
 								{
-										menuitem1=new MenuItemClass(flist.at(k));
-										menuitem1->setMenuID(OPENFROMHERE+tabIndex);
-										filemenu.addAction(menuitem1);
-										QObject::connect(menuitem1,SIGNAL(triggered()),this,SLOT(doTabBarContextMenu()));
+									if(flist.at(k).endsWith(".o")==false)
+										{
+											menuitem1=new MenuItemClass(flist.at(k));
+											menuitem1->setMenuID(OPENFROMHERE+tabIndex);
+											filemenu.addAction(menuitem1);
+											QObject::connect(menuitem1,SIGNAL(triggered()),this,SLOT(doTabBarContextMenu()));
+										}
 								}
 							continue;
 						}
@@ -1417,6 +1418,7 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 			this->mainNotebook->setCurrentIndex(tabnum);
 		}
 }
+
 
 
 
