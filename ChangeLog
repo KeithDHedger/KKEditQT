@@ -1,4 +1,6 @@
 0.7.0
+language plugin tweaks.
+Splash screen removed on showing barberpole.
 Fixed hang in recent files if file unavailable.
 Clicking 'Apply' in plugin pefs now updates prefs file immediately.
 Added splash screen.
@@ -828,6 +830,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 

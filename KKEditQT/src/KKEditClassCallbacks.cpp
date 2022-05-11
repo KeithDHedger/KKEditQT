@@ -131,17 +131,6 @@ void KKEditClass::doSessionsMenuItems(void)
 					pd.userIntData1=sessionnumber;
 					pd.what=DOSAVESESSION;
 					this->runAllPlugs(pd);
-//					for(int j=0;j<this->plugins.count();j++)
-//						{
-//							if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSAVESESSION)==DOSAVESESSION))
-//								{
-//									plugData	pd;
-//									pd.userStrData1=sessionname;
-//									pd.userIntData1=sessionnumber;
-//									pd.what=DOSAVESESSION;
-//									this->plugins[j].instance->plugRun(&pd);
-//								}
-//						}
 				}
 			return;
 		}
@@ -161,6 +150,7 @@ void KKEditClass::doSessionsMenuItems(void)
 			if(retval==true)
 				{
 					this->showBarberPole("Restore Session","Please Wait","Cancel",QString("%1/session").arg(this->tmpFolderName));
+					this->splash->finish(this->mainWindow);
 					int		linenumber=999;
 					int		visible=666;
 					int		mainline;
@@ -213,19 +203,8 @@ void KKEditClass::doSessionsMenuItems(void)
 					pd.userIntData1=sessionnumber;
 					pd.what=DORESSESSION;
 					this->runAllPlugs(pd);
-
-//					for(int j=0;j<this->plugins.count();j++)
-//						{
-//							if((this->plugins[j].loaded) && ((this->plugins[j].wants & DORESSESSION)==DORESSESSION))
-//								{
-//									plugData	pd;
-//									pd.userStrData1=sessionname;
-//									pd.userIntData1=sessionnumber;
-//									pd.what=DORESSESSION;
-//									this->plugins[j].instance->plugRun(&pd);
-//								}
-//						}
 				}
+
 			for(int j=0;j<this->mainNotebook->count();j++)
 				{
 					doc=this->getDocumentForTab(j);
@@ -1217,6 +1196,7 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
 
 
 

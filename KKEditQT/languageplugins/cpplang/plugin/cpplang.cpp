@@ -57,13 +57,7 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setFontWeight(this->theme[VARIABLETHEME].weight);
 	hr.format.setFontItalic(this->theme[VARIABLETHEME].italic);
 	hr.pattern=QRegularExpression("([a-zA-Z0-9_\\.]|-\\>)+[[:space:]]*(?==)");
-	rules->append(hr);
-
-//quotes
-	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
-	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
-	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
-	hr.pattern = QRegularExpression("(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\")|('\\\\.')|('.')");
+	//hr.clearFirst=true;
 	rules->append(hr);
 
 //numbers
@@ -101,6 +95,14 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.pattern=QRegularExpression("NULL|nullptr|true|false|TRUE|FALSE");
 	rules->append(hr);
 
+
+//quotes
+	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
+	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
+	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
+	hr.pattern = QRegularExpression("(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\")|('\\\\.')|('.')");
+	rules->append(hr);
+
 //single line comment
 	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
 	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
@@ -127,6 +129,8 @@ void cpplang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }
+
+
 
 
 

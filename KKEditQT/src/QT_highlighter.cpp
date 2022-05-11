@@ -41,21 +41,15 @@ void Highlighter::resetRules(void)
 		return;
 	this->highlightingRules.clear();
 
+
+//new format
+	this->langPlugins[this->currentPlug].instance->setLanguageRules(&(this->highlightingRules));
 //toolkit
 	for(int j=0;j<this->toolkitPlugins.count();j++)
 		{
 			if(this->toolkitPlugins[j].langName.contains(this->langPlugins[this->currentPlug].langName)==true)
 				this->toolkitPlugins[j].instanceTK->setToolkitRules(&(this->highlightingRules));
 		}
-
-//new format
-	this->langPlugins[this->currentPlug].instance->setLanguageRules(&(this->highlightingRules));
-////toolkit
-//	for(int j=0;j<this->toolkitPlugins.count();j++)
-//		{
-//			if(this->toolkitPlugins[j].langName.contains(this->langPlugins[this->currentPlug].langName)==true)
-//				this->toolkitPlugins[j].instanceTK->setToolkitRules(&(this->highlightingRules));
-//		}
 
 //mult line comment format
 	this->langPlugins[this->currentPlug].instance->setMultLineFormatStart(&(this->multiLineCommentStart));
@@ -73,7 +67,6 @@ Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHig
 
 void Highlighter::highlightBlock(const QString &text)
 {
-
 	if(this->currentPlug==-1)
 		return;
 	if(this->syntaxHighlighting==false)
@@ -83,13 +76,14 @@ void Highlighter::highlightBlock(const QString &text)
 	QRegularExpression	endExpression(this->multiLineCommentStop.pattern);
 	int					startIndex=0;
 
-	foreach (const highLightingRule &rule,highlightingRules)
+	foreach(const highLightingRule &rule,highlightingRules)
 		{
-			QRegularExpression expression(rule.pattern);
-			QRegularExpressionMatchIterator i=expression.globalMatch(text);
+			QRegularExpressionMatchIterator i=rule.pattern.globalMatch(text);
 			while(i.hasNext())
 				{
 					QRegularExpressionMatch	match=i.next();
+					//if(rule.clearFirst==true)
+					//	setFormat(match.capturedStart(),match.capturedLength(),resetformat);
 					setFormat(match.capturedStart(),match.capturedLength(),rule.format);
 				}
 		}
@@ -341,8 +335,16 @@ void Highlighter::setTheme(QString themename)
 			this->rehighlight();
 		}
 
+	this->resetformat.setForeground(QColor(this->documentForeground));
+	this->resetformat.setFontWeight(0);
+	this->resetformat.setFontItalic(false);
+
 	return;
 }
+
+
+
+
 
 
 

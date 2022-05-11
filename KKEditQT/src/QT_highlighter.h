@@ -75,6 +75,7 @@ private:
 
 	QVector<highLightingRule>	highlightingRules;
 	QPlainTextEdit				*document;
+	QTextCharFormat				resetformat;
 
 	highLightingRule				multiLineCommentStart;
 	highLightingRule				multiLineCommentStop;
@@ -90,4 +91,5 @@ private:
 };
 
 #endif // HIGHLIGHTER_H
+
 

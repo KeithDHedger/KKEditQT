@@ -206,6 +206,8 @@ class KKEditClass : public QObject
 #endif
 		QShortcut					*appShortcuts[NOMORESHORTCUT];
 		QStringList					defaultShortCutsList={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'"};
+
+		QSplashScreen				*splash;
 //recent files
 		RecentMenuClass				*recentFiles=NULL;
 
@@ -566,6 +568,7 @@ class KKEditClass : public QObject
 };
 
 #endif
+
 
 
 

@@ -43,7 +43,8 @@ int main (int argc, char **argv)
 	QDir				commsDir;
 	QApplication		app(argc,argv);
 	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");
-    QSplashScreen	splash(pixmap,Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
+
+//    QSplashScreen	splash(pixmap,Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
 
 	app.setStyleSheet("QMenu { menu-scrollable: true ;}");
 	app.setOrganizationName("KDHedger");
@@ -59,6 +60,7 @@ int main (int argc, char **argv)
 		}
 
 	kkedit=new KKEditClass(&app);
+    kkedit->splash=new QSplashScreen(pixmap,Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
 	kkedit->parser.addHelpOption();
 
 	kkedit->parser.addOptions(
@@ -80,7 +82,7 @@ int main (int argc, char **argv)
 			return(0);
 		}
 
-	splash.show();
+	kkedit->splash->show();
 	kkedit->queueID=siapp.queueID;
 	kkedit->forcedMultInst=kkedit->parser.isSet("multi");
 	kkedit->currentWorkSpace=siapp.workspace;
@@ -106,13 +108,14 @@ int main (int argc, char **argv)
 	else
 		app.setWindowIcon(QIcon(DATADIR"/pixmaps/KKEditRoot.png"));
 
-	splash.finish(kkedit->mainWindow);
+	kkedit->splash->finish(kkedit->mainWindow);
 
 	status=app.exec();
 
 	delete kkedit;
 	return status;
 }
+
 
 
 

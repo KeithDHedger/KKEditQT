@@ -48,13 +48,6 @@ void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.pattern=QRegularExpression(NUMBERSREGEX);
 	rules->append(hr);
 
-//quotes rule
-	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
-	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
-	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
-	hr.pattern = QRegularExpression("(\".*\")|('.*')");
-	rules->append(hr);
-
 //includes rule
 	hr.format.setForeground(this->theme[INCLUDETHEME].colour);
 	hr.format.setFontWeight(this->theme[INCLUDETHEME].weight);
@@ -69,7 +62,7 @@ void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.pattern=QRegularExpression("([[:word:]]*)(?==)");
 	rules->append(hr);
 
-//angle brackets
+//curly brackets
 	hr.format.setForeground(this->theme[CLASSTHEME].colour);
 	hr.format.setFontWeight(this->theme[CLASSTHEME].weight);
 	hr.format.setFontItalic(this->theme[CLASSTHEME].italic);
@@ -81,6 +74,14 @@ void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setFontWeight(this->theme[FUNCTIONTHEME].weight);
 	hr.format.setFontItalic(this->theme[FUNCTIONTHEME].italic);
 	hr.pattern=QRegularExpression("^(function[[:blank:]]*[[:word:]]*|[[:word:]]*)([[:blank:]]*\\([[:blank:]]*\\))");
+	rules->append(hr);
+
+//quotes rule
+	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
+	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
+	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
+	hr.pattern=QRegularExpression("(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\")|('([^'\\\\]*(\\\\.[^'\\\\]*)*)')");
+
 	rules->append(hr);
 
 //single line comment
@@ -113,4 +114,8 @@ void shlang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }
+
+
+
+
 
