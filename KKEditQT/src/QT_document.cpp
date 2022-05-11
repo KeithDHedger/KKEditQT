@@ -517,6 +517,7 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	QMenu				menu(this);
 	QList<QAction*>		menuactions;
 	MenuItemClass		*mc;
+	plugData				pd;
 
 	menuactions=this->mainKKEditClass->bookMarkMenu->actions();
 	menu.addAction(menuactions.at(TOGGLEBOOKMARKMENUITEM-REMOVEALLBOOKMARKSMENUITEM));
@@ -574,18 +575,24 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	menu.addSeparator();
 
 //plugins
-	for(int j=0;j<this->mainKKEditClass->plugins.count();j++)
-		{
-			if((this->mainKKEditClass->plugins[j].loaded) && ((this->mainKKEditClass->plugins[j].wants & DOCONTEXTMENU)==DOCONTEXTMENU))
-				{
-					plugData	pd;
-					pd.menu=&menu;
-					pd.doc=this;
-					pd.tabNumber=this->mainKKEditClass->mainNotebook->currentIndex();
-					pd.what=DOCONTEXTMENU;
-					this->mainKKEditClass->plugins[j].instance->plugRun(&pd);
-				}
-		}
+	pd.doc=this;
+	pd.menu=&menu;
+	pd.tabNumber=this->mainKKEditClass->mainNotebook->currentIndex();
+	pd.what=DOCONTEXTMENU;
+	this->mainKKEditClass->runAllPlugs(pd);
+
+//	for(int j=0;j<this->mainKKEditClass->plugins.count();j++)
+//		{
+//			if((this->mainKKEditClass->plugins[j].loaded) && ((this->mainKKEditClass->plugins[j].wants & DOCONTEXTMENU)==DOCONTEXTMENU))
+//				{
+//					plugData	pd;
+//					pd.menu=&menu;
+//					pd.doc=this;
+//					pd.tabNumber=this->mainKKEditClass->mainNotebook->currentIndex();
+//					pd.what=DOCONTEXTMENU;
+//					this->mainKKEditClass->plugins[j].instance->plugRun(&pd);
+//				}
+//		}
 
 	menu.setStyleSheet("QMenu { menu-scrollable: true ;}");
 	menu.exec(event->globalPos());
@@ -741,6 +748,7 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 			this->setTextCursor(cursor);
 		}
 }
+
 
 
 

@@ -54,7 +54,7 @@ enum {SPELLCHECKMENUITEM=0x2000,APPLYWORDBUTTON,IGNOREWORDBUTTON,ADDWORDBUTTON,C
 
 struct tabMenuStruct
 {
-	unsigned int	what;
+	unsigned int		what;
 	const char		*label;
 	const char		*icon;
 };
@@ -98,6 +98,69 @@ struct pluginStruct
 	bool								loaded=false;
 	bool								statusChanged=false;
 	bool								broken=false;
+#ifdef _DEBUGCODE_
+	void				printIt(void)
+		{
+		//	qSetMessagePattern("[%{type}] %{appname} (%{file}:%{line}) - %{message}");
+			qDebug() << "pluginLoader" << pluginLoader;
+			qDebug() << "plugPath" << plugPath;
+			qDebug() << "plugName" << plugName;
+			qDebug() << "plugVersion" << plugVersion;
+			qDebug() << "instance" << instance;
+			qDebug() << "loaded" << loaded;
+			qDebug() << "statusChanged" << statusChanged;
+			qDebug() << "broken" << broken;
+
+			switch(wants)
+				{
+					case DONONE:
+						qDebug() << "wants DONONE";
+						break;
+					case DOSAVE:
+						qDebug() << "wants DOSAVE";
+						break;
+					case DOLOAD:
+						qDebug() << "wants DOLOAD";
+						break;
+					case DOCLOSE:
+						qDebug() << "wants DOCLOSE";
+						break;
+					case DORESSESSION:
+						qDebug() << "wants DORESSESSION";
+						break;
+					case DOSAVESESSION:
+						qDebug() << "wants DOSAVESESSION";
+						break;
+					case DOCONTEXTMENU:
+						qDebug() << "wants DOCONTEXTMENU";
+						break;
+					case DOTABPOPUP:
+						qDebug() << "wants DOTABPOPUP";
+						break;
+					case DOSETSENSITVE:
+						qDebug() << "wants DOSETSENSITVE";
+						break;
+					case DOSWITCHPAGE:
+						qDebug() << "wants DOSWITCHPAGE";
+						break;
+					case DONEWDOCUMENT:
+						qDebug() << "wants DONEWDOCUMENT";
+						break;
+					case DOSHUTDOWN:
+						qDebug() << "wants DOSHUTDOWN";
+						break;
+					case DOABOUT:
+						qDebug() << "wants DOABOUT";
+						break;
+					case DOSETTINGS:
+						qDebug() << "wants DOSETTINGS";
+						break;
+					default://qDebug("My hex number is: %x", hexnum);
+						qDebug() << "wants" << Qt::bin << Qt::showbase << wants;
+				}
+			qDebug()<<"";
+		};
+#endif
 };
 
 class KKEditClass : public QObject
@@ -450,6 +513,7 @@ class KKEditClass : public QObject
 		bool							unloadPlug(pluginStruct *ps);
 		void							loadPlugins(void);
 		void							buildPlugPrefs(void);
+		void							runAllPlugs(plugData pd);
 
 	public slots:
 		void							debugSignalSlot(int);
@@ -502,6 +566,10 @@ class KKEditClass : public QObject
 };
 
 #endif
+
+
+
+
 
 
 

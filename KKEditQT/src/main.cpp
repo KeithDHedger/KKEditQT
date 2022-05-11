@@ -37,11 +37,13 @@ KKEditClass				*kkedit;
 
 int main (int argc, char **argv)
 {
-	int					status;
+	int				status;
 	bool				safeflag=false;
 	bool				retval=false;
 	QDir				commsDir;
 	QApplication		app(argc,argv);
+	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");
+    QSplashScreen	splash(pixmap,Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
 
 	app.setStyleSheet("QMenu { menu-scrollable: true ;}");
 	app.setOrganizationName("KDHedger");
@@ -72,13 +74,13 @@ int main (int argc, char **argv)
 		kkedit->sessionID=kkedit->parser.value("key").toInt(nullptr,0);
 
 	SingleInstanceClass siapp(&app,kkedit->sessionID,kkedit->parser.isSet("multi"));
-
 	if(siapp.getRunning()==true)
 		{
 			kkedit->runCLICommands(siapp.queueID);
 			return(0);
 		}
 
+	splash.show();
 	kkedit->queueID=siapp.queueID;
 	kkedit->forcedMultInst=kkedit->parser.isSet("multi");
 	kkedit->currentWorkSpace=siapp.workspace;
@@ -88,21 +90,13 @@ int main (int argc, char **argv)
 	kkedit->initApp(argc,argv);
 //test plugs
 #if 0
+#ifdef _DEBUGCODE_
+	//qSetMessagePattern("[%{type}] %{appname} (%{file}->%{function}->%{line}) - %{message}");
 	for(int j=0;j<kkedit->plugins.count();j++)
-		{
-			qDebug()<<kkedit->plugins[j].plugName;
-			qDebug()<<kkedit->plugins[j].plugVersion;
-			qDebug()<<kkedit->plugins[j].plugPath;
-			qDebug()<<kkedit->plugins[j].wants;
-			qDebug()<<kkedit->plugins[j].loaded;
-			if(kkedit->plugins[j].plugName.compare("Example Plugin")==0)
-				{
-					kkedit->plugins[j].instance->unloadPlug();
-					kkedit->plugins[j].pluginLoader->unload();
-					kkedit->plugins[j].loaded=false;
-				}
-		}
+		kkedit->plugins[j].printIt();
 #endif
+#endif
+
 	kkedit->runCLICommands(kkedit->queueID);
 
 	kkedit->setToolbarSensitive();
@@ -112,10 +106,15 @@ int main (int argc, char **argv)
 	else
 		app.setWindowIcon(QIcon(DATADIR"/pixmaps/KKEditRoot.png"));
 
+	splash.finish(kkedit->mainWindow);
+
 	status=app.exec();
 
 	delete kkedit;
 	return status;
 }
+
+
+
 
 

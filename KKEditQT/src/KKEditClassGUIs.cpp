@@ -1469,6 +1469,7 @@ void KKEditClass::buildPlugPrefs(void)
 								}
 						}
 				}
+			this->writeExitData();
 			this->pluginPrefsWindow->hide();
 		});
 	dochlayout->addWidget(btn);
@@ -1567,6 +1568,7 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
+
 
 
 

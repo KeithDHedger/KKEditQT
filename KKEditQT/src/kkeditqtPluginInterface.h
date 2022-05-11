@@ -40,25 +40,91 @@
 //hide side
 //show hide top
 
-class KKEditClass;
+struct plugData;
 
 #include "kkedit-includes.h"
 
 struct plugData
 {
+	QString			plugName;
+	QString			plugPath;
+	QString			plugVersion;
 	QMenu			*menu=NULL;
 	DocumentClass	*doc=NULL;//can only use parent functions ( QPlainTextEdit ).
 	int				tabNumber=-1;
-	bool			enabled=true;
+	bool				enabled=true;
 	int				userIntData1=-1;
 	int				userIntData2=-1;
 	int				userIntData3=-1;
 	QString			userStrData1;
 	QString			userStrData2;
 	QString			userStrData3;
-	unsigned int	what=DONONE;
-};
+	unsigned int		what=DONONE;
+#ifdef _DEBUGCODE_
+	void				printIt(void)
+		{
+			qDebug() << "plugName" << plugName;
+			qDebug() << "plugPath" << plugPath;
+			qDebug() << "plugVersion" << plugVersion;
+			qDebug() << "menu" << menu;
+			qDebug() << "doc" << doc;
+			qDebug() << "tabNumber" << tabNumber;
+			qDebug() << "enabled" << enabled;
+			qDebug() << "userIntData1" << userIntData1;
+			qDebug() << "userIntData2" << userIntData2;
+			qDebug() << "userIntData3" << userIntData3;
+			qDebug() << "userStrData1" << userStrData1;
+			qDebug() << "userStrData2" << userStrData2;
+			qDebug() << "userStrData3" << userStrData3;
 
+			switch(what)
+				{
+					case DONONE:
+						qDebug() << "what DONONE";
+						break;
+					case DOSAVE:
+						qDebug() << "what DOSAVE";
+						break;
+					case DOLOAD:
+						qDebug() << "what DOLOAD";
+						break;
+					case DOCLOSE:
+						qDebug() << "what DOCLOSE";
+						break;
+					case DORESSESSION:
+						qDebug() << "what DORESSESSION";
+						break;
+					case DOSAVESESSION:
+						qDebug() << "what DOSAVESESSION";
+						break;
+					case DOCONTEXTMENU:
+						qDebug() << "what DOCONTEXTMENU";
+						break;
+					case DOTABPOPUP:
+						qDebug() << "what DOTABPOPUP";
+						break;
+					case DOSETSENSITVE:
+						qDebug() << "what DOSETSENSITVE";
+						break;
+					case DOSWITCHPAGE:
+						qDebug() << "what DOSWITCHPAGE";
+						break;
+					case DONEWDOCUMENT:
+						qDebug() << "what DONEWDOCUMENT";
+						break;
+					case DOSHUTDOWN:
+						qDebug() << "what DOSHUTDOWN";
+						break;
+					case DOABOUT:
+						qDebug() << "what DOABOUT";
+						break;
+					case DOSETTINGS:
+						qDebug() << "what DOSETTINGS";
+						break;
+				}
+		};
+#endif
+};
 
 class kkEditQTPluginInterface
 {
@@ -81,3 +147,7 @@ Q_DECLARE_INTERFACE(kkEditQTPluginInterface, kkEditQTPluginInterface_iid)
 QT_END_NAMESPACE
 
 #endif
+
+
+
+

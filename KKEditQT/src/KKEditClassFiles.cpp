@@ -72,7 +72,8 @@ void KKEditClass::newFile(const QString data,const QString filename)
 {
 	DocumentClass	*doc;
 	int				tabnum;
-	bool			holdsb=this->sessionBusy;
+	bool				holdsb=this->sessionBusy;
+	plugData			pd;
 
 	this->sessionBusy=true;
 	doc=new DocumentClass(this);
@@ -96,17 +97,21 @@ void KKEditClass::newFile(const QString data,const QString filename)
 	this->sessionBusy=holdsb;
 	this->setToolbarSensitive();
 //plugins
-	for(int j=0;j<this->plugins.count();j++)
-		{
-			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DONEWDOCUMENT)==DONEWDOCUMENT))
-				{
-					plugData	pd;
-					pd.doc=doc;
-					pd.tabNumber=this->mainNotebook->currentIndex();
-					pd.what=DONEWDOCUMENT;
-					this->plugins[j].instance->plugRun(&pd);
-				}
-		}
+//	for(int j=0;j<this->plugins.count();j++)
+//		{
+//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DONEWDOCUMENT)==DONEWDOCUMENT))
+//				{
+//					plugData	pd;
+//					pd.doc=doc;
+//					pd.tabNumber=this->mainNotebook->currentIndex();
+//					pd.what=DONEWDOCUMENT;
+//					this->plugins[j].instance->plugRun(&pd);
+//				}
+//		}
+	pd.doc=doc;
+	pd.tabNumber=this->mainNotebook->currentIndex();
+	pd.what=DONEWDOCUMENT;
+	this->runAllPlugs(pd);
 
 }
 
@@ -174,7 +179,8 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 	DocumentClass	*doc=this->getDocumentForTab(tabnum);
 	QFile			file;
 	QFileInfo		fileinfo;
-	bool			retval=false;
+	bool				retval=false;
+	plugData			pd;
 
 	if(doc==NULL)
 		return(false);
@@ -221,17 +227,22 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 				}
 		}
 //plugins
-	for(int j=0;j<this->plugins.count();j++)
-		{
-			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSAVE)==DOSAVE))
-				{
-					plugData	pd;
-					pd.doc=doc;
-					pd.tabNumber=this->mainNotebook->currentIndex();
-					pd.what=DOSAVE;
-					this->plugins[j].instance->plugRun(&pd);
-				}
-		}
+	pd.doc=doc;
+	pd.tabNumber=this->mainNotebook->currentIndex();
+	pd.what=DOSAVE;
+	this->runAllPlugs(pd);
+
+//	for(int j=0;j<this->plugins.count();j++)
+//		{
+//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSAVE)==DOSAVE))
+//				{
+//					plugData	pd;
+//					pd.doc=doc;
+//					pd.tabNumber=this->mainNotebook->currentIndex();
+//					pd.what=DOSAVE;
+//					this->plugins[j].instance->plugRun(&pd);
+//				}
+//		}
 
 	return true;
 }
@@ -298,6 +309,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	QMimeDatabase	db;
 	QMimeType		type;
 	QString			content;
+	plugData			pd;
 
 	if((this->prefsNoOpenduplicate==true) && (this->checkForOpenFile(filepath)==true))
 		return(true);
@@ -331,6 +343,11 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 				this->recentFiles->addFilePath(doc->getFilePath());
 			doc->setFilePrefs();
 		}
+	else
+		{
+			qDebug()<<"File not found ...";
+			return(false);
+		}
 
 	this->rebuildTabsMenu();
 	doc->dirty=false;
@@ -343,17 +360,22 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 		this->setCompWordList();
 
 //plugins
-	for(int j=0;j<this->plugins.count();j++)
-		{
-			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOLOAD)==DOLOAD))
-				{
-					plugData	pd;
-					pd.doc=doc;
-					pd.tabNumber=this->mainNotebook->currentIndex();
-					pd.what=DOLOAD;
-					this->plugins[j].instance->plugRun(&pd);
-				}
-		}
+	pd.doc=doc;
+	pd.tabNumber=this->mainNotebook->currentIndex();
+	pd.what=DOLOAD;
+	this->runAllPlugs(pd);
+
+//	for(int j=0;j<this->plugins.count();j++)
+//		{
+//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOLOAD)==DOLOAD))
+//				{
+//					plugData	pd;
+//					pd.doc=doc;
+//					pd.tabNumber=this->mainNotebook->currentIndex();
+//					pd.what=DOLOAD;
+//					this->plugins[j].instance->plugRun(&pd);
+//				}
+//		}
 
 	return(retval);
 }
@@ -389,6 +411,8 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
+
 
 
 

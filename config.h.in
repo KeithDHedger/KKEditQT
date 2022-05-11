@@ -29,3 +29,6 @@
 
 /* Build doc viewer */
 #undef _BUILDDOCVIEWER_
+
+/* Debug code */
+#undef _DEBUGCODE_

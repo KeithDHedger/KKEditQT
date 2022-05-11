@@ -82,17 +82,13 @@ enum msgActions {ACTIVATEAPPMSG=100,OPENFILEMSG,SAVEFILEMSG,QUITAPPMSG,RESTORESE
 
 #define KKEDITFOLDER	".KKEditQT"
 
-#define	POLEPATH		PREFIX "/bin/KKEditProgressBarQT"
+#define	POLEPATH PREFIX "/bin/KKEditProgressBarQT"
 #define CUSTOMWORDFILE ".KKEditQT/customcompletions"
 
-#define NUMSHORTCUTS	14
+#define NUMSHORTCUTS 14
 
-enum {PIXBUF_COLUMN,TEXT_COLUMN,BUTTON_NUM};
-
-enum  utilVarType {BOOLVAR=0,INTVAR,CHARVAR,MULTVAR,BADTYPE,DECIMALOUT,HEXOUT,OCTALOUT};
-
-#define GLOBALPLUGS			1
-#define LOCALPLUGS			0
+#define GLOBALPLUGS 1
+#define LOCALPLUGS 0
 
 #define NEWMENUNAME "newmenu"
 #define OPENMENUNAME "openmenu"
@@ -187,15 +183,6 @@ enum toolEnums {TOOL_ALWAYS_IN_POPUP=0,TOOL_CLEAR_VIEW,TOOL_COMMAND,TOOL_COMMENT
 
 #define MAXSESSIONS 24
 
-struct args
-{
-	const char*	name;
-	int			type;
-	void*		data;
-};
-
-enum {TYPEINT=1,TYPESTRING,TYPEBOOL,TYPELIST};
-
 class KKEditClass;
 class DocumentClass;
 
@@ -209,10 +196,11 @@ struct bookMarkStruct
 	int					bmKey;
 };
 
-
 #include "KKEditClass.h"
 
 #endif
+
+
 
 
 

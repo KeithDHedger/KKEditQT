@@ -1,4 +1,8 @@
 0.7.0
+Fixed hang in recent files if file unavailable.
+Clicking 'Apply' in plugin pefs now updates prefs file immediately.
+Added splash screen.
+Added --debugcode option to configure.
 Fixed spurious setting document dirty.
 Recent files now use full filepath.
 Fixed open from here in tab context menu.
@@ -824,6 +828,8 @@ Updated Help file.
 
 0.0.4
 1st release
+
+
 
 
 

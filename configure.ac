@@ -74,6 +74,16 @@ if test $MANPAGEEDITOR = false; then
 	AC_MSG_NOTICE([https://github.com/KeithDHedger/ManPageEditor])
 fi
 
+AC_MSG_CHECKING(whether to enable debug code)
+AC_ARG_ENABLE(debugcode,AS_HELP_STRING([--enable-debugcode],[Debug code]),
+    [enable_debugcode=$enableval],
+    [enable_debugcode="no"])
+AC_MSG_RESULT($enable_debugcode)
+if test "$enable_debugcode" = "yes"; then
+	AC_DEFINE([_DEBUGCODE_], [], [Debug code])
+fi
+
 AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile)
 AC_OUTPUT
+
 

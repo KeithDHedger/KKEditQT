@@ -196,6 +196,7 @@ void KKEditClass::setUpToolBar(void)
 void KKEditClass::switchPage(int index)
 {
 	DocumentClass	*doc=NULL;
+	plugData			pd;
 
 	if(this->sessionBusy==true)
 		return;
@@ -216,18 +217,24 @@ void KKEditClass::switchPage(int index)
 	this->currentFilename=doc->getFileName();
 
 //plugins
-	for(int j=0;j<this->plugins.count();j++)
-		{
-			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSWITCHPAGE)==DOSWITCHPAGE))
-				{
-					plugData	pd;
-					pd.doc=doc;
-					pd.tabNumber=this->mainNotebook->currentIndex();
-					pd.userIntData1=index;
-					pd.what=DOSWITCHPAGE;
-					this->plugins[j].instance->plugRun(&pd);
-				}
-		}
+	pd.doc=doc;
+	pd.tabNumber=this->mainNotebook->currentIndex();
+	pd.userIntData1=index;
+	pd.what=DOSWITCHPAGE;
+	this->runAllPlugs(pd);
+
+//	for(int j=0;j<this->plugins.count();j++)
+//		{
+//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSWITCHPAGE)==DOSWITCHPAGE))
+//				{
+//					plugData	pd;
+//					pd.doc=doc;
+//					pd.tabNumber=this->mainNotebook->currentIndex();
+//					pd.userIntData1=index;
+//					pd.what=DOSWITCHPAGE;
+//					this->plugins[j].instance->plugRun(&pd);
+//				}
+//		}
 }
 
 void KKEditClass::rebuildBookMarkMenu()
@@ -616,6 +623,7 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 	int				srccnt=0;
 	QIcon			itemicon;
 	DocumentClass	*doc=this->getDocumentForTab(-1);
+	plugData			pd;
 
 	if(pt.isNull())
 		return;
@@ -694,17 +702,22 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 					QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doTabBarContextMenu()));
 				}
 //plugins
-			for(int j=0;j<this->plugins.count();j++)
-				{
-					if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOTABPOPUP)==DOTABPOPUP))
-						{
-							plugData	pd;
-							pd.menu=&menu;
-							pd.tabNumber=tabIndex;
-							pd.what=DOTABPOPUP;
-							this->plugins[j].instance->plugRun(&pd);
-						}
-				}
+			pd.menu=&menu;
+			pd.tabNumber=tabIndex;
+			pd.what=DOTABPOPUP;
+			this->runAllPlugs(pd);
+
+//			for(int j=0;j<this->plugins.count();j++)
+//				{
+//					if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOTABPOPUP)==DOTABPOPUP))
+//						{
+//							plugData	pd;
+//							pd.menu=&menu;
+//							pd.tabNumber=tabIndex;
+//							pd.what=DOTABPOPUP;
+//							this->plugins[j].instance->plugRun(&pd);
+//						}
+//				}
 			menu.exec(this->mainNotebook->mapToGlobal(pt));
 		}
 }
@@ -906,6 +919,7 @@ bool KKEditClass::closeTab(int index)
 	int				thispage=index;
 	QTextCursor		tc;
 	bool				thisislasttab=false;
+	plugData			pd;
 
 	this->sessionBusy=true;
 
@@ -920,17 +934,22 @@ bool KKEditClass::closeTab(int index)
 		}
 
 //plugins
-	for(int j=0;j<this->plugins.count();j++)
-		{
-			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOCLOSE)==DOCLOSE))
-				{
-					plugData	pd;
-					pd.doc=doc;
-					pd.tabNumber=thispage;
-					pd.what=DOCLOSE;
-					this->plugins[j].instance->plugRun(&pd);
-				}
-		}
+	pd.doc=doc;
+	pd.tabNumber=thispage;
+	pd.what=DOCLOSE;
+	this->runAllPlugs(pd);
+
+//	for(int j=0;j<this->plugins.count();j++)
+//		{
+//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOCLOSE)==DOCLOSE))
+//				{
+//					plugData	pd;
+//					pd.doc=doc;
+//					pd.tabNumber=thispage;
+//					pd.what=DOCLOSE;
+//					this->plugins[j].instance->plugRun(&pd);
+//				}
+//		}
 
 	doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(thispage));
 	if(doc!=0)
@@ -1028,6 +1047,7 @@ void KKEditClass::setToolbarSensitive(void)
 	bool			override;
 	bool			gotdoc=true;
 	bool			hasselection=false;
+	plugData		pd;
 
 	if(this->sessionBusy==true)
 		return;
@@ -1150,16 +1170,20 @@ void KKEditClass::setToolbarSensitive(void)
 				}
 		}
 //plugins
-	for(int j=0;j<this->plugins.count();j++)
-		{
-			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSETSENSITVE)==DOSETSENSITVE))
-				{
-					plugData	pd;
-					pd.tabNumber=this->mainNotebook->currentIndex();
-					pd.what=DOSETSENSITVE;
-					this->plugins[j].instance->plugRun(&pd);
-				}
-		}
+	pd.tabNumber=this->mainNotebook->currentIndex();
+	pd.what=DOSETSENSITVE;
+	this->runAllPlugs(pd);
+
+//	for(int j=0;j<this->plugins.count();j++)
+//		{
+//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSETSENSITVE)==DOSETSENSITVE))
+//				{
+//					plugData	pd;
+//					pd.tabNumber=this->mainNotebook->currentIndex();
+//					pd.what=DOSETSENSITVE;
+//					this->plugins[j].instance->plugRun(&pd);
+//				}
+//		}
 }
 
 void KKEditClass::debugSignalSlot(int what)
@@ -1420,12 +1444,22 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 }
 
 
-
-
-
-
-
-
+void KKEditClass::runAllPlugs(plugData pd)
+{
+	for(int j=0;j<this->plugins.count();j++)
+		{
+			if((this->plugins[j].loaded) && ((this->plugins[j].wants & pd.what)==pd.what))
+				{
+					pd.plugName=this->plugins[j].plugName;
+					pd.plugPath=this->plugins[j].plugPath;
+					pd.plugVersion=this->plugins[j].plugVersion;
+#ifdef _DEBUGCODE_
+					pd.printIt();
+#endif
+					this->plugins[j].instance->plugRun(&pd);
+				}
+		}
+}
 
 
 

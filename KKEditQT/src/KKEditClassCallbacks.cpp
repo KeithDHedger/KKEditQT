@@ -24,13 +24,15 @@ void KKEditClass::doSessionsMenuItems(void)
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
 	QFile			file;
-	bool			retval;
+	bool				retval;
 	DocumentClass	*doc;
 	bookMarkStruct	bm;
 	QString			sessionname;
 	QString			tempstr;
 	MenuItemClass	*menuItemSink;
-	unsigned int	sessionnumber;
+	unsigned int		sessionnumber;
+	plugData			pd;
+
 //this is crappy needs redoing
 	if(mc==NULL)
 		sessionnumber=0;
@@ -69,7 +71,7 @@ void KKEditClass::doSessionsMenuItems(void)
 							sessionname=tempstr;
 						}
 				}
-	
+
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
 				{
@@ -125,17 +127,21 @@ void KKEditClass::doSessionsMenuItems(void)
 						}
 					file.close();
 //plugins
-					for(int j=0;j<this->plugins.count();j++)
-						{
-							if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSAVESESSION)==DOSAVESESSION))
-								{
-									plugData	pd;
-									pd.userStrData1=sessionname;
-									pd.userIntData1=sessionnumber;
-									pd.what=DOSAVESESSION;
-									this->plugins[j].instance->plugRun(&pd);
-								}
-						}
+					pd.userStrData1=sessionname;
+					pd.userIntData1=sessionnumber;
+					pd.what=DOSAVESESSION;
+					this->runAllPlugs(pd);
+//					for(int j=0;j<this->plugins.count();j++)
+//						{
+//							if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSAVESESSION)==DOSAVESESSION))
+//								{
+//									plugData	pd;
+//									pd.userStrData1=sessionname;
+//									pd.userIntData1=sessionnumber;
+//									pd.what=DOSAVESESSION;
+//									this->plugins[j].instance->plugRun(&pd);
+//								}
+//						}
 				}
 			return;
 		}
@@ -203,17 +209,22 @@ void KKEditClass::doSessionsMenuItems(void)
 					this->runPipe(QString("echo quit>\"%1/session\"").arg(this->tmpFolderName));
 					this->mainWindow->setGeometry(x,y,w,h);
 //plugins
-					for(int j=0;j<this->plugins.count();j++)
-						{
-							if((this->plugins[j].loaded) && ((this->plugins[j].wants & DORESSESSION)==DORESSESSION))
-								{
-									plugData	pd;
-									pd.userStrData1=sessionname;
-									pd.userIntData1=sessionnumber;
-									pd.what=DORESSESSION;
-									this->plugins[j].instance->plugRun(&pd);
-								}
-						}
+					pd.userStrData1=sessionname;
+					pd.userIntData1=sessionnumber;
+					pd.what=DORESSESSION;
+					this->runAllPlugs(pd);
+
+//					for(int j=0;j<this->plugins.count();j++)
+//						{
+//							if((this->plugins[j].loaded) && ((this->plugins[j].wants & DORESSESSION)==DORESSESSION))
+//								{
+//									plugData	pd;
+//									pd.userStrData1=sessionname;
+//									pd.userIntData1=sessionnumber;
+//									pd.what=DORESSESSION;
+//									this->plugins[j].instance->plugRun(&pd);
+//								}
+//						}
 				}
 			for(int j=0;j<this->mainNotebook->count();j++)
 				{
@@ -1206,6 +1217,8 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
+
 
 
 
