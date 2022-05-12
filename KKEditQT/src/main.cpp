@@ -91,6 +91,8 @@ int main (int argc, char **argv)
 
 	kkedit->initApp(argc,argv);
 //test plugs
+//qSetMessagePattern("[%{type}] %{appname} (%{file}->%{function}->%{line}) - %{message}");
+// QT_MESSAGE_PATTERN="[%{type}] %{appname} (%{file}->%{function}->%{line}) - %{message}"  ...
 #if 0
 #ifdef _DEBUGCODE_
 	//qSetMessagePattern("[%{type}] %{appname} (%{file}->%{function}->%{line}) - %{message}");
@@ -115,6 +117,7 @@ int main (int argc, char **argv)
 	delete kkedit;
 	return status;
 }
+
 
 
 

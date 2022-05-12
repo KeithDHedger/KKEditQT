@@ -704,6 +704,9 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 //plugins
 			pd.menu=&menu;
 			pd.tabNumber=tabIndex;
+			pd.userStrData1=this->homeDataFolder;
+			pd.userStrData2=this->getDocumentForTab(tabIndex)->getDirPath();
+			pd.userStrData3=this->getDocumentForTab(tabIndex)->getFileName();
 			pd.what=DOTABPOPUP;
 			this->runAllPlugs(pd);
 
@@ -1460,6 +1463,8 @@ void KKEditClass::runAllPlugs(plugData pd)
 				}
 		}
 }
+
+
 
 
 

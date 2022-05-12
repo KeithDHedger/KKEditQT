@@ -132,9 +132,10 @@ bool KKEditClass::saveFileAs(int tabnum)
 	DocumentClass	*doc=this->getDocumentForTab(tabnum);
 	QFile			file;
 	QFileInfo		fileinfo;
-	bool			retval=false;
+	bool				retval=false;
 	QString			dialogpath;
 	int				calctabnum=this->mainNotebook->indexOf(doc);
+	plugData			pd;
 
 	if(doc->getFilePath().isEmpty()==true)
 		dialogpath=getenv("HOME") + QString("/") + doc->getFileName();
@@ -149,6 +150,18 @@ bool KKEditClass::saveFileAs(int tabnum)
 		{
 			file.setFileName(fileName);
 			fileinfo.setFile(file);
+//			if(file.exists())
+//				{
+////plugins
+//					pd.doc=doc;
+//					pd.tabNumber=this->mainNotebook->currentIndex();
+//					pd.userStrData1=this->homeDataFolder;
+//					pd.userStrData2=fileinfo.canonicalPath();
+//					pd.userStrData3=fileinfo.fileName();
+//					pd.what=DOSAVE;
+//					this->runAllPlugs(pd);
+//				}
+
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
 				{
@@ -156,6 +169,16 @@ bool KKEditClass::saveFileAs(int tabnum)
 					doc->setFilePath(fileinfo.canonicalFilePath());
 					doc->setFileName(fileinfo.fileName());
 					this->mainNotebook->setTabToolTip(calctabnum,doc->getFilePath());
+//
+////plugins
+//					pd.doc=doc;
+//					pd.tabNumber=this->mainNotebook->currentIndex();
+//					pd.userStrData1=this->homeDataFolder;
+//					pd.userStrData2=doc->getDirPath();
+//					pd.userStrData3=doc->getFileName();
+//					pd.what=DOSAVE;
+//					this->runAllPlugs(pd);
+
 					QTextStream(&file) << doc->toPlainText() << Qt::endl;
 					doc->dirty=false;
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
@@ -210,9 +233,21 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 				return(true);
 			file.setFileName(doc->getFilePath());
 			fileinfo.setFile(file);
+			if(file.exists())
+				{
+//plugins
+					pd.doc=doc;
+					pd.tabNumber=this->mainNotebook->currentIndex();
+					pd.userStrData1=this->homeDataFolder;
+					pd.userStrData2=doc->getDirPath();
+					pd.userStrData3=doc->getFileName();
+					pd.what=DOSAVE;
+					this->runAllPlugs(pd);
+				}
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
 				{
+
 					QTextStream(&file) << doc->toPlainText() << Qt::endl;
 					doc->dirty=false;
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
@@ -226,11 +261,6 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 					delete msg;
 				}
 		}
-//plugins
-	pd.doc=doc;
-	pd.tabNumber=this->mainNotebook->currentIndex();
-	pd.what=DOSAVE;
-	this->runAllPlugs(pd);
 
 //	for(int j=0;j<this->plugins.count();j++)
 //		{
@@ -411,6 +441,8 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
+
 
 
 
