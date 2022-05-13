@@ -6,15 +6,20 @@ SOURCES         = htmllang.cpp
 TARGET          = $$qtLibraryTarget(htmllang)
 DESTDIR         = ../plugins
 
-# install
 equals(LOCAL,1) {
+	message(Installing in ~/.KKEditQT/plugins/htmllang)
 	target.path = ~/.KKEditQT/langplugins/htmllang
 }
 else {
-	target.path = /tmp/langplugins/htmllang
+	message(Installing in $$(INSTALLTO))
+	target.path = $$(INSTALLTO)/langplugins/htmllang
 }
 
+documentation.path = $${target.path}/docs
+
 INSTALLS += target
+INSTALLS += documentation
 
 CONFIG += install_ok
+
 

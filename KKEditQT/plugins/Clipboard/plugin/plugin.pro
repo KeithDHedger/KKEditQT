@@ -6,15 +6,25 @@ SOURCES         = Clipboard.cpp
 TARGET          = $$qtLibraryTarget(Clipboard)
 DESTDIR         = ../plugins
 
+documentation.files = docs/*
+destdir = $$(INSTALLTO)
+isEmpty(destdir) {
+	LOCAL = 1
+}
+
 equals(LOCAL,1) {
 	message(Installing in ~/.KKEditQT/plugins/Clipboard)
 	target.path = ~/.KKEditQT/plugins/Clipboard
 }
 else {
-	message(Installing in /tmp/plugins/Clipboard)
-	target.path = /tmp/plugins/Clipboard
+	message(Installing in $$(INSTALLTO))
+	target.path = $$(INSTALLTO)/plugins/Clipboard
 }
 
+documentation.path = $${target.path}/docs
+
 INSTALLS += target
+INSTALLS += documentation
 
 CONFIG += install_ok
+

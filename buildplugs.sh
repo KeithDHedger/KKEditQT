@@ -6,6 +6,9 @@ BUILDLANGPLUGS=${BUILDLANGPLUGS:-1}
 BUILDPLUGS=${BUILDPLUGS:-1}
 BUILDTOOLKITPLUGS=${BUILDTOOLKITPLUGS:-1}
 
+INSTALLTO="$2"
+export INSTALLTO
+
 if [[ "$1" = "clean" ]];then
 	find KKEditQT/languageplugins -type d -iname "build" -exec rm -rf '{}' \; &>/dev/null
 	find KKEditQT/plugins -type d -iname "build" -exec rm -rf '{}' \; &>/dev/null
@@ -32,9 +35,6 @@ if [ $BUILDLANGPLUGS -eq 1 ];then
 						make -j3 install
 					popd
 				done < <(find -maxdepth 2 -iname "*.pro")
-		mkdir -p "${2}/langplugins"
-		cp -rvp /tmp/langplugins/* "${2}/langplugins/"
-		rm -rf /tmp/langplugins/
 		fi
 	popd
 fi
@@ -58,9 +58,6 @@ if [ $BUILDPLUGS -eq 1 ];then
 						make -j3 install
 					popd
 				done < <(find -maxdepth 2 -iname "*.pro")
-		mkdir -p "${2}/plugins"
-		cp -rvp /tmp/plugins/* "${2}/plugins/"
-		rm -rf /tmp/plugins/
 		fi
 	popd
 fi
@@ -84,11 +81,10 @@ if [ $BUILDTOOLKITPLUGS -eq 1 ];then
 						make -j3 install
 					popd
 				done < <(find -maxdepth 2 -iname "*.pro")
-		mkdir -p "${2}/toolkitplugins"
-		cp -rvp /tmp/toolkitplugins/* "${2}/toolkitplugins/"
-		rm -rf /tmp/toolkitplugins/
 		fi
 	popd
 fi
+
+
 
 

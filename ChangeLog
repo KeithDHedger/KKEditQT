@@ -1,3 +1,8 @@
+0.7.1
+Redone plugin build system.
+Redone plugin .pro files.
+Added simple help to SaveHistory plug.
+
 0.7.0
 Added SaveHistory plugin.
 Language plugin tweaks.
@@ -831,6 +836,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 

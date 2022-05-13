@@ -6,15 +6,20 @@ SOURCES         = makelang.cpp
 TARGET          = $$qtLibraryTarget(makelang)
 DESTDIR         = ../plugins
 
-# install
 equals(LOCAL,1) {
+	message(Installing in ~/.KKEditQT/plugins/makelang)
 	target.path = ~/.KKEditQT/langplugins/makelang
 }
 else {
-	target.path = /tmp/langplugins/makelang
+	message(Installing in $$(INSTALLTO))
+	target.path = $$(INSTALLTO)/langplugins/makelang
 }
 
+documentation.path = $${target.path}/docs
+
 INSTALLS += target
+INSTALLS += documentation
 
 CONFIG += install_ok
+
 

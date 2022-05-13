@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([KKEditQT],[0.7.0],[PROJ],[KKEditQT])
+AC_INIT([KKEditQT],[0.7.1],[PROJ],[KKEditQT])
 
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_CXX
@@ -85,5 +85,6 @@ fi
 
 AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile)
 AC_OUTPUT
+
 
 

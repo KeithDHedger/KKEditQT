@@ -6,15 +6,20 @@ SOURCES         = pythonlang.cpp
 TARGET          = $$qtLibraryTarget(pythonlang)
 DESTDIR         = ../plugins
 
-# install
 equals(LOCAL,1) {
+	message(Installing in ~/.KKEditQT/plugins/pythonlang)
 	target.path = ~/.KKEditQT/langplugins/pythonlang
 }
 else {
-	target.path = /tmp/langplugins/pythonlang
+	message(Installing in $$(INSTALLTO))
+	target.path = $$(INSTALLTO)/langplugins/pythonlang
 }
 
+documentation.path = $${target.path}/docs
+
 INSTALLS += target
+INSTALLS += documentation
 
 CONFIG += install_ok
+
 

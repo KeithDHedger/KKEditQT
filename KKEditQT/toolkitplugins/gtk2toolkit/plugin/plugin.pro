@@ -6,18 +6,19 @@ SOURCES         = gtk2toolkit.cpp
 TARGET          = $$qtLibraryTarget(gtk2toolkit)
 DESTDIR         = ../plugins
 
-# install
 equals(LOCAL,1) {
-	target.path = ~/.KKEditQT/toolkitplugins/gtk2toolkit
+	message(Installing in ~/.KKEditQT/plugins/gtk2toolkitg)
+	target.path = ~/.KKEditQT/toolkitplugins/gtk2toolkitg
 }
 else {
-	target.path = /tmp/toolkitplugins/gtk2toolkit
+	message(Installing in $$(INSTALLTO))
+	target.path = $$(INSTALLTO)/toolkitplugins/gtk2toolkitg
 }
 
+documentation.path = $${target.path}/docs
+
 INSTALLS += target
+INSTALLS += documentation
 
 CONFIG += install_ok
-
-
-
 

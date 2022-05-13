@@ -6,15 +6,20 @@ SOURCES         = phplang.cpp
 TARGET          = $$qtLibraryTarget(phplang)
 DESTDIR         = ../plugins
 
-# install
 equals(LOCAL,1) {
+	message(Installing in ~/.KKEditQT/plugins/phplang)
 	target.path = ~/.KKEditQT/langplugins/phplang
 }
 else {
-	target.path = /tmp/langplugins/phplang
+	message(Installing in $$(INSTALLTO))
+	target.path = $$(INSTALLTO)/langplugins/phplang
 }
 
+documentation.path = $${target.path}/docs
+
 INSTALLS += target
+INSTALLS += documentation
 
 CONFIG += install_ok
+
 

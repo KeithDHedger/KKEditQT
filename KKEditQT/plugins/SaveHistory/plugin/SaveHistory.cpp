@@ -45,8 +45,8 @@ void SaveHistory::plugRun(plugData *data)
 {
 	if(data->what==DOTABPOPUP)
 		{
-			data->menu->addAction(this->saveHistoryMenuitem);
 			data->menu->addAction(this->openHistoryMenuitem);
+			data->menu->addAction(this->saveHistoryMenuitem);
 			this->homeDataFolder=data->userStrData1;
 			this->docDir=data->userStrData2;
 			this->docName=data->userStrData3;
@@ -56,42 +56,61 @@ void SaveHistory::plugRun(plugData *data)
 		{
 			QDir			todir;
 			QDateTime	dt(QDateTime::currentDateTime());
-			QString		command;
 
 			todir.mkpath(data->userStrData1+"/SaveFilesHistory"+data->userStrData2+"/"+data->userStrData3);
-			command="cp '"+data->userStrData2+"/"+data->userStrData3+"' '"+data->userStrData1+"/SaveFilesHistory"+data->userStrData2+"/"+data->userStrData3+"/"+data->userStrData3+"-"+dt.toString("yyyy.MM.dd-hh.mm.ss.z")+"' 2>/dev/null";
-			system(command.toStdString().c_str());
+			QStringList args;
+			args<<data->userStrData2+"/"+data->userStrData3;
+			args<<data->userStrData1+"/SaveFilesHistory"+data->userStrData2+"/"+data->userStrData3+"/"+data->userStrData3+"-"+dt.toString("yyyy.MM.dd-hh.mm.ss.z");
+			QProcess::execute("cp",args);
 		}
 }
 
 void SaveHistory::clearHistory(void)
 {
-	QString	command;
-	QDir		todir;
+	QDir			todir;
+	QStringList	args;
 
-	command="rm -rf '"+this->homeDataFolder+"/SaveFilesHistory"+this->docDir+"/"+this->docName+"' 2>/dev/null";
-	system(command.toStdString().c_str());
+	args<<"-rf";
+	args<<this->homeDataFolder+"/SaveFilesHistory"+this->docDir+"/"+this->docName;
+	QProcess::execute("rm",args);
 	todir.rmpath(this->homeDataFolder+"/SaveFilesHistory"+this->docDir);
 }
 
 void SaveHistory::openHistoryFolder(void)
 {
-	QString	command;
+	QStringList args;
 
-	command="xdg-open '"+this->homeDataFolder+"/SaveFilesHistory"+this->docDir+"/"+this->docName+"' 2>/dev/null";
-	system(command.toStdString().c_str());
+	args<<this->homeDataFolder+"/SaveFilesHistory"+this->docDir+"/"+this->docName;
+	QProcess::startDetached("xdg-open",args);
 }
 
 void SaveHistory::plugAbout(void)
 {
 	QMessageBox msgBox;
+	QFileInfo	fileinfo(this->plugPath);
+	QString		txt="Save History Plugin\n\n©K.D.Hedger 2022\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
 
-	QString txt="Save History Plugin\n\n©K.D.Hedger 2022\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
 	msgBox.setText(txt);
 	msgBox.setIconPixmap(QPixmap("/usr/share/KKEditQT/pixmaps/KKEditQTPlug.png"));
 	msgBox.setWindowTitle("About Save History");
 	msgBox.setTextFormat(Qt::MarkdownText);
-	msgBox.exec();
+	msgBox.setStandardButtons(QMessageBox::Help|QMessageBox::Close);
+	int ret=msgBox.exec();
+	switch(ret)
+		{
+			case QMessageBox::Close:
+				break;
+			case QMessageBox::Help:
+				{
+					QStringList args;
+					args<<"-k";
+					args<<QString("%1").arg(this->mainKKEditClass->sessionID);
+					args<<"-c"<<"openindocview";
+					args<<"-d"<<"file:///"+fileinfo.canonicalPath()+"/docs/help.html";
+					QProcess::startDetached("kkeditqtmsg",args);
+				}
+				break;
+		}
 }
 
 unsigned int SaveHistory::plugWants(void)
@@ -106,7 +125,5 @@ void SaveHistory::unloadPlug(void)
 	delete this->saveHistoryMenuitem;
 	delete this->openHistoryMenuitem;
 }
-
-
 
 

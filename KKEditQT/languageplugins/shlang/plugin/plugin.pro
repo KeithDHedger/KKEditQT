@@ -6,15 +6,20 @@ SOURCES         = shlang.cpp
 TARGET          = $$qtLibraryTarget(shlang)
 DESTDIR         = ../plugins
 
-# install
 equals(LOCAL,1) {
+	message(Installing in ~/.KKEditQT/plugins/shlang)
 	target.path = ~/.KKEditQT/langplugins/shlang
 }
 else {
-	target.path = /tmp/langplugins/shlang
+	message(Installing in $$(INSTALLTO))
+	target.path = $$(INSTALLTO)/langplugins/shlang
 }
 
+documentation.path = $${target.path}/docs
+
 INSTALLS += target
+INSTALLS += documentation
 
 CONFIG += install_ok
+
 
