@@ -1133,7 +1133,20 @@ void KKEditClass::rebuildTabsMenu(void)
 			this->selectTabMenu->addAction(menuitem);
 			QObject::connect(menuitem,&QAction::triggered,[this,j]()
 				{
-					this->setTabVisibilty(j,true);
+					Qt::KeyboardModifiers key=QGuiApplication::keyboardModifiers();
+					int cur=this->mainNotebook->currentIndex();
+					if((key==Qt::ShiftModifier) && (cur!=j))
+						{
+							int adj=1;
+							if(j<cur)
+								adj=0;
+							this->mainNotebook->tabBar()->moveTab(j,cur+adj);
+							this->setTabVisibilty(cur+adj,true);
+						}
+					else
+						{
+							this->setTabVisibilty(j,true);
+						}
 				});
 		}
 }
@@ -1568,6 +1581,7 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
+
 
 
 
