@@ -301,15 +301,22 @@ void KKEditClass::newEditor(int what)
 	switch(what)
 		{
 			case NEWADMINEDMENUITEM:
-				command=QString("%1 kkeditqt -m 2>&1 >/dev/null &").arg(this->prefsRootCommand);
-				runPipe(command);
+				{
+					QStringList lst;
+					QStringList lst2;
+					lst=this->prefsRootCommand.simplified().split(" ");
+					for(int j=1;j<lst.count();j++)
+						lst2<<lst.at(j);
+					lst2<<"kkeditqt"<<"-m";
+					QProcess::startDetached(lst.at(0),lst2);
+				}
 				break;
 			case NEWEDMENUITEM:
-				system("/usr/bin/kkeditqt -m 2>&1 >/dev/null &");
+				QProcess::startDetached("kkeditqt",QStringList()<<"-m");
 				break;
 			case MANPAGEEDMENUITEM:
 				if(this->gotManEditor==0)
-					system("manpageeditor 2>&1 >/dev/null &");
+					QProcess::startDetached("manpageeditor",QStringList());
 				break;
 		}
 }
@@ -441,6 +448,7 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
 
 
 

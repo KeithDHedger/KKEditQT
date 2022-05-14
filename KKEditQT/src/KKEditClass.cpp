@@ -28,7 +28,7 @@ KKEditClass::KKEditClass(QApplication *app)
 
 KKEditClass::~KKEditClass()
 {
-	char*	command=NULL;
+	QDir	fold(this->tmpFolderName);
 
 	for(int j=0;j<NOMORESHORTCUT;j++)
 		delete this->appShortcuts[j];
@@ -43,9 +43,7 @@ KKEditClass::~KKEditClass()
 				}
 		}
 
-	asprintf(&command,"rm -rf %s",this->tmpFolderName.toStdString().c_str());
-	system(command);
-	if (command!=NULL) free(command);command=NULL;
+	fold.removeRecursively();
 }
 
 void KKEditClass::setUpToolBar(void)
@@ -319,11 +317,11 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 
 void KKEditClass::initApp(int argc,char** argv)
 {
-	char	tmpfoldertemplate[]="/tmp/KKEditQT-XXXXXX";
+	char		tmpfoldertemplate[]="/tmp/KKEditQT-XXXXXX";
 	int		exitstatus;
 	char*	filename;
 	QRect	r(0,0,1024,768);
-	QDir	tdir;
+	QDir		tdir;
 	QString	tstr;
 	QFile	file;
 
@@ -336,8 +334,8 @@ void KKEditClass::initApp(int argc,char** argv)
 	tdir.mkpath(this->sessionFolder);
 	for(int j=0;j<MAXSESSIONS;j++)
 		{
-			tstr=QString("touch '%1/Session-%2'").arg(this->sessionFolder).arg(j);
-			system(tstr.toStdString().c_str());
+			QProcess::execute("touch",QStringList()<<this->sessionFolder+"/Session-"+QString::number(j));
+
 			file.setFileName(QString("%1/Session-%2").arg(this->sessionFolder).arg(j));
 			if(file.open(QIODevice::Text | QIODevice::ReadOnly))
 				{
@@ -367,10 +365,8 @@ void KKEditClass::initApp(int argc,char** argv)
 
 	this->tmpFolderName=mkdtemp(tmpfoldertemplate);
 
-	exitstatus=system("which manpageeditor 2>&1 >/dev/null");
-	this->gotManEditor=WEXITSTATUS(exitstatus);
-	exitstatus=system("which doxygen 2>&1 >/dev/null");
-	this->gotDoxygen=WEXITSTATUS(exitstatus);
+	this->gotManEditor=QProcess::execute("which",QStringList()<<"manpageeditor");
+	this->gotDoxygen=QProcess::execute("which",QStringList()<<"doxygen");
 //	if(getuid()!=0)
 //		styleName="classic";
 //	else
@@ -856,7 +852,7 @@ void KKEditClass::buildDocs(void)
 	QDir::setCurrent(doc->getDirPath());
 	stat("Doxyfile",&sb);
 	if(!S_ISREG(sb.st_mode))
-		system("cp " DATADIR "/docs/Doxyfile .");
+		QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile .");
 
 	fileinfo=QString("%1/html/index.html").arg(doc->getDirPath());
 	fp=popen("doxygen Doxyfile","r");
@@ -868,7 +864,7 @@ void KKEditClass::buildDocs(void)
 	pclose(fp);
 
 	QString com=QString("/bin/echo '<meta http-equiv=\"refresh\" content=\"0; URL='file://%1'\" />' > %2").arg(fileinfo.absoluteFilePath()).arg(this->htmlFile);
-	system(com.toStdString().c_str());
+	QProcess::execute("/bin/sh",QStringList()<<"-c"<<com);
 
 	this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
 	this->runPipe(QString("echo quit>\"%1/progress\"").arg(this->tmpFolderName));
@@ -884,7 +880,7 @@ void KKEditClass::showDocs(void)
 	else
 		{
 			QString com=QString("/bin/echo '<meta http-equiv=\"refresh\" content=\"0; URL='file://%1'\" />' > %2").arg(fileinfo.absoluteFilePath()).arg(this->htmlFile);
-			system(com.toStdString().c_str());
+			QProcess::execute("/bin/sh",QStringList()<<"-c"<<com);
 			this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
 		}
 }
@@ -1463,6 +1459,8 @@ void KKEditClass::runAllPlugs(plugData pd)
 				}
 		}
 }
+
+
 
 
 

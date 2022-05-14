@@ -1,4 +1,8 @@
 0.7.1
+Excluded moc_* files from doxygen.
+Fixed opening root editor.
+Fixed opening manpageeditor.
+Removed 'system' calls.
 Redone plugin build system.
 Redone plugin .pro files.
 Added simple help to SaveHistory plug.
@@ -836,6 +840,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 
