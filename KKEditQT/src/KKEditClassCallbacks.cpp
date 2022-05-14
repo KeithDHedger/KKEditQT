@@ -275,6 +275,13 @@ void KKEditClass::doToolsMenuItems()
 						QString str=sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed();
 						if(document!=NULL)
 							{
+								QString filelist;
+								for(int j=0;j<this->pages.count();j++)
+									{
+										if(this->pages[j]!=NULL)
+											filelist+=this->pages[j]->getFilePath()+";";
+									}
+								setenv("KKEDIT_FILE_LIST",filelist.toStdString().c_str(),1);
 								//%d doc folder
 								setenv("KKEDIT_CURRENTDIR",document->getDirPath().toStdString().c_str(),1);
 								str.replace("%d",document->getDirPath());
@@ -1196,6 +1203,7 @@ void KKEditClass::doOddButtons(void)
 				break;
 		}
 }
+
 
 
 

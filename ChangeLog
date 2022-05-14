@@ -1,4 +1,5 @@
 0.7.1
+Fixed setting KKEDIT_FILE_LIST env var for tool.
 Excluded moc_* files from doxygen.
 Fixed opening root editor.
 Fixed opening manpageeditor.
@@ -840,6 +841,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 
