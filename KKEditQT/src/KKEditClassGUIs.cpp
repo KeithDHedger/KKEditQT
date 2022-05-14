@@ -1281,6 +1281,12 @@ void KKEditClass::buildDocViewer(void)
 			this->currentURL=url.toString();
 		});
 
+	QObject::connect(this->webView,&QWebView::linkClicked,[this](const QUrl url)
+		{
+			//this->currentURL=url.toString();
+			qDebug()<<url.toString();
+		});
+
 	docvlayout->addWidget(this->webView);
 
 	button=new QPushButton(QIcon::fromTheme("go-previous"),"Back");
