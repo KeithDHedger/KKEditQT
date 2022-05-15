@@ -352,3 +352,4 @@ void Highlighter::setTheme(QString themename)
 
 
 
+

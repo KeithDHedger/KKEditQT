@@ -1,4 +1,5 @@
 0.7.1
+Done documentaion interaction ( hold 'CTRL' while clicking ( some! )links in built documentation ).
 Fixed holding 'SHIFT' when selecting tab from edit menu to move tab next to current tab.
 Fixed setting KKEDIT_FILE_LIST env var for tool.
 Excluded moc_* files from doxygen.
@@ -842,6 +843,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 

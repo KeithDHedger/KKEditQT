@@ -349,7 +349,11 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	plugData			pd;
 
 	if((this->prefsNoOpenduplicate==true) && (this->checkForOpenFile(filepath)==true))
-		return(true);
+		{
+			if(linenumber>0)
+				this->gotoLine(linenumber);
+			return(true);
+		}
 
 	retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
 	if(retval==true)
@@ -448,6 +452,7 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
 
 
 
