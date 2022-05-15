@@ -1293,9 +1293,9 @@ void KKEditClass::buildDocViewer(void)
 					int		linenum=0;
 
 					str.remove(QRegularExpression("file:\\/\\/"));
+					str.remove("_source.html");
 					str.remove(QRegularExpression("\\/html"));
 					str.remove(QRegularExpression("\\.html$"));
-					str.remove("_source.html");
 					str=this->runPipeAndCapture(QString("echo '%1'|sed 's/__/@##@/g;s/_\\([[:alpha:]]\\)/\\U\\1/g;s/@##@/_/g'").arg(str));
 					str.replace("_8",".");
 					linenum=QRegularExpression("#l([[:digit:]]*)").match(str).captured(1).toInt();
@@ -1605,6 +1605,7 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
+
 
 
 
