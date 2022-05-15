@@ -34,8 +34,8 @@ I now consider this version to be fully functional ( if not fully featured ).<br
 TODO ( in no particular order ):
 
 Global tools ( Minor )<br>
-Interaction with built document ( Major )<br>
 Scripting ( Major, mostly done )<br>
 
+Documentation :(<br>
 
 
