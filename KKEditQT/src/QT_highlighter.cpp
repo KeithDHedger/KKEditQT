@@ -138,65 +138,6 @@ void Highlighter::highlightBlock(const QString &text)
 				setFormat(startIndex-offset,commentLength+offset,this->multiLineCommentStart.format);
 			startIndex=text.indexOf(startExpression,startIndex + commentLength);
 		}
-
-//setCurrentBlockState(0);
-return;
-
-startIndex=0;
-	QRegularExpression	sexp(QRegularExpression("#if 0"));
-	QRegularExpression	eexp(QRegularExpression("(#else|#endif)"));
-	QTextCharFormat		form;
-	form.setForeground(QColor("ff0000"));
-	form.setFontWeight(0);
-	form.setFontItalic(true);
-/*
-	QColor				colour;
-	int					weight;
-	bool					italic;
-
-*/
-	//setCurrentBlockState(0);
-
-	//int		offset=0;
-	//bool		addoffset=false;
-
-	//if(sexp.pattern().compare(exp.pattern())==0)//fix for start/stop patterns the same ( a la bloody awaful python )
-	//	offset=sexp.pattern().length();
-
-	if(previousBlockState()!=1)
-		{
-			startIndex=text.indexOf(sexp);
-//			if(startIndex!=-1)
-//				{
-//					//addoffset=true;
-//					startIndex+=offset;
-//				}
-		}
-
-	while(startIndex>=0)
-		{
-			QRegularExpressionMatch endMatch;
-			int endIndex=text.indexOf(eexp,startIndex,&endMatch);
-			int commentLength;
-			if(endIndex==-1)
-				{
-					setCurrentBlockState(1);
-					commentLength=text.length()-startIndex;
-				}
-			else
-				{
-					commentLength=endIndex-startIndex+endMatch.capturedLength();
-				}
-
-			setFormat(startIndex,commentLength,form);
-			startIndex=text.indexOf(sexp,startIndex + commentLength);
-		}
-
-
-
-
-
-
 }
 
 bool Highlighter::loadLangPlug(langPluginStruct *ps)
@@ -408,6 +349,7 @@ void Highlighter::setTheme(QString themename)
 
 	return;
 }
+
 
 
 
