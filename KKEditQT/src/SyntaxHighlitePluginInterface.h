@@ -29,7 +29,7 @@
 class SyntaxHighlitePluginInterface
 {
 	public:
-		virtual			~SyntaxHighlitePluginInterface()=default;
+		virtual		~SyntaxHighlitePluginInterface()=default;
 
 		virtual void	initPlug(QString pathtoplug)=0;
 		virtual void	unloadPlug(void)=0;
@@ -54,5 +54,6 @@ Q_DECLARE_INTERFACE(SyntaxHighlitePluginInterface, SyntaxHighlitePluginInterface
 QT_END_NAMESPACE
 
 #endif
+
 
 
