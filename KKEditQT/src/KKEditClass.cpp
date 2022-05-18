@@ -705,18 +705,6 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 			pd.userStrData3=this->getDocumentForTab(tabIndex)->getFileName();
 			pd.what=DOTABPOPUP;
 			this->runAllPlugs(pd);
-
-//			for(int j=0;j<this->plugins.count();j++)
-//				{
-//					if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOTABPOPUP)==DOTABPOPUP))
-//						{
-//							plugData	pd;
-//							pd.menu=&menu;
-//							pd.tabNumber=tabIndex;
-//							pd.what=DOTABPOPUP;
-//							this->plugins[j].instance->plugRun(&pd);
-//						}
-//				}
 			menu.exec(this->mainNotebook->mapToGlobal(pt));
 		}
 }
@@ -1459,6 +1447,8 @@ void KKEditClass::runAllPlugs(plugData pd)
 				}
 		}
 }
+
+
 
 
 

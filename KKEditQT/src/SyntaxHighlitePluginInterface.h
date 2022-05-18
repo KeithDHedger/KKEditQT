@@ -42,6 +42,8 @@ class SyntaxHighlitePluginInterface
 //odd single formats
 		virtual void	setMultLineFormatStart(highLightingRule *hr)=0;//TODO//
 		virtual void	setMultLineFormatStop(highLightingRule *hr)=0;
+//custom code for edge cases etc
+		virtual void	runCustomRule(QString text,highLightingRule *hr)=0;
 };
 
 QT_BEGIN_NAMESPACE
@@ -52,4 +54,5 @@ Q_DECLARE_INTERFACE(SyntaxHighlitePluginInterface, SyntaxHighlitePluginInterface
 QT_END_NAMESPACE
 
 #endif
+
 

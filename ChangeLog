@@ -1,4 +1,6 @@
 0.7.1
+Fixed '//' inside quotes wrongly being highlighted as comment ( c,c++ etc ).
+Added runCustomRule to language plugins.
 Done documentaion interaction ( hold 'CTRL' while clicking ( some! )links in built documentation ).
 Fixed holding 'SHIFT' when selecting tab from edit menu to move tab next to current tab.
 Fixed setting KKEDIT_FILE_LIST env var for tool.
@@ -843,6 +845,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 

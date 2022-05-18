@@ -39,21 +39,22 @@ void KKEditClass::resetAllFilePrefs(void)
 		}
 }
 
-void KKEditClass::goToDefinition(const QString txt)
+bool KKEditClass::goToDefinition(const QString txt)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 	DocumentClass	*dochold=this->getDocumentForTab(-1);
 	QString			searchfor;
-	bool			whileflag=false;
+	bool				whileflag=false;
 	int				linenumber;
 	QString			label="";
 	QStringList		sl;
+	bool				retval=true;
 
 	if((txt.isEmpty()==true) && (doc==NULL))
-		return;
+		return(retval);
 
 	if((txt.isEmpty()==true) && (doc->textCursor().hasSelection()==false))
-		return;
+		return(retval);
 	else
 		{
 			if(txt.isEmpty()==true)
@@ -81,7 +82,7 @@ void KKEditClass::goToDefinition(const QString txt)
 											linenumber=sl.at(loop).section(" ",2,2).toInt();
 											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
 											this->gotoLine(linenumber);
-											return;
+											return(retval);
 										}
 								}
 						}
@@ -108,7 +109,7 @@ void KKEditClass::goToDefinition(const QString txt)
 											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
 											this->setTabVisibilty(tabs,true);
 											this->gotoLine(linenumber);
-											return;
+											return(retval);
 										}
 
 								}
@@ -130,7 +131,7 @@ void KKEditClass::goToDefinition(const QString txt)
 					doc=this->getDocumentForTab(loop);
 					if(doc->filePath!=NULL)
 						{
-							command=QString("ctags -R -x '%1'|sed 's@ \\+@ @g'").arg(doc->getDirPath());
+							command=QString("ctags -R --maxdepth=%1 -x '%2'|sed 's@ \\+@ @g'").arg(this->prefsDepth).arg(doc->getDirPath());
 							results=this->runPipeAndCapture(command);
 							list=results.split("\n",Qt::SkipEmptyParts);
 
@@ -142,16 +143,17 @@ void KKEditClass::goToDefinition(const QString txt)
 											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
 											linenumber=list.at(j).section(" ",2,2).toInt();
 											this->openFile(list.at(j).section(" ",3,3),linenumber);
-											return;
+											return(retval);
 										}
 								}
 						}
 				}
-//last try check in folders of all tabs ... slow
+//last try check in folders of all tabs ... slow//TODO//
 			start=0;
 			end=this->mainNotebook->count();
 		}
 	this->statusBar->showMessage(QString("Couldn't find definition for %1").arg(searchfor),STATUSBARTIMEOUT);
+	return(false);
 }
 
 void KKEditClass::gotoLine(int linenumber)
@@ -330,6 +332,8 @@ void KKEditClass::checkDoc(DocumentClass *doc)
 	doc->setPlainText(line);
 #endif
 }
+
+
 
 
 

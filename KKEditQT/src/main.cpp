@@ -44,6 +44,10 @@ int main (int argc, char **argv)
 	QApplication		app(argc,argv);
 	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");
 
+#ifdef _DEBUGCODE_
+	qDebug()<<"gkjdfklgjdklfgj";
+	//return(0);
+#endif
 	app.setStyleSheet("QMenu { menu-scrollable: true ;}");
 	app.setOrganizationName("KDHedger");
 	app.setApplicationName("KKEditQT");
@@ -115,6 +119,8 @@ int main (int argc, char **argv)
 	delete kkedit;
 	return status;
 }
+
+
 
 
 

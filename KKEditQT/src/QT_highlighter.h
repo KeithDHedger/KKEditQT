@@ -27,6 +27,7 @@
 
 #include "SyntaxHighlitePluginInterface.h"
 #include "ToolkitHighlitePluginInterface.h"
+#include "config.h"
 
 struct langPluginStruct
 {
@@ -91,5 +92,6 @@ private:
 };
 
 #endif // HIGHLIGHTER_H
+
 
 

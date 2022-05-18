@@ -419,7 +419,7 @@ class KKEditClass : public QObject
 //document functions
 		DocumentClass				*getDocumentForTab(int tabnum);
 		void							resetAllFilePrefs(void);
-		void							goToDefinition(const QString txt);
+		bool							goToDefinition(const QString txt);
 		void							showLineEntry(void);
 		void							gotoLine(int linenumber);
 		void							reloadDocument(void);
@@ -457,6 +457,7 @@ class KKEditClass : public QObject
 #endif
 		void							buildDocViewer(void);
 		void							setDocMenu(void);
+		void							docViewLinkTrap(const QUrl url);
 
 //prefswindow
 //prefswindow vars
@@ -568,6 +569,7 @@ class KKEditClass : public QObject
 };
 
 #endif
+
 
 
 

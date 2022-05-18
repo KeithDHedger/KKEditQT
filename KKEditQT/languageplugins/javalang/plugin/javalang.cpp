@@ -97,11 +97,19 @@ void javalang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 
 //single line comment
+//	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+//	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+//	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+//	hr.pattern=QRegularExpression("//[^\n]*");
+//	rules->append(hr);
 	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
 	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
 	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
-	hr.pattern=QRegularExpression("//[^\n]*");
+	hr.type="comment";
+	hr.customRule=true;
+	hr.pattern=QRegularExpression(".*");
 	rules->append(hr);
+
 }
 
 //odd single formats set to "" for no multiline comment
@@ -121,5 +129,41 @@ void javalang::setMultLineFormatStop(highLightingRule *hr)
 void javalang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
+}
+
+void javalang::runCustomRule(QString text,highLightingRule *hr)
+{
+	if(hr->type.compare("comment")==0)
+		{
+			bool inquote=false;
+			int	cnt=0;
+			while(cnt<text.length())
+				{
+					if(text.at(cnt)=='\\')
+						{
+							cnt+=2;
+							continue;
+						}
+					if((text.at(cnt)=='"') && (inquote==false))
+						{
+							inquote=true;
+							cnt++;
+							continue;
+						}
+					if((text.at(cnt)=='"') && (inquote==true))
+						{
+							inquote=false;
+							cnt++;
+							continue;
+						}
+					if((inquote==false) && (text.mid(cnt,2).compare("//")==0))
+						{
+							hr->start=cnt;
+							hr->len=text.length()-cnt;
+							return;
+						}
+					cnt++;
+				}
+		}
 }
 

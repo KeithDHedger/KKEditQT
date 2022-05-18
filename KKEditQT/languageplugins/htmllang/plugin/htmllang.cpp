@@ -91,7 +91,7 @@ void htmllang::setMultLineFormatStart(highLightingRule *hr)
 	hr->pattern = QRegularExpression("<!--");
 }
 
-void htmllang::setMultLineFormatStop(highLightingRule *hr)
+void htmllang::setMultLineFormatStop(highLightingRule *hr)//TODO//in strings
 {
 	hr->pattern = QRegularExpression("-->");
 }
@@ -100,4 +100,5 @@ void htmllang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }
+
 

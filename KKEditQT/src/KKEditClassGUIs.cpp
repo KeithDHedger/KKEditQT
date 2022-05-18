@@ -1284,25 +1284,7 @@ void KKEditClass::buildDocViewer(void)
 	this->webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 	QObject::connect(this->webView,&QWebView::linkClicked,[this](const QUrl url)
 		{
-			Qt::KeyboardModifiers key=QGuiApplication::keyboardModifiers();
-			if(key!=Qt::ControlModifier)
-				this->webView->load(url);
-			else
-				{
-					QString	str=url.toString();
-					int		linenum=0;
-
-					str.remove(QRegularExpression("file:\\/\\/"));
-					str.remove("_source.html");
-					str.remove(QRegularExpression("\\/html"));
-					str.remove(QRegularExpression("\\.html$"));
-					str=this->runPipeAndCapture(QString("echo '%1'|sed 's/__/@##@/g;s/_\\([[:alpha:]]\\)/\\U\\1/g;s/@##@/_/g'").arg(str));
-					str.replace("_8",".");
-					linenum=QRegularExpression("#l([[:digit:]]*)").match(str).captured(1).toInt();
-					str.remove(QRegularExpression("#l[[:digit:]]*"));
-					str.remove("\n");
-					this->openFile(str,linenum);
-				}
+			this->docViewLinkTrap(url);
 		});
 
 	docvlayout->addWidget(this->webView);
@@ -1605,6 +1587,12 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
+
+
+
+
+
+
 
 
 

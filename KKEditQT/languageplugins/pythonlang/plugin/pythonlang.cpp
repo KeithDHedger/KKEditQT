@@ -89,17 +89,26 @@ void pythonlang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 
 //single line comment
-	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
-	hr.pattern=QRegularExpression("#[^\n]*");
-	rules->append(hr);
+//	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+//	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+//	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+//	hr.pattern=QRegularExpression("#[^\n]*");
+//	rules->append(hr);
 
 //python odds
 	hr.format.setForeground(this->theme[LANGUAGEEXTRAS].colour);
 	hr.format.setFontWeight(this->theme[LANGUAGEEXTRAS].weight);
 	hr.format.setFontItalic(this->theme[LANGUAGEEXTRAS].italic);
 	hr.pattern=QRegularExpression("\\b(ArithmeticError|AssertionError|AttributeError|EnvironmentError|EOFError|Exception|FloatingPointError|ImportError|IndentationError|IndexError|IOError|KeyboardInterrupt|KeyError|LookupError|MemoryError|NameError|NotImplementedError|OSError|OverflowError|ReferenceError|RuntimeError|StandardError|StopIteration|SyntaxError|SystemError|SystemExit|TabError|TypeError|UnboundLocalError|UnicodeDecodeError|UnicodeEncodeError|UnicodeError|UnicodeTranslateError|ValueError|WindowsError|ZeroDivisionError|Warning|UserWarning|DeprecationWarning|PendingDeprecationWarning|SyntaxWarning|OverflowWarning|RuntimeWarning|FutureWarning)\\b");
+	rules->append(hr);
+
+//single line comment
+	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.type="comment";
+	hr.customRule=true;
+	hr.pattern=QRegularExpression(".*");
 	rules->append(hr);
 }
 
@@ -122,3 +131,47 @@ void pythonlang::setTheme(QHash<int,themeStruct> newtheme)
 	this->theme=newtheme;
 }
 
+
+void pythonlang::runCustomRule(QString text,highLightingRule *hr)
+{
+	if(hr->type.compare("comment")==0)
+		{
+			bool		inquote=false;
+			int		cnt=0;
+			QChar	openquote=0;
+
+			while(cnt<text.length())
+				{
+					if(text.at(cnt)=='\\')
+						{
+							cnt+=2;
+							continue;
+						}
+
+					if(openquote==0)
+						{
+							if(text.at(cnt)=='"')
+								openquote='"';
+							if(text.at(cnt)=='\'')
+								openquote='\'';
+						}
+
+					if(text.at(cnt)==openquote)
+						{
+							inquote=!inquote;
+							if(inquote==false)
+								openquote=0;
+							cnt++;
+							continue;
+						}
+
+					if((inquote==false) && (text.at(cnt)=='#'))
+						{
+							hr->start=cnt;
+							hr->len=text.length()-cnt;
+							return;
+						}
+					cnt++;
+				}
+		}
+}

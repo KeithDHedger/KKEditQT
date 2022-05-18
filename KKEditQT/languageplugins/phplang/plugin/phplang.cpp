@@ -89,10 +89,17 @@ void phplang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 
 //single line comment
+//	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+//	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+//	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+//	hr.pattern=QRegularExpression("\\#[^\\n]*|//[^\\n]*");
+//	rules->append(hr);
 	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
 	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
 	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
-	hr.pattern=QRegularExpression("\\#[^\\n]*|//[^\\n]*");
+	hr.type="comment";
+	hr.customRule=true;
+	hr.pattern=QRegularExpression(".*");
 	rules->append(hr);
 }
 
@@ -115,3 +122,46 @@ void phplang::setTheme(QHash<int,themeStruct> newtheme)
 	this->theme=newtheme;
 }
 
+void phplang::runCustomRule(QString text,highLightingRule *hr)
+{
+	if(hr->type.compare("comment")==0)
+		{
+			bool		inquote=false;
+			int		cnt=0;
+			QChar	openquote=0;
+
+			while(cnt<text.length())
+				{
+					if(text.at(cnt)=='\\')
+						{
+							cnt+=2;
+							continue;
+						}
+
+					if(openquote==0)
+						{
+							if(text.at(cnt)=='"')
+								openquote='"';
+							if(text.at(cnt)=='\'')
+								openquote='\'';
+						}
+
+					if(text.at(cnt)==openquote)
+						{
+							inquote=!inquote;
+							if(inquote==false)
+								openquote=0;
+							cnt++;
+							continue;
+						}
+
+					if((inquote==false) && (text.mid(cnt,2).compare("//")==0))
+						{
+							hr->start=cnt;
+							hr->len=text.length()-cnt;
+							return;
+						}
+					cnt++;
+				}
+		}
+}

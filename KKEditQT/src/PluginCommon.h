@@ -25,7 +25,10 @@ struct highLightingRule
 {
 	QRegularExpression	pattern;
 	QTextCharFormat		format;
-	bool					clearFirst=false;
+	bool					customRule=false;
+	QString				type;
+	int					start;
+	int					len;
 };
 
 struct themeStruct
@@ -40,6 +43,8 @@ struct themeStruct
 enum {FUNCTIONTHEME=0,CLASSTHEME,TYPETHEME,COMMENTTHEME,QUOTESTHEME,INCLUDETHEME,NUMBERTHEME,KEYWORDTHEME,CUSTOMTHEME,LANGUAGEEXTRAS,VARIABLETHEME,TOOLKITTHEME,THEMEDONE};
 
 #endif
+
+
 
 
 

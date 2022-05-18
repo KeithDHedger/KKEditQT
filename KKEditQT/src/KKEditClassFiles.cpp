@@ -386,7 +386,9 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 		}
 	else
 		{
+#ifdef _DEBUGCODE_
 			qDebug()<<"File not found ...";
+#endif
 			return(false);
 		}
 
@@ -452,6 +454,7 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
 
 
 

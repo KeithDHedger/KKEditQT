@@ -39,6 +39,8 @@ class shlang : public QObject, SyntaxHighlitePluginInterface
 //odd single formats
 		void					setMultLineFormatStart(highLightingRule *hr) override;
 		void					setMultLineFormatStop(highLightingRule *hr) override;
+//custom code for edge cases etc
+		void					runCustomRule(QString text,highLightingRule *hr) override;
 
 	private:
 		QString					plugPath;
@@ -46,3 +48,5 @@ class shlang : public QObject, SyntaxHighlitePluginInterface
 };
 
 #endif
+
+

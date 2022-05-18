@@ -59,13 +59,13 @@ void makelang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setFontItalic(this->theme[KEYWORDTHEME].italic);
 	hr.pattern=QRegularExpression("\\b(addprefix|addsuffix|basename|call|dir|error|filter|filter-out|findstring|firstword|foreach|join|notdir|origin|patsubst|shell|sort|strip|subst|suffix|warning|wildcard|word|words|define|else|endef|endif|if|ifdef|ifeq|ifndef|ifneq|include|override|unexport|case|esac|fi|elif|echo|exit|for|printf|continue|do|done|test|break)\\b");
 	rules->append(hr);
-
-//quotes
-	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
-	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
-	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
-	hr.pattern = QRegularExpression("(\".*\")|('.*')");
-	rules->append(hr);
+//
+////quotes
+//	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
+//	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
+//	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
+//	hr.pattern = QRegularExpression("(\".*\")|('.*')");
+//	rules->append(hr);
 
 //variables
 	hr.format.setForeground(this->theme[CUSTOMTHEME].colour);
@@ -102,12 +102,28 @@ void makelang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.pattern=QRegularExpression("\\$\\$?[[:word:]][[:word:]]*");
 	rules->append(hr);
 
-//single line comment
+//quotes
+	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
+	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
+	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
+	hr.pattern = QRegularExpression("(\".*\")|('.*')");
+	rules->append(hr);
+
 	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
 	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
 	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
-	hr.pattern=QRegularExpression("#[^\n]*");
+	hr.type="comment";
+	hr.customRule=true;
+	hr.pattern=QRegularExpression(".*");
 	rules->append(hr);
+
+//
+////single line comment
+//	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+//	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+//	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+//	hr.pattern=QRegularExpression("#[^\n]*");
+//	rules->append(hr);
 }
 
 //odd single formats set to "" for no multiline comment
@@ -126,3 +142,46 @@ void makelang::setTheme(QHash<int,themeStruct> newtheme)
 	this->theme=newtheme;
 }
 
+void makelang::runCustomRule(QString text,highLightingRule *hr)
+{
+	if(hr->type.compare("comment")==0)
+		{
+			bool		inquote=false;
+			int		cnt=0;
+			QChar	openquote=0;
+
+			while(cnt<text.length())
+				{
+					if(text.at(cnt)=='\\')
+						{
+							cnt+=2;
+							continue;
+						}
+
+					if(openquote==0)
+						{
+							if(text.at(cnt)=='"')
+								openquote='"';
+							if(text.at(cnt)=='\'')
+								openquote='\'';
+						}
+
+					if(text.at(cnt)==openquote)
+						{
+							inquote=!inquote;
+							if(inquote==false)
+								openquote=0;
+							cnt++;
+							continue;
+						}
+
+					if((inquote==false) && (text.at(cnt)=='#'))
+						{
+							hr->start=cnt;
+							hr->len=text.length()-cnt;
+							return;
+						}
+					cnt++;
+				}
+		}
+}
