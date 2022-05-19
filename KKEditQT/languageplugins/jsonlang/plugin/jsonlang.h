@@ -30,22 +30,25 @@ class jsonlang : public QObject, SyntaxHighlitePluginInterface
 	Q_INTERFACES(SyntaxHighlitePluginInterface)
 
 	public:
-		void					initPlug(QString pathtoplug) override;
-		void					unloadPlug(void) override;
+		void						initPlug(QString pathtoplug) override;
+		void						unloadPlug(void) override;
 //theme
-		virtual void			setTheme(QHash<int,themeStruct> newtheme) override;
+		void						setTheme(QHash<int,themeStruct> newtheme) override;
 //new rules format
-		void					setLanguageRules(QVector<highLightingRule> *rules) override;
-//odd single formats
-		void					setMultLineFormatStart(highLightingRule *hr) override;
-		void					setMultLineFormatStop(highLightingRule *hr) override;
+		void						setLanguageRules(QVector<highLightingRule> *rules) override;
+//multi line rules
+		void						setMultLineRules(QVector<highLightingRule> *rules) override {};
 //custom code for edge cases etc
-		void					runCustomRule(QString text,highLightingRule *hr) override {};
-
+		void						runCustomRule(QString text,highLightingRule *hr) override {};
+	
 	private:
 		QString					plugPath;
 		QHash<int,themeStruct>	theme;
 };
 
 #endif
+
+
+
+
 

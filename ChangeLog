@@ -1,4 +1,7 @@
 0.7.1
+Add sytnatx highlighting for binary numbers in 'c/c++'.
+Added functions for multiple different multiline highlighting.
+More syntax highlighting fixes.
 Fixed '//' inside quotes wrongly being highlighted as comment ( c,c++ etc ).
 Added runCustomRule to language plugins.
 Done documentaion interaction ( hold 'CTRL' while clicking ( some! )links in built documentation ).
@@ -845,6 +848,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 

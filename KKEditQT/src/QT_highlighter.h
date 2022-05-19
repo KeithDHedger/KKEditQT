@@ -77,9 +77,7 @@ private:
 	QVector<highLightingRule>	highlightingRules;
 	QPlainTextEdit				*document;
 	QTextCharFormat				resetformat;
-
-	highLightingRule				multiLineCommentStart;
-	highLightingRule				multiLineCommentStop;
+	QVector<highLightingRule>	multiLineCommentRules;
 
 	int							currentPlug=-1;
 //functions
@@ -89,9 +87,18 @@ private:
 	bool							loadToolkitPlug(langPluginStruct *ps);
 	void							resetRules(void);
 
+	void							setBit(int *data,int bit);
+	void							resetBit(int *data,int bit);
+	int							getBit(int data,int bit);
+
 };
 
 #endif // HIGHLIGHTER_H
+
+
+
+
+
 
 
 

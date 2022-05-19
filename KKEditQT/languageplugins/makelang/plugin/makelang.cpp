@@ -116,25 +116,6 @@ void makelang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.customRule=true;
 	hr.pattern=QRegularExpression(".*");
 	rules->append(hr);
-
-//
-////single line comment
-//	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
-//	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
-//	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
-//	hr.pattern=QRegularExpression("#[^\n]*");
-//	rules->append(hr);
-}
-
-//odd single formats set to "" for no multiline comment
-void makelang::setMultLineFormatStart(highLightingRule *hr)
-{
-	hr->pattern = QRegularExpression("");
-}
-
-void makelang::setMultLineFormatStop(highLightingRule *hr)
-{
-	hr->pattern = QRegularExpression("");
 }
 
 void makelang::setTheme(QHash<int,themeStruct> newtheme)
@@ -185,3 +166,5 @@ void makelang::runCustomRule(QString text,highLightingRule *hr)
 				}
 		}
 }
+
+

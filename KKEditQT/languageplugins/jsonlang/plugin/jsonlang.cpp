@@ -61,19 +61,10 @@ void jsonlang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 }
 
-//odd single formats set to "" for no multiline comment
-void jsonlang::setMultLineFormatStart(highLightingRule *hr)
-{
-	hr->pattern = QRegularExpression("");
-}
-
-void jsonlang::setMultLineFormatStop(highLightingRule *hr)
-{
-	hr->pattern = QRegularExpression("");
-}
-
 void jsonlang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }
+
+
 

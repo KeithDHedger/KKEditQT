@@ -50,10 +50,8 @@ void Highlighter::resetRules(void)
 
 //new format
 	this->langPlugins[this->currentPlug].instance->setLanguageRules(&(this->highlightingRules));
-
-//mult line comment format
-	this->langPlugins[this->currentPlug].instance->setMultLineFormatStart(&(this->multiLineCommentStart));
-	this->langPlugins[this->currentPlug].instance->setMultLineFormatStop(&(this->multiLineCommentStop));
+//multi line rules
+	this->langPlugins[this->currentPlug].instance->setMultLineRules(&(this->multiLineCommentRules));
 }
 
 Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHighlighter(parent)
@@ -65,18 +63,36 @@ Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHig
 	this->document=doc;
 }
 
+
+void Highlighter::setBit(int *data,int bit)
+{
+	*data=*data | (1<<bit);
+}
+
+void Highlighter::resetBit(int *data,int bit)
+{
+	*data=*data & ~(-1 & (1<<bit));
+}
+
+int Highlighter::getBit(int data,int bit)
+{
+	return((data & (1<<bit)) && true);
+}
+
 void Highlighter::highlightBlock(const QString &text)
 {
+	int	closecomment;
+	int	prev;
+	int	startIndex;
+	int	offset;
+	bool	addoffset;
+
 	if(this->currentPlug==-1)
 		return;
 	if(this->syntaxHighlighting==false)
 		return;
 
-	QRegularExpression	startExpression(this->multiLineCommentStart.pattern);
-	QRegularExpression	endExpression(this->multiLineCommentStop.pattern);
-	int					startIndex=0;
-
-	for(int j=0;j<highlightingRules.count();j++)
+	for(int j=0;j<this->highlightingRules.count();j++)
 		{
 			highLightingRule rule=highlightingRules[j];
 			QRegularExpressionMatchIterator i=rule.pattern.globalMatch(text);
@@ -95,48 +111,56 @@ void Highlighter::highlightBlock(const QString &text)
 				}
 		}
 
-//no multi line comment
-	if(startExpression.pattern().length()==0)
-		return;
-
-//qDebug()<<">>"<<text<<"<<";
-	setCurrentBlockState(0);
-
-	int		offset=0;
-	bool		addoffset=false;
-
-	if(startExpression.pattern().compare(endExpression.pattern())==0)//fix for start/stop patterns the same ( a la bloody awaful python )
-		offset=startExpression.pattern().length();
-
-	if(previousBlockState()!=1)
+	this->setCurrentBlockState(-1);
+	for(int j=0;j<this->multiLineCommentRules.count();j++)
 		{
-			startIndex=text.indexOf(startExpression);
-			if(startIndex!=-1)
-				{
-					addoffset=true;
-					startIndex+=offset;
-				}
-		}
+			QRegularExpression	startExpression(this->multiLineCommentRules[j].pattern);
+			QRegularExpression	endExpression(this->multiLineCommentRules[j].endPattern);
 
-	while(startIndex>=0)
-		{
-			QRegularExpressionMatch endMatch;
-			int endIndex=text.indexOf(endExpression,startIndex,&endMatch);
-			int commentLength;
-			if(endIndex==-1)
+			offset=0;
+			addoffset=false;
+
+			prev=this->previousBlockState();
+			startIndex=0;
+			closecomment=j;
+			if(startExpression.pattern().length()==0)
+				continue;
+
+			if(startExpression.pattern().compare(endExpression.pattern())==0)//fix for start/stop patterns the same ( a la bloody awaful python )
+				offset=startExpression.pattern().length();
+
+			if(getBit(prev,closecomment)==true)
 				{
-					setCurrentBlockState(1);
-					commentLength=text.length()-startIndex;
+					startIndex=text.indexOf(startExpression);
+					if(startIndex!=-1)
+						{
+							addoffset=true;
+							startIndex+=offset;
+						}
 				}
-			else
+
+			while(startIndex>=0)
 				{
-					commentLength=endIndex-startIndex+endMatch.capturedLength();
+					QRegularExpressionMatch endMatch;
+					int endIndex=text.indexOf(endExpression,startIndex,&endMatch);
+					int commentLength;
+					if(endIndex==-1)
+						{
+							int cbs=this->currentBlockState();
+							resetBit(&cbs,closecomment);
+							this->setCurrentBlockState(cbs);
+							commentLength=text.length()-startIndex;
+						}
+					else
+						{
+							commentLength=endIndex-startIndex+endMatch.capturedLength();
+						}
+					if(addoffset==false)
+						setFormat(startIndex,commentLength,this->multiLineCommentRules[j].format);
+					else
+						setFormat(startIndex-offset,commentLength+offset,this->multiLineCommentRules[j].format);
+					startIndex=text.indexOf(startExpression,startIndex + commentLength);
 				}
-			if(addoffset==false)
-				setFormat(startIndex,commentLength,this->multiLineCommentStart.format);
-			else
-				setFormat(startIndex-offset,commentLength+offset,this->multiLineCommentStart.format);
-			startIndex=text.indexOf(startExpression,startIndex + commentLength);
 		}
 }
 
@@ -349,6 +373,9 @@ void Highlighter::setTheme(QString themename)
 
 	return;
 }
+
+
+
 
 
 

@@ -92,31 +92,23 @@ void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.customRule=true;
 	hr.pattern=QRegularExpression(".*");
 	rules->append(hr);
-
-//single line comment
-//	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
-//	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
-//	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
-//	hr.pattern=QRegularExpression("#[^\n]*");
-//	rules->append(hr);
 }
 
 void shlang::unloadPlug(void)
 {
 }
 
-//odd single formats set to "" for no multiline comment
-void shlang::setMultLineFormatStart(highLightingRule *hr)
+//multi line rules
+void shlang::setMultLineRules(QVector<highLightingRule> *rules)
 {
-	hr->format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr->format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr->format.setFontItalic(this->theme[COMMENTTHEME].italic);
-	hr->pattern = QRegularExpression("if false;then");
-}
+	highLightingRule	hr;
 
-void shlang::setMultLineFormatStop(highLightingRule *hr)
-{
-	hr->pattern = QRegularExpression("fi");
+	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.pattern=QRegularExpression("if false;then");
+	hr.endPattern=QRegularExpression("else|fi");
+	rules->append(hr);
 }
 
 void shlang::setTheme(QHash<int,themeStruct> newtheme)
@@ -167,8 +159,4 @@ void shlang::runCustomRule(QString text,highLightingRule *hr)
 				}
 		}
 }
-
-
-
-
 

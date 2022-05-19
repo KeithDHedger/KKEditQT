@@ -88,13 +88,6 @@ void pythonlang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.pattern=QRegularExpression("NULL|nullptr|true|false|TRUE|FALSE|None|Ellipsis|NotImplemented|self|True|False");
 	rules->append(hr);
 
-//single line comment
-//	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
-//	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
-//	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
-//	hr.pattern=QRegularExpression("#[^\n]*");
-//	rules->append(hr);
-
 //python odds
 	hr.format.setForeground(this->theme[LANGUAGEEXTRAS].colour);
 	hr.format.setFontWeight(this->theme[LANGUAGEEXTRAS].weight);
@@ -112,25 +105,22 @@ void pythonlang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 }
 
-//odd single formats set to "" for no multiline comment
-void pythonlang::setMultLineFormatStart(highLightingRule *hr)
+void pythonlang::setMultLineRules(QVector<highLightingRule> *rules)
 {
-	hr->format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr->format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr->format.setFontItalic(this->theme[COMMENTTHEME].italic);
-	hr->pattern = QRegularExpression("\"\"\"");
-}
+	highLightingRule	hr;
 
-void pythonlang::setMultLineFormatStop(highLightingRule *hr)
-{
-		hr->pattern = QRegularExpression("\"\"\"");
+	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.pattern=QRegularExpression("\"\"\"");
+	hr.endPattern=QRegularExpression("\"\"\"");
+	rules->append(hr);
 }
 
 void pythonlang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }
-
 
 void pythonlang::runCustomRule(QString text,highLightingRule *hr)
 {
@@ -175,3 +165,6 @@ void pythonlang::runCustomRule(QString text,highLightingRule *hr)
 				}
 		}
 }
+
+
+

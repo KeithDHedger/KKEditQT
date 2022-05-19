@@ -97,11 +97,6 @@ void javalang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 
 //single line comment
-//	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
-//	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
-//	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
-//	hr.pattern=QRegularExpression("//[^\n]*");
-//	rules->append(hr);
 	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
 	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
 	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
@@ -109,21 +104,18 @@ void javalang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.customRule=true;
 	hr.pattern=QRegularExpression(".*");
 	rules->append(hr);
-
 }
 
-//odd single formats set to "" for no multiline comment
-void javalang::setMultLineFormatStart(highLightingRule *hr)
+void javalang::setMultLineRules(QVector<highLightingRule> *rules)
 {
-	hr->format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr->format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr->format.setFontItalic(this->theme[COMMENTTHEME].italic);
-	hr->pattern = QRegularExpression("/\\*");
-}
-
-void javalang::setMultLineFormatStop(highLightingRule *hr)
-{
-	hr->pattern = QRegularExpression("\\*/");
+	highLightingRule	hr;
+///**/
+	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.pattern=QRegularExpression("/\\*");
+	hr.endPattern=QRegularExpression("\\*/");
+	rules->append(hr);
 }
 
 void javalang::setTheme(QHash<int,themeStruct> newtheme)
@@ -166,4 +158,7 @@ void javalang::runCustomRule(QString text,highLightingRule *hr)
 				}
 		}
 }
+
+
+
 

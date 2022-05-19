@@ -82,23 +82,24 @@ void htmllang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 }
 
-//odd single formats set to "" for no multiline comment
-void htmllang::setMultLineFormatStart(highLightingRule *hr)
+void htmllang::setMultLineRules(QVector<highLightingRule> *rules)
 {
-	hr->format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr->format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr->format.setFontItalic(this->theme[COMMENTTHEME].italic);
-	hr->pattern = QRegularExpression("<!--");
-}
+	highLightingRule	hr;
 
-void htmllang::setMultLineFormatStop(highLightingRule *hr)//TODO//in strings
-{
-	hr->pattern = QRegularExpression("-->");
+	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.pattern=QRegularExpression("<!--");
+	hr.endPattern=QRegularExpression("-->");
+	rules->append(hr);
 }
 
 void htmllang::setTheme(QHash<int,themeStruct> newtheme)
 {
 	this->theme=newtheme;
 }
+
+
+
 
 

@@ -29,21 +29,20 @@
 class SyntaxHighlitePluginInterface
 {
 	public:
-		virtual		~SyntaxHighlitePluginInterface()=default;
+		virtual			~SyntaxHighlitePluginInterface()=default;
 
-		virtual void	initPlug(QString pathtoplug)=0;
-		virtual void	unloadPlug(void)=0;
+		virtual void		initPlug(QString pathtoplug)=0;
+		virtual void		unloadPlug(void)=0;
 //theme
-		virtual void	setTheme(QHash<int,themeStruct>	newtheme)=0;
+		virtual void		setTheme(QHash<int,themeStruct>	newtheme)=0;
 
 //new rules format
-		virtual void	setLanguageRules(QVector<highLightingRule> *rules)=0;
+		virtual void		setLanguageRules(QVector<highLightingRule> *rules)=0;
+//multi line rules
+		virtual void		setMultLineRules(QVector<highLightingRule> *rules)=0;
 
-//odd single formats
-		virtual void	setMultLineFormatStart(highLightingRule *hr)=0;//TODO//
-		virtual void	setMultLineFormatStop(highLightingRule *hr)=0;
 //custom code for edge cases etc
-		virtual void	runCustomRule(QString text,highLightingRule *hr)=0;
+		virtual void		runCustomRule(QString text,highLightingRule *hr)=0;
 };
 
 QT_BEGIN_NAMESPACE
@@ -54,6 +53,10 @@ Q_DECLARE_INTERFACE(SyntaxHighlitePluginInterface, SyntaxHighlitePluginInterface
 QT_END_NAMESPACE
 
 #endif
+
+
+
+
 
 
 

@@ -64,7 +64,7 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
 	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
 	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
-	hr.pattern=QRegularExpression(NUMBERSREGEX);
+	hr.pattern=QRegularExpression("([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)|([+-]?\\b0b[01]*\\.?[01]+\\b)");
 	rules->append(hr);
 
 //keywords
@@ -112,18 +112,25 @@ void cpplang::setLanguageRules(QVector<highLightingRule> *rules)
 	rules->append(hr);
 }
 
-//odd single formats set to "" for no multiline comment
-void cpplang::setMultLineFormatStart(highLightingRule *hr)
+//multi line rules
+void cpplang::setMultLineRules(QVector<highLightingRule> *rules)
 {
-	hr->format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr->format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr->format.setFontItalic(this->theme[COMMENTTHEME].italic);
-	hr->pattern = QRegularExpression("/\\*");
-}
+	highLightingRule	hr;
 
-void cpplang::setMultLineFormatStop(highLightingRule *hr)
-{
-	hr->pattern = QRegularExpression("\\*/");
+///**/
+	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.pattern=QRegularExpression("/\\*");
+	hr.endPattern=QRegularExpression("\\*/");
+	rules->append(hr);
+//if 0/else/end
+	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
+	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
+	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.pattern=QRegularExpression("^#if 0");
+	hr.endPattern=QRegularExpression("^(#endif|#else)");
+	rules->append(hr);
 }
 
 void cpplang::setTheme(QHash<int,themeStruct> newtheme)
@@ -133,7 +140,6 @@ void cpplang::setTheme(QHash<int,themeStruct> newtheme)
 
 void cpplang::runCustomRule(QString text,highLightingRule *hr)
 {
-//qDebug()<<">>"<<text<<"<<";
 	if(hr->type.compare("comment")==0)
 		{
 			bool inquote=false;
@@ -169,6 +175,11 @@ void cpplang::runCustomRule(QString text,highLightingRule *hr)
 
 
 }
+
+
+
+
+
 
 
 
