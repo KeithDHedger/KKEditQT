@@ -96,18 +96,8 @@ void KKEditClass::newFile(const QString data,const QString filename)
 	this->rebuildTabsMenu();
 	this->sessionBusy=holdsb;
 	this->setToolbarSensitive();
+
 //plugins
-//	for(int j=0;j<this->plugins.count();j++)
-//		{
-//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DONEWDOCUMENT)==DONEWDOCUMENT))
-//				{
-//					plugData	pd;
-//					pd.doc=doc;
-//					pd.tabNumber=this->mainNotebook->currentIndex();
-//					pd.what=DONEWDOCUMENT;
-//					this->plugins[j].instance->plugRun(&pd);
-//				}
-//		}
 	pd.doc=doc;
 	pd.tabNumber=this->mainNotebook->currentIndex();
 	pd.what=DONEWDOCUMENT;
@@ -150,17 +140,6 @@ bool KKEditClass::saveFileAs(int tabnum)
 		{
 			file.setFileName(fileName);
 			fileinfo.setFile(file);
-//			if(file.exists())
-//				{
-////plugins
-//					pd.doc=doc;
-//					pd.tabNumber=this->mainNotebook->currentIndex();
-//					pd.userStrData1=this->homeDataFolder;
-//					pd.userStrData2=fileinfo.canonicalPath();
-//					pd.userStrData3=fileinfo.fileName();
-//					pd.what=DOSAVE;
-//					this->runAllPlugs(pd);
-//				}
 
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
@@ -169,22 +148,14 @@ bool KKEditClass::saveFileAs(int tabnum)
 					doc->setFilePath(fileinfo.canonicalFilePath());
 					doc->setFileName(fileinfo.fileName());
 					this->mainNotebook->setTabToolTip(calctabnum,doc->getFilePath());
-//
-////plugins
-//					pd.doc=doc;
-//					pd.tabNumber=this->mainNotebook->currentIndex();
-//					pd.userStrData1=this->homeDataFolder;
-//					pd.userStrData2=doc->getDirPath();
-//					pd.userStrData3=doc->getFileName();
-//					pd.what=DOSAVE;
-//					this->runAllPlugs(pd);
-
 					QTextStream(&file) << doc->toPlainText() << Qt::endl;
 					doc->dirty=false;
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
-					file.close();
 					this->recentFiles->addFilePath(doc->getFilePath());
 					this->setCompWordList();
+					if(this->fileWatch->files().contains(fileinfo.canonicalFilePath())==false)
+						this->fileWatch->addPath(fileinfo.canonicalFilePath());
+					file.close();
 				}
 			else
 				{
@@ -247,12 +218,14 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
 				{
-
+					doc->fromMe=true;
 					QTextStream(&file) << doc->toPlainText() << Qt::endl;
 					doc->dirty=false;
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
-					file.close();
 					this->setCompWordList();
+					if(this->fileWatch->files().contains(doc->getFilePath())==false)
+						this->fileWatch->addPath(fileinfo.canonicalFilePath());
+					file.close();
 				}
 			else
 				{
@@ -379,10 +352,12 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 			doc->dirty=false;
 			retval=true;
-			file.close();
 			if(addtorecents==true)
 				this->recentFiles->addFilePath(doc->getFilePath());
 			doc->setFilePrefs();
+			if(this->fileWatch->files().contains(fileinfo.canonicalFilePath())==false)
+				this->fileWatch->addPath(fileinfo.canonicalFilePath());
+			file.close();
 		}
 	else
 		{
@@ -454,6 +429,11 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
+
+
+
+
 
 
 

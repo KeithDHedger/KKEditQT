@@ -795,11 +795,15 @@ all-am: plugs
 plugs:
 	./buildplugs.sh build $(DESTDIR)/${pkgdatadir}
 
+#install-plugs: plugs
+#	./buildplugs.sh install $(DESTDIR)/${pkgdatadir}
+
 clean-am:
 	./buildplugs.sh clean
 
 install-exec-hook:
 	./buildplugs.sh install $(DESTDIR)/${pkgdatadir}
+
 remake:
 	$(shell ./remakesourcelist)
 

@@ -898,6 +898,7 @@ void KKEditClass::setPreferences(void)
 	this->prefsSyntaxHilighting=qobject_cast<QCheckBox*>(this->prefsWidgets[SYNTAXHILITE])->checkState();
 	this->prefsAutoShowCompletions=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSHOW])->checkState();
 	this->prefsNoOpenduplicate=qobject_cast<QCheckBox*>(this->prefsWidgets[NODUPLICATE])->checkState();
+	this->prefsNoWarnings=qobject_cast<QCheckBox*>(this->prefsWidgets[NOWARN])->checkState();
 	this->prefsNagScreen=qobject_cast<QCheckBox*>(this->prefsWidgets[BEKIND])->checkState();
 	this->recentFiles->maxFiles=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXRECENTS])->value();
 	this->autoShowMinChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[COMPLETIONSIZE])->value();
@@ -1203,7 +1204,6 @@ void KKEditClass::doOddButtons(void)
 		}
 }
 
-
 void KKEditClass::docViewLinkTrap(const QUrl url)
 {
 	Qt::KeyboardModifiers key=QGuiApplication::keyboardModifiers();
@@ -1277,21 +1277,46 @@ void KKEditClass::docViewLinkTrap(const QUrl url)
 		}
 }
 
+void KKEditClass::fileChangedOnDisk(const QString &path)
+{
+	if(this->fileWatch->files().contains(path)==true)
+		{
+			foreach(DocumentClass *doc,this->pages)
+				{
+					if(doc!=NULL)
+						{
+							if(doc->getFilePath().compare(path)==0)
+								{
+									if(doc->fromMe==false)
+										{
+											if(this->prefsNoWarnings==false)
+												{
+													QMessageBox msgBox;
+													int			retval;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+													msgBox.setIcon(QMessageBox::Warning);
+													msgBox.setText(doc->getFilePath()+" has been modified on disk");
+													msgBox.setInformativeText("Do you want to refresh document from disk?");
+													msgBox.setStandardButtons(QMessageBox::Apply | QMessageBox::Ignore);
+													msgBox.setDefaultButton(QMessageBox::Apply);
+													retval=msgBox.exec();
+													if(retval==QMessageBox::Apply)
+														{
+															doc->refreshFromDisk();
+														}
+												}
+											else
+												{
+													doc->refreshFromDisk();
+												}
+										}
+									else
+										doc->fromMe=false;
+								}
+						}
+				}
+		}
+}
 
 
 

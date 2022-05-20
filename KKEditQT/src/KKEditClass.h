@@ -273,6 +273,8 @@ class KKEditClass : public QObject
 		QString						prefsRootCommand;
 		QString						prefsQtDocDir;
 		bool							prefsNoOpenduplicate=false;
+		bool							prefsNoWarnings=false;
+
 //app
 		int							prefsMsgTimer;
 		bool							prefsUseSingle=true;
@@ -291,11 +293,11 @@ class KKEditClass : public QObject
 		bool							searchBack=false;
 		int							currentPage=0;
 		bool							closingAllTabs=false;
-		bool							noWarnings=false;
 		unsigned int					autoShowMinChars=6;
 		unsigned int					maxBMChars;
 		unsigned int 				untitledNumber=1;
 		HistoryClass					*history;
+		QFileSystemWatcher			*fileWatch;
 
 //editor functions
 		QString						truncateWithElipses(const QString str,unsigned int maxlen);
@@ -305,6 +307,7 @@ class KKEditClass : public QObject
 		bool							checkForOpenFile(QString filepath);
 		void							printDocument(void);
 		void							rebuildFunctionMenu(int tab);
+		void							fileChangedOnDisk(const QString &path);
 
 //menubar
 		QMenuBar						*menuBar;
@@ -569,6 +572,8 @@ class KKEditClass : public QObject
 };
 
 #endif
+
+
 
 
 

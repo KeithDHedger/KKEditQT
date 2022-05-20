@@ -24,11 +24,15 @@ KKEditClass::KKEditClass(QApplication *app)
 {
 	this->application=app;
 	this->history=new HistoryClass(this);
+	this->fileWatch=new QFileSystemWatcher(this);
+
 }
 
 KKEditClass::~KKEditClass()
 {
 	QDir	fold(this->tmpFolderName);
+
+	delete this->fileWatch;
 
 	for(int j=0;j<NOMORESHORTCUT;j++)
 		delete this->appShortcuts[j];
@@ -44,6 +48,7 @@ KKEditClass::~KKEditClass()
 		}
 
 	fold.removeRecursively();
+
 }
 
 void KKEditClass::setUpToolBar(void)
@@ -331,6 +336,11 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->toolsFolder=QString("%1/%2/%3").arg(this->homeFolder).arg(KKEDITFOLDER).arg("tools");
 	this->recentFiles=new RecentMenuClass(this);
 
+	QObject::connect(this->fileWatch,&QFileSystemWatcher::fileChanged,[this](const QString &path)
+		{
+			this->fileChangedOnDisk(path);
+		});
+
 	tdir.mkpath(this->sessionFolder);
 	for(int j=0;j<MAXSESSIONS;j++)
 		{
@@ -569,6 +579,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsRootCommand=this->prefs.value("editor/rootcommand","gtksu -- ").toString();
 	this->prefsQtDocDir=this->prefs.value("editor/qtdocdir","/usr/share/doc/qt5").toString();
 	this->prefsNoOpenduplicate=this->prefs.value("editor/noopendup",QVariant(bool(true))).value<bool>();
+	this->prefsNoWarnings=this->prefs.value("editor/nowarnings",QVariant(bool(false))).value<bool>();
 	this->recentFiles->maxFiles=this->prefs.value("editor/maxrecents",10).toInt();
 
 //document
@@ -730,6 +741,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("editor/toolbarlayout",this->prefsToolBarLayout);
 	this->prefs.setValue("editor/qtdocdir",this->prefsQtDocDir);
 	this->prefs.setValue("editor/noopendup",this->prefsNoOpenduplicate);
+	this->prefs.setValue("editor/nowarnings",this->prefsNoWarnings);
 	this->prefs.setValue("editor/maxrecents",this->recentFiles->maxFiles);
 	
 //document
@@ -1447,6 +1459,12 @@ void KKEditClass::runAllPlugs(plugData pd)
 				}
 		}
 }
+
+
+
+
+
+
 
 
 

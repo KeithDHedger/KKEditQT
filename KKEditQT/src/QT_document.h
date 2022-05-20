@@ -46,7 +46,6 @@ class DocumentClass : public QPlainTextEdit
 		QColor							prefsHiLiteLineColor;
 		QColor							bookmarkLineColor;
 
-
 		void								setHiliteLanguage(void);
 		void								lineNumberAreaPaintEvent(QPaintEvent *event);
 		int								lineNumberAreaWidth(void);
@@ -65,10 +64,10 @@ class DocumentClass : public QPlainTextEdit
 		int								getCurrentLineNumber(void);
 
 		void								setFilePrefs(void);
-
 		void								setStatusBarText(void);
-
 		void								setBMFromLineBar(QMouseEvent *event);
+
+		void								refreshFromDisk(void);
 
 //pageStruct
 		QString							fileName;
@@ -83,6 +82,7 @@ class DocumentClass : public QPlainTextEdit
 		bool								gotRedo=false;
 		int								pageIndex;
 		bool								visible=true;
+		bool								fromMe=false;
 
 	protected:
 	    void								resizeEvent(QResizeEvent *event);
@@ -145,6 +145,7 @@ class LineNumberArea : public QWidget
 };
 
 #endif
+
 
 
 

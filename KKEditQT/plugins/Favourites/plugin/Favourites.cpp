@@ -146,7 +146,7 @@ unsigned int FavouritesPlug::plugWants(void)
 void FavouritesPlug::doAction(QString data)
 {
 	QString command;
-	qDebug()<<data;
+
 	if((data.startsWith("file://")) || (data.startsWith("http://")) || (data.startsWith("https://")))
 		{
 			command=QString("kkeditqtmsg -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->sessionID).arg(data);
@@ -158,4 +158,5 @@ void FavouritesPlug::doAction(QString data)
 			system(command.toStdString().c_str());
 		}
 }
+
 

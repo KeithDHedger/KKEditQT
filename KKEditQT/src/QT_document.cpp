@@ -581,19 +581,6 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	pd.what=DOCONTEXTMENU;
 	this->mainKKEditClass->runAllPlugs(pd);
 
-//	for(int j=0;j<this->mainKKEditClass->plugins.count();j++)
-//		{
-//			if((this->mainKKEditClass->plugins[j].loaded) && ((this->mainKKEditClass->plugins[j].wants & DOCONTEXTMENU)==DOCONTEXTMENU))
-//				{
-//					plugData	pd;
-//					pd.menu=&menu;
-//					pd.doc=this;
-//					pd.tabNumber=this->mainKKEditClass->mainNotebook->currentIndex();
-//					pd.what=DOCONTEXTMENU;
-//					this->mainKKEditClass->plugins[j].instance->plugRun(&pd);
-//				}
-//		}
-
 	menu.setStyleSheet("QMenu { menu-scrollable: true ;}");
 	menu.exec(event->globalPos());
 }
@@ -749,14 +736,41 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 		}
 }
 
+void DocumentClass::refreshFromDisk(void)
+{
+	QTextBlock	block;
+	QTextCursor	cursor;
+	bool			retval;
+	QFile		file(this->getFilePath());
+	int			currentline=this->getCurrentLineNumber();
 
+	this->mainKKEditClass->sessionBusy=true;
 
+	retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
+	if(retval==true)
+		{
+			QString	content=QString::fromUtf8(file.readAll());
+			cursor=this->textCursor();
+			cursor.beginEditBlock();
+				cursor.select(QTextCursor::Document);
+				cursor.removeSelectedText ();
+				cursor.insertText(content);
 
+				this->highlighter->rehighlight();
+				this->dirty=false;
+				file.close();
 
+				block=this->document()->findBlockByNumber(currentline-1);
 
+				if(block.isValid()==false)
+					block=this->document()->lastBlock();
+				cursor=this->textCursor();
+				cursor.setPosition(block.position());
+				this->setTextCursor(cursor);
+			cursor.endEditBlock();
+			this->mainKKEditClass->setToolbarSensitive();
+		}
 
-
-
-
-
+	this->mainKKEditClass->sessionBusy=false;
+}
 

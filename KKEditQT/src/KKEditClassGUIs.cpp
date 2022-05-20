@@ -118,7 +118,7 @@ void KKEditClass::buildPrefsWindow(void)
 	makePrefsCheck(NODUPLICATE,"Don't Open Duplicate File",this->prefsNoOpenduplicate,0,posy);
 //turn off warnings
 	posy++;
-	makePrefsCheck(NOWARN,"Don't Warn On File Change",this->noWarnings,0,posy);
+	makePrefsCheck(NOWARN,"Don't Warn On File Change",this->prefsNoWarnings,0,posy);
 
 //autoshow completion
 	posy++;
@@ -1587,6 +1587,7 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
+
 
 
 

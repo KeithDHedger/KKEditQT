@@ -1,4 +1,6 @@
 0.7.1
+Done warn on file change pref.
+Done refresh document when file changes on disk.
 Add sytnatx highlighting for binary numbers in 'c/c++'.
 Added functions for multiple different multiline highlighting.
 More syntax highlighting fixes.
@@ -848,32 +850,6 @@ Updated Help file.
 
 0.0.4
 1st release
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
