@@ -1,4 +1,5 @@
 0.7.1
+Revert file no longer deletes undo history.
 Done warn on file change pref.
 Done refresh document when file changes on disk.
 Add sytnatx highlighting for binary numbers in 'c/c++'.
