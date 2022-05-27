@@ -730,6 +730,7 @@ void DocumentClass::mouseReleaseEvent(QMouseEvent *event)
 	QTextCursor thiscursor=this->textCursor();
 
 	this->searchPos=this->textCursor().position();
+	this->mainKKEditClass->currentTab=this->mainKKEditClass->mainNotebook->currentIndex();
 	QPlainTextEdit::mouseReleaseEvent(event);
 }
 
@@ -983,5 +984,6 @@ void DocumentClass::setHighlightAll(void)
 		}
 	this->setXtraSelections();
 }
+
 
 

@@ -1,4 +1,5 @@
 0.7.1
+Fixed find/find next menus.
 Fixed changed find options being saved with prefs.
 Added find after replace option to find dialog.
 Find backwards in all files working properly.

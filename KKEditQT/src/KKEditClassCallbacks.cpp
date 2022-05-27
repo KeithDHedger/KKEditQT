@@ -575,6 +575,11 @@ void KKEditClass::doEditMenuItems()
 				break;
 			case FINDNEXTMENUITEM:
 				doFindReplace(FINDNEXT);
+				if(this->hightlightAll==true)
+					{
+						if(document!=NULL)
+							document->setHighlightAll();
+					}
 				break;
 			case SORTTABSMENUITEM:
 				this->sortTabs();
@@ -1317,6 +1322,7 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 				}
 		}
 }
+
 
 
 
