@@ -577,5 +577,3 @@ class KKEditClass : public QObject
 #endif
 
 
-
-

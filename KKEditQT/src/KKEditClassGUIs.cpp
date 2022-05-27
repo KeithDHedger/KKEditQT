@@ -293,7 +293,7 @@ void KKEditClass::buildPrefsWindow(void)
 	table->setColumnStretch(1,1);
 
 	tab->setLayout(this->table);
-	prefsnotebook->addTab(tab,"Administration");
+	prefsnotebook->addTab(tab,"Application");
 
 	mainvbox->addWidget(prefsnotebook);
 //nag
@@ -1589,6 +1589,5 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
-
 
 

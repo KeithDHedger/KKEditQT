@@ -45,3 +45,4 @@ class ToolBarClass : public QToolBar
 
 #endif
 
+

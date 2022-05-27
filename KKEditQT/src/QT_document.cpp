@@ -986,4 +986,3 @@ void DocumentClass::setHighlightAll(void)
 }
 
 
-

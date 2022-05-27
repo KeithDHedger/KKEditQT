@@ -48,3 +48,4 @@ class RecentMenuClass : public QObject
 
 #endif
 
+

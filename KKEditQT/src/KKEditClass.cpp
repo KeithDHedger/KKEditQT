@@ -1219,6 +1219,11 @@ void KKEditClass::showWebPage(QString windowtitle,QString url)
 	//this->webView->load(QUrl(url));
 	this->webView->load(QUrl::fromUserInput(url));
 	this->docView->show();
+	this->docView->activateWindow();
+	this->docView->raise();
+
+	this->docView->setWindowState(Qt::WindowNoState);//TODO//doesnt work
+
 	this->setDocMenu();
 #else
 	QDesktopServices::openUrl(QUrl(url));
@@ -1439,7 +1444,5 @@ int KKEditClass::getBit(int data,int bit)
 {
 	return((data & (1<<bit)) && true);
 }
-
-
 
 

@@ -405,4 +405,3 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 }
 
 
-

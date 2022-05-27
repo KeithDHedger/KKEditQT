@@ -22,11 +22,13 @@
 
 void KKEditClass::doFindButton(void)
 {
+	DocumentClass	*document;
+
 	this->currentTab=this->mainNotebook->currentIndex();
 	this->doFindReplace(sender()->objectName().toInt());
 	if(this->hightlightAll==true)
 		{
-			DocumentClass	*document=this->getDocumentForTab(-1);
+			document=this->getDocumentForTab(-1);
 			if(document!=NULL)
 				document->setHighlightAll();
 		}
@@ -111,7 +113,6 @@ void KKEditClass::doFindReplace(int response_id)
 							this->setTabVisibilty(this->currentTab,true);
 							return;;
 						}
-					
 				}
 		}
 }
@@ -294,8 +295,4 @@ void KKEditClass::doLiveSearch(const QString text)
 	if(retval==false)
 		doc->setTextCursor(savetc);
 }
-
-
-
-
 
