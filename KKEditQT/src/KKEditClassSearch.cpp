@@ -229,6 +229,9 @@ void KKEditClass::setSearchPrefs(int state)
 					case FRSEARCHBACK:
 						this->searchBack=this->frSwitches[FRSEARCHBACK]->isChecked();
 						break;
+					case FRREPLACEFIND:
+						this->findAfterReplace=this->frSwitches[FRREPLACEFIND]->isChecked();
+						break;
 				}
 		}
 

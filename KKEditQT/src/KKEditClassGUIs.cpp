@@ -547,6 +547,10 @@ void KKEditClass::buildFindReplace(void)
 	this->frSwitches[FRUSEREGEX]=new QCheckBox("Use Regex");
 	this->frSwitches[FRUSEREGEX]->setChecked(this->useRegex);
 	hlayout->addWidget(this->frSwitches[FRUSEREGEX]);
+//find after replace
+	this->frSwitches[FRREPLACEFIND]=new QCheckBox("Find After Replace");
+	this->frSwitches[FRREPLACEFIND]->setChecked(this->findAfterReplace);
+	hlayout->addWidget(this->frSwitches[FRREPLACEFIND]);
 
 	vlayout->addWidget(hbox);
 
@@ -1585,5 +1589,6 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
+
 
 

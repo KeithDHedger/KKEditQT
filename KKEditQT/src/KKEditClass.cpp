@@ -605,6 +605,7 @@ void KKEditClass::readConfigs(void)
 	this->hightlightAll=this->prefs.value("find/hightlightall",QVariant(bool(false))).value<bool>();
 	this->replaceAll=this->prefs.value("find/replaceall",QVariant(bool(false))).value<bool>();
 	this->searchBack=this->prefs.value("find/searchback",QVariant(bool(false))).value<bool>();
+	this->findAfterReplace=this->prefs.value("find/findafterreplace",QVariant(bool(false))).value<bool>();
 
 	this->setAppShortcuts();	
 }
@@ -756,6 +757,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/onexitsavesession",this->onExitSaveSession);
 
 //find
+	this->setSearchPrefs(0);
 	this->prefs.setValue("find/findlist",this->findList);
 	this->prefs.setValue("find/replacelist",this->replaceList);
 	this->prefs.setValue("find/wrapsearch",this->wrapSearch);
@@ -765,6 +767,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("find/hightlightall",this->hightlightAll);
 	this->prefs.setValue("find/replaceall",this->replaceAll);
 	this->prefs.setValue("find/searchback",this->searchBack);
+	this->prefs.setValue("find/findafterreplace",this->findAfterReplace);
 	
 	this->disabledPlugins.clear();
 	for(int j=0;j<this->plugins.count();j++)
@@ -1436,6 +1439,7 @@ int KKEditClass::getBit(int data,int bit)
 {
 	return((data & (1<<bit)) && true);
 }
+
 
 
 

@@ -857,6 +857,8 @@ bool DocumentClass::findStr(int what)
 							thiscursor.endEditBlock();
 							doctext=this->toPlainText();
 						}
+					if(this->mainKKEditClass->findAfterReplace==false)
+						return(true);
 				}
 		}
 
@@ -981,4 +983,5 @@ void DocumentClass::setHighlightAll(void)
 		}
 	this->setXtraSelections();
 }
+
 

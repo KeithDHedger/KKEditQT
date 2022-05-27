@@ -1,4 +1,5 @@
 0.7.1
+Fixed changed find options being saved with prefs.
 Find backwards in all files working properly.
 Find/Replace handles multi line find replace properly.
 Redone find/replace, now replaces '\n' and '\t' in the search dialog correctly.
@@ -857,6 +858,7 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 
 
