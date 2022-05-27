@@ -167,4 +167,3 @@ void pythonlang::runCustomRule(QString text,highLightingRule *hr)
 }
 
 
-

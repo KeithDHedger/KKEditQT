@@ -22,254 +22,96 @@
 
 void KKEditClass::doFindButton(void)
 {
-//xxx	this->startingTab=this->tabBar->currentIndex();
-	this->startingTab=this->mainNotebook->currentIndex();
-	this->currentTab=this->startingTab;
+	this->currentTab=this->mainNotebook->currentIndex();
 	this->doFindReplace(sender()->objectName().toInt());
-}
-
-void KKEditClass::setHighlightAll(void)
-{
-	DocumentClass				*document=this->getDocumentForTab(-1);
-	QTextDocument				*doc;
-	QTextDocument::FindFlags	hflags;
-	QTextCursor					thiscursor;
-	QRegularExpression			rx;
-
-	if(this->hightlightAll==false)
+	if(this->hightlightAll==true)
 		{
-			document->clearHilites();
-			return;
+			DocumentClass	*document=this->getDocumentForTab(-1);
+			document->setHighlightAll();
 		}
-
-	rx.setPattern(this->findDropBox->currentText());
-
-	if(this->insensitiveSearch==true)
-		rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
-	else
-		hflags|=QTextDocument::FindCaseSensitively;
-
-	doc=document->document();
-	thiscursor=document->textCursor();
-	thiscursor.movePosition(QTextCursor::Start);
-	document->clearHilites();
-	document->selection.format.setBackground(QColor(document->highlighter->documentForeground));//TODO// add to theme?
-	document->selection.format.setForeground(QColor(document->highlighter->documentBackground));
-	if(this->insensitiveSearch==false)
-		hflags|=QTextDocument::FindCaseSensitively;
-
-	while(!thiscursor.isNull() && !thiscursor.atEnd())
-		{
-			if(this->useRegex==false)
-				thiscursor=doc->find(this->findDropBox->currentText(),thiscursor,hflags);
-			else
-				thiscursor=doc->find(rx,thiscursor,hflags);
-
-			if(!thiscursor.isNull())
-				{
-					document->selection.cursor=thiscursor;
-					document->hilightSelections.append(document->selection);
-				}
-		}
-	document->setXtraSelections();
 }
 
 void KKEditClass::doFindReplace(int response_id)
 {
-	unsigned int				whattodo=0;
-	bool						flag=false;
-	DocumentClass			*document=this->getDocumentForTab(this->currentTab);
-	QTextCursor				thiscursor;
-	QTextDocument::FindFlags	flags;
-	bool						foundmatch=false;
-	int						position;
-	QRegularExpression		rx;
-	QComboBox				*box;
-	QStringList				*list;
+	bool				retval;
+	DocumentClass	*doc=this->getDocumentForTab(this->currentTab);
 
-	this->setSearchPrefs(0);
+	if(doc==NULL)
+		return;
 
-	whattodo+=(this->wrapSearch);//+1
-	whattodo+=(this->findInAllFiles<<1);//+2
-	whattodo+=(this->replaceAll<<2);//+4
-
-	rx.setPattern(this->findDropBox->currentText());
-
-	if(this->insensitiveSearch==true)
-		rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
-	else
-		flags|=QTextDocument::FindCaseSensitively;
-
-	if(this->searchBack==true)
-		flags|=QTextDocument::FindBackward;
-
-//save combos
-	box=this->findDropBox;
-	list=&(this->findList);
-	for(int k=0;k<2;k++)
+	if((this->findInAllFiles==true) && (this->replaceAll==true) && (response_id==FINDREPLACE))
 		{
-			if(box->currentText().isEmpty()==false)
+			int	total=0;
+			for(int j=0;j<this->mainNotebook->count();j++)
 				{
-					for(int j=0;j<box->count();j++)
-						{
-							if(box->currentText().compare(box->itemText(j))==0)
-								flag=true;
-						}
-					if(flag==false)
-						box->addItem(box->currentText());
+					doc=this->getDocumentForTab(j);
+					doc->findStr(FINDREPLACE);
+					doc->finishedSearch=false;
+					total+=doc->totalMatches;
 				}
-
-			for(int j=0;j<box->count();j++)
-				list->append(box->itemText(j));
-			list->removeDuplicates();
-			box=this->replaceDropBox;
-			list=&(this->replaceList);
+			this->statusText->setText(QString("Replaced %1 occurences in %2 files ...").arg(total).arg(this->mainNotebook->count()));//TODO//
+			return;
 		}
 
-	this->setHighlightAll();
+	retval=doc->findStr(response_id);
+	if((retval==false) && (doc->finishedSearch==true) && (this->findInAllFiles==true) && (this->searchBack==false))
+		{	
+			int holdtab=this->currentTab;
+			bool flagjit=false;
 
-	switch(response_id)
+			doc->finishedSearch=false;
+			while(retval==false)
+				{
+					this->currentTab++;
+					if(this->currentTab==this->mainNotebook->count())
+						this->currentTab=0;
+					if(holdtab==this->currentTab)
+						{
+							if(flagjit==false)
+								flagjit=true;
+							else
+								return;
+						}
+					doc=this->getDocumentForTab(this->currentTab);
+					doc->finishedSearch=false;
+					doc->searchPos=0;
+					retval=doc->findStr(FINDNEXT);
+					if(retval==true)
+						{
+							this->setTabVisibilty(this->currentTab,true);
+							break;
+						}
+				}
+		}
+
+	if((retval==false) && (doc->finishedSearch==true) && (this->findInAllFiles==true) && (this->searchBack==true))
 		{
-			case FINDREPLACE:
-				if((whattodo & 4)==4)
-					{
-						QString	txt;
-						QString	newstr;
-						int		start=this->mainNotebook->currentIndex();
-						int		end=this->mainNotebook->currentIndex()+1;
+			int holdtab=this->currentTab;
+			bool flagjit=false;
 
-						if((whattodo & 2)==2)
-							{
-								start=0;
-								end=this->mainNotebook->count();
-							}
-
-						for(int j=start;j<end;j++)
-							{
-								document=this->getDocumentForTab(j);
-								txt=document->toPlainText();
-								newstr=document->toPlainText();
-								if(this->useRegex==false)
-									txt.replace(this->findDropBox->currentText(),this->replaceDropBox->currentText(),(Qt::CaseSensitivity)!this->insensitiveSearch);
-								else
-									txt.replace(rx,this->replaceDropBox->currentText());
-
-								if(txt.compare(newstr)!=0)
-									{
-										thiscursor=document->textCursor();
-										thiscursor.beginEditBlock();
-											thiscursor.select(QTextCursor::Document);
-											thiscursor.removeSelectedText();
-											thiscursor.insertText(txt);
-										thiscursor.endEditBlock();
-									}
-							}
-						break;
-					}
-
-				if(this->useRegex==false)
-					{
-						if(document->textCursor().hasSelection())
-							{
-								if(document->textCursor().selectedText().compare(this->findDropBox->currentText())==0)
-									document->textCursor().insertText(this->replaceDropBox->currentText());
-							}
-					}
-				else
-					{
-						if(document->textCursor().hasSelection())
-							{
-								QString	str=document->textCursor().selectedText();
-								str.replace(rx,this->replaceDropBox->currentText());
-								document->textCursor().insertText(str);
-							}
-					}
-				//break;
-				
-//			case FINDPREV:
-//				if(this->searchBack==true)
-//					flags|=QTextDocument::FindBackward;
-			case FINDNEXT:
-				if(this->useRegex==false)
-					foundmatch=document->find(this->findDropBox->currentText(),flags);
-				else
-					foundmatch=document->find(rx,flags);
-
-				if(foundmatch==false)//now what?
-					{
-						switch(whattodo & 3)
-							{
-								case 0:
-									return;
-									break;
-								case 1://wrap only
-									position=document->textCursor().position();
-									thiscursor=document->textCursor();
-	//								if(response_id==FINDNEXT)
-									if(this->searchBack==false)
-										thiscursor.movePosition(QTextCursor::Start);
-									else
-										thiscursor.movePosition(QTextCursor::End);
-									document->setTextCursor(thiscursor);
-									if(this->useRegex==false)
-										foundmatch=document->find(this->findDropBox->currentText(),flags);
-									else
-										foundmatch=document->find(rx,flags);
-
-									if(foundmatch==false)
-										{
-											thiscursor=document->textCursor();
-											thiscursor.setPosition(position);
-											document->setTextCursor(thiscursor);
-										}
-									break;
-								case 2:	//all files implies wrap
-								case 3:
-									if(this->searchBack==false)
-								//	if(response_id==FINDNEXT)
-										{
-											this->currentTab++;
-											if(this->currentTab==this->mainNotebook->count())
-												this->currentTab=0;
-										}
-									else
-										{
-											this->currentTab--;
-											if(this->currentTab<0)
-												this->currentTab=this->mainNotebook->count()-1;
-										}
-									if(this->currentTab==this->startingTab)
-										return;
-
-									document=this->getDocumentForTab(this->currentTab);
-									thiscursor=document->textCursor();
-									if(this->searchBack==false)
-								//	if(response_id==FINDNEXT)
-										thiscursor.movePosition(QTextCursor::Start);
-									else
-										thiscursor.movePosition(QTextCursor::End);
-									document->setTextCursor(thiscursor);
-									if(this->useRegex==false)
-										foundmatch=document->find(this->findDropBox->currentText(),flags);
-									else
-										foundmatch=document->find(rx,flags);
-									if(foundmatch==true)
-										{
-											//this->mainNotebook->setCurrentIndex(this->currentTab);
-											//this->tabBar->setTabVisible(this->mainNotebook->currentIndex(),true);
-											//document->visible=true;
-											this->setTabVisibilty(this->currentTab,true);
-											this->setHighlightAll();
-											//this->mainNotebook->repaint();
-										}
-									else
-										{
-											this->doFindReplace(response_id);
-										}
-									break;
-							}
-					}
-				break;
+			doc->finishedSearch=false;
+			while(retval==false)
+				{
+					this->currentTab--;
+					if(this->currentTab==-1)
+						this->currentTab=this->mainNotebook->count()-1;
+					if(holdtab==this->currentTab)
+						{
+							if(flagjit==false)
+								flagjit=true;
+							else
+								return;
+						}
+					doc=this->getDocumentForTab(this->currentTab);
+					doc->searchPos=doc->toPlainText().length()-1;
+					retval=doc->findStr(FINDNEXT);
+					if(retval==true)
+						{
+							this->setTabVisibilty(this->currentTab,true);
+							return;;
+						}
+					
+				}
 		}
 }
 
@@ -388,6 +230,11 @@ void KKEditClass::setSearchPrefs(int state)
 						break;
 				}
 		}
+
+	this->correctedFind=this->findDropBox->currentText().replace("\\n","\n");
+	this->correctedFind=this->correctedFind.replace("\\t","\t");
+	this->correctedReplace=this->replaceDropBox->currentText().replace("\\n","\n");
+	this->correctedReplace=this->correctedReplace.replace("\\t","\t");
 }
 
 void KKEditClass::functionSearchDialog(void)
@@ -443,6 +290,7 @@ void KKEditClass::doLiveSearch(const QString text)
 	if(retval==false)
 		doc->setTextCursor(savetc);
 }
+
 
 
 

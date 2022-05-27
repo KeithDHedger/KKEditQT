@@ -49,6 +49,3 @@ class htmllang : public QObject, SyntaxHighlitePluginInterface
 #endif
 
 
-
-
-

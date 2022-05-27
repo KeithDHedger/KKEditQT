@@ -49,6 +49,3 @@ class cpplang : public QObject, SyntaxHighlitePluginInterface
 #endif
 
 
-
-
-

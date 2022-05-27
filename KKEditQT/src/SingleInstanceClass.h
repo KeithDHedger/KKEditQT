@@ -50,6 +50,6 @@ class SingleInstanceClass
 		bool				usingMulti=false;
 };
 
-
 #endif
+
 

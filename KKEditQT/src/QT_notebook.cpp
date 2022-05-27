@@ -166,13 +166,3 @@ void NoteBookClass::scrollTabsRight(void)
 }
 
 
-
-
-
-
-
-
-
-
-
-

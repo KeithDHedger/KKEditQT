@@ -49,7 +49,3 @@ class javalang : public QObject, SyntaxHighlitePluginInterface
 #endif
 
 
-
-
-
-

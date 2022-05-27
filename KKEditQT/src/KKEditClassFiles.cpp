@@ -234,19 +234,6 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 					delete msg;
 				}
 		}
-
-//	for(int j=0;j<this->plugins.count();j++)
-//		{
-//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSAVE)==DOSAVE))
-//				{
-//					plugData	pd;
-//					pd.doc=doc;
-//					pd.tabNumber=this->mainNotebook->currentIndex();
-//					pd.what=DOSAVE;
-//					this->plugins[j].instance->plugRun(&pd);
-//				}
-//		}
-
 	return true;
 }
 
@@ -382,19 +369,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	pd.tabNumber=this->mainNotebook->currentIndex();
 	pd.what=DOLOAD;
 	this->runAllPlugs(pd);
-
-//	for(int j=0;j<this->plugins.count();j++)
-//		{
-//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOLOAD)==DOLOAD))
-//				{
-//					plugData	pd;
-//					pd.doc=doc;
-//					pd.tabNumber=this->mainNotebook->currentIndex();
-//					pd.what=DOLOAD;
-//					this->plugins[j].instance->plugRun(&pd);
-//				}
-//		}
-
 	return(retval);
 }
 
@@ -429,25 +403,5 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

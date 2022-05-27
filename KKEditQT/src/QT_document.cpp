@@ -268,7 +268,6 @@ void DocumentClass::highlightCurrentLine()
 	else
 		this->setXtraSelections();
 
-
 	this->mainKKEditClass->sessionBusy=holdsb;
 	this->mainKKEditClass->setToolbarSensitive();
 }
@@ -280,6 +279,7 @@ void DocumentClass::setXtraSelections(void)
 	this->extraSelections.append(this->selectedLine);
 	this->extraSelections.append(this->extraBMSelections);
 	this->extraSelections.append(this->bracketMatch);
+	this->extraSelections.append(this->findMatch);
 	this->setExtraSelections(this->extraSelections);
 }
 
@@ -295,6 +295,7 @@ void DocumentClass::clearXtraSelections()
 
 void DocumentClass::clearHilites()
 {
+	this->findMatch.clear();
 	this->hilightSelections.clear();
 	this->setXtraSelections();
 }
@@ -653,7 +654,7 @@ void DocumentClass::setRedo(bool avail)
 
 void DocumentClass::dragMoveEvent(QDragMoveEvent *event)
 {
-	if((event->mimeData()->hasUrls()==true))
+	if((event->mimeData()->hasUrls()==true) || (event->mimeData()->hasText()==true))
 		event->accept();
 	else
 		QPlainTextEdit::dragMoveEvent(event);
@@ -661,7 +662,7 @@ void DocumentClass::dragMoveEvent(QDragMoveEvent *event)
 
 void DocumentClass::dragEnterEvent(QDragEnterEvent* event)
 {
-	if((event->mimeData()->hasUrls()==true))
+	if((event->mimeData()->hasUrls()==true) || (event->mimeData()->hasText()==true))
 		event->accept();
     else
 		QPlainTextEdit::dragEnterEvent(event);
@@ -669,6 +670,12 @@ void DocumentClass::dragEnterEvent(QDragEnterEvent* event)
 
 void DocumentClass::dropEvent(QDropEvent* event)
 { 
+	if(event->mimeData()->hasText()==true)
+		{
+			QPlainTextEdit::dropEvent(event);
+			return;
+		}
+
 	if (event->mimeData()->hasUrls())
 		{
 			const QMimeData	*mime=event->mimeData();
@@ -686,12 +693,16 @@ void DocumentClass::dropEvent(QDropEvent* event)
 						{
 							QString			content=QString::fromUtf8(file.readAll());
 							QMimeDatabase	db;
+							QTextCursor		cursor;
 							QMimeType		type=db.mimeTypeForFile(fileinfo.canonicalFilePath());
 							this->mimeType=type.name();
-							this->setPlainText(content);
-							this->setFilePrefs();
-							this->highlighter->rehighlight();
-							this->dirty=true;
+							cursor=this->textCursor();
+							cursor.beginEditBlock();
+								cursor.insertText(content);
+								this->setFilePrefs();
+								this->highlighter->rehighlight();
+								this->dirty=true;
+							cursor.endEditBlock();
 							file.close();
 						}
 					this->mainKKEditClass->switchPage(tabnum);
@@ -712,6 +723,14 @@ void DocumentClass::setBMFromLineBar(QMouseEvent *event)
 
 	this->mainKKEditClass->handleBMMenu(this,TOGGLEBOOKMARKMENUITEM,cursor);
 	this->highlightCurrentLine();
+}
+
+void DocumentClass::mouseReleaseEvent(QMouseEvent *event)
+{
+	QTextCursor thiscursor=this->textCursor();
+
+	this->searchPos=this->textCursor().position();
+	QPlainTextEdit::mouseReleaseEvent(event);
 }
 
 void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
@@ -772,5 +791,194 @@ void DocumentClass::refreshFromDisk(void)
 		}
 
 	this->mainKKEditClass->sessionBusy=false;
+}
+
+bool DocumentClass::findStr(int what)
+{
+	QString							doctext;
+	QRegularExpression				pattern;
+	QTextCharFormat					format;
+	QRegularExpressionMatchIterator	it;
+	QRegularExpressionMatch			match;
+	QTextCursor						thiscursor;
+
+	this->mainKKEditClass->setSearchPrefs(0);
+
+//	if(this->mainKKEditClass->searchBack!=this->changeDirection)
+//		{
+//			this->changeDirection=this->mainKKEditClass->searchBack;
+//			this->findStr(FINDNEXT);
+//		}
+
+	doctext=this->toPlainText();
+
+	if(this->mainKKEditClass->useRegex==true)
+		pattern.setPattern(this->mainKKEditClass->correctedFind);
+	else
+		pattern.setPattern(QRegularExpression::escape(this->mainKKEditClass->correctedFind));
+
+	if(this->mainKKEditClass->insensitiveSearch==true)
+		pattern.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+
+	format.setFontItalic(false);
+	format.setFontWeight(0);
+	format.setForeground(QColor(this->highlighter->findFGColour));
+	format.setBackground(QColor(this->highlighter->findBGColour));
+
+	if((this->mainKKEditClass->replaceAll==true) && (what==FINDREPLACE))
+		{
+			this->totalMatches=doctext.count(pattern);
+			doctext.replace(pattern,this->mainKKEditClass->correctedReplace);
+			thiscursor=this->textCursor();
+			thiscursor.beginEditBlock();
+				thiscursor.select(QTextCursor::Document);
+				thiscursor.removeSelectedText();
+				thiscursor.insertText(doctext);
+			thiscursor.endEditBlock();
+			this->mainKKEditClass->statusText->setText(QString("Replaced %1 occurences ...").arg(this->totalMatches));//TODO//
+			return(true);
+		}
+
+	if(what==FINDREPLACE)
+		{
+			QString	selection;
+			thiscursor=this->textCursor();
+			if(thiscursor.hasSelection()==true)
+				{
+					QString	holdstr;
+					selection=doctext.mid(thiscursor.selectionStart(),thiscursor.selectionEnd()-thiscursor.selectionStart());
+					holdstr=selection;
+					selection.replace(pattern,this->mainKKEditClass->correctedReplace);
+					if(holdstr.compare(selection)!=0)
+						{
+							thiscursor.beginEditBlock();
+								thiscursor.removeSelectedText();
+								thiscursor.insertText(selection);
+							thiscursor.endEditBlock();
+							doctext=this->toPlainText();
+						}
+				}
+		}
+
+	if(this->mainKKEditClass->searchBack==false)
+		{
+			it=pattern.globalMatch(&doctext,this->searchPos);
+			if(it.hasNext())
+				{
+					match=it.next();
+					thiscursor=this->textCursor();
+					thiscursor.setPosition(match.capturedStart());
+					thiscursor.setPosition(match.capturedLength()+match.capturedStart(),QTextCursor::KeepAnchor);
+					this->setTextCursor(thiscursor);
+					this->searchPos=match.capturedStart()+match.capturedLength();
+					return(true);
+				}
+			else
+				{
+					if(this->mainKKEditClass->findInAllFiles==true)
+						{
+							this->finishedSearch=true;
+							return(false);
+						}
+					if((this->mainKKEditClass->wrapSearch==true) && (this->mainKKEditClass->findInAllFiles==false))
+						{
+							this->searchPos=0;
+							it=pattern.globalMatch(&doctext,this->searchPos);
+							if(it.hasNext())
+								{
+									match=it.next();
+									thiscursor=this->textCursor();
+									thiscursor.setPosition(match.capturedStart());
+									thiscursor.setPosition(match.capturedLength()+match.capturedStart(),QTextCursor::KeepAnchor);
+									this->setTextCursor(thiscursor);
+									this->searchPos=match.capturedStart()+match.capturedLength();
+									return(true);
+								}
+						}
+					else
+						{
+							if(this->mainKKEditClass->findInAllFiles==true)
+								{
+									this->finishedSearch=true;
+									return(false);
+								}
+						}
+				}
+		}
+	else
+		{
+			int retint=doctext.lastIndexOf(pattern,this->searchPos,&match);
+			if(retint!=-1)
+				{
+					this->searchPos=retint-1;
+					this->finishedSearch=false;
+				}
+			else
+				{
+					if((this->mainKKEditClass->wrapSearch==true) && (this->mainKKEditClass->findInAllFiles==false))
+						{
+							this->searchPos=doctext.length()-1;
+							this->findStr(FINDNEXT);
+						}
+					if(this->mainKKEditClass->findInAllFiles==true)
+						{
+							this->finishedSearch=true;
+							return(false);
+						}
+				}
+
+			if(match.capturedStart()>0)
+				{				
+					thiscursor=this->textCursor();
+					thiscursor.setPosition(match.capturedStart());
+					thiscursor.setPosition(match.capturedLength()+match.capturedStart(),QTextCursor::KeepAnchor);
+					this->setTextCursor(thiscursor);
+					return(true);
+				}
+		}
+	return(false);
+}
+
+void DocumentClass::setHighlightAll(void)
+{
+	QString							doctext;
+	QRegularExpression				pattern;
+	QTextCharFormat					format;
+	QRegularExpressionMatchIterator	it;
+	QRegularExpressionMatch			match;
+
+	this->mainKKEditClass->setSearchPrefs(0);
+
+	doctext=this->toPlainText();
+
+	if(this->mainKKEditClass->useRegex==true)
+		pattern.setPattern(this->mainKKEditClass->correctedFind);
+	else
+		pattern.setPattern(QRegularExpression::escape(this->mainKKEditClass->correctedFind));
+
+	if(this->mainKKEditClass->insensitiveSearch==true)
+		pattern.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+
+	format.setFontItalic(false);
+	format.setFontWeight(0);
+	format.setForeground(QColor(this->highlighter->findFGColour));
+	format.setBackground(QColor(this->highlighter->findBGColour));
+
+	this->findMatch.clear();
+		
+	it=pattern.globalMatch(&doctext);
+	while(it.hasNext())
+		{
+			match=it.next();
+				{
+					QTextEdit::ExtraSelection	findmatch;
+					findmatch.cursor=this->textCursor();
+					findmatch.cursor.setPosition(match.capturedStart());
+					findmatch.cursor.setPosition(match.capturedLength()+match.capturedStart(),QTextCursor::KeepAnchor);
+					findmatch.format=format;
+					this->findMatch.append(findmatch);
+				}
+		}
+	this->setXtraSelections();
 }
 

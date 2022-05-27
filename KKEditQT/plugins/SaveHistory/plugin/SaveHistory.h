@@ -55,4 +55,3 @@ class SaveHistory : public QObject, kkEditQTPluginInterface
 #endif
 
 
-

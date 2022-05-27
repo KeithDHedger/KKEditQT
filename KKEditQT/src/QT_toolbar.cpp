@@ -60,3 +60,4 @@ void ToolBarClass::dropEvent(QDropEvent* event)
 		}
 	QToolBar::dropEvent(event);
 }
+

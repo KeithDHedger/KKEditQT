@@ -160,3 +160,4 @@ void shlang::runCustomRule(QString text,highLightingRule *hr)
 		}
 }
 
+

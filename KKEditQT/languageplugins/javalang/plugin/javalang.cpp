@@ -160,5 +160,3 @@ void javalang::runCustomRule(QString text,highLightingRule *hr)
 }
 
 
-
-

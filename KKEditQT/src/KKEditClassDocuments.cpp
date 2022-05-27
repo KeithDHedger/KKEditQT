@@ -309,13 +309,3 @@ void KKEditClass::checkDoc(DocumentClass *doc)
 }
 
 
-
-
-
-
-
-
-
-
-
-

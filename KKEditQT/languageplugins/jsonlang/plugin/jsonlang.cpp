@@ -67,4 +67,3 @@ void jsonlang::setTheme(QHash<int,themeStruct> newtheme)
 }
 
 
-

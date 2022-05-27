@@ -48,3 +48,4 @@ class HistoryClass : public QObject
 		int					currentIndex=0;
 };
 #endif
+

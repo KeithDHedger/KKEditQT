@@ -211,7 +211,6 @@ void KKEditClass::setToolsData(int what)
 	QCheckBox				*barcheck;
 	QPushButton				*savebutton;
 
-
 	savebutton=this->toolsWindow->findChild<QPushButton*>(QString("%1").arg(TOOLSSAVE));
 	savebutton->setEnabled(!this->toolSelect->currentData().toString().isEmpty());
 	if(sender()->objectName().compare(TOOLCOMBOBOX)==0)

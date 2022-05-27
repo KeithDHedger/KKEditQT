@@ -173,27 +173,6 @@ void cpplang::runCustomRule(QString text,highLightingRule *hr)
 				}
 		}
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

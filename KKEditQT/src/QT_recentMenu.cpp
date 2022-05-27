@@ -98,3 +98,4 @@ void RecentMenuClass::menuClicked(QAction *action)
 	this->mainKKEditClass->openFile(action->text());
 }
 
+

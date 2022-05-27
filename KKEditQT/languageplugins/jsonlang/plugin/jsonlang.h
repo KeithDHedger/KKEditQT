@@ -49,6 +49,3 @@ class jsonlang : public QObject, SyntaxHighlitePluginInterface
 #endif
 
 
-
-
-

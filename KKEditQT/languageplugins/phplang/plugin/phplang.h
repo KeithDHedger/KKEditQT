@@ -49,7 +49,3 @@ class phplang : public QObject, SyntaxHighlitePluginInterface
 #endif
 
 
-
-
-
-

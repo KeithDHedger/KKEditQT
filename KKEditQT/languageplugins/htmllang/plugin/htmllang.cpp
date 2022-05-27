@@ -100,6 +100,3 @@ void htmllang::setTheme(QHash<int,themeStruct> newtheme)
 }
 
 
-
-
-

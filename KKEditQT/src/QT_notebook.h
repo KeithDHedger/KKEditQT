@@ -58,8 +58,3 @@ class NoteBookClass : public QTabWidget
 #endif
 
 
-
-
-
-
-

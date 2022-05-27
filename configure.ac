@@ -87,4 +87,3 @@ AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile)
 AC_OUTPUT
 
 
-

@@ -12,7 +12,9 @@
 		[
 			{
 				"bgcolour":"#ffffff",
-				"fgcolour":"#000000"
+				"fgcolour":"#000000",
+				"findbcol":"#800000",
+				"findfcol":"#ffffff"
 			}
 		],
 	"functions":
@@ -112,5 +114,6 @@
 			}
 		]
 }
+
 
 

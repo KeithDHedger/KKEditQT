@@ -63,7 +63,6 @@ Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHig
 	this->document=doc;
 }
 
-
 void Highlighter::setBit(int *data,int bit)
 {
 	*data=*data | (1<<bit);
@@ -129,7 +128,8 @@ void Highlighter::highlightBlock(const QString &text)
 			if(startExpression.pattern().compare(endExpression.pattern())==0)//fix for start/stop patterns the same ( a la bloody awaful python )
 				offset=startExpression.pattern().length();
 
-			if(getBit(prev,closecomment)==true)
+			if(getBit(prev,closecomment)==true)//TODO//use global
+			//if(this->docgetBit(prev,closecomment)==true)
 				{
 					startIndex=text.indexOf(startExpression);
 					if(startIndex!=-1)
@@ -308,7 +308,7 @@ void Highlighter::setTheme(QString themename)
 	QString					themepath;
 	QHash<int,themeStruct>	theme;
 	QJsonParseError			errorPtr;
-	QVariantList			localList;
+	QVariantList				localList;
 	QVariantMap				map;
 	QJsonDocument			doc;
     QVariantMap				mainMap;
@@ -349,6 +349,10 @@ void Highlighter::setTheme(QString themename)
 	this->docBackgroundCSS=QString("QPlainTextEdit {background-color: %1; color: %2;}").arg(map["bgcolour"].toString()).arg(map["fgcolour"].toString());
 	this->documentBackground=map["bgcolour"].toString();
 	this->documentForeground=map["fgcolour"].toString();
+
+	this->findFGColour=map["findfcol"].toString();
+	this->findBGColour=map["findbcol"].toString();
+
 	localList=mainMap["linenumbers"].toList();    
 	map=localList[0].toMap();
 	this->lineNumbersBackground=map["bgcolour"].toString();
@@ -373,25 +377,5 @@ void Highlighter::setTheme(QString themename)
 
 	return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

@@ -49,7 +49,3 @@ class pythonlang : public QObject, SyntaxHighlitePluginInterface
 #endif
 
 
-
-
-
-

@@ -160,4 +160,3 @@ void jslang::runCustomRule(QString text,highLightingRule *hr)
 }
 
 
-

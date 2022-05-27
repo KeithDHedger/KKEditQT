@@ -40,6 +40,7 @@ class DocumentClass : public QPlainTextEdit
 		QList<QTextEdit::ExtraSelection>	extraBMSelections;
 		QList<QTextEdit::ExtraSelection>	hilightSelections;
 		QList<QTextEdit::ExtraSelection>	bracketMatch;
+		QList<QTextEdit::ExtraSelection>	findMatch;
 		
 		QTextEdit::ExtraSelection		selection;
 		QTextEdit::ExtraSelection		selectedLine;
@@ -84,6 +85,15 @@ class DocumentClass : public QPlainTextEdit
 		bool								visible=true;
 		bool								fromMe=false;
 
+//find/replace
+		int								searchPos=-1000;
+		int								totalMatches=0;
+		bool								changeDirection=false;
+		bool								finishedSearch=false;
+
+		bool								findStr(int what=FINDNEXT);
+		void								setHighlightAll(void);
+
 	protected:
 	    void								resizeEvent(QResizeEvent *event);
 		void								keyPressEvent(QKeyEvent *event);
@@ -91,6 +101,7 @@ class DocumentClass : public QPlainTextEdit
 		void								focusInEvent(QFocusEvent *e);
 		void								contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
 		void								mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+		void								mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 		
 //dand
 		void								dragEnterEvent(QDragEnterEvent* event);
@@ -145,8 +156,6 @@ class LineNumberArea : public QWidget
 };
 
 #endif
-
-
 
 
 

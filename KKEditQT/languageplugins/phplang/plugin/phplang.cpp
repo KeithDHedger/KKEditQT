@@ -159,4 +159,3 @@ void phplang::runCustomRule(QString text,highLightingRule *hr)
 }
 
 
-

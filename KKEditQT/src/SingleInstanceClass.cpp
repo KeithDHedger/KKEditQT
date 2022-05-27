@@ -177,3 +177,4 @@ long SingleInstanceClass::getSIWorkSpace(void)
 	return(-1);
 }
 
+

@@ -49,7 +49,3 @@ class makelang : public QObject, SyntaxHighlitePluginInterface
 #endif
 
 
-
-
-
-

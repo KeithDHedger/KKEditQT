@@ -18,7 +18,6 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef _QT_RECENTMENU_
 #define _QT_RECENTMENU_
 
@@ -48,3 +47,4 @@ class RecentMenuClass : public QObject
 };
 
 #endif
+

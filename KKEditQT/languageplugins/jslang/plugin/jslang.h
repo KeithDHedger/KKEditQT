@@ -49,7 +49,3 @@ class jslang : public QObject, SyntaxHighlitePluginInterface
 #endif
 
 
-
-
-
-

@@ -224,7 +224,6 @@ void KKEditClass::buildPrefsWindow(void)
 	qobject_cast<QComboBox*>(prefsOtherWidgets[FUNCTIONCOMBO])->addItem("Display functions etc in menu in categorised format");
 	prefsOtherWidgets[FUNCTIONCOMBO]->setProperty("currentIndex",this->prefsFunctionMenuLayout);
 
-
 	hbox=new QHBoxLayout;
     hbox->addStretch(1);
 	hbox->addWidget(prefsOtherWidgets[FUNCTIONCOMBO]);
@@ -541,7 +540,7 @@ void KKEditClass::buildFindReplace(void)
 	hbox->setLayout(hlayout);
 
 //case
-	this->frSwitches[FRCASE]=new QCheckBox("Case insensitive");
+	this->frSwitches[FRCASE]=new QCheckBox("Case insensitive");//TODO//set signal mmmmm
 	this->frSwitches[FRCASE]->setChecked(this->insensitiveSearch);
 	hlayout->addWidget(this->frSwitches[FRCASE]);
 //use regex
@@ -1409,7 +1408,6 @@ void KKEditClass::buildToolOutputWindow(void)
 	dochlayout->addStretch(1);
 	dochlayout->addWidget(button);
 
-
 	dochlayout->addStretch(1);
 
 	docvlayout->addLayout(dochlayout);
@@ -1587,36 +1585,5 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

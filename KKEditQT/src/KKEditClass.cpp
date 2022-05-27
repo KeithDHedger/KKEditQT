@@ -225,19 +225,6 @@ void KKEditClass::switchPage(int index)
 	pd.userIntData1=index;
 	pd.what=DOSWITCHPAGE;
 	this->runAllPlugs(pd);
-
-//	for(int j=0;j<this->plugins.count();j++)
-//		{
-//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSWITCHPAGE)==DOSWITCHPAGE))
-//				{
-//					plugData	pd;
-//					pd.doc=doc;
-//					pd.tabNumber=this->mainNotebook->currentIndex();
-//					pd.userIntData1=index;
-//					pd.what=DOSWITCHPAGE;
-//					this->plugins[j].instance->plugRun(&pd);
-//				}
-//		}
 }
 
 void KKEditClass::rebuildBookMarkMenu()
@@ -938,18 +925,6 @@ bool KKEditClass::closeTab(int index)
 	pd.what=DOCLOSE;
 	this->runAllPlugs(pd);
 
-//	for(int j=0;j<this->plugins.count();j++)
-//		{
-//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOCLOSE)==DOCLOSE))
-//				{
-//					plugData	pd;
-//					pd.doc=doc;
-//					pd.tabNumber=thispage;
-//					pd.what=DOCLOSE;
-//					this->plugins[j].instance->plugRun(&pd);
-//				}
-//		}
-
 	doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(thispage));
 	if(doc!=0)
 		{
@@ -1172,17 +1147,6 @@ void KKEditClass::setToolbarSensitive(void)
 	pd.tabNumber=this->mainNotebook->currentIndex();
 	pd.what=DOSETSENSITVE;
 	this->runAllPlugs(pd);
-
-//	for(int j=0;j<this->plugins.count();j++)
-//		{
-//			if((this->plugins[j].loaded) && ((this->plugins[j].wants & DOSETSENSITVE)==DOSETSENSITVE))
-//				{
-//					plugData	pd;
-//					pd.tabNumber=this->mainNotebook->currentIndex();
-//					pd.what=DOSETSENSITVE;
-//					this->plugins[j].instance->plugRun(&pd);
-//				}
-//		}
 }
 
 void KKEditClass::debugSignalSlot(int what)
@@ -1411,7 +1375,6 @@ bool KKEditClass::unloadPlug(pluginStruct *ps)
 	return(true);
 }
 
-
 void KKEditClass::setTabVisibilty(int tab,bool visible)
 {
 	DocumentClass	*doc;
@@ -1442,7 +1405,6 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 		}
 }
 
-
 void KKEditClass::runAllPlugs(plugData pd)
 {
 	for(int j=0;j<this->plugins.count();j++)
@@ -1460,23 +1422,19 @@ void KKEditClass::runAllPlugs(plugData pd)
 		}
 }
 
+void KKEditClass::setBit(int *data,int bit)
+{
+	*data=*data | (1<<bit);
+}
 
+void KKEditClass::resetBit(int *data,int bit)
+{
+	*data=*data & ~(-1 & (1<<bit));
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+int KKEditClass::getBit(int data,int bit)
+{
+	return((data & (1<<bit)) && true);
+}
 
 

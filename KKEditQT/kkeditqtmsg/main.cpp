@@ -207,7 +207,6 @@ int main(int argc, char **argv)
 						return ALLOK;
 						break;
 
-
 					default:
 						fprintf(stderr,"?? Unknown argument %c ??\n",c);
 						printHelp();
@@ -234,7 +233,6 @@ int main(int argc, char **argv)
 			return(ALLOK);
 		}
 
-
 	if(waitForMsg==true)
 		{
 			waitContinue=false;
@@ -247,13 +245,5 @@ int main(int argc, char **argv)
 	return(ALLOK);
 
 }
-
-
-
-
-
-
-
-
 
 

@@ -247,6 +247,10 @@ class KKEditClass : public QObject
 //scripting
 		void							runCLICommands(int quid);
 		QCommandLineParser			parser;
+//odds
+		void							setBit(int *data,int bit);
+		void							resetBit(int *data,int bit);
+		int							getBit(int data,int bit);
 
 //app prefs
 //document
@@ -320,7 +324,6 @@ class KKEditClass : public QObject
 		MenuItemClass				*saveCurrentSessionMenuItem;
 		MenuItemClass				*restoreDefaultSessionMenuItem;
 		QList<MenuItemClass*>		restoreSessionMenuItemsList;
-
 
 		MenuItemClass				*newMenuItem;
 		MenuItemClass				*openMenuItem;
@@ -494,8 +497,9 @@ class KKEditClass : public QObject
 		QStringList					findList;
 		QStringList					replaceList;
 		unsigned int					maxFRHistory=5;
-		int							startingTab=0;
 		int							currentTab=0;
+		QString						correctedFind;
+		QString						correctedReplace;
 
 //find replace functions
 		void							buildFindReplace(void);
@@ -552,12 +556,12 @@ class KKEditClass : public QObject
 
 		void							doAppShortCuts(void);
 
-		void							setSearchPrefs(int state);
-
 		void							doSessionsMenuItems(void);
 
 		void							setToolsData(int);
 
+//search functions
+		void							setSearchPrefs(int state);
 		void							doLiveSearch(const QString text);
 
 	protected:
@@ -565,25 +569,11 @@ class KKEditClass : public QObject
 //menu functions
 		void							clickMenu(QMenu *menu,QString name);
 		void							notDoneYet(QString string);
-//search functions
-		void							setHighlightAll(void);
 //editor functions
 		void							setTabVisibilty(int tab,bool visible);
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

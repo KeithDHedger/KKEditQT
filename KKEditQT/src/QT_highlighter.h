@@ -67,6 +67,8 @@ public:
 	QString						lineNumbersForeground;
 	QString						bookMarkBGColour;
 	QString						bookMarkFGColour;
+	QString						findFGColour;
+	QString						findBGColour;
 
 	bool							syntaxHighlighting=true;
 protected:
@@ -94,11 +96,5 @@ private:
 };
 
 #endif // HIGHLIGHTER_H
-
-
-
-
-
-
 
 

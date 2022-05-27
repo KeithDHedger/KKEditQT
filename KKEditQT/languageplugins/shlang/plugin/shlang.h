@@ -49,7 +49,3 @@ class shlang : public QObject, SyntaxHighlitePluginInterface
 #endif
 
 
-
-
-
-

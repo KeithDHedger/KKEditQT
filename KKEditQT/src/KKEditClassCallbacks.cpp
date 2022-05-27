@@ -1319,9 +1319,3 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 }
 
 
-
-
-
-
-
-
