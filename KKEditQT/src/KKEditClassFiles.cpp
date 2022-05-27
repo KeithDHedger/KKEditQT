@@ -237,14 +237,14 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 	return true;
 }
 
-bool KKEditClass::saveAllFiles(void)
+bool KKEditClass::saveAllFiles(bool ask)
 {
 	this->sessionBusy=true;
 
 	int	numtabs=this->mainNotebook->count();
 	for(int loop=0;loop<numtabs;loop++)
 		{
-			if(this->saveFile(loop)==false)
+			if(this->saveFile(loop,ask)==false)
 				{
 					this->sessionBusy=false;
 					return(false);;
@@ -403,5 +403,6 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
 
 

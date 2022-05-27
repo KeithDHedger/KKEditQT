@@ -411,7 +411,7 @@ class KKEditClass : public QObject
 		bool							saveFile(int tabnum,bool ask=true);
 		void							newEditor(int what);
 		void							runPipe(QString command);
-		bool							saveAllFiles(void);
+		bool							saveAllFiles(bool ask=false);
 		bool							saveFileAs(int tabnum);
 		int							askSaveDialog(const QString filename);
 		QStringList					getNewRecursiveTagList(QString filepath);
@@ -574,6 +574,7 @@ class KKEditClass : public QObject
 };
 
 #endif
+
 
 
 

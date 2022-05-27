@@ -27,7 +27,8 @@ void KKEditClass::doFindButton(void)
 	if(this->hightlightAll==true)
 		{
 			DocumentClass	*document=this->getDocumentForTab(-1);
-			document->setHighlightAll();
+			if(document!=NULL)
+				document->setHighlightAll();
 		}
 }
 
@@ -290,6 +291,7 @@ void KKEditClass::doLiveSearch(const QString text)
 	if(retval==false)
 		doc->setTextCursor(savetc);
 }
+
 
 
 

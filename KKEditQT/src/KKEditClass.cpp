@@ -980,7 +980,7 @@ void KKEditClass::shutDownApp()
 	if(this->onExitSaveSession==true)
 		this->doSessionsMenuItems();
 
-	if(this->saveAllFiles()==true)
+	if(this->saveAllFiles(true)==true)
 		{
 #ifdef _ASPELL_
 			delete_aspell_config(this->aspellConfig);
@@ -1436,5 +1436,6 @@ int KKEditClass::getBit(int data,int bit)
 {
 	return((data & (1<<bit)) && true);
 }
+
 
 

@@ -635,7 +635,7 @@ void KKEditClass::doFileMenuItems()
 				this->saveFileAs(-1);
 				break;
 			case SAVEALLMENUITEM:
-				this->saveAllFiles();
+				this->saveAllFiles(false);
 				break;
 			case PRINTMENUITEM:
 				this->printDocument();
@@ -1317,5 +1317,6 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 				}
 		}
 }
+
 
 

@@ -22,6 +22,8 @@ Redone plugin .pro files.
 Added simple help to SaveHistory plug.
 
 0.7.0
+Fixed highlight all when no documents are open.
+Fixed asking to save files when selecting Save All from menu.
 Code clean.
 Added SaveHistory plugin.
 Language plugin tweaks.
