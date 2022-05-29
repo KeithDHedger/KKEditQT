@@ -656,7 +656,7 @@ void KKEditClass::doFileMenuItems()
 				this->reloadDocument();
 				break;
 			case QUITMENUITEM:
-				this->shutDownApp();
+				this->shutDownApp();//TODO.//
 				break;
 		}
 }
@@ -897,6 +897,7 @@ void KKEditClass::setPreferences(void)
 	this->prefsDepth=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXFUNCDEPTH])->value();
 	this->prefsTabWidth=qobject_cast<QSpinBox*>(this->prefsIntWidgets[TABWIDTH])->value();
 	this->prefsMaxTabChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXTABCHARS])->value();
+	this->maxFRHistory=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXHISTORY])->value();
 	this->prefsMaxFuncChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MENUWIDTH])->value();
 	this->maxBMChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXBMWIDTH])->value();
 	this->prefsFunctionMenuLayout=qobject_cast<QComboBox*>(this->prefsOtherWidgets[FUNCTIONCOMBO])->currentIndex();
@@ -1294,6 +1295,7 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 								{
 									if(doc->fromMe==false)
 										{
+											doc->fromMe=true;
 											if(this->prefsNoWarnings==false)
 												{
 													QMessageBox msgBox;
@@ -1308,19 +1310,38 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 													if(retval==QMessageBox::Apply)
 														{
 															doc->refreshFromDisk();
+															doc->modifiedOnDisk=false;
+															doc->dirty=false;
+															doc->fromMe=false;
+															continue;
+														}
+													else
+														{
+															this->mainNotebook->tabBar()->setTabTextColor(this->mainNotebook->indexOf(doc),QColor(Qt::yellow));
+															doc->modifiedOnDisk=true;
+															doc->dirty=true;
+															this->setToolbarSensitive();
 														}
 												}
 											else
 												{
 													doc->refreshFromDisk();
+													doc->fromMe=false;
+													doc->modifiedOnDisk=false;
+													doc->dirty=false;
+													this->mainNotebook->tabBar()->setTabTextColor(this->mainNotebook->indexOf(doc),QColor(QColorConstants::Svg::deeppink));
+													continue;
 												}
 										}
-									else
-										doc->fromMe=false;
+									doc->fromMe=false;
+									continue;
 								}
 						}
 				}
 		}
 }
+
+
+
 
 

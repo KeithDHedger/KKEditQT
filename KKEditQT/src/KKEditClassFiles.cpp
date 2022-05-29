@@ -202,6 +202,9 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 		{
 			if(doc->dirty==false)
 				return(true);
+			doc->fromMe=true;
+			doc->modifiedOnDisk=false;
+
 			file.setFileName(doc->getFilePath());
 			fileinfo.setFile(file);
 			if(file.exists())
@@ -218,8 +221,8 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
 				{
-					doc->fromMe=true;
-					QTextStream(&file) << doc->toPlainText() << Qt::endl;
+			doc->fromMe=true;
+					QTextStream(&file) << doc->toPlainText();
 					doc->dirty=false;
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
 					this->setCompWordList();
@@ -234,6 +237,8 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 					delete msg;
 				}
 		}
+
+	doc->modifiedOnDisk=false;
 	return true;
 }
 
@@ -403,5 +408,7 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
 	retval=results.split("\n",Qt::SkipEmptyParts);
 	return(retval);
 }
+
+
 
 

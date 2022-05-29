@@ -1,4 +1,5 @@
 0.7.1
+Fixed warning on file changed on disk, tab goes yellow and doc marked dirty if 'ignore' selected, tab goes pinkish if no warnings selected and file changes.
 Fixed find/find next menus.
 Fixed changed find options being saved with prefs.
 Added find after replace option to find dialog.
@@ -860,5 +861,6 @@ Updated Help file.
 
 0.0.4
 1st release
+
 
 

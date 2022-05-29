@@ -84,6 +84,7 @@ class DocumentClass : public QPlainTextEdit
 		int								pageIndex;
 		bool								visible=true;
 		bool								fromMe=false;
+		bool								modifiedOnDisk=false;
 
 //find/replace
 		int								searchPos=-1000;
@@ -156,5 +157,6 @@ class LineNumberArea : public QWidget
 };
 
 #endif
+
 
 

@@ -606,6 +606,7 @@ void KKEditClass::readConfigs(void)
 	this->replaceAll=this->prefs.value("find/replaceall",QVariant(bool(false))).value<bool>();
 	this->searchBack=this->prefs.value("find/searchback",QVariant(bool(false))).value<bool>();
 	this->findAfterReplace=this->prefs.value("find/findafterreplace",QVariant(bool(false))).value<bool>();
+	this->maxFRHistory=this->prefs.value("find/maxfrhistory",5).toInt();
 
 	this->setAppShortcuts();	
 }
@@ -758,6 +759,7 @@ void KKEditClass::writeExitData(void)
 
 //find
 	this->setSearchPrefs(0);
+	this->findList=this->tailStringList(this->findList,this->maxFRHistory);
 	this->prefs.setValue("find/findlist",this->findList);
 	this->prefs.setValue("find/replacelist",this->replaceList);
 	this->prefs.setValue("find/wrapsearch",this->wrapSearch);
@@ -768,7 +770,8 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("find/replaceall",this->replaceAll);
 	this->prefs.setValue("find/searchback",this->searchBack);
 	this->prefs.setValue("find/findafterreplace",this->findAfterReplace);
-	
+	this->prefs.setValue("find/maxfrhistory",this->maxFRHistory);
+
 	this->disabledPlugins.clear();
 	for(int j=0;j<this->plugins.count();j++)
 		{
@@ -977,8 +980,8 @@ bool KKEditClass::closeTab(int index)
 
 void KKEditClass::shutDownApp()
 {
-	if(this->forcedMultInst==false)
-		this->writeExitData();
+//	if(this->forcedMultInst==false)//TODO//
+	this->writeExitData();
 
 	if(this->onExitSaveSession==true)
 		this->doSessionsMenuItems();
@@ -1444,5 +1447,20 @@ int KKEditClass::getBit(int data,int bit)
 {
 	return((data & (1<<bit)) && true);
 }
+
+QStringList KKEditClass::tailStringList(QStringList list,int maxsize)
+{	
+	QStringList tlist2=list;
+	QStringList tlist;
+
+	if(list.size()<maxsize)
+		return(list);
+
+	tlist2.removeDuplicates();
+	for(int j=tlist2.size()-maxsize;j<tlist2.size();j++)
+		tlist.append(tlist2.at(j));
+	return(tlist);
+}
+
 
 

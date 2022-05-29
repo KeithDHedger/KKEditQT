@@ -36,6 +36,9 @@ void KKEditClass::resetAllFilePrefs(void)
 		{
 			doc=this->getDocumentForTab(loop);
 			doc->setFilePrefs();
+			if(this->fileWatch->files().contains(doc->getFilePath())==false)
+				this->fileWatch->addPath(doc->getFilePath());	
+			doc->fromMe=false;
 		}
 }
 
@@ -307,5 +310,6 @@ void KKEditClass::checkDoc(DocumentClass *doc)
 	doc->setPlainText(line);
 #endif
 }
+
 
 

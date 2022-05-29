@@ -125,7 +125,10 @@ void DocumentClass::modified()
 	this->dirty=true;
 
 	tabnum=this->mainKKEditClass->mainNotebook->indexOf(this);
-	this->mainKKEditClass->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::red));
+	if(this->modifiedOnDisk==false)
+		this->mainKKEditClass->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::red));
+	else
+		this->mainKKEditClass->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::yellow));
 }
 
 void DocumentClass::setStatusBarText(void)
@@ -593,7 +596,6 @@ void DocumentClass::setFilePrefs(void)
 
 	this->setTabStopDistance(1.0);
 	this->dirty=true;
-
 	this->highlighter->syntaxHighlighting=this->realSyntaxHighlighting();
 	this->highlighter->setTheme(this->mainKKEditClass->prefStyleNameHold);
 	this->setStyleSheet(this->highlighter->docBackgroundCSS);
@@ -622,6 +624,7 @@ void DocumentClass::setFilePrefs(void)
 
 	QFontMetrics fm(this->mainKKEditClass->prefsDocumentFont);
 	this->setTabStopDistance(fm.horizontalAdvance(" ")*this->mainKKEditClass->prefsTabWidth);
+	this->fromMe=false;
 }
 
 void DocumentClass::setHiliteLanguage(void)
@@ -984,5 +987,7 @@ void DocumentClass::setHighlightAll(void)
 		}
 	this->setXtraSelections();
 }
+
+
 
 

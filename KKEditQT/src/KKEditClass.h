@@ -239,6 +239,8 @@ class KKEditClass : public QObject
 		void							setToolbarSensitive(void);
 		QString						randomName(int len);
 
+		QStringList					tailStringList(QStringList list,int maxsize);
+
 		void							writeExitData(void);
 		int							yesNoDialog(QString txt,QString info);
 
@@ -575,5 +577,6 @@ class KKEditClass : public QObject
 };
 
 #endif
+
 
 

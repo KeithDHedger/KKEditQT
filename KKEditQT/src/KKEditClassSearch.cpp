@@ -24,6 +24,20 @@ void KKEditClass::doFindButton(void)
 {
 	DocumentClass	*document;
 
+	this->findDropBox->currentText().replace("\\n","\n");
+	if(this->findDropBox->findText(this->findDropBox->currentText(),Qt::MatchFixedString|Qt::MatchFixedString)==-1)
+		{
+			this->findList.append(this->findDropBox->currentText());
+			this->findDropBox->addItem(this->findDropBox->currentText());
+		}
+
+	this->replaceDropBox->currentText().replace("\\n","\n");
+	if(this->replaceDropBox->findText(this->replaceDropBox->currentText(),Qt::MatchFixedString|Qt::MatchFixedString)==-1)
+		{
+			this->replaceList.append(this->replaceDropBox->currentText());
+			this->replaceDropBox->addItem(this->replaceDropBox->currentText());
+		}
+
 	this->currentTab=this->mainNotebook->currentIndex();
 	this->doFindReplace(sender()->objectName().toInt());
 	if(this->hightlightAll==true)
@@ -295,4 +309,5 @@ void KKEditClass::doLiveSearch(const QString text)
 	if(retval==false)
 		doc->setTextCursor(savetc);
 }
+
 

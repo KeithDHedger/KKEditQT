@@ -241,7 +241,7 @@ void KKEditClass::buildPrefsWindow(void)
 	prefsnotebook->addTab(tab,"Text Style");
 
 //page 3
-//admin
+//application
 	table=new QGridLayout;
 	tab=new QWidget();
 //function search prefsDepth
@@ -1589,5 +1589,6 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
+
 
 
