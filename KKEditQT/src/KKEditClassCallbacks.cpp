@@ -1027,13 +1027,33 @@ void KKEditClass::doTabBarContextMenu(void)
 					int	tabnum=this->mainNotebook->currentIndex();
 					doc->setReadOnly(!doc->isReadOnly());
 					if(doc->isReadOnly()==true)
-						this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::darkGreen));
+						//this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::darkGreen));
+						doc->setTabColourType(LOCKEDTAB);
 					else
 						{
-							if(doc->dirty==true)
-								this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::red));
-							else
-								this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(doc->highlighter->documentForeground));
+							//qDebug()<<doc->modifiedOnDisk<<this->prefsNoWarnings<<doc->dirty;
+//							if((doc->modifiedOnDisk==false) && (doc->dirty==true))
+//								{
+//									doc->setTabColourType(DIRTYTAB);
+//									break;;
+//								}
+//							//else
+//							if((doc->modifiedOnDisk==false) && (this->prefsNoWarnings==true))
+//								{
+//									doc->setTabColourType(CHANGEDONDISKTAB);
+//									break;
+//								}
+//
+//							if(doc->modifiedOnDisk==true)
+//								{
+//									doc->setTabColourType(IGNORECHANGEDONDISKTAB);
+//									break;
+//								}
+							doc->setTabColourType(doc->state);
+//							if(doc->dirty==true)
+//								this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::red));
+//							else
+//								this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(doc->highlighter->documentForeground));
 						}
 				}
 				break;
@@ -1313,14 +1333,14 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 															doc->modifiedOnDisk=false;
 															doc->dirty=false;
 															doc->fromMe=false;
-															continue;
+															doc->state=NORMALTAB;
 														}
 													else
 														{
-															this->mainNotebook->tabBar()->setTabTextColor(this->mainNotebook->indexOf(doc),QColor(Qt::yellow));
 															doc->modifiedOnDisk=true;
 															doc->dirty=true;
 															this->setToolbarSensitive();
+															doc->state=IGNORECHANGEDONDISKTAB;
 														}
 												}
 											else
@@ -1329,10 +1349,10 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 													doc->fromMe=false;
 													doc->modifiedOnDisk=false;
 													doc->dirty=false;
-													this->mainNotebook->tabBar()->setTabTextColor(this->mainNotebook->indexOf(doc),QColor(QColorConstants::Svg::deeppink));
-													continue;
+													doc->state=CHANGEDONDISKTAB;
 												}
 										}
+									doc->setTabColourType(doc->state);
 									doc->fromMe=false;
 									continue;
 								}
@@ -1340,8 +1360,3 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 				}
 		}
 }
-
-
-
-
-

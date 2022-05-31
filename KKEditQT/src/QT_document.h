@@ -25,6 +25,8 @@
 
 class LineNumberArea;
 
+enum {NORMALTAB=0,CHANGEDONDISKTAB,IGNORECHANGEDONDISKTAB,LOCKEDTAB,DIRTYTAB};
+
 class DocumentClass : public QPlainTextEdit
 {
 	Q_OBJECT
@@ -69,6 +71,7 @@ class DocumentClass : public QPlainTextEdit
 		void								setBMFromLineBar(QMouseEvent *event);
 
 		void								refreshFromDisk(void);
+		void								setTabColourType(int type);
 
 //pageStruct
 		QString							fileName;
@@ -83,8 +86,10 @@ class DocumentClass : public QPlainTextEdit
 		bool								gotRedo=false;
 		int								pageIndex;
 		bool								visible=true;
-		bool								fromMe=false;
-		bool								modifiedOnDisk=false;
+		bool								fromMe=false;//TODO//
+		bool								modifiedOnDisk=false;//TODO//
+		QColor							tabColour=QColor("invalid");//TODO//
+		int								state=NORMALTAB;
 
 //find/replace
 		int								searchPos=-1000;

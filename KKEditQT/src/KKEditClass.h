@@ -69,6 +69,15 @@ enum {HIDETABSHORTCUT=0,DELETELINESHORTCUT,DELETETOEOLSHORTCUT,DELETETOSOLSHORTC
 
 enum {FRCASE=0,FRUSEREGEX,FRREPLACEFIND,FRWRAP,FRALLFILES,FRHIGHLIGHTALL,FRREPLACEALL,FRSEARCHBACK,FRMAXSWITCHES};
 
+class DocumentClass;
+class TabColours;
+class NoteBookClass;
+class MenuItemClass;
+class RecentMenuClass;
+class HistoryClass;
+class ToolBarClass;
+class kkEditQTPluginInterface;
+
 #include "QT_AboutBox.h"
 #include "QT_menuitem.h"
 #include "QT_historyClass.h"
@@ -76,16 +85,18 @@ enum {FRCASE=0,FRUSEREGEX,FRREPLACEFIND,FRWRAP,FRALLFILES,FRHIGHLIGHTALL,FRREPLA
 #include "QT_highlighter.h"
 #include "QT_document.h"
 #include "QT_toolbar.h"
+#include "QT_tabColoursClass.h"
 #include "QT_notebook.h"
 
 #include "kkeditqtPluginInterface.h"
 
-class NoteBookClass;
-class MenuItemClass;
-class RecentMenuClass;
-class HistoryClass;
-class ToolBarClass;
-class kkEditQTPluginInterface;
+//class DocumentClass;
+//class NoteBookClass;
+//class MenuItemClass;
+//class RecentMenuClass;
+//class HistoryClass;
+//class ToolBarClass;
+//class kkEditQTPluginInterface;
 
 struct pluginStruct
 {

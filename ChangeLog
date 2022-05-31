@@ -1,4 +1,6 @@
 0.7.1
+Set tab background colour to document state.
+Added QT_tabColoursClass.cpp/.h
 Fixed warning on file changed on disk, tab goes yellow and doc marked dirty if 'ignore' selected, tab goes pinkish if no warnings selected and file changes.
 Fixed find/find next menus.
 Fixed changed find options being saved with prefs.

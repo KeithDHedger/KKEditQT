@@ -126,9 +126,11 @@ void DocumentClass::modified()
 
 	tabnum=this->mainKKEditClass->mainNotebook->indexOf(this);
 	if(this->modifiedOnDisk==false)
-		this->mainKKEditClass->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::red));
+		this->state=DIRTYTAB;
 	else
-		this->mainKKEditClass->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::yellow));
+		this->state=IGNORECHANGEDONDISKTAB;
+
+	this->setTabColourType(state);
 }
 
 void DocumentClass::setStatusBarText(void)
@@ -988,6 +990,25 @@ void DocumentClass::setHighlightAll(void)
 	this->setXtraSelections();
 }
 
-
-
-
+void DocumentClass::setTabColourType(int type)
+{
+	switch(type)
+		{
+			case CHANGEDONDISKTAB:
+				this->tabColour=QColor(QColorConstants::Svg::orange);
+				break;
+			case IGNORECHANGEDONDISKTAB:
+				this->tabColour=QColor(Qt::yellow);
+				break;
+			case LOCKEDTAB:
+				this->tabColour=QColor(Qt::green);
+				break;
+			case DIRTYTAB:
+				this->tabColour=QColor(Qt::darkRed);
+				break;
+			default:
+				this->tabColour=QColor("invalid");
+				break;
+		}
+	this->mainKKEditClass->mainNotebook->tabBar()->update();
+}

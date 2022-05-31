@@ -22,6 +22,7 @@
 #define _QT_NOTEBOOK_
 
 class KKEditClass;
+class TabColours;
 
 #include "KKEditClass.h"
 
@@ -52,7 +53,7 @@ class NoteBookClass : public QTabWidget
 	private:
 		QToolButton	*scrollLeft;
 		QToolButton	*scrollRight;
-
+		TabColours	*tb;
 };
 
 #endif

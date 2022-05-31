@@ -22,6 +22,7 @@
 
 NoteBookClass::~NoteBookClass()
 {
+	delete this->tb;
 }
 
 void NoteBookClass::setScrollButtonStatus(int btnnum,bool enabled,bool visible)
@@ -96,12 +97,14 @@ NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent
 			this->scrollTabsRight();
 		});
 
+	this->tb=new TabColours(this);
+	this->setTabBar(tb);
+	this->tb->setStyleSheet(QString("QTabBar::scroller{width: 0px;height: 0px;}"));
+	//this->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 20px;}"));
 	this->setDocumentMode(true);
 	this->setTabsClosable(true);
 	this->setMovable(true);
 
-//this->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 0px;}\nQTabBar::right-corner {height: 64px;bottom: 20px;}"));//TODO//
-	this->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 1px;}"));
 }
 
 void NoteBookClass::dragMoveEvent(QDragMoveEvent *event)

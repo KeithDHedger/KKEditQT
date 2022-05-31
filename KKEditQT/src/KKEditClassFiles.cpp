@@ -97,12 +97,14 @@ void KKEditClass::newFile(const QString data,const QString filename)
 	this->sessionBusy=holdsb;
 	this->setToolbarSensitive();
 
+	doc->state=NORMALTAB;
+	doc->setTabColourType(doc->state);
+
 //plugins
 	pd.doc=doc;
 	pd.tabNumber=this->mainNotebook->currentIndex();
 	pd.what=DONEWDOCUMENT;
 	this->runAllPlugs(pd);
-
 }
 
 int KKEditClass::askSaveDialog(const QString filename)
@@ -155,6 +157,8 @@ bool KKEditClass::saveFileAs(int tabnum)
 					this->setCompWordList();
 					if(this->fileWatch->files().contains(fileinfo.canonicalFilePath())==false)
 						this->fileWatch->addPath(fileinfo.canonicalFilePath());
+					doc->state=NORMALTAB;
+					doc->setTabColourType(doc->state);
 					file.close();
 				}
 			else
@@ -239,6 +243,8 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 		}
 
 	doc->modifiedOnDisk=false;
+	doc->state=NORMALTAB;
+	doc->setTabColourType(doc->state);
 	return true;
 }
 
@@ -349,6 +355,8 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc->setFilePrefs();
 			if(this->fileWatch->files().contains(fileinfo.canonicalFilePath())==false)
 				this->fileWatch->addPath(fileinfo.canonicalFilePath());
+			doc->state=NORMALTAB;
+			doc->setTabColourType(doc->state);
 			file.close();
 		}
 	else
