@@ -32,16 +32,15 @@ struct highLightingRule
 	int					len;
 };
 
-struct themeStruct
+struct partsStruct
 {
-	QColor				colour;
-	int					weight;
-	bool					italic;
+	QString	colourString;
+	QColor	colour;
+	bool		italic=false;
+	bool		bold=false;
 };
 
 #define NUMBERSREGEX "([+-]?\\b[[:digit:]]*\\.?[[:digit:]]+([eE][+-]?[[:digit:]]+)?\\b)|([+-]?\\b0x[[:xdigit:]]*\\.?[[:xdigit:]]+\\b)"
-
-enum {FUNCTIONTHEME=0,CLASSTHEME,TYPETHEME,COMMENTTHEME,QUOTESTHEME,INCLUDETHEME,NUMBERTHEME,KEYWORDTHEME,CUSTOMTHEME,LANGUAGEEXTRAS,VARIABLETHEME,TOOLKITTHEME,THEMEDONE};
 
 #endif
 

@@ -22,12 +22,7 @@
 
 void gtk2toolkit::initPlug(QString pathtoplug)
 {
-	themeStruct	blank={Qt::green,QFont::Normal,false};
-
 	this->plugPath=pathtoplug;
-	if(this->theme.count()==0)
-		for(int j=FUNCTIONTHEME;j<THEMEDONE;j++)
-			this->theme[j]=blank;
 }
 
 void gtk2toolkit::unloadPlug(void)
@@ -38,23 +33,17 @@ void gtk2toolkit::setToolkitRules(QVector<highLightingRule> *rules)
 {
 	highLightingRule	hr;
 
-	hr.format.setForeground(this->theme[TOOLKITTHEME].colour);
-	hr.format.setFontWeight(this->theme[TOOLKITTHEME].weight);
-	hr.format.setFontItalic(this->theme[TOOLKITTHEME].italic);
+	hr.format.setForeground(this->theme.value("toolkit").colour);
+	hr.format.setFontItalic(this->theme.value("toolkit").italic);
+	if(this->theme.value("toolkit").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("(\\bGtk[A-Za-z]+\\b)");
 	rules->append(hr);
 }
 
-void gtk2toolkit::setTheme(QHash<int,themeStruct> newtheme)
+void gtk2toolkit::setTheme(QMap<QString,partsStruct> newtheme)
 {
 	this->theme=newtheme;
 }
-
-
-
-
-
-
-
-
-

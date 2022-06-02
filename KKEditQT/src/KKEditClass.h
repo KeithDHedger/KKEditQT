@@ -69,6 +69,7 @@ enum {HIDETABSHORTCUT=0,DELETELINESHORTCUT,DELETETOEOLSHORTCUT,DELETETOSOLSHORTC
 
 enum {FRCASE=0,FRUSEREGEX,FRREPLACEFIND,FRWRAP,FRALLFILES,FRHIGHLIGHTALL,FRREPLACEALL,FRSEARCHBACK,FRMAXSWITCHES};
 
+class ThemeClass;
 class DocumentClass;
 class TabColours;
 class NoteBookClass;
@@ -78,6 +79,10 @@ class HistoryClass;
 class ToolBarClass;
 class kkEditQTPluginInterface;
 
+
+#include "kkedit-includes.h"
+
+#include "QT_themeClass.h"
 #include "QT_AboutBox.h"
 #include "QT_menuitem.h"
 #include "QT_historyClass.h"
@@ -280,6 +285,8 @@ class KKEditClass : public QObject
 		QColor						prefsBookmarkHiLiteColor;
 		QString						prefStyleName;
 		QString						prefStyleNameHold;
+		ThemeClass					*theme=NULL;
+
 //editor
 		int							prefsFunctionMenuLayout=0;
 		unsigned int					prefsDepth=1;

@@ -24,6 +24,7 @@
 #include "KKEditClass.h"
 
 class LineNumberArea;
+class Highlighter;
 
 enum {NORMALTAB=0,CHANGEDONDISKTAB,IGNORECHANGEDONDISKTAB,LOCKEDTAB,DIRTYTAB};
 

@@ -30,20 +30,16 @@ class qt5toolkit : public QObject, ToolkitHighlitePluginInterface
 	Q_INTERFACES(ToolkitHighlitePluginInterface)
 
 	public:
-		void						initPlug(QString pathtoplug) override;
-		void						unloadPlug(void) override;
+		void							initPlug(QString pathtoplug) override;
+		void							unloadPlug(void) override;
 //theme
-		virtual void				setTheme(QHash<int,themeStruct> newtheme) override;
+		void							setTheme(QMap<QString,partsStruct> newtheme) override;
 //new rules format
-		void						setToolkitRules(QVector<highLightingRule> *rules) override;
+		void							setToolkitRules(QVector<highLightingRule> *rules) override;
 
 	private:
-		QString					plugPath;
-		QHash<int,themeStruct>	theme;
+		QString						plugPath;
+		QMap<QString,partsStruct>	theme;
 };
 
 #endif
-
-
-
-

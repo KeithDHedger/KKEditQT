@@ -18,7 +18,6 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "QT_tabColoursClass.h"
 
 TabColours::TabColours(QTabWidget *parent)
@@ -28,7 +27,7 @@ TabColours::TabColours(QTabWidget *parent)
 
 TabColours::~TabColours()
 {
-};
+}
 
 void TabColours::paintEvent(QPaintEvent *event)
 {

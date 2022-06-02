@@ -766,7 +766,7 @@ void KKEditClass::buildMainGui(void)
 	menuItemSink=this->makeMenuItemClass(EDITMENU,"Plugin Prefs",0,"preferences-system",PLUGPREFSMENUNAME,PLUGPREFSMENUITEM);
 
 //view menu
-	this->viewMenu=new QMenu("&View");
+	this->viewMenu=new QMenu("&View");//TODO//
 	this->menuBar->addMenu(this->viewMenu);
 
 	QDir			languagesDir(QString("%1/themes/").arg(DATADIR));
@@ -783,6 +783,8 @@ void KKEditClass::buildMainGui(void)
 			QObject::connect(menuitem,&QAction::triggered,[this,s]()
 				{
 					this->prefStyleNameHold=QFileInfo(s).baseName();
+					//this->prefStyleNameHold=
+					this->theme->loadTheme(this->prefStyleNameHold);
 					this->resetAllFilePrefs();
 				});
 		}

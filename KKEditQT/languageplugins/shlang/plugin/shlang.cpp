@@ -22,12 +22,7 @@
 
 void shlang::initPlug(QString pathtoplug)
 {
-	themeStruct	blank={Qt::black,QFont::Normal,false};
-
 	this->plugPath=pathtoplug;
-	if(this->theme.count()==0)
-		for(int j=FUNCTIONTHEME;j<THEMEDONE;j++)
-			this->theme[j]=blank;
 }
 
 void shlang::setLanguageRules(QVector<highLightingRule> *rules)
@@ -35,59 +30,83 @@ void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 	highLightingRule	hr;
 
 //keywords rule
-	hr.format.setForeground(this->theme[KEYWORDTHEME].colour);
-	hr.format.setFontWeight(this->theme[KEYWORDTHEME].weight);
-	hr.format.setFontItalic(this->theme[KEYWORDTHEME].italic);
+	hr.format.setForeground(this->theme.value("keywords").colour);
+	hr.format.setFontItalic(this->theme.value("keywords").italic);
+	if(this->theme.value("keywords").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("\\b(alias|bg|bind|break|builtin|caller|case|command|compgen|complete|continue|declare|dirs|disown|do|done|elif|else|enable|esac|eval|exec|exit|export|false|fc|fg|fi|for|getopts|hash|help|history|if|in|jobs|let|local|logout|popd|printf|pushd|read|readonly|return|select|set|shift|shopt|suspend|test|then|times|trap|true|type|typeset|umask|unalias|unset|until|wait|while|echo)\\b");
 	rules->append(hr);
 
 //numbers rule
-	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
-	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
-	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
+	hr.format.setForeground(this->theme.value("numbers").colour);
+	hr.format.setFontItalic(this->theme.value("numbers").italic);
+	if(this->theme.value("numbers").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression(NUMBERSREGEX);
 	rules->append(hr);
 
 //includes rule
-	hr.format.setForeground(this->theme[INCLUDETHEME].colour);
-	hr.format.setFontWeight(this->theme[INCLUDETHEME].weight);
-	hr.format.setFontItalic(this->theme[INCLUDETHEME].italic);
+	hr.format.setForeground(this->theme.value("includes").colour);
+	hr.format.setFontItalic(this->theme.value("includes").italic);
+	if(this->theme.value("includes").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("^[[:blank:]]*(\\.[^\\n]*|source[^\\n]*)");
 	rules->append(hr);
 
 //variables
-	hr.format.setForeground(this->theme[VARIABLETHEME].colour);
-	hr.format.setFontWeight(this->theme[VARIABLETHEME].weight);
-	hr.format.setFontItalic(this->theme[VARIABLETHEME].italic);
+	hr.format.setForeground(this->theme.value("variables").colour);
+	hr.format.setFontItalic(this->theme.value("variables").italic);
+	if(this->theme.value("variables").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("([[:word:]]*)(?==)");
 	rules->append(hr);
 
-//curly brackets
-	hr.format.setForeground(this->theme[CLASSTHEME].colour);
-	hr.format.setFontWeight(this->theme[CLASSTHEME].weight);
-	hr.format.setFontItalic(this->theme[CLASSTHEME].italic);
+//curly brackets class
+	hr.format.setForeground(this->theme.value("class").colour);
+	hr.format.setFontItalic(this->theme.value("class").italic);
+	if(this->theme.value("class").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("(\\${[[:print:]]*}|\\$\\([[:print:]]*\\)|\\$[[:word:]_]+)");
 	rules->append(hr);
 
-//function dec
-	hr.format.setForeground(this->theme[FUNCTIONTHEME].colour);
-	hr.format.setFontWeight(this->theme[FUNCTIONTHEME].weight);
-	hr.format.setFontItalic(this->theme[FUNCTIONTHEME].italic);
+//functions dec
+	hr.format.setForeground(this->theme.value("functions").colour);
+	hr.format.setFontItalic(this->theme.value("functions").italic);
+	if(this->theme.value("functions").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("^(function[[:blank:]]*[[:word:]]*|[[:word:]]*)([[:blank:]]*\\([[:blank:]]*\\))");
 	rules->append(hr);
 
 //quotes rule
-	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
-	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
-	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
+	hr.format.setForeground(this->theme.value("quotes").colour);
+	hr.format.setFontItalic(this->theme.value("quotes").italic);
+	if(this->theme.value("quotes").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\")|('([^'\\\\]*(\\\\.[^'\\\\]*)*)')");
 
 	rules->append(hr);
 
-//single line comment
-	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+//single line comments
+	hr.format.setForeground(this->theme.value("comments").colour);
+	hr.format.setFontItalic(this->theme.value("comments").italic);
+	if(this->theme.value("comments").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.type="comment";
 	hr.customRule=true;
 	hr.pattern=QRegularExpression(".*");
@@ -103,15 +122,18 @@ void shlang::setMultLineRules(QVector<highLightingRule> *rules)
 {
 	highLightingRule	hr;
 
-	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.format.setForeground(this->theme.value("comments").colour);
+	hr.format.setFontItalic(this->theme.value("comments").italic);
+	if(this->theme.value("comments").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("if false;then");
 	hr.endPattern=QRegularExpression("else|fi");
 	rules->append(hr);
 }
 
-void shlang::setTheme(QHash<int,themeStruct> newtheme)
+void shlang::setTheme(QMap<QString,partsStruct> newtheme)
 {
 	this->theme=newtheme;
 }

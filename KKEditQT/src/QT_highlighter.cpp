@@ -54,13 +54,14 @@ void Highlighter::resetRules(void)
 	this->langPlugins[this->currentPlug].instance->setMultLineRules(&(this->multiLineCommentRules));
 }
 
-Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc) : QSyntaxHighlighter(parent)
+Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc,KKEditClass *kk) : QSyntaxHighlighter(parent)
 {
 	this->loadLangPlugins();
 	this->loadToolkitPlugins();
 	this->setLanguage("SH");//TODO//default??
 	this->resetRules();
 	this->document=doc;
+	this->mainKKEditClass=kk;
 }
 
 void Highlighter::setBit(int *data,int bit)
@@ -306,67 +307,27 @@ void Highlighter::loadToolkitPlugins(void)
 void Highlighter::setTheme(QString themename)
 {
 	QString					themepath;
-	QHash<int,themeStruct>	theme;
-	QJsonParseError			errorPtr;
-	QVariantList				localList;
-	QVariantMap				map;
-	QJsonDocument			doc;
-    QVariantMap				mainMap;
-    QByteArray				data;
-	const char				*entrynames[]={"functions","class","types","comments","quotes","includes","numbers","keywords","custom","lanuageextra","variables","toolkit",NULL};
 
-	themepath=QString("%1/themes/%2.json").arg(DATADIR).arg(themename);
+	this->documentBackground=this->mainKKEditClass->theme->themeParts.value("docbgcolour").colourString;
+	this->documentForeground=this->mainKKEditClass->theme->themeParts.value("docfgcolour").colourString;
+	this->docBackgroundCSS=QString("QPlainTextEdit {background-color: %1; color: %2;}").arg(this->documentBackground).arg(this->documentForeground);
 
-	QFile	inFile(themepath);
-    inFile.open(QIODevice::ReadOnly|QIODevice::Text);
-    data=inFile.readAll();
-    inFile.close();
+	this->findBGColour=this->mainKKEditClass->theme->themeParts.value("findbgcol").colourString;
+	this->findFGColour=this->mainKKEditClass->theme->themeParts.value("findfgcol").colourString;
 
-    doc=QJsonDocument::fromJson(data,&errorPtr);
-	if(doc.isNull())
-		{
-			qDebug() << "Parse failed for " << themepath;
-			return;
-		}
+	this->lineNumbersBackground=this->mainKKEditClass->theme->themeParts.value("linebgcolour").colourString;
+	this->lineNumbersForeground=this->mainKKEditClass->theme->themeParts.value("linefgcolour").colourString;
 
-	mainMap=doc.object().toVariantMap();
-	int cnt=0;
-	while(entrynames[cnt]!=NULL)
-		{
-			localList=mainMap[entrynames[cnt]].toList();    
- 			map=localList[0].toMap();
-			theme[cnt].colour=QColor(map["colour"].toString());
-			if(map["bold"].toInt()==1)
-				theme[cnt].weight=QFont::Bold;
-			else
-				theme[cnt].weight=QFont::Normal;
-			theme[cnt].italic=map["italic"].toInt();
-			cnt++;
-		}
-
-	localList=mainMap["document"].toList();    
-	map=localList[0].toMap();
-	this->docBackgroundCSS=QString("QPlainTextEdit {background-color: %1; color: %2;}").arg(map["bgcolour"].toString()).arg(map["fgcolour"].toString());
-	this->documentBackground=map["bgcolour"].toString();
-	this->documentForeground=map["fgcolour"].toString();
-
-	this->findFGColour=map["findfcol"].toString();
-	this->findBGColour=map["findbcol"].toString();
-
-	localList=mainMap["linenumbers"].toList();    
-	map=localList[0].toMap();
-	this->lineNumbersBackground=map["bgcolour"].toString();
-	this->lineNumbersForeground=map["fgcolour"].toString();
-	this->bookMarkBGColour=map["bmbgcolour"].toString();
-	this->bookMarkFGColour=map["bmfgcolour"].toString();
+	this->bookMarkBGColour=this->mainKKEditClass->theme->themeParts.value("bookmarkbgcolour").colourString;
+	this->bookMarkFGColour=this->lineNumbersForeground;
 
 	if(this->currentPlug!=-1)
 		{
 			for(int j=0;j<this->toolkitPlugins.count();j++)
-				this->toolkitPlugins[j].instanceTK->setTheme(theme);
+				this->toolkitPlugins[j].instanceTK->setTheme(this->mainKKEditClass->theme->themeParts);
 
 			const QSignalBlocker block(this->document);
-			this->langPlugins[this->currentPlug].instance->setTheme(theme);
+			this->langPlugins[this->currentPlug].instance->setTheme(this->mainKKEditClass->theme->themeParts);
 			this->resetRules();
 			this->rehighlight();
 		}
@@ -374,8 +335,6 @@ void Highlighter::setTheme(QString themename)
 	this->resetformat.setForeground(QColor(this->documentForeground));
 	this->resetformat.setFontWeight(0);
 	this->resetformat.setFontItalic(false);
-
-	return;
 }
 
 

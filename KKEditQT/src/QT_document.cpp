@@ -453,7 +453,7 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	this->mainKKEditClass=kk;
 	this->setAcceptDrops(true);
 
-	this->highlighter=new Highlighter(this->document(),this);
+	this->highlighter=new Highlighter(this->document(),this,this->mainKKEditClass);
 	this->setCenterOnScroll(true);
 	lineNumberArea=new LineNumberArea(this);
 

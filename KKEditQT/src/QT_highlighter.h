@@ -29,6 +29,9 @@
 #include "ToolkitHighlitePluginInterface.h"
 #include "config.h"
 
+#include "KKEditClass.h"
+class KKEditClass;
+
 struct langPluginStruct
 {
 	QPluginLoader					*pluginLoader=NULL;
@@ -52,9 +55,10 @@ class Highlighter : public QSyntaxHighlighter
 	Q_OBJECT
 
 public:
-	Highlighter(QTextDocument	*parent,QPlainTextEdit *doc);
+	Highlighter(QTextDocument *parent,QPlainTextEdit *doc,KKEditClass *kk=NULL);
 	bool							setLanguage(QString lang);
 	void							setTheme(QString themename);
+	KKEditClass					*mainKKEditClass;
 //plugins
 //vars
 	QHash<int,langPluginStruct>	langPlugins;

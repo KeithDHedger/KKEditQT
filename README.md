@@ -38,4 +38,7 @@ Scripting ( Major, mostly done )<br>
 
 Documentation :(<br>
 
+More themes<br>
+More filetypes syntax highlighting<br>
+
 

@@ -32,13 +32,13 @@ class ToolkitHighlitePluginInterface
 	public:
 		virtual			~ToolkitHighlitePluginInterface()=default;
 
-		virtual void	initPlug(QString pathtoplug)=0;
-		virtual void	unloadPlug(void)=0;
+		virtual void		initPlug(QString pathtoplug)=0;
+		virtual void		unloadPlug(void)=0;
 //theme
-		virtual void	setTheme(QHash<int,themeStruct>	newtheme)=0;
+		virtual void		setTheme(QMap<QString,partsStruct> newtheme)=0;
 
 //new rules format
-		virtual void	setToolkitRules(QVector<highLightingRule> *rules)=0;
+		virtual void		setToolkitRules(QVector<highLightingRule> *rules)=0;
 };
 
 QT_BEGIN_NAMESPACE

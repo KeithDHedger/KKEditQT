@@ -22,12 +22,7 @@
 
 void jsonlang::initPlug(QString pathtoplug)
 {
-	themeStruct	blank={Qt::black,QFont::Normal,false};
-
 	this->plugPath=pathtoplug;
-	if(this->theme.count()==0)
-		for(int j=FUNCTIONTHEME;j<THEMEDONE;j++)
-			this->theme[j]=blank;
 }
 
 void jsonlang::unloadPlug(void)
@@ -40,28 +35,37 @@ void jsonlang::setLanguageRules(QVector<highLightingRule> *rules)
 	highLightingRule	hr;
 
 //quotes
-	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
-	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
-	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
+	hr.format.setForeground(this->theme.value("quotes").colour);
+	hr.format.setFontItalic(this->theme.value("quotes").italic);
+	if(this->theme.value("quotes").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern = QRegularExpression("(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\")|('\\\\.')|('.')");
 	rules->append(hr);
 
 //numbers
-	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
-	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
-	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
+	hr.format.setForeground(this->theme.value("numbers").colour);
+	hr.format.setFontItalic(this->theme.value("numbers").italic);
+	if(this->theme.value("numbers").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression(NUMBERSREGEX);
 	rules->append(hr);
 
 //types
-	hr.format.setForeground(this->theme[TYPETHEME].colour);
-	hr.format.setFontWeight(this->theme[TYPETHEME].weight);
-	hr.format.setFontItalic(this->theme[TYPETHEME].italic);
+	hr.format.setForeground(this->theme.value("types").colour);
+	hr.format.setFontItalic(this->theme.value("types").italic);
+	if(this->theme.value("types").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("\\b(true|false)\\b");
 	rules->append(hr);
 }
 
-void jsonlang::setTheme(QHash<int,themeStruct> newtheme)
+void jsonlang::setTheme(QMap<QString,partsStruct> newtheme)
 {
 	this->theme=newtheme;
 }

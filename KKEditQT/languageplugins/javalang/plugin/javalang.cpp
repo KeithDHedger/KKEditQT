@@ -22,12 +22,7 @@
 
 void javalang::initPlug(QString pathtoplug)
 {
-	themeStruct	blank={Qt::black,QFont::Normal,false};
-
 	this->plugPath=pathtoplug;
-	if(this->theme.count()==0)
-		for(int j=FUNCTIONTHEME;j<THEMEDONE;j++)
-			this->theme[j]=blank;
 }
 
 void javalang::unloadPlug(void)
@@ -40,66 +35,92 @@ void javalang::setLanguageRules(QVector<highLightingRule> *rules)
 	highLightingRule	hr;
 
 //functions
-	hr.format.setFontItalic(this->theme[FUNCTIONTHEME].italic);
-	hr.format.setFontWeight(this->theme[FUNCTIONTHEME].weight);
-	hr.format.setForeground(this->theme[FUNCTIONTHEME].colour);
-
+	hr.format.setForeground(this->theme.value("functions").colour);
+	hr.format.setFontItalic(this->theme.value("functions").italic);
+	if(this->theme.value("functions").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("\\b[[:word:]\\.]*[[:word:]_]+(?=\\()");
 	rules->append(hr);
 
 //classes
-	hr.format.setForeground(this->theme[CLASSTHEME].colour);
-	hr.format.setFontWeight(this->theme[CLASSTHEME].weight);
-	hr.format.setFontItalic(this->theme[CLASSTHEME].italic);
+	hr.format.setForeground(this->theme.value("class").colour);
+	hr.format.setFontItalic(this->theme.value("class").italic);
+	if(this->theme.value("class").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("(class|enum|extends|implements|instanceof|interface|native|throws|private|protected|public)");
 	rules->append(hr);
 
 //quotes
-	hr.format.setForeground(this->theme[QUOTESTHEME].colour);
-	hr.format.setFontWeight(this->theme[QUOTESTHEME].weight);
-	hr.format.setFontItalic(this->theme[QUOTESTHEME].italic);
+	hr.format.setForeground(this->theme.value("quotes").colour);
+	hr.format.setFontItalic(this->theme.value("quotes").italic);
+	if(this->theme.value("quotes").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern = QRegularExpression("(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\")|('\\\\.')|('.')");
 	rules->append(hr);
 
 //numbers
-	hr.format.setForeground(this->theme[NUMBERTHEME].colour);
-	hr.format.setFontWeight(this->theme[NUMBERTHEME].weight);
-	hr.format.setFontItalic(this->theme[NUMBERTHEME].italic);
+	hr.format.setForeground(this->theme.value("numbers").colour);
+	hr.format.setFontItalic(this->theme.value("numbers").italic);
+	if(this->theme.value("numbers").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression(NUMBERSREGEX);
 	rules->append(hr);
 
 //keywords
-	hr.format.setForeground(this->theme[KEYWORDTHEME].colour);
-	hr.format.setFontWeight(this->theme[KEYWORDTHEME].weight);
-	hr.format.setFontItalic(this->theme[KEYWORDTHEME].italic);
+	hr.format.setForeground(this->theme.value("keywords").colour);
+	hr.format.setFontItalic(this->theme.value("keywords").italic);
+	if(this->theme.value("keywords").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("\\b(assert|break|case|catch|continue|default|do|else|finally|for|if|return|throw|switch|try|while|new|super|this|goto|abstract|final|static|strictfp|synchronized|transient|volatile|class|enum|extends|implements|instanceof|interface|native|throws)\\b");
 	rules->append(hr);
 
 //includes
-	hr.format.setForeground(this->theme[INCLUDETHEME].colour);
-	hr.format.setFontWeight(this->theme[INCLUDETHEME].weight);
-	hr.format.setFontItalic(this->theme[INCLUDETHEME].italic);
+	hr.format.setForeground(this->theme.value("includes").colour);
+	hr.format.setFontItalic(this->theme.value("includes").italic);
+	if(this->theme.value("includes").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("\\b(import|package)\\b");
 	rules->append(hr);
 
 //types
-	hr.format.setForeground(this->theme[TYPETHEME].colour);
-	hr.format.setFontWeight(this->theme[TYPETHEME].weight);
-	hr.format.setFontItalic(this->theme[TYPETHEME].italic);
+	hr.format.setForeground(this->theme.value("types").colour);
+	hr.format.setFontItalic(this->theme.value("types").italic);
+	if(this->theme.value("types").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("\\b(boolean|byte|char|double|float|int|long|short|void)\\b");
 	rules->append(hr);
 
 //java extras
-	hr.format.setForeground(this->theme[CUSTOMTHEME].colour);
-	hr.format.setFontWeight(this->theme[CUSTOMTHEME].weight);
-	hr.format.setFontItalic(this->theme[CUSTOMTHEME].italic);
+	hr.format.setForeground(this->theme.value("custom").colour);
+	hr.format.setFontItalic(this->theme.value("custom").italic);
+	if(this->theme.value("custom").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("\\b(abstract|final|static|strictfp|synchronized|transient|volatile)\\b");
 	rules->append(hr);
 
 //single line comment
-	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.format.setForeground(this->theme.value("comments").colour);
+	hr.format.setFontItalic(this->theme.value("comments").italic);
+	if(this->theme.value("comments").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.type="comment";
 	hr.customRule=true;
 	hr.pattern=QRegularExpression(".*");
@@ -110,15 +131,17 @@ void javalang::setMultLineRules(QVector<highLightingRule> *rules)
 {
 	highLightingRule	hr;
 ///**/
-	hr.format.setForeground(this->theme[COMMENTTHEME].colour);
-	hr.format.setFontWeight(this->theme[COMMENTTHEME].weight);
-	hr.format.setFontItalic(this->theme[COMMENTTHEME].italic);
+	hr.format.setFontItalic(this->theme.value("comments").italic);
+	if(this->theme.value("comments").bold==true)
+		hr.format.setFontWeight(QFont::Bold);
+	else
+		hr.format.setFontWeight(QFont::Normal);
 	hr.pattern=QRegularExpression("/\\*");
 	hr.endPattern=QRegularExpression("\\*/");
 	rules->append(hr);
 }
 
-void javalang::setTheme(QHash<int,themeStruct> newtheme)
+void javalang::setTheme(QMap<QString,partsStruct> newtheme)
 {
 	this->theme=newtheme;
 }

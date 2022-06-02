@@ -3,7 +3,7 @@
 ./remakesourcelist
 aclocal
 autoheader
-touch NEWS README AUTHORS ChangeLog
+touch NEWS AUTHORS
 automake --add-missing --copy
 autoconf
 ./configure $@

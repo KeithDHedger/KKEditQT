@@ -7,12 +7,12 @@ TARGET          = $$qtLibraryTarget(gtk2toolkit)
 DESTDIR         = ../plugins
 
 equals(LOCAL,1) {
-	message(Installing in ~/.KKEditQT/plugins/gtk2toolkitg)
-	target.path = ~/.KKEditQT/toolkitplugins/gtk2toolkitg
+	message(Installing in ~/.KKEditQT/plugins/gtk2toolkit)
+	target.path = ~/.KKEditQT/toolkitplugins/gtk2toolkit
 }
 else {
 	message(Installing in $$(INSTALLTO))
-	target.path = $$(INSTALLTO)/toolkitplugins/gtk2toolkitg
+	target.path = $$(INSTALLTO)/toolkitplugins/gtk2toolkit
 }
 
 documentation.path = $${target.path}/docs

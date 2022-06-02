@@ -322,6 +322,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->sessionFolder=QString("%1/%2/%3").arg(this->homeFolder).arg(KKEDITFOLDER).arg("sesssions");
 	this->toolsFolder=QString("%1/%2/%3").arg(this->homeFolder).arg(KKEDITFOLDER).arg("tools");
 	this->recentFiles=new RecentMenuClass(this);
+	this->theme=new ThemeClass(this);
 
 	QObject::connect(this->fileWatch,&QFileSystemWatcher::fileChanged,[this](const QString &path)
 		{
@@ -387,6 +388,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	QObject::connect(this->checkMessages,SIGNAL(timeout()),this,SLOT(doTimer()));
 	this->checkMessages->start(this->prefsMsgTimer);
 
+	this->theme->loadTheme(this->prefStyleName);
 	this->buildMainGui();
 	this->buildPrefsWindow();
 	this->buildToolOutputWindow();

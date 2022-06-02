@@ -44,6 +44,8 @@ int main (int argc, char **argv)
 	QApplication		app(argc,argv);
 	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");
 
+
+
 	app.setStyleSheet("QMenu { menu-scrollable: true ;}");
 	app.setOrganizationName("KDHedger");
 	app.setApplicationName("KKEditQT");
@@ -67,7 +69,7 @@ int main (int argc, char **argv)
 			{{"m","multi"},"Force multiple instance."},
 			{{"q","quit"},"Quit app."},
 			{{"r","restore-session"},"SessionName","Open session by name."}
-		});
+	});
 
 	kkedit->parser.process(app);
 	if(kkedit->parser.isSet("key"))
@@ -88,6 +90,17 @@ int main (int argc, char **argv)
 	kkedit->forceDefaultGeom=!siapp.isOnX11;
 
 	kkedit->initApp(argc,argv);
+
+//ThemeClass *tc=new ThemeClass(kkedit);
+//qDebug()<<"---------->>>>>>>";
+//qDebug()<<kkedit;
+//qDebug()<<"<<<<<<------------";
+//qDebug()<<kkedit->themeClass;
+//kkedit->themeClass->loadTheme("grey");
+//;
+////return(0);
+
+
 //test plugs
 //qSetMessagePattern("[%{type}] %{appname} (%{file}->%{function}->%{line}) - %{message}");
 // QT_MESSAGE_PATTERN="[%{type}] %{appname} (%{file}->%{function}->%{line}) - %{message}"  ...
