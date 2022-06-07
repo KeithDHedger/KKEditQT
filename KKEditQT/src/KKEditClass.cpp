@@ -1029,10 +1029,10 @@ void KKEditClass::setAppShortcuts(void)
 void KKEditClass::setToolbarSensitive(void)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
-	bool			override;
-	bool			gotdoc=true;
-	bool			hasselection=false;
-	plugData		pd;
+	bool				override;
+	bool				gotdoc=true;
+	bool				hasselection=false;
+	plugData			pd;
 
 	if(this->sessionBusy==true)
 		return;

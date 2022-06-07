@@ -793,11 +793,16 @@ void DocumentClass::refreshFromDisk(void)
 				cursor=this->textCursor();
 				cursor.setPosition(block.position());
 				this->setTextCursor(cursor);
+				this->fromMe=false;
+				this->modifiedOnDisk=false;
+				this->state=NORMALTAB;
+				this->dirty=false;
+				this->setTabColourType(NORMALTAB);
 			cursor.endEditBlock();
-			this->mainKKEditClass->setToolbarSensitive();
 		}
 
 	this->mainKKEditClass->sessionBusy=false;
+	this->mainKKEditClass->setToolbarSensitive();
 }
 
 bool DocumentClass::findStr(int what)
