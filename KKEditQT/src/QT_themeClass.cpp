@@ -32,6 +32,13 @@ ThemeClass::~ThemeClass()
 
 void ThemeClass::loadTheme(QString themename)
 {
+	int				cnt;
+    QVariantMap		mainmap;
+	QVariantMap		map;
+ 	QVariantList		locallist;
+	QJsonDocument	doc;
+	QJsonParseError	errorPtr;
+	QByteArray		data;
 	this->currentTheme="default";
 
 	for(int j=0;j<this->themePath.count();j++)
@@ -43,13 +50,6 @@ void ThemeClass::loadTheme(QString themename)
 				}
 		}
 
-	int				cnt;
-    QVariantMap		mainmap;
-	QVariantMap		map;
- 	QVariantList		locallist;
-	QJsonDocument	doc;
-	QJsonParseError	errorPtr;
-	QByteArray		data;
 	QFile			inFile(this->currentTheme);
 
     inFile.open(QIODevice::ReadOnly|QIODevice::Text);

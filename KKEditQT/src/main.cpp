@@ -44,8 +44,6 @@ int main (int argc, char **argv)
 	QApplication		app(argc,argv);
 	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");
 
-
-
 	app.setStyleSheet("QMenu { menu-scrollable: true ;}");
 	app.setOrganizationName("KDHedger");
 	app.setApplicationName("KKEditQT");
@@ -91,19 +89,7 @@ int main (int argc, char **argv)
 
 	kkedit->initApp(argc,argv);
 
-//ThemeClass *tc=new ThemeClass(kkedit);
-//qDebug()<<"---------->>>>>>>";
-//qDebug()<<kkedit;
-//qDebug()<<"<<<<<<------------";
-//qDebug()<<kkedit->themeClass;
-//kkedit->themeClass->loadTheme("grey");
-//;
-////return(0);
-
-
 //test plugs
-//qSetMessagePattern("[%{type}] %{appname} (%{file}->%{function}->%{line}) - %{message}");
-// QT_MESSAGE_PATTERN="[%{type}] %{appname} (%{file}->%{function}->%{line}) - %{message}"  ...
 #if 0
 #ifdef _DEBUGCODE_
 	//qSetMessagePattern("[%{type}] %{appname} (%{file}->%{function}->%{line}) - %{message}");

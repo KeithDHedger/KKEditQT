@@ -143,7 +143,7 @@ void DocumentClass::setStatusBarText(void)
 void DocumentClass::highlightCurrentLine()
 {
 	QTextEdit::ExtraSelection	bmselect;
-	bool						holdsb=this->mainKKEditClass->sessionBusy;
+	bool							holdsb=this->mainKKEditClass->sessionBusy;
 	QTextCursor					cursor=this->textCursor();
 
 	this->setStatusBarText();
@@ -510,6 +510,7 @@ void DocumentClass::setTabName(QString tabname)
 		return;
 
 	this->tabName=tabname;
+	
 	this->mainKKEditClass->mainNotebook->setTabText(tabnum,tabname);
 }
 
@@ -996,19 +997,26 @@ void DocumentClass::setTabColourType(int type)
 		{
 			case CHANGEDONDISKTAB:
 				this->tabColour=QColor(QColorConstants::Svg::orange);
+				this->stateSymbol="!";
 				break;
 			case IGNORECHANGEDONDISKTAB:
 				this->tabColour=QColor(Qt::yellow);
+				this->stateSymbol="+";
 				break;
 			case LOCKEDTAB:
 				this->tabColour=QColor(Qt::green);
+				this->stateSymbol="=";
 				break;
 			case DIRTYTAB:
 				this->tabColour=QColor(Qt::darkRed);
+				this->stateSymbol="*";
 				break;
 			default:
 				this->tabColour=QColor("invalid");
+				this->stateSymbol="";
 				break;
 		}
+
+	this->mainKKEditClass->mainNotebook->setTabText(this->mainKKEditClass->mainNotebook->indexOf(this),this->stateSymbol+this->tabName);
 	this->mainKKEditClass->mainNotebook->tabBar()->update();
 }

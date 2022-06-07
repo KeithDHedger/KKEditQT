@@ -206,6 +206,7 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 		{
 			if(doc->dirty==false)
 				return(true);
+
 			doc->fromMe=true;
 			doc->modifiedOnDisk=false;
 
@@ -225,7 +226,7 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
 				{
-			doc->fromMe=true;
+					doc->fromMe=true;
 					QTextStream(&file) << doc->toPlainText();
 					doc->dirty=false;
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));

@@ -146,10 +146,12 @@ void KKEditClass::doSessionsMenuItems(void)
 			this->closeAllTabs();
 			this->sessionBusy=true;
 			file.setFileName(QString("%1/Session-%2").arg(this->sessionFolder).arg(sessionnumber));
+			QString retdata=this->runPipeAndCapture(QString("cat '%1'|sed -n \"/^.*endmarks$/p\"|wc -l").arg(file.fileName()));
 			retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
+			int cntfiles=0;
 			if(retval==true)
 				{
-					this->showBarberPole("Restore Session","Please Wait","Cancel",QString("%1/session").arg(this->tmpFolderName));
+					this->showBarberPole("Restore Session","Please Wait","Cancel",retdata,QString("%1/session").arg(this->tmpFolderName));
 					this->splash->finish(this->mainWindow);
 					int		linenumber=999;
 					int		visible=666;
@@ -176,8 +178,7 @@ void KKEditClass::doSessionsMenuItems(void)
 							in >> visible;
 							filename=in.readLine().trimmed();
 							linenumber=-1;
-							this->runPipe(QString("echo \"Opening %1 ...\">\"%2/session\" &").arg(filename.trimmed()).arg(this->tmpFolderName));
-							//this->openFile(filename);
+							this->runPipe(QString("echo -e \"Opening %1 ...\n%3\">\"%2/session\" &").arg(filename.trimmed()).arg(this->tmpFolderName).arg(cntfiles++));
 							this->openFile(filename,0,false,false);
 							do
 								{
@@ -194,9 +195,11 @@ void KKEditClass::doSessionsMenuItems(void)
 							this->setTabVisibilty(this->mainNotebook->currentIndex(),visible);
 							this->gotoLine(mainline);
 						}
+					this->runPipe(QString("echo -ne \"Finishing ...\n%1\">\"%2/session\"").arg(retdata).arg(this->tmpFolderName));
+					sleep(1);
+					this->runPipe(QString("echo -e quit>\"%1/session\"").arg(this->tmpFolderName));
 					this->currentSessionNumber=sessionnumber;
 					file.close();
-					this->runPipe(QString("echo quit>\"%1/session\"").arg(this->tmpFolderName));
 					this->mainWindow->setGeometry(x,y,w,h);
 //plugins
 					pd.userStrData1=sessionname;
@@ -225,8 +228,6 @@ void KKEditClass::doSessionsMenuItems(void)
 					break;
 				}
 		}
-	//this->switchPage(0);
-	//this->switchPage(this->mainNotebook->count()-1);
 	this->rebuildTabsMenu();
 	this->setToolbarSensitive();
 }
@@ -241,6 +242,12 @@ void KKEditClass::doBookmarkMenuItems()
 		{
 			case REMOVEALLBOOKMARKSMENUITEM:
 				this->rebuildBookMarkMenu();
+				for(int j=0;j<this->mainNotebook->count();j++)
+					{
+						document=this->getDocumentForTab(j);
+						document->extraBMSelections.clear();
+						document->setXtraSelections();
+					}
 				break;
 			case TOGGLEBOOKMARKMENUITEM:
 				this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM,tc);
@@ -1027,33 +1034,10 @@ void KKEditClass::doTabBarContextMenu(void)
 					int	tabnum=this->mainNotebook->currentIndex();
 					doc->setReadOnly(!doc->isReadOnly());
 					if(doc->isReadOnly()==true)
-						//this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::darkGreen));
 						doc->setTabColourType(LOCKEDTAB);
 					else
 						{
-							//qDebug()<<doc->modifiedOnDisk<<this->prefsNoWarnings<<doc->dirty;
-//							if((doc->modifiedOnDisk==false) && (doc->dirty==true))
-//								{
-//									doc->setTabColourType(DIRTYTAB);
-//									break;;
-//								}
-//							//else
-//							if((doc->modifiedOnDisk==false) && (this->prefsNoWarnings==true))
-//								{
-//									doc->setTabColourType(CHANGEDONDISKTAB);
-//									break;
-//								}
-//
-//							if(doc->modifiedOnDisk==true)
-//								{
-//									doc->setTabColourType(IGNORECHANGEDONDISKTAB);
-//									break;
-//								}
 							doc->setTabColourType(doc->state);
-//							if(doc->dirty==true)
-//								this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(Qt::red));
-//							else
-//								this->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(doc->highlighter->documentForeground));
 						}
 				}
 				break;
@@ -1115,10 +1099,10 @@ void KKEditClass::doOddButtons(void)
 						file.setFileName(this->toolSelect->currentData().toString());
 					else
 						file.setFileName(QString("%1/%2").arg(this->toolsFolder).arg(this->toolsWindow->findChild<QLineEdit*>(TOOLNAME)->text()));
+
 					retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 					if(retval==true)
 						{
-							this->showBarberPole("Rebuild Tools Menu","Rebuilding tools menu, please wait ...","Cancel",QString("%1/tools").arg(this->tmpFolderName));
 							QTextStream(&file) << TOOLALWAYSINPOPUP << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLALWAYSINPOPUP)->isChecked() << Qt::endl;
 							QTextStream(&file) << TOOLCLEAROP << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLCLEAROP)->isChecked() << Qt::endl;
 							QTextStream(&file) << TOOLCOMMAND << "\t" << this->toolsWindow->findChild<QLineEdit*>(TOOLCOMMAND)->text() << Qt::endl;
@@ -1165,7 +1149,6 @@ void KKEditClass::doOddButtons(void)
 					if(this->yesNoDialog("Deleting "+fileinfo.fileName(),"This is not undoable, continue?")!=QMessageBox::Yes)
 						return;
 
-					this->showBarberPole("Rebuild Tools Menu","Rebuilding tools menu, please wait ...","Cancel",QString("%1/tools").arg(this->tmpFolderName));
 					file.remove();
 					this->rebuildToolsMenu();
 					this->runPipe(QString("echo quit>\"%1/tools\"").arg(this->tmpFolderName));

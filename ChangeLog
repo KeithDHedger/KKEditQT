@@ -1,4 +1,10 @@
 0.7.2
+Fixed removing all bookmarks.
+Fixed removing bookmark mistakenly marking document dirty.
+Fixed moving selection up/down via shortcut.
+Fixed moving line up/down via shortcut.
+Fixed progress dialog not showing full.
+Made progress dialog show % of files when restoring session.
 Redone syntax highlighting plugins.
 Redone theme files.
 Added theme class.

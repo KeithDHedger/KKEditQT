@@ -241,7 +241,7 @@ class KKEditClass : public QObject
 		void							readConfigs(void);
 		void							findFile(void);
 		void							buildTools(void);
-		void							showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString controlfile);
+		void							showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile);
 		void							buildDocs(void);
 		void							showDocs(void);
 		void							shutDownApp(void);

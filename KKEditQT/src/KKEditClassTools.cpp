@@ -25,7 +25,7 @@ void KKEditClass::rebuildToolsMenu(void)
 	QFile			file;
 	QStringList		sl;
 	QString			toolsdir=this->toolsFolder;
-	QDir			dir(toolsdir);
+	QDir				dir(toolsdir);
 	QStringList		flist=dir.entryList(QDir::Files);
 	MenuItemClass	*menuItemSink;
 	int				dropnum=0;

@@ -212,7 +212,11 @@ void KKEditClass::switchPage(int index)
 
 	doc->setStatusBarText();
 	doc->clearHilites();
-
+	if(doc->state==CHANGEDONDISKTAB)
+		{
+			doc->state=NORMALTAB;
+			doc->setTabColourType(NORMALTAB);
+		}
 	this->rebuildFunctionMenu(index);
 	this->rebuildTabsMenu();
 
@@ -263,22 +267,14 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 									this->bookMarks.remove(value.bmKey);
 							}
 					}
-				this->sessionBusy=holdsb;
 				return;
 				break;
 			case TOGGLEBOOKMARKMENUITEM:
 				{
-					QString testtext;
 					foreach(bookMarkStruct value,this->bookMarks)
 						{
 							if((value.docIndex==doc->pageIndex) && (value.line==cursor.blockNumber()+1))
 								{
-									QTextBlock			block=doc->document()->findBlockByLineNumber(value.line);
-									QTextBlockFormat		bf=block.blockFormat();
-
-									bf.clearBackground();
-									cursor.setBlockFormat(bf);
-								
 									this->bookMarkMenu->removeAction(value.menu);
 									this->bookMarks.remove(value.bmKey);
 									return;
@@ -507,12 +503,14 @@ void KKEditClass::doAppShortCuts(void)
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
 				cursor.deleteChar();
+				cursor.clearSelection();
+				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
 				cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor);
-				cursor.insertText(QString("%1%2").arg(txt).arg('\n'));
+				cursor.insertText(txt);
+				cursor.insertText("\n");
 				cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor);
 				cursor.setPosition(cursor.anchor()+anc);
 				doc->setTextCursor(cursor);
-				emit doc->cursorPositionChanged();
 				break;
 			case MOVELINEDOWNSHORTCUT:
 				anc=cursor.positionInBlock();
@@ -520,8 +518,11 @@ void KKEditClass::doAppShortCuts(void)
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
 				cursor.deleteChar();
+				cursor.clearSelection();
 				cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor);
-				cursor.insertText(QString("%1%2").arg(txt).arg('\n'));
+				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
+				cursor.insertText(txt);
+				cursor.insertText("\n");
 				cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor);
 				cursor.setPosition(cursor.anchor()+anc);
 				doc->setTextCursor(cursor);
@@ -530,10 +531,9 @@ void KKEditClass::doAppShortCuts(void)
 			case MOVESELECTIONUPSHORTCUT:
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
-				cursor.deleteChar();
 				cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor);
 				anc=cursor.anchor();
-				cursor.insertText(QString("%1%2").arg(txt).arg('\n'));
+				cursor.insertText(txt);
 				cursor.setPosition(anc);
 				cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor,txt.length());
 				doc->setTextCursor(cursor);
@@ -542,10 +542,9 @@ void KKEditClass::doAppShortCuts(void)
 			case MOVESELECTIONDOWNSHORTCUT:
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
-				cursor.deleteChar();
 				cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor);
 				anc=cursor.anchor();
-				cursor.insertText(QString("%1%2").arg(txt).arg('\n'));
+				cursor.insertText(txt);
 				cursor.setPosition(anc);
 				cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor,txt.length());
 				doc->setTextCursor(cursor);
@@ -821,11 +820,15 @@ void KKEditClass::findFile(void)
 		this->openFile(retval.at(j));
 }
 
-void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString controlfile)
+void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile)
 {
 	QString	pipecom;
 
-	pipecom=QString("KKEditQTProgressBar \"%1\" \"%2\" \"%3\" \"%4\" &").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(controlfile);
+#ifdef _DEBUGCODE_
+	pipecom=QString("KKEditQT/app/KKEditQTProgressBar \"%1\" \"%2\" \"%3\" \"%4\" \"%5\" &").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(maxitems).arg(controlfile);
+#else
+	pipecom=QString("KKEditQTProgressBar \"%1\" \"%2\" \"%3\" \"%4\" \"%5\" &").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(maxitems).arg(controlfile);
+#endif
 	this->runPipe(pipecom);
 }
 

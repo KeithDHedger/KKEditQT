@@ -23,18 +23,22 @@
 #include <QProgressDialog>
 #include <unistd.h>
 
-enum labelEnums {WINDOWTITLE=1,BODYLABEL,CANCELLABEL,CONTROLFILE};
+enum labelEnums {WINDOWTITLE=1,BODYLABEL,CANCELLABEL,NUMBEROFITEMS,CONTROLFILE,NOMOREARGS};
+
+//TODO//
+//use normal window and add widgets.
 
 int main(int argc, char **argv)
 {
-	FILE*			fp;
-	char			line[256];
-	char			command[256];
-	bool			flag=true; 
-	QApplication	app(argc, argv);
+	FILE				*fp;
+	char				line[256];
+	char				command[256];
+	bool				flag=true; 
+	QApplication		app(argc, argv);
 	QString			dialoglabel="Building docs ...";
 	QString			windowtitle="Please wait ...";
 	QString			cancellabel="Abort opertation";
+	int				maxitems=0;
 
 	sprintf(command,"echo \"%s\" > '%s'",argv[BODYLABEL],argv[CONTROLFILE]);
 	system(command);
@@ -42,20 +46,24 @@ int main(int argc, char **argv)
 	windowtitle=argv[WINDOWTITLE];
 	dialoglabel=argv[BODYLABEL];
 	cancellabel=argv[CANCELLABEL];
+	maxitems=atoi(argv[NUMBEROFITEMS]);
 
 	if(cancellabel.isEmpty()==true)
 		cancellabel=QString();
-	QProgressDialog progress("",cancellabel,0,0,nullptr,Qt::Dialog);
+	QProgressDialog progress("",cancellabel,1,maxitems,nullptr,Qt::Dialog);
 	progress.setWindowModality(Qt::WindowModal);
 	progress.setWindowTitle(windowtitle);
 	progress.setWindowFlags(progress.windowFlags() | Qt::WindowStaysOnTopHint);
+	progress.setAutoClose(false);
+	progress.setAutoReset(false);
+	progress.setValue(1);
 	progress.show();
 
 	sprintf(command,"cat '%s' 2>/dev/null",argv[CONTROLFILE]);
 
-	while(flag)
+	while(flag==true)
 		{
-			app.processEvents(); 
+			app.processEvents();
 			if (progress.wasCanceled())
 				flag=false;
 			usleep(500);
@@ -63,15 +71,22 @@ int main(int argc, char **argv)
 			while(fgets(line,256,fp))
 				{
 					if(strncasecmp(line,"quit",4)==0)
-						flag=false;
+						{
+							progress.setValue(progress.maximum());
+							progress.update();
+							app.processEvents();
+							flag=false;
+							continue;
+						}
 					else
 						progress.setLabelText(line);
+					fgets(line,256,fp);
+					progress.setValue(atoi(line));
 				}
 			pclose(fp);
 		}
 
 	sprintf(command,"rm '%s' &>/dev/null",argv[CONTROLFILE]);
 	system(command);
-
 	return 0;
 }
