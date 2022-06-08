@@ -41,6 +41,7 @@ int main (int argc, char **argv)
 	bool				safeflag=false;
 	bool				retval=false;
 	QDir				commsDir;
+	///QApplication::setDesktopSettingsAware(true);
 	QApplication		app(argc,argv);
 	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");
 
@@ -109,6 +110,10 @@ int main (int argc, char **argv)
 
 	kkedit->splash->finish(kkedit->mainWindow);
 
+//	QObject::connect(this->fileWatch,&QApplication::fileChanged,[this](const QString &path)
+//{
+//qDebug()<<">>>>>>>>>>>>";
+//};
 	status=app.exec();
 
 	delete kkedit;

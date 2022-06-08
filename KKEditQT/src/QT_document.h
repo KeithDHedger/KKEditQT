@@ -110,7 +110,7 @@ class DocumentClass : public QPlainTextEdit
 		void								contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
 		void								mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 		void								mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-		
+
 //dand
 		void								dragEnterEvent(QDragEnterEvent* event);
 		void								dropEvent(QDropEvent* event);

@@ -367,6 +367,12 @@ void KKEditClass::initApp(int argc,char** argv)
 //		styleName="Root Source";
 	//this->highlightColour="#808080";
 	this->mainWindow=new QMainWindow;
+
+//	QObject::connect(this->mainWindow,&QMainWindow::event,[this](QEvent *event)
+//		{
+//			qDebug()<<"here";
+//		});
+
 	for(int j=0;j<NOMORESHORTCUT;j++)
 		this->appShortcuts[j]=new QShortcut(this->mainWindow);
 

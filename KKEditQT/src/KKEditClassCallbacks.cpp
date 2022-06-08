@@ -282,19 +282,25 @@ void KKEditClass::doToolsMenuItems()
 						QString str=sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed();
 						if(document!=NULL)
 							{
+								//%l
 								QString filelist;
-								for(int j=0;j<this->pages.count();j++)
+								for(int j=0;j<this->pages.count()-1;j++)
 									{
 										if(this->pages[j]!=NULL)
-											filelist+=this->pages[j]->getFilePath()+";";
+											filelist+=this->pages[j]->getFilePath()+" ";
 									}
+								filelist+=this->pages[this->pages.count()-1]->getFilePath();
 								setenv("KKEDIT_FILE_LIST",filelist.toStdString().c_str(),1);
-								//%d doc folder
-								setenv("KKEDIT_CURRENTDIR",document->getDirPath().toStdString().c_str(),1);
-								str.replace("%d",document->getDirPath());
+								str.replace("%l",filelist);
 								//%f doc filepath
 								setenv("KKEDIT_CURRENTFILE",document->getFilePath().toStdString().c_str(),1);
 								str.replace("%f",document->getFilePath());
+								//%n
+								setenv("KKEDIT_FILECOUNT",QString("%1").arg(this->mainNotebook->count()).toStdString().c_str(),1);
+								str.replace("%n",QString("%1").arg(this->mainNotebook->count()));
+								//%d doc folder
+								setenv("KKEDIT_CURRENTDIR",document->getDirPath().toStdString().c_str(),1);
+								str.replace("%d",document->getDirPath());
 								//%t selected text
 								setenv("KKEDIT_SELECTION",document->textCursor().selectedText().replace(QRegularExpression("\u2029|\\r\\n|\\r"),"\n").toStdString().c_str(),1);
 								str.replace("%t",document->textCursor().selectedText());
@@ -307,8 +313,8 @@ void KKEditClass::doToolsMenuItems()
 								setenv("KKEDIT_HTMLFILE",this->htmlFile.toStdString().c_str(),1);
 								str.replace("%h",this->htmlFile);
 								//%i
-								setenv("KKEDIT_DATADIR","TODO",1);
-								str.replace("%i","TODO");
+								setenv("KKEDIT_DATADIR",DATADIR,1);
+								str.replace("%i",DATADIR);
 
 								int trm=sl.indexOf(QRegularExpression(QString(".*%1.*").arg(TOOLRUNINTERM)));//todo//
 								//run in term
@@ -695,6 +701,8 @@ void KKEditClass::doTimer(void)
 	int				retcode=0;
 	msgStruct		buffer;
 	DocumentClass	*doc;
+//QPalette this->application.palette();
+	
 #ifdef _BUILDDOCVIEWER_
 	this->setDocMenu();
 #endif
