@@ -100,7 +100,6 @@ NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent
 	this->setDocumentMode(true);
 	this->setTabsClosable(true);
 	this->setMovable(true);
-
 }
 
 void NoteBookClass::dragMoveEvent(QDragMoveEvent *event)

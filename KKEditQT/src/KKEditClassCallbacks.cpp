@@ -701,7 +701,6 @@ void KKEditClass::doTimer(void)
 	int				retcode=0;
 	msgStruct		buffer;
 	DocumentClass	*doc;
-//QPalette this->application.palette();
 	
 #ifdef _BUILDDOCVIEWER_
 	this->setDocMenu();

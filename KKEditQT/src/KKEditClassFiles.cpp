@@ -338,7 +338,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc->setFilePrefs();
 			doc->pageIndex=this->newPageIndex;
 			this->pages[this->newPageIndex++]=doc;
-//			tabnum=this->mainNotebook->addTab(doc,doc->getTabName());
 			tabnum=this->mainNotebook->addTab(doc,tabicon,doc->getTabName());
 			doc->setDirPath(fileinfo.canonicalPath());
 			doc->setFilePath(fileinfo.canonicalFilePath());
