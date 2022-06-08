@@ -1,4 +1,6 @@
 0.7.2
+Added Symbols menu plugin.
+Repaced coloured tabs with icon to show doc status.
 Added total number of open files to env sent to tool command.
 Fixed place holders in tool command.
 Set tool bar items enabled properly after 'Revert'.

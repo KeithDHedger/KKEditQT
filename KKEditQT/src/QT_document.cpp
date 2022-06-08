@@ -342,7 +342,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 	QString			completionPrefix;
 	const QString	eow("~!@#$%^&*()+{}|:\"<>?,./;'[]\\-= \t\n"); // end of word;
 	bool				popupflag=true;
-
+	
 	if(this->isReadOnly()==true)
 		return;
 
@@ -998,30 +998,26 @@ void DocumentClass::setHighlightAll(void)
 
 void DocumentClass::setTabColourType(int type)
 {
+	QIcon tabicon;
 	switch(type)
 		{
 			case CHANGEDONDISKTAB:
-				this->tabColour=QColor(QColorConstants::Svg::orange);
-				this->stateSymbol="!";
+				tabicon=QIcon(QString("%1/pixmaps/changed.png").arg(DATADIR));
 				break;
 			case IGNORECHANGEDONDISKTAB:
-				this->tabColour=QColor(Qt::yellow);
-				this->stateSymbol="+";
+				tabicon=QIcon(QString("%1/pixmaps/ignore.png").arg(DATADIR));
 				break;
 			case LOCKEDTAB:
-				this->tabColour=QColor(Qt::green);
-				this->stateSymbol="=";
+				tabicon=QIcon(QString("%1/pixmaps/locked.png").arg(DATADIR));
 				break;
 			case DIRTYTAB:
-				this->tabColour=QColor(Qt::darkRed);
-				this->stateSymbol="*";
+				tabicon=QIcon(QString("%1/pixmaps/dirty.png").arg(DATADIR));
 				break;
 			default:
-				this->tabColour=QColor("invalid");
-				this->stateSymbol="";
+				tabicon=QIcon(QString("%1/pixmaps/empty.png").arg(DATADIR));
 				break;
 		}
 
-	this->mainKKEditClass->mainNotebook->setTabText(this->mainKKEditClass->mainNotebook->indexOf(this),this->stateSymbol+this->tabName);
+	this->mainKKEditClass->mainNotebook->setTabIcon(this->mainKKEditClass->mainNotebook->indexOf(this),tabicon);
 	this->mainKKEditClass->mainNotebook->tabBar()->update();
 }

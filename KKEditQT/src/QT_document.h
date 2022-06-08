@@ -89,9 +89,7 @@ class DocumentClass : public QPlainTextEdit
 		bool								visible=true;
 		bool								fromMe=false;//TODO//
 		bool								modifiedOnDisk=false;//TODO//
-		QColor							tabColour=QColor("invalid");//TODO//
 		int								state=NORMALTAB;
-		QString							stateSymbol="";
 
 //find/replace
 		int								searchPos=-1000;
