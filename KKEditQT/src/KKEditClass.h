@@ -90,7 +90,6 @@ class kkEditQTPluginInterface;
 #include "QT_highlighter.h"
 #include "QT_document.h"
 #include "QT_toolbar.h"
-#include "QT_tabColoursClass.h"
 #include "QT_notebook.h"
 
 #include "kkeditqtPluginInterface.h"
