@@ -53,7 +53,6 @@ class NoteBookClass : public QTabWidget
 	private:
 		QToolButton	*scrollLeft;
 		QToolButton	*scrollRight;
-		TabColours	*tb;
 };
 
 #endif
