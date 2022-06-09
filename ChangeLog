@@ -1,4 +1,5 @@
 0.7.2
+Fixed multi char graphemes.
 Added Symbols menu plugin.
 Repaced coloured tabs with icon to show doc status.
 Added total number of open files to env sent to tool command.

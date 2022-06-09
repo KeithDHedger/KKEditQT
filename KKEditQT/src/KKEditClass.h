@@ -94,14 +94,6 @@ class kkEditQTPluginInterface;
 
 #include "kkeditqtPluginInterface.h"
 
-//class DocumentClass;
-//class NoteBookClass;
-//class MenuItemClass;
-//class RecentMenuClass;
-//class HistoryClass;
-//class ToolBarClass;
-//class kkEditQTPluginInterface;
-
 struct pluginStruct
 {
 	QPluginLoader					*pluginLoader=NULL;

@@ -33,22 +33,28 @@ void SymbolsMenuPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->symbolMenu=new QMenu("Symbols");
 	this->mainKKEditClass->pluginMenu->addMenu(symbolMenu);
 
-	while(this->AandP[cnt]!=NULL)
+	while(this->AandP[cnt].isEmpty()==false)
 		{
 			menustring=this->AandP[cnt];
 			submenu=new QMenu(menustring.left(menustring.indexOf("<<--")));
-			//submenu=new QMenu(QString("☻☺☹😀😁😂😃😄😅😆😇😈😉😊😋😌😍😎😏😐😑😒😓😔😕😖😗😘😙😚"));
-			
 			this->symbolMenu->addMenu(submenu);
-			for(int j=menustring.indexOf("<<--")+4;j<menustring.length();j++)
+
+			QTextBoundaryFinder bf2(QTextBoundaryFinder::Grapheme,menustring);
+			bf2.setPosition(menustring.indexOf("<<--")+4);
+			while(bf2.position()!=-1)
 				{
-					symact=new  QAction(QString(menustring.at(j)));
-					symact->setObjectName(QString(menustring.at(j)));
-					submenu->addAction(symact);
-					QObject::connect(symact,&QAction::triggered,[this,symact]()
+					int	st=bf2.position();
+					int	dne=bf2.toNextBoundary();
+					if(dne!=-1)
 						{
-							this->clipboard->setText(symact->objectName());
-						});
+							symact=new  QAction(QString(menustring.mid(st, dne - st)));
+							symact->setObjectName(QString(menustring.mid(st, dne - st)));
+							submenu->addAction(symact);
+							QObject::connect(symact,&QAction::triggered,[this,symact]()
+								{
+									this->clipboard->setText(symact->objectName());
+								});
+						}
 				}
 			cnt++;
 		}
