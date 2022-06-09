@@ -32,11 +32,11 @@ void SymbolsMenuPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 	this->symbolMenu=new QMenu("Symbols");
 	this->mainKKEditClass->pluginMenu->addMenu(symbolMenu);
-
-	QFileInfo datafile(this->plugPath);
-
-	qDebug()<<datafile.filePath()<<datafile.absolutePath();
-return;
+//
+//	QFileInfo datafile(this->plugPath);
+//
+//	qDebug()<<datafile.filePath()<<datafile.absolutePath();
+//return;
 	while(this->subMenus[cnt].isEmpty()==false)
 		{
 			menustring=this->subMenus[cnt];
