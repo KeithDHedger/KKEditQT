@@ -46,7 +46,7 @@ class SymbolsMenuPlug : public QObject, kkEditQTPluginInterface
 		QMenu					*symbolMenu;
 		QClipboard				*clipboard;
 		QMetaObject::Connection	symbolCon;
-		const QString			AandP[21]={	QString("Accents+Punctuation<<--´`¨ˆ¸!¡‼¿…"),\
+		const QString			subMenus[21]={	QString("Accents+Punctuation<<--´`¨ˆ¸!¡‼¿…"),\
 											QString("Arrows<<--←→↑↓↔↕↨↗↘↳↵⇐⇒⇔⇤⇥⇦⇧⇨⇩"),\
 											QString("Emoticons 1<<--☻☺☹😀😁😂😃😄😅😆😇😈😉😊😋😌😍😎😏😐😑😒😓😔😕😖😗😘😙😚"),\
 											QString("Emoticons 2<<--😛😜😝😞😟😠😡😢😣😥😦😧😨😩😪😫😭😮😯😰😱😲😳😴😵😶😷"),\

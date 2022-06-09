@@ -33,9 +33,9 @@ void SymbolsMenuPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->symbolMenu=new QMenu("Symbols");
 	this->mainKKEditClass->pluginMenu->addMenu(symbolMenu);
 
-	while(this->AandP[cnt].isEmpty()==false)
+	while(this->subMenus[cnt].isEmpty()==false)
 		{
-			menustring=this->AandP[cnt];
+			menustring=this->subMenus[cnt];
 			submenu=new QMenu(menustring.left(menustring.indexOf("<<--")));
 			this->symbolMenu->addMenu(submenu);
 
@@ -47,8 +47,8 @@ void SymbolsMenuPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 					int	dne=bf2.toNextBoundary();
 					if(dne!=-1)
 						{
-							symact=new  QAction(QString(menustring.mid(st, dne - st)));
-							symact->setObjectName(QString(menustring.mid(st, dne - st)));
+							symact=new  QAction(QString(menustring.mid(st,dne-st)));
+							symact->setObjectName(QString(menustring.mid(st,dne-st)));
 							submenu->addAction(symact);
 							QObject::connect(symact,&QAction::triggered,[this,symact]()
 								{

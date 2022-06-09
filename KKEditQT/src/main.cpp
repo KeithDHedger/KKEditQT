@@ -21,9 +21,9 @@
 #include "kkedit-includes.h"
 #include "SingleInstanceClass.h"
 
-bool					singleOverRide=false;
-bool					loadPluginsFlag=true;
-KKEditClass				*kkedit;
+bool			singleOverRide=false;
+bool			loadPluginsFlag=true;
+KKEditClass	*kkedit;
 
 //unsigned long hashFromKey(const char *key)
 //{
@@ -41,7 +41,6 @@ int main (int argc, char **argv)
 	bool				safeflag=false;
 	bool				retval=false;
 	QDir				commsDir;
-	///QApplication::setDesktopSettingsAware(true);
 	QApplication		app(argc,argv);
 	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");
 
