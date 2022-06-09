@@ -6,7 +6,7 @@ SOURCES         = SymbolsMenu.cpp
 TARGET          = $$qtLibraryTarget(SymbolsMenu)
 DESTDIR         = ../plugins
 
-documentation.files = docs/*
+data.files = indicator-chars.txt
 destdir = $$(INSTALLTO)
 isEmpty(destdir) {
 	LOCAL = 1
@@ -21,10 +21,10 @@ else {
 	target.path = $$(INSTALLTO)/plugins/SymbolsMenu
 }
 
-documentation.path = $${target.path}/docs
+data.path = $${target.path}
 
 INSTALLS += target
-INSTALLS += documentation
+INSTALLS += data
 
 CONFIG += install_ok
 
