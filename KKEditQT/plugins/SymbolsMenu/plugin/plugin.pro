@@ -7,6 +7,8 @@ TARGET          = $$qtLibraryTarget(SymbolsMenu)
 DESTDIR         = ../plugins
 
 data.files = indicator-chars.txt
+documentation.files = docs/*
+
 destdir = $$(INSTALLTO)
 isEmpty(destdir) {
 	LOCAL = 1
@@ -22,9 +24,11 @@ else {
 }
 
 data.path = $${target.path}
+documentation.path = $${target.path}/docs
 
 INSTALLS += target
 INSTALLS += data
+INSTALLS += documentation
 
 CONFIG += install_ok
 

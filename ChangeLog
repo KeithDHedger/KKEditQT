@@ -1,4 +1,5 @@
 0.7.2
+Added simple help to Symbols menu plugin ( Edit->Plugin Prefs->Symbols menu About->Help ).
 Fixed multi char graphemes.
 Added Symbols menu plugin.
 Repaced coloured tabs with icon to show doc status.

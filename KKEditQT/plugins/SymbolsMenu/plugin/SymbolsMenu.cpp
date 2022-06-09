@@ -25,42 +25,46 @@ void SymbolsMenuPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	QAction	*symact;
 	QMenu	*submenu;
 	QString	menustring;
-	int		cnt=0;
 
 	this->mainKKEditClass=kk;
 	this->plugPath=pathtoplug;
 
 	this->symbolMenu=new QMenu("Symbols");
 	this->mainKKEditClass->pluginMenu->addMenu(symbolMenu);
-//
-//	QFileInfo datafile(this->plugPath);
-//
-//	qDebug()<<datafile.filePath()<<datafile.absolutePath();
-//return;
-	while(this->subMenus[cnt].isEmpty()==false)
-		{
-			menustring=this->subMenus[cnt];
-			submenu=new QMenu(menustring.left(menustring.indexOf("<<--")));
-			this->symbolMenu->addMenu(submenu);
 
-			QTextBoundaryFinder bf2(QTextBoundaryFinder::Grapheme,menustring);
-			bf2.setPosition(menustring.indexOf("<<--")+4);
-			while(bf2.position()!=-1)
+	QFileInfo	datafile(this->plugPath);
+	QFile		thefile(QString("%1/indicator-chars.txt").arg(datafile.absolutePath()));
+	bool			retval=false;
+	retval=thefile.open(QIODevice::Text | QIODevice::ReadOnly);
+	if(retval==true)
+		{
+			QString menustring;
+			QTextStream	in(&thefile);
+			while(in.atEnd()==false)
 				{
-					int	st=bf2.position();
-					int	dne=bf2.toNextBoundary();
-					if(dne!=-1)
+					menustring=in.readLine();
+					submenu=new QMenu(menustring.left(menustring.indexOf("<<--")));
+					this->symbolMenu->addMenu(submenu);
+
+					QTextBoundaryFinder bf2(QTextBoundaryFinder::Grapheme,menustring);
+					bf2.setPosition(menustring.indexOf("<<--")+4);
+					while(bf2.position()!=-1)
 						{
-							symact=new  QAction(QString(menustring.mid(st,dne-st)));
-							symact->setObjectName(QString(menustring.mid(st,dne-st)));
-							submenu->addAction(symact);
-							QObject::connect(symact,&QAction::triggered,[this,symact]()
+							int	st=bf2.position();
+							int	dne=bf2.toNextBoundary();
+							if(dne!=-1)
 								{
-									this->clipboard->setText(symact->objectName());
-								});
+									symact=new  QAction(QString(menustring.mid(st,dne-st)));
+									symact->setObjectName(QString(menustring.mid(st,dne-st)));
+									submenu->addAction(symact);
+									QObject::connect(symact,&QAction::triggered,[this,symact]()
+										{
+											this->clipboard->setText(symact->objectName());
+										});
+								}
 						}
 				}
-			cnt++;
+			thefile.close();
 		}
 }
 
@@ -72,14 +76,31 @@ void SymbolsMenuPlug::unloadPlug(void)
 
 void SymbolsMenuPlug::plugAbout(void)
 {
-	QMessageBox msgBox;
+	QMessageBox	msgBox;
+	QFileInfo	fileinfo(this->plugPath);
+	QString		txt="KKEditQT Symbols Menu Plugin\n\n©K.D.Hedger 2022\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
 
-	QString txt="KKEditQT Symbols Menu Plugin\n\n©K.D.Hedger 2022\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
 	msgBox.setText(txt);
 	msgBox.setIconPixmap(QPixmap("/usr/share/KKEditQT/pixmaps/KKEditQTPlug.png"));
 	msgBox.setWindowTitle("Plugin About");
 	msgBox.setTextFormat(Qt::MarkdownText);
-	msgBox.exec();
+	msgBox.setStandardButtons(QMessageBox::Help|QMessageBox::Close);
+	int ret=msgBox.exec();
+	switch(ret)
+		{
+			case QMessageBox::Close:
+				break;
+			case QMessageBox::Help:
+				{
+					QStringList args;
+					args<<"-k";
+					args<<QString("%1").arg(this->mainKKEditClass->sessionID);
+					args<<"-c"<<"openindocview";
+					args<<"-d"<<"file:///"+fileinfo.canonicalPath()+"/docs/help.html";
+					QProcess::startDetached("kkeditqtmsg",args);
+				}
+				break;
+		}
 }
 
 void SymbolsMenuPlug::plugSettings(void)
