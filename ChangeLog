@@ -1,4 +1,5 @@
 0.7.2
+Set visual insertion point for drag and drop on doc.
 Code clean.
 Fixed setting doc dirty on drop file.
 Fixed reseting functions menu on file save.

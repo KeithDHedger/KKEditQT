@@ -654,10 +654,35 @@ void DocumentClass::setRedo(bool avail)
 	this->gotRedo=avail;
 }
 
+void DocumentClass::paintEvent(QPaintEvent* event)
+{
+	QPlainTextEdit::paintEvent(event);
+	if(this->inDrag==true)
+		{
+			QPainter p(viewport());
+			QRect r(this->cursorRect());
+			r.setWidth(r.width()+2);
+			r.translate(-1,0);
+			p.fillRect(r,this->mainKKEditClass->theme->themeParts["docfgcolour"].colour);
+		}
+}
+
+void DocumentClass::dragLeaveEvent(QDragLeaveEvent* event)
+{
+	this->inDrag=false;
+	QPlainTextEdit::dragLeaveEvent(event);
+}
+
 void DocumentClass::dragMoveEvent(QDragMoveEvent *event)
 {
+	QTextCursor	cursor;
+
 	if((event->mimeData()->hasUrls()==true) || (event->mimeData()->hasText()==true))
-		event->accept();
+		{
+			event->accept();
+			cursor=this->cursorForPosition(event->pos());
+			this->setTextCursor(cursor);
+		}
 	else
 		QPlainTextEdit::dragMoveEvent(event);
 }
@@ -665,13 +690,18 @@ void DocumentClass::dragMoveEvent(QDragMoveEvent *event)
 void DocumentClass::dragEnterEvent(QDragEnterEvent* event)
 {
 	if((event->mimeData()->hasUrls()==true) || (event->mimeData()->hasText()==true))
-		event->accept();
+		{
+			this->inDrag=true;
+			event->accept();
+		}
     else
 		QPlainTextEdit::dragEnterEvent(event);
 }
 
 void DocumentClass::dropEvent(QDropEvent* event)
 {
+	this->inDrag=false;
+
 	if (event->mimeData()->hasUrls())
 		{
 			const QMimeData	*mime=event->mimeData();

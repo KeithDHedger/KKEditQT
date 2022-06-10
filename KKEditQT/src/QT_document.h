@@ -36,6 +36,7 @@ class DocumentClass : public QPlainTextEdit
 		explicit DocumentClass(KKEditClass *kk,QWidget *parent=0);
 		~DocumentClass();
 
+
 		KKEditClass						*mainKKEditClass=NULL;
 //highlighting
 		Highlighter						*highlighter;
@@ -108,9 +109,10 @@ class DocumentClass : public QPlainTextEdit
 		void								contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
 		void								mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 		void								mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-
+		void								paintEvent(QPaintEvent* event);
 //dand
 		void								dragEnterEvent(QDragEnterEvent* event);
+		void								dragLeaveEvent(QDragLeaveEvent* event);
 		void								dropEvent(QDropEvent* event);
 		void								dragMoveEvent(QDragMoveEvent *event);
 
@@ -123,6 +125,7 @@ class DocumentClass : public QPlainTextEdit
 		void								setRedo(bool avail);
 
 	private:
+		bool								inDrag=false;
 		QWidget 							*lineNumberArea;
 		QString							indentPad;
 		void								clearXtraSelections(void);
