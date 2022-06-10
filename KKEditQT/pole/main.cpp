@@ -25,8 +25,17 @@
 
 enum labelEnums {WINDOWTITLE=1,BODYLABEL,CANCELLABEL,NUMBEROFITEMS,CONTROLFILE,NOMOREARGS};
 
-//TODO//
-//use normal window and add widgets.
+#define MAXMESSAGELEN 96
+
+QString truncateWithElipses(const QString str)
+{
+	QString newlabel;
+	if(str.length()>MAXMESSAGELEN)
+		newlabel=str.left((MAXMESSAGELEN-3)/2)+"..."+str.right((MAXMESSAGELEN-3)/2);
+	else
+		newlabel=str;
+	return(newlabel);
+}
 
 int main(int argc, char **argv)
 {
@@ -79,7 +88,7 @@ int main(int argc, char **argv)
 							continue;
 						}
 					else
-						progress.setLabelText(line);
+						progress.setLabelText(truncateWithElipses(line));
 					fgets(line,256,fp);
 					progress.setValue(atoi(line));
 				}
