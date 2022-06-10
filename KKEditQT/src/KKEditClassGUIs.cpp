@@ -575,12 +575,12 @@ void KKEditClass::buildFindReplace(void)
 //rep all
 	this->frSwitches[FRREPLACEALL]=new QCheckBox("Replace All");
 	this->frSwitches[FRREPLACEALL]->setChecked(this->replaceAll);
-	QObject::connect(this->frSwitches[FRREPLACEALL],SIGNAL(stateChanged(int)),this,SLOT(setSearchPrefs(int)));
+	QObject::connect(this->frSwitches[FRREPLACEALL],SIGNAL(stateChanged(int)),this,SLOT(setSearchPrefs()));
 	hlayout->addWidget(this->frSwitches[FRREPLACEALL]);
 //search back
 	this->frSwitches[FRSEARCHBACK]=new QCheckBox("Search Backwards");
 	this->frSwitches[FRSEARCHBACK]->setChecked(this->searchBack);
-	QObject::connect(this->frSwitches[FRSEARCHBACK],SIGNAL(stateChanged(int)),this,SLOT(setSearchPrefs(int)));
+	QObject::connect(this->frSwitches[FRSEARCHBACK],SIGNAL(stateChanged(int)),this,SLOT(setSearchPrefs()));
 	hlayout->addWidget(this->frSwitches[FRSEARCHBACK]);
 
 	vlayout->addWidget(hbox);
@@ -927,14 +927,13 @@ void KKEditClass::showLineEntry(void)
 
 void KKEditClass::buildTools(void)
 {
-	MenuItemClass	*menuItemSink;
 	QVBoxLayout		*mainvbox=new QVBoxLayout();
 	QHBoxLayout		*hbox=new QHBoxLayout;
 	QLabel			*widgetlabel;
 	QGridLayout		*grid;
 	QWidget			*tab;
 	QCheckBox		*check;
-	QRadioButton	*radio;
+	QRadioButton		*radio;
 	QLineEdit		*edit;
 	QPushButton		*button;
 	int				posx=0;
@@ -1360,7 +1359,6 @@ void KKEditClass::buildDocViewer(void)
 
 int KKEditClass::yesNoDialog(QString txt,QString info)
 {
-	int			retval=0;
 	QMessageBox	msgBox;
 
 	msgBox.setIcon(QMessageBox::Warning);

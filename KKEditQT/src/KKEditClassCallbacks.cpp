@@ -75,8 +75,7 @@ void KKEditClass::doSessionsMenuItems(void)
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
 				{
-					int		linenumber=10;
-					bool		visible=true;
+					int linenumber=10;
 					bool	ok;
 					if((sessionnumber!=0) && (mc->getMenuID()!=CURRENTSESSION))
 						{
@@ -264,7 +263,6 @@ void KKEditClass::doToolsMenuItems()
 	DocumentClass	*document=this->getDocumentForTab(-1);
 	QFile			file;
 	QStringList		sl;
-	int				holdindex;
 
 	switch(mc->getMenuID())
 		{
@@ -394,7 +392,6 @@ void KKEditClass::doToolsMenuItems()
 void KKEditClass::doHelpMenuItems()
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	DocumentClass	*document=this->getDocumentForTab(-1);
 
 	switch(mc->getMenuID())
 		{
@@ -428,7 +425,6 @@ void KKEditClass::doHelpMenuItems()
 void KKEditClass::doNavMenuItems()
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	DocumentClass	*document=this->getDocumentForTab(-1);
 
 	switch(mc->getMenuID())
 		{
@@ -462,7 +458,6 @@ void KKEditClass::doNavMenuItems()
 void KKEditClass::doViewMenuItems()
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	DocumentClass	*document=this->getDocumentForTab(-1);
 
 	switch(mc->getMenuID())
 		{
@@ -618,7 +613,6 @@ void KKEditClass::doEditMenuItems()
 void KKEditClass::doFileMenuItems()
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	bool			retval;
 
 	switch(mc->getMenuID())
 		{
@@ -660,7 +654,7 @@ void KKEditClass::doFileMenuItems()
 				break;
 			case CLOSEMENUITEM:
 				this->closingAllTabs=false;
-				retval=this->closeTab(-1);
+				this->closeTab(-1);
 				break;
 			case CLOSEALLMENUITEM:
 				this->closeAllTabs();
@@ -698,9 +692,8 @@ void KKEditClass::notDoneYet(QString string)
 
 void KKEditClass::doTimer(void)
 {
-	int				retcode=0;
-	msgStruct		buffer;
-	DocumentClass	*doc;
+	int			retcode=0;
+	msgStruct	buffer;
 	
 #ifdef _BUILDDOCVIEWER_
 	this->setDocMenu();
@@ -1011,7 +1004,6 @@ void KKEditClass::addToToolBar(void)
 void KKEditClass::doTabBarContextMenu(void)
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	bool				retval;
 	QClipboard		*clipboard=this->application->clipboard();
 	DocumentClass	*doc;
 
@@ -1038,7 +1030,6 @@ void KKEditClass::doTabBarContextMenu(void)
 				break;
 			case LOCKCONTENTS:
 				{
-					int	tabnum=this->mainNotebook->currentIndex();
 					doc->setReadOnly(!doc->isReadOnly());
 					if(doc->isReadOnly()==true)
 						doc->setTabColourType(LOCKEDTAB);
@@ -1055,9 +1046,9 @@ void KKEditClass::doTabBarContextMenu(void)
 void KKEditClass::doOddMenuItems(void)
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	bool			retval;
-	QClipboard		*clipboard=this->application->clipboard();
+#ifdef _ASPELL_
 	DocumentClass	*doc=this->getDocumentForTab(-1);
+#endif
 
 		switch(mc->getMenuID())
 			{
@@ -1075,7 +1066,9 @@ void KKEditClass::doOddMenuItems(void)
 
 void KKEditClass::doOddButtons(void)
 {
+#ifdef _ASPELL_
 	DocumentClass	*doc=this->getDocumentForTab(-1);
+#endif
 	bool			saveas=false;
 
 	switch(sender()->objectName().toInt())
@@ -1222,6 +1215,7 @@ void KKEditClass::doOddButtons(void)
 
 void KKEditClass::docViewLinkTrap(const QUrl url)
 {
+#ifdef _BUILDDOCVIEWER_
 	Qt::KeyboardModifiers key=QGuiApplication::keyboardModifiers();
 	if(key!=Qt::ControlModifier)
 		this->webView->load(url);
@@ -1291,6 +1285,7 @@ void KKEditClass::docViewLinkTrap(const QUrl url)
 						return;	
 				}
 		}
+#endif
 }
 
 void KKEditClass::fileChangedOnDisk(const QString &path)

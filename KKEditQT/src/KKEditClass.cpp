@@ -248,7 +248,6 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 	DocumentClass	*doc=this->pages.value(qobject_cast<DocumentClass*>(widget)->pageIndex);
 	QTextCursor		cursor;
 	bookMarkStruct	bms;
-	bool				holdsb=this->sessionBusy;
 
 	if(curs.isNull()==true)
 		cursor=doc->textCursor();
@@ -306,8 +305,6 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 void KKEditClass::initApp(int argc,char** argv)
 {
 	char		tmpfoldertemplate[]="/tmp/KKEditQT-XXXXXX";
-	int		exitstatus;
-	char*	filename;
 	QRect	r(0,0,1024,768);
 	QDir		tdir;
 	QString	tstr;
@@ -623,7 +620,6 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 	MenuItemClass	*menuitem;
 	MenuItemClass	*menuitem1;
 	int				tabIndex;
-	int				srccnt=0;
 	QIcon			itemicon;
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 	plugData			pd;
@@ -651,8 +647,8 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 									srcmenu.addAction(menuitem1);
 									QObject::connect(menuitem1,&QAction::triggered,[doc,j]()
 										{
-											bool retval=doc->highlighter->setLanguage(doc->highlighter->langPlugins[j].langName);
-											doc->highlighter->setTheme(doc->mainKKEditClass->prefStyleName);
+											doc->highlighter->setLanguage(doc->highlighter->langPlugins[j].langName);
+											doc->highlighter->setTheme();
 										});
 								}
 							continue;
@@ -765,7 +761,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/onexitsavesession",this->onExitSaveSession);
 
 //find
-	this->setSearchPrefs(0);
+	this->setSearchPrefs();
 	this->findList=this->tailStringList(this->findList,this->maxFRHistory);
 	this->prefs.setValue("find/findlist",this->findList);
 	this->prefs.setValue("find/replacelist",this->replaceList);
@@ -842,11 +838,11 @@ void KKEditClass::buildDocs(void)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 	struct stat		sb;
-	FILE			*fp;
-	char			line[4096];
-	char			opdata[4096];
+	FILE				*fp;
+	char				line[4096];
 	QString			pipecom;
 	QFileInfo		fileinfo;
+
 	if(doc==NULL)
 		return;
 
@@ -1007,7 +1003,7 @@ void KKEditClass::shutDownApp()
 		}
 }
 
-QString KKEditClass::truncateWithElipses(const QString str,unsigned int maxlen)
+QString KKEditClass::truncateWithElipses(const QString str,int maxlen)
 {
 	QString newlabel;
 	if(str.length()>maxlen)
@@ -1166,10 +1162,6 @@ void KKEditClass::setToolbarSensitive(void)
 	this->runAllPlugs(pd);
 }
 
-void KKEditClass::debugSignalSlot(int what)
-{
-}
-
 void KKEditClass::runCLICommands(int quid)
 {
 	msgStruct	message;
@@ -1307,14 +1299,13 @@ void KKEditClass::insertCompletion(const QString& completion)
 
 void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
 {
-	kkEditQTPluginInterface	*plugtest;
-	int 						cnt=0;
-    QDir 					pluginsDir(this->homeDataFolder+"/plugins/");
+	int				cnt=0;
+    QDir				pluginsDir(this->homeDataFolder+"/plugins/");
 //local plugins
-	QDirIterator 			lit(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	QDirIterator		lit(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (lit.hasNext())
 		{
-			QString			s=lit.next();
+			QString s=lit.next();
 			pluginStruct	ps;
 
 			ps.plugPath=s;

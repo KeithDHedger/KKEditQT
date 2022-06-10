@@ -197,12 +197,10 @@ bool Highlighter::loadLangPlug(langPluginStruct *ps)
 
 void Highlighter::loadLangPlugins(void)
 {
-	SyntaxHighlitePluginInterface	*plugtest;
-	int 								cnt=0;
+	int				cnt=0;
+	QDir				pluginsDir(QString("%1/.KKEditQT/langplugins").arg(pluginsDir.homePath()));
+	QDirIterator		lit(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 
-	QDir 							pluginsDir(QString("%1/.KKEditQT/langplugins").arg(pluginsDir.homePath()));
-
-	QDirIterator						lit(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while(lit.hasNext())
 		{
 			QString			s=lit.next();
@@ -266,11 +264,9 @@ bool Highlighter::loadToolkitPlug(langPluginStruct *ps)
 
 void Highlighter::loadToolkitPlugins(void)
 {
-	ToolkitHighlitePluginInterface	*plugtest;
-	int 								cnt=0;
-	//QDir 							pluginsDir(QString("%1/.KKEditQT/toolkitplugins").arg(pluginsDir.homePath()));
-	QDir 							pluginsDir(QString("%1/toolkitplugins/").arg(DATADIR));
-	QDirIterator						lit(pluginsDir.canonicalPath(),QStringList("*.so"),QDir::Files,QDirIterator::Subdirectories);
+	int				cnt=0;
+	QDir				pluginsDir(QString("%1/toolkitplugins/").arg(DATADIR));
+	QDirIterator		lit(pluginsDir.canonicalPath(),QStringList("*.so"),QDir::Files,QDirIterator::Subdirectories);
 
 	while(lit.hasNext())
 		{
@@ -304,10 +300,8 @@ void Highlighter::loadToolkitPlugins(void)
 		}
 }
 
-void Highlighter::setTheme(QString themename)
+void Highlighter::setTheme(void)
 {
-	QString					themepath;
-
 	this->documentBackground=this->mainKKEditClass->theme->themeParts.value("docbgcolour").colourString;
 	this->documentForeground=this->mainKKEditClass->theme->themeParts.value("docfgcolour").colourString;
 	this->docBackgroundCSS=QString("QPlainTextEdit {background-color: %1; color: %2;}").arg(this->documentBackground).arg(this->documentForeground);

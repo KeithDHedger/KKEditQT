@@ -57,7 +57,7 @@ class Highlighter : public QSyntaxHighlighter
 public:
 	Highlighter(QTextDocument *parent,QPlainTextEdit *doc,KKEditClass *kk=NULL);
 	bool							setLanguage(QString lang);
-	void							setTheme(QString themename);
+	void							setTheme(void);
 	KKEditClass					*mainKKEditClass;
 //plugins
 //vars

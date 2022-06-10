@@ -39,7 +39,6 @@ int main (int argc, char **argv)
 {
 	int				status;
 	bool				safeflag=false;
-	bool				retval=false;
 	QDir				commsDir;
 	QApplication		app(argc,argv);
 	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");

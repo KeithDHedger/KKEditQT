@@ -64,26 +64,26 @@ void ThemeClass::loadTheme(QString themename)
 		}
 	mainmap=doc.object().toVariantMap();
 	cnt=0;
-	while(entryNames[cnt]!=NULL)
+	while(this->entryNames[cnt]!=NULL)
 		{
-			locallist=mainmap[entryNames[cnt]].toList();
+			locallist=mainmap[this->entryNames[cnt]].toList();
 			map=locallist[0].toMap();
 			if(cnt==0)
 				{
 					int	doccnt=0;
-					while(docPartNames[doccnt]!=NULL)
+					while(this->docPartNames[doccnt]!=NULL)
 						{
-							this->themeParts[docPartNames[doccnt]].colourString=QString(map[docPartNames[doccnt]].toString());
-							this->themeParts[docPartNames[doccnt]].colour=QColor(this->themeParts[docPartNames[doccnt]].colourString);
+							this->themeParts[this->docPartNames[doccnt]].colourString=QString(map[this->docPartNames[doccnt]].toString());
+							this->themeParts[this->docPartNames[doccnt]].colour=QColor(this->themeParts[this->docPartNames[doccnt]].colourString);
 							doccnt++;
 						}
 				}
 			else
 				{
-					this->themeParts[entryNames[cnt]].colourString=QString(map["colour"].toString());
-					this->themeParts[entryNames[cnt]].colour=QColor(map["colour"].toString());
-					this->themeParts[entryNames[cnt]].italic=map["italic"].toBool();
-					this->themeParts[entryNames[cnt]].bold=map["bold"].toBool();
+					this->themeParts[this->entryNames[cnt]].colourString=QString(map["colour"].toString());
+					this->themeParts[this->entryNames[cnt]].colour=QColor(map["colour"].toString());
+					this->themeParts[this->entryNames[cnt]].italic=map["italic"].toBool();
+					this->themeParts[this->entryNames[cnt]].bold=map["bold"].toBool();
 				}
 			cnt++;
 		}

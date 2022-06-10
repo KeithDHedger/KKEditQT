@@ -23,6 +23,8 @@
 SingleInstanceClass::SingleInstanceClass(QApplication *app,int key,bool forcem)
 {
 	QSettings	prefs;
+
+	this->app=app;
 	bool		single=prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
 
 	if(QX11Info::isPlatformX11()==false)

@@ -25,8 +25,8 @@
 #include "KKEditClass.h"
 #include "PluginCommon.h"
 
-static const char	*entryNames[]={"document","functions","class","types","comments","quotes","includes","numbers","keywords","custom","lanuageextra","variables","toolkit",NULL};
-static const char *docPartNames[]={"docbgcolour","docfgcolour","findbgcol","findfgcol","linebgcolour","linefgcolour","bookmarkbgcolour",NULL};
+//static const char	*entryNames[]={"document","functions","class","types","comments","quotes","includes","numbers","keywords","custom","lanuageextra","variables","toolkit",NULL};
+//static const char	*docPartNames[]={"docbgcolour","docfgcolour","findbgcol","findfgcol","linebgcolour","linefgcolour","bookmarkbgcolour",NULL};
 
 class ThemeClass : public QObject
 {
@@ -48,6 +48,8 @@ class ThemeClass : public QObject
 
 		unsigned long				hashFromKey(QString key);
 		void							loadThemes(void);
+		const char					*entryNames[14]={"document","functions","class","types","comments","quotes","includes","numbers","keywords","custom","lanuageextra","variables","toolkit",NULL};
+		const char					*docPartNames[8]={"docbgcolour","docfgcolour","findbgcol","findfgcol","linebgcolour","linefgcolour","bookmarkbgcolour",NULL};
 };
 
 #endif

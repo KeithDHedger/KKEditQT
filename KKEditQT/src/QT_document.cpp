@@ -117,14 +117,12 @@ void DocumentClass::updateLineNumberAreaWidth(void)
 
 void DocumentClass::modified()
 {
-	int	tabnum;
-
 	if((this->mainKKEditClass->sessionBusy==true) || (this->dirty==true))
 		return;
 
 	this->dirty=true;
 
-	tabnum=this->mainKKEditClass->mainNotebook->indexOf(this);
+	this->mainKKEditClass->mainNotebook->indexOf(this);
 	if(this->modifiedOnDisk==false)
 		this->state=DIRTYTAB;
 	else
@@ -410,8 +408,8 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 		QPlainTextEdit::keyPressEvent(event);
 
 	ctrlorshift=event->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
-    if (!this->mainKKEditClass->completer || (ctrlorshift && event->text().isEmpty()))
-        return;
+	if(!this->mainKKEditClass->completer || (ctrlorshift && event->text().isEmpty()))
+		return;
 
 	hasmodifier=(event->modifiers() != Qt::NoModifier) && !ctrlorshift;
 	completionPrefix=this->textUnderCursor();
@@ -422,7 +420,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
       	  		return;
      	  	}
 
-    if(!isshortcut && (hasmodifier || event->text().isEmpty()|| completionPrefix.length() < this->mainKKEditClass->autoShowMinChars || eow.contains(event->text().right(1))))//TODO//
+    if(!isshortcut && (hasmodifier || event->text().isEmpty()|| completionPrefix.length() < this->mainKKEditClass->autoShowMinChars || eow.contains(event->text().right(1))))//
 		{
       	  	this->mainKKEditClass->completer->popup()->hide();
       	  	return;
@@ -600,7 +598,7 @@ void DocumentClass::setFilePrefs(void)
 	this->setTabStopDistance(1.0);
 	this->dirty=true;
 	this->highlighter->syntaxHighlighting=this->realSyntaxHighlighting();
-	this->highlighter->setTheme(this->mainKKEditClass->prefStyleNameHold);
+	this->highlighter->setTheme();
 	this->setStyleSheet(this->highlighter->docBackgroundCSS);
 
 	this->dirty=holddirty;
@@ -632,20 +630,18 @@ void DocumentClass::setFilePrefs(void)
 
 void DocumentClass::setHiliteLanguage(void)
 {
-	bool retval=false;
 
 	for(int j=0;j<this->highlighter->langPlugins.count();j++)
 		{
-		//qDebug() << this->getFilePath() << " = " << this->mimeType;
 			if(this->highlighter->langPlugins[j].mimeType.contains(this->mimeType)==true)
 				{
-					retval=this->highlighter->setLanguage(this->highlighter->langPlugins[j].langName);
-					this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
+					this->highlighter->setLanguage(this->highlighter->langPlugins[j].langName);
+					this->highlighter->setTheme();
 					return;
 				}
 		}
-	retval=this->highlighter->setLanguage("plaintext");
-	this->highlighter->setTheme(this->mainKKEditClass->prefStyleName);
+	this->highlighter->setLanguage("plaintext");
+	this->highlighter->setTheme();
 }
 
 void DocumentClass::setUndo(bool avail)
@@ -675,23 +671,16 @@ void DocumentClass::dragEnterEvent(QDragEnterEvent* event)
 }
 
 void DocumentClass::dropEvent(QDropEvent* event)
-{ 
-	if(event->mimeData()->hasText()==true)
-		{
-			QPlainTextEdit::dropEvent(event);
-			return;
-		}
-
+{
 	if (event->mimeData()->hasUrls())
 		{
 			const QMimeData	*mime=event->mimeData();
 			QList<QUrl>		list=mime->urls();
 			if(list.isEmpty()==false)
 				{
-					bool			retval=false;
+					bool				retval=false;
 					QFile			file(list.at(0).toLocalFile());
 					QFileInfo		fileinfo(file);
-					int				tabnum;
 					const QSignalBlocker	blocker(sender());
 
 					retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
@@ -700,9 +689,7 @@ void DocumentClass::dropEvent(QDropEvent* event)
 							QString			content=QString::fromUtf8(file.readAll());
 							QMimeDatabase	db;
 							QTextCursor		cursor;
-							QMimeType		type=db.mimeTypeForFile(fileinfo.canonicalFilePath());
-							this->mimeType=type.name();
-							cursor=this->textCursor();
+							cursor=this->cursorForPosition(event->pos());
 							cursor.beginEditBlock();
 								cursor.insertText(content);
 								this->setFilePrefs();
@@ -711,11 +698,18 @@ void DocumentClass::dropEvent(QDropEvent* event)
 							cursor.endEditBlock();
 							file.close();
 						}
-					this->mainKKEditClass->switchPage(tabnum);
-					this->mainKKEditClass->rebuildTabsMenu();
+					this->state=DIRTYTAB;
+					this->setTabColourType(DIRTYTAB);
+					this->mainKKEditClass->switchPage(this->mainKKEditClass->mainNotebook->currentIndex());
 					this->mainKKEditClass->setToolbarSensitive();
 					event->accept();
 				}
+			return;
+		}
+
+	if(event->mimeData()->hasText()==true)
+		{
+			QPlainTextEdit::dropEvent(event);
 			return;
 		}
 
@@ -814,7 +808,7 @@ bool DocumentClass::findStr(int what)
 	QRegularExpressionMatch			match;
 	QTextCursor						thiscursor;
 
-	this->mainKKEditClass->setSearchPrefs(0);
+	this->mainKKEditClass->setSearchPrefs();
 
 //	if(this->mainKKEditClass->searchBack!=this->changeDirection)
 //		{
@@ -961,7 +955,7 @@ void DocumentClass::setHighlightAll(void)
 	QRegularExpressionMatchIterator	it;
 	QRegularExpressionMatch			match;
 
-	this->mainKKEditClass->setSearchPrefs(0);
+	this->mainKKEditClass->setSearchPrefs();
 
 	doctext=this->toPlainText();
 

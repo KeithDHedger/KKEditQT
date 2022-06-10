@@ -213,7 +213,7 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 	this->showWebPage("Results for: " + searchfor,this->htmlURI);
 }
 
-void KKEditClass::setSearchPrefs(int state)
+void KKEditClass::setSearchPrefs(void)
 {
 	for(int j=FRCASE;j<FRMAXSWITCHES;j++)
 		{

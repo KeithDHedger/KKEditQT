@@ -47,7 +47,6 @@ bool KKEditClass::goToDefinition(const QString txt)
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 	DocumentClass	*dochold=this->getDocumentForTab(-1);
 	QString			searchfor;
-	bool				whileflag=false;
 	int				linenumber;
 	QString			label="";
 	QStringList		sl;

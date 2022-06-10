@@ -1,4 +1,8 @@
 0.7.2
+Code clean.
+Fixed setting doc dirty on drop file.
+Fixed reseting functions menu on file save.
+Dropping file on doc now inserts at drop point.
 Set max length of info line in KKEditQTProgressBar.
 Added simple help to Symbols menu plugin ( Edit->Plugin Prefs->Symbols menu About->Help ).
 Fixed multi char graphemes.

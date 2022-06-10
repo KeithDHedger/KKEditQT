@@ -316,7 +316,7 @@ class KKEditClass : public QObject
 		QFileSystemWatcher			*fileWatch;
 
 //editor functions
-		QString						truncateWithElipses(const QString str,unsigned int maxlen);
+		QString						truncateWithElipses(const QString str,int maxlen);
 		void							sortTabs(void);
 		void							rebuildTabsMenu(void);
 		void							functionSearchDialog(void);
@@ -465,12 +465,12 @@ class KKEditClass : public QObject
 		void							buildToolOutputWindow(void);
 
 //docviewer vars
+		QString						currentURL;
 #ifdef _BUILDDOCVIEWER_
 		QMainWindow					*docView=NULL;
 		QWebView						*webView=NULL;
 		bool							docviewerVisible=false;
 		MenuItemClass				*toggleDocViewMenuItem;
-		QString						currentURL;
 //docviewer functions
 #endif
 		void							buildDocViewer(void);
@@ -538,7 +538,6 @@ class KKEditClass : public QObject
 		void							runAllPlugs(plugData pd);
 
 	public slots:
-		void							debugSignalSlot(int);
 		void							doTimer(void);
 		void							doFileMenuItems();
 		void							doEditMenuItems();
@@ -573,7 +572,7 @@ class KKEditClass : public QObject
 		void							setToolsData(int);
 
 //search functions
-		void							setSearchPrefs(int state);
+		void							setSearchPrefs(void);
 		void							doLiveSearch(const QString text);
 
 	protected:

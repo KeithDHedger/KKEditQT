@@ -23,7 +23,6 @@
 void KKEditClass::runPipe(QString command)
 {
 	FILE		*fp=NULL;
-	char		line[1024];
 
 	fp=popen(command.toStdString().c_str(), "r");
 	if(fp!=NULL)
@@ -32,7 +31,7 @@ void KKEditClass::runPipe(QString command)
 
 QString KKEditClass::runPipeAndCapture(QString command)
 {
-	QString		dump("");
+	QString	dump("");
 	FILE		*fp=NULL;
 	char		line[1024];
 
@@ -50,8 +49,6 @@ void KKEditClass::openAsHexDump(void)
 {
 	QStringList fileNames;
 	QString		dump;
-	FILE		*fp=NULL;
-	char		line[1024];
 	QString		command;
 
 	fileNames=QFileDialog::getOpenFileNames(this->mainWindow,"Open File","","",0);
@@ -246,6 +243,9 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 	doc->modifiedOnDisk=false;
 	doc->state=NORMALTAB;
 	doc->setTabColourType(doc->state);
+	this->rebuildTabsMenu();
+	this->rebuildFunctionMenu(tabnum);
+
 	return true;
 }
 
@@ -308,7 +308,7 @@ bool KKEditClass::checkForOpenFile(QString filepath)
 	return(false);
 }
 
-bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtorecents)
+bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtorecents)//TODO//warn
 {
 	DocumentClass	*doc=new DocumentClass(this);
 	bool				retval=false;
