@@ -663,7 +663,7 @@ void DocumentClass::paintEvent(QPaintEvent* event)
 			QRect r(this->cursorRect());
 			r.setWidth(r.width()+2);
 			r.translate(-1,0);
-			p.fillRect(r,this->mainKKEditClass->theme->themeParts["docfgcolour"].colour);
+			p.fillRect(r,this->mainKKEditClass->theme->themeParts["insertcolour"].colour);
 		}
 }
 

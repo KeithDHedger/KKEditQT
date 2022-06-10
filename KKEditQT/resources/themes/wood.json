@@ -1,22 +1,19 @@
 
 {
-	"linenumbers":
-		[
-			{
-				"bgcolour":"#5a2213",
-				"fgcolour":"#ffffff",
-				"bmbgcolour":"#b44426"
-			}
-		],
 	"document":
 		[
 			{
-				"bgcolour":"#bd9f71",
-				"fgcolour":"#5a2213",
-				"findbcol":"tomato",
-				"findfcol":"black"
+				"docbgcolour":"#bd9f71",
+				"docfgcolour":"#5a2213",
+				"findbgcol":"tomato",
+				"findfgcol":"black",
+				"linebgcolour":"#5a2213",
+				"linefgcolour":"#ffffff",
+				"bookmarkbgcolour":"#b44426",
+				"insertcolour":"#5a2213"
 			}
 		],
+
 	"functions":
 		[
 			{

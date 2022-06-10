@@ -1,4 +1,6 @@
 0.7.2
+Added local themes ( ~/.KKEditQT/themes ).
+Fixed changing theme in prefs.
 Set visual insertion point for drag and drop on doc.
 Code clean.
 Fixed setting doc dirty on drop file.

@@ -39,6 +39,7 @@ void ThemeClass::loadTheme(QString themename)
 	QJsonDocument	doc;
 	QJsonParseError	errorPtr;
 	QByteArray		data;
+
 	this->currentTheme="default";
 
 	for(int j=0;j<this->themePath.count();j++)

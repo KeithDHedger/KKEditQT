@@ -141,7 +141,24 @@ void KKEditClass::buildPrefsWindow(void)
 	widgetlabel=new QLabel("Theme:");
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[THEMECOMBO],posy,1,posy,-1,Qt::AlignVCenter);
+//local
+{
+	QDir		languagesDir(QString("%1/themes/").arg(this->homeDataFolder));
+	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
 
+	while (it.hasNext())
+		{
+			QString	s=it.next();
+			qobject_cast<QComboBox*>(prefsOtherWidgets[THEMECOMBO])->addItem(QFileInfo(s).baseName());
+		}
+	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
+		{
+			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
+			this->prefStyleNameHold=this->prefStyleName;
+		});
+}
+//global
+{
 	QDir		languagesDir(QString("%1/themes/").arg(DATADIR));
 	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
 
@@ -155,6 +172,7 @@ void KKEditClass::buildPrefsWindow(void)
 			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
 			this->prefStyleNameHold=this->prefStyleName;
 		});
+}
 	qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->setCurrentText(this->prefStyleName);
 
 //shortcuts
@@ -769,26 +787,47 @@ void KKEditClass::buildMainGui(void)
 	this->viewMenu=new QMenu("&View");//TODO//
 	this->menuBar->addMenu(this->viewMenu);
 
-	QDir			languagesDir(QString("%1/themes/").arg(DATADIR));
-	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
+//	QDir			languagesDir(QString("%1/themes/").arg(DATADIR));
+//	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
 
-	QMenu			*thememenu;
+	QMenu		*thememenu;
 	thememenu=new QMenu("Theme");
 	this->viewMenu->addMenu(thememenu);
+
+//local
+{
+	QDir			languagesDir(QString("%1/themes/").arg(this->homeDataFolder));
+	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
 	while (it.hasNext())
 		{
-			QString	s=it.next();
-			QAction	*menuitem=new QAction(QFileInfo(s).baseName());
+			QString s=it.next();
+			QAction *menuitem=new QAction(QFileInfo(s).baseName());
 			thememenu->addAction(menuitem);
 			QObject::connect(menuitem,&QAction::triggered,[this,s]()
 				{
 					this->prefStyleNameHold=QFileInfo(s).baseName();
-					//this->prefStyleNameHold=
 					this->theme->loadTheme(this->prefStyleNameHold);
 					this->resetAllFilePrefs();
 				});
 		}
-
+}
+//global
+{
+	QDir			languagesDir(QString("%1/themes/").arg(DATADIR));
+	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
+	while (it.hasNext())
+		{
+			QString s=it.next();
+			QAction *menuitem=new QAction(QFileInfo(s).baseName());
+			thememenu->addAction(menuitem);
+			QObject::connect(menuitem,&QAction::triggered,[this,s]()
+				{
+					this->prefStyleNameHold=QFileInfo(s).baseName();
+					this->theme->loadTheme(this->prefStyleNameHold);
+					this->resetAllFilePrefs();
+				});
+		}
+}
 //show docs
 	menuItemSink=this->makeMenuItemClass(VIEWMENU,"Show Documentation",0,NULL,SHOWDOCSMENUNAME,DOCSMENUITEM);
 

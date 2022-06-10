@@ -901,6 +901,9 @@ void KKEditClass::setPreferences(void)
 	this->prefsNagScreen=qobject_cast<QCheckBox*>(this->prefsWidgets[BEKIND])->checkState();
 	this->recentFiles->maxFiles=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXRECENTS])->value();
 	this->autoShowMinChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[COMPLETIONSIZE])->value();
+	this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
+	this->prefStyleNameHold=this->prefStyleName;
+
 	this->recentFiles->updateRecents();
 
 	this->onExitSaveSession=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSAVE])->checkState();
@@ -934,6 +937,7 @@ void KKEditClass::setPreferences(void)
 //completions
 	this->showCompletions=this->prefsAutoShowCompletions;
 	this->toggleCompletionsMenuItem->setChecked(this->showCompletions);
+	this->theme->loadTheme(this->prefStyleNameHold);
 	this->resetAllFilePrefs();
 	this->writeExitData();
 	this->setAppShortcuts();
