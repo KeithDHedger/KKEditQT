@@ -59,7 +59,7 @@ void ThemeClass::loadTheme(QString themename)
     doc=QJsonDocument::fromJson(data,&errorPtr);
 	if(doc.isNull())
 		{
-			qDebug() << "Parse failed for " << this->currentTheme;
+			qWarning() << "Parse failed for " << this->currentTheme;
 			return;
 		}
 	mainmap=doc.object().toVariantMap();

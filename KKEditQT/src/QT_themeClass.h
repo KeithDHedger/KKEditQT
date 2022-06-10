@@ -25,9 +25,6 @@
 #include "KKEditClass.h"
 #include "PluginCommon.h"
 
-//static const char	*entryNames[]={"document","functions","class","types","comments","quotes","includes","numbers","keywords","custom","lanuageextra","variables","toolkit",NULL};
-//static const char	*docPartNames[]={"docbgcolour","docfgcolour","findbgcol","findfgcol","linebgcolour","linefgcolour","bookmarkbgcolour",NULL};
-
 class ThemeClass : public QObject
 {
 	Q_OBJECT

@@ -209,7 +209,7 @@ void Highlighter::loadLangPlugins(void)
 			ps.plugPath=s;
 			if(this->loadLangPlug(&ps)==false)
 				{
-					qDebug() << "Error loading plug " << s;
+					qWarning() << "Error loading plug " << s;
 					continue;
 				}
 			this->langPlugins[cnt++]=ps;
@@ -225,7 +225,7 @@ void Highlighter::loadLangPlugins(void)
 			ps.plugPath=s;
 			if(this->loadLangPlug(&ps)==false)
 				{
-					qDebug() << "Error loading plug " << s;
+					qWarning() << "Error loading plug " << s;
 					continue;
 				}
 			this->langPlugins[cnt++]=ps;
@@ -276,7 +276,7 @@ void Highlighter::loadToolkitPlugins(void)
 			ps.plugPath=s;
 			if(this->loadToolkitPlug(&ps)==false)
 				{
-					qDebug() << "Error loading plug " << s;
+					qWarning() << "Error loading plug " << s;
 					continue;
 				}
 			this->toolkitPlugins[cnt++]=ps;
@@ -293,7 +293,7 @@ void Highlighter::loadToolkitPlugins(void)
 			ps.plugPath=s;
 			if(this->loadToolkitPlug(&ps)==false)
 				{
-					qDebug() << "Error loading plug " << s;
+					qWarning() << "Error loading plug " << s;
 					continue;
 				}
 			this->toolkitPlugins[cnt++]=ps;

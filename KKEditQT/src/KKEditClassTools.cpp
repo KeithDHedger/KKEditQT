@@ -80,7 +80,7 @@ QStringList KKEditClass::verifyTool(QString filepath)
 
 	if(sl.count()<TOOL_END)
 		{
-			qDebug()<< "Possible error with " << filepath;
+			qWarning()<< "Possible error with " << filepath;
 			int		cnt=0;
 			while(cnt<TOOL_END)
 				{
@@ -236,7 +236,7 @@ void KKEditClass::setToolsData(int what)
 					sl=this->verifyTool(this->toolSelect->currentData().toString());
 					if(sl.isEmpty()==true)
 						{
-							qDebug()<<"Tool empty ...";
+							qWarning()<<"Tool empty ...";
 							return;
 						}
 				}

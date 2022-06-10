@@ -365,11 +365,6 @@ void KKEditClass::initApp(int argc,char** argv)
 	//this->highlightColour="#808080";
 	this->mainWindow=new QMainWindow;
 
-//	QObject::connect(this->mainWindow,&QMainWindow::event,[this](QEvent *event)
-//		{
-//			qDebug()<<"here";
-//		});
-
 	for(int j=0;j<NOMORESHORTCUT;j++)
 		this->appShortcuts[j]=new QShortcut(this->mainWindow);
 
@@ -382,8 +377,6 @@ void KKEditClass::initApp(int argc,char** argv)
 				fprintf(stderr,"Can't create message queue, scripting wont work :( ...\n");
 		}
 	this->checkMessages=new QTimer();
-//linle a symlink.
-//					 vv from object      vv signal 	  	   vv to object   vv func slot must inherit QObject
 	QObject::connect(this->checkMessages,SIGNAL(timeout()),this,SLOT(doTimer()));
 	this->checkMessages->start(this->prefsMsgTimer);
 
@@ -1310,7 +1303,7 @@ void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
 
 			ps.plugPath=s;
 			if(this->loadPlug(&ps)==false)
-				qDebug()<<"Error loading plug > " << s;
+				qWarning()<<"Error loading plug > " << s;
 
 			this->plugins[cnt++]=ps;
 		}
@@ -1326,7 +1319,7 @@ void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
 
 			ps.plugPath=s;
 			if(this->loadPlug(&ps)==false)
-				qDebug()<<"Error loading plug > " << s;
+				qWarning()<<"Error loading plug > " << s;
 
 			this->plugins[cnt++]=ps;
 		}

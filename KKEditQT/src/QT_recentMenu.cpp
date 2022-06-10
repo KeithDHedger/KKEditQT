@@ -62,11 +62,10 @@ void RecentMenuClass::addFilePath(QString path)
 
 void RecentMenuClass::updateRecents(void)
 {
-	QFile			file;
-	MenuItemClass	*mc;
-	bool			retval;
-	int				diff;
-	int				cnt=0;
+	QFile	file;
+	bool		retval;
+	int		diff;
+	int		cnt=0;
 
 	this->recentMenu->clear();
 	file.setFileName(this->recentFileList);

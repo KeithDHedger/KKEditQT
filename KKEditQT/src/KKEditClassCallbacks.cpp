@@ -688,6 +688,7 @@ void KKEditClass::notDoneYet(QString string)
 	this->toolsOPText->insertPlainText(QString("%1\n").arg(string));
 	this->toolOutputWindow->setWindowTitle("Information");
 	this->toolOutputWindow->show();
+	qInfo()<<string;
 }
 
 void KKEditClass::doTimer(void)
@@ -765,7 +766,6 @@ void KKEditClass::doTimer(void)
 								break;
 							case BOOKMARKMSG:
 								this->notDoneYet("BOOKMARKMSG not yet implemented");
-								qDebug() << "BOOKMARKMSG";
 								break;
 							case CLOSETABMSG:
 								this->closingAllTabs=false;
@@ -776,47 +776,36 @@ void KKEditClass::doTimer(void)
 								break;
 							case SETUSERMARKMSG:
 								this->notDoneYet("SETUSERMARKMSG not yet implemented");
-								qDebug() << "SETUSERMARKMSG";
 								break;
 							case UNSETUSERMARKMASG:
 								this->notDoneYet("UNSETUSERMARKMASG not yet implemented");
-								qDebug() << "UNSETUSERMARKMASG";
 								break;
 							case MOVETOMSG:
 								this->notDoneYet("MOVETOMSG not yet implemented");
-								qDebug() << "MOVETOMSG";
 								break;
 							case SELECTBETWEENMSG:
 								this->notDoneYet("SELECTBETWEENMSG not yet implemented");
-								qDebug() << "SELECTBETWEENMSG";
 								break;
 							case PASTEMSG:
 								this->notDoneYet("PASTEMSG not yet implemented");
-								qDebug() << "PASTEMSG";
 								break;
 							case COPYMSG:
 								this->notDoneYet("COPYMSG not yet implemented");
-								qDebug() << "COPYMSG";
 								break;
 							case CUTMSG:
 								this->notDoneYet("CUTMSG not yet implemented");
-								qDebug() << "CUTMSG";
 								break;
 							case INSERTTEXTMSG:
 								this->notDoneYet("INSERTTEXTMSG not yet implemented");
-								qDebug() << "INSERTTEXTMSG";
 								break;
 							case INSERTNLMSG:
 								this->notDoneYet("INSERTNLMSG not yet implemented");
-								qDebug() << "INSERTNLMSG";
 								break;
 							case INSERTFILEMSG:
 								this->notDoneYet("INSERTFILEMSG not yet implemented");
-								qDebug() << "INSERTFILEMSG";
 								break;
 							case PRINTFILESMSG:
 								this->notDoneYet("PRINTFILESMSG not yet implemented");
-								qDebug() << "PRINTFILESMSG";
 								break;
 							case RUNTOOLMSG:
 								this->clickMenu(this->toolsMenu,QString(buffer.mText));
@@ -832,7 +821,6 @@ void KKEditClass::doTimer(void)
 								break;
 							case SENDPOSDATAMSG:
 								this->notDoneYet("SENDPOSDATAMSG not yet implemented");
-								qDebug() << "SENDPOSDATAMSG";
 								break;
 							case SENDSELECTEDTEXTMSG:
 								strcpy(buffer.mText,"test return message\n");
@@ -843,14 +831,12 @@ void KKEditClass::doTimer(void)
 										exit(NOSENDMSG);
 									}
 								this->notDoneYet("SENDSELECTEDTEXTMSG not yet implemented");
-								qDebug() << "SENDSELECTEDTEXTMSG";
 								break;
 							case OPENFILEMSG:
 								this->openFile(buffer.mText);
 								break;
 							case SAVEFILEMSG:
 								this->notDoneYet("SAVEFILEMSG not yet implemented");
-								qDebug() << "SAVEFILEMSG";
 								break;
 							case QUITAPPMSG:
 								this->shutDownApp();
