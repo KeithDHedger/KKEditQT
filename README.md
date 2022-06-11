@@ -41,4 +41,3 @@ Documentation :(<br>
 More themes<br>
 More filetypes syntax highlighting<br>
 
-
