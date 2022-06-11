@@ -667,6 +667,21 @@ void DocumentClass::paintEvent(QPaintEvent* event)
 		}
 }
 
+void DocumentClass::dragEnterEvent(QDragEnterEvent* event)
+{
+	this->inDrag=true;
+
+	if (event->mimeData()->hasUrls())
+		{
+			event->accept();
+		}
+    else
+    		{
+			this->holdCursor=this->textCursor();
+			QPlainTextEdit::dragEnterEvent(event);
+		}
+}
+
 void DocumentClass::dragLeaveEvent(QDragLeaveEvent* event)
 {
 	this->inDrag=false;
@@ -685,17 +700,6 @@ void DocumentClass::dragMoveEvent(QDragMoveEvent *event)
 		}
 	else
 		QPlainTextEdit::dragMoveEvent(event);
-}
-
-void DocumentClass::dragEnterEvent(QDragEnterEvent* event)
-{
-	if((event->mimeData()->hasUrls()==true) || (event->mimeData()->hasText()==true))
-		{
-			this->inDrag=true;
-			event->accept();
-		}
-    else
-		QPlainTextEdit::dragEnterEvent(event);
 }
 
 void DocumentClass::dropEvent(QDropEvent* event)
@@ -737,12 +741,7 @@ void DocumentClass::dropEvent(QDropEvent* event)
 			return;
 		}
 
-	if(event->mimeData()->hasText()==true)
-		{
-			QPlainTextEdit::dropEvent(event);
-			return;
-		}
-
+	this->setTextCursor(this->holdCursor);
 	QPlainTextEdit::dropEvent(event);
 }
 

@@ -133,6 +133,7 @@ class DocumentClass : public QPlainTextEdit
 		bool								realHiliteLine(void);
 		bool								realSyntaxHighlighting(void);
 		const QString					textUnderCursor();
+		QTextCursor						holdCursor;
 };
 
 class LineNumberArea : public QWidget
