@@ -351,7 +351,6 @@ Basic open file.
 Basic syntax highlighting.
 Stared port to QT5
 
-//TODO//
 0.2.6
 Updated help file and translations.
 Fixed odd characters in tab name when truncated with elipses.
@@ -401,7 +400,6 @@ Switched to gapplication from deprecated libunique.
 Now saves last 10 find/replace terms and reloads at startup.
 Fixed segfault when trying to open file with non ascii characters in the name with a kkedit instance already running.
 Changed Find/Replace Entry/Dropdowns to Combo box with entry.
-//TODO//
 
 0.2.4
 Added 'Add to Custom Word List" to popup when text is selected.

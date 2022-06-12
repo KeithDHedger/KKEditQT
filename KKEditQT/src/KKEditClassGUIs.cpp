@@ -558,7 +558,7 @@ void KKEditClass::buildFindReplace(void)
 	hbox->setLayout(hlayout);
 
 //case
-	this->frSwitches[FRCASE]=new QCheckBox("Case insensitive");//TODO//set signal mmmmm
+	this->frSwitches[FRCASE]=new QCheckBox("Case insensitive");
 	this->frSwitches[FRCASE]->setChecked(this->insensitiveSearch);
 	hlayout->addWidget(this->frSwitches[FRCASE]);
 //use regex
@@ -641,9 +641,6 @@ void KKEditClass::buildMainGui(void)
 	this->mainNotebook->setContextMenuPolicy(Qt::CustomContextMenu);
 	QObject::connect(this->mainNotebook,SIGNAL(customContextMenuRequested(const QPoint &)),SLOT(tabContextMenu(const QPoint &)));
 
-//	this->mainNotebook->setDocumentMode(true);
-//	this->mainNotebook->setTabsClosable(true);
-//	this->mainNotebook->setMovable(true);
 	QObject::connect(this->mainNotebook,SIGNAL(currentChanged(int)),this,SLOT(switchPage(int)));
 	//QObject::connect(this->mainNotebook,SIGNAL(tabBarClicked(int)),this,SLOT(switchPage(int)));
 	QObject::connect(this->mainNotebook,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));
@@ -784,11 +781,8 @@ void KKEditClass::buildMainGui(void)
 	menuItemSink=this->makeMenuItemClass(EDITMENU,"Plugin Prefs",0,"preferences-system",PLUGPREFSMENUNAME,PLUGPREFSMENUITEM);
 
 //view menu
-	this->viewMenu=new QMenu("&View");//TODO//
+	this->viewMenu=new QMenu("&View");
 	this->menuBar->addMenu(this->viewMenu);
-
-//	QDir			languagesDir(QString("%1/themes/").arg(DATADIR));
-//	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
 
 	QMenu		*thememenu;
 	thememenu=new QMenu("Theme");
@@ -796,8 +790,8 @@ void KKEditClass::buildMainGui(void)
 
 //local
 {
-	QDir			languagesDir(QString("%1/themes/").arg(this->homeDataFolder));
-	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
+	QDir				languagesDir(QString("%1/themes/").arg(this->homeDataFolder));
+	QDirIterator		it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
 	while (it.hasNext())
 		{
 			QString s=it.next();
@@ -813,8 +807,8 @@ void KKEditClass::buildMainGui(void)
 }
 //global
 {
-	QDir			languagesDir(QString("%1/themes/").arg(DATADIR));
-	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
+	QDir				languagesDir(QString("%1/themes/").arg(DATADIR));
+	QDirIterator		it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
 	while (it.hasNext())
 		{
 			QString s=it.next();

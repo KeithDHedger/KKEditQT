@@ -218,7 +218,6 @@ void KKEditClass::doSessionsMenuItems(void)
 
 	this->sessionBusy=false;
 	this->setCompWordList();
-//TODO//rebuild func menu
 	for(int j=this->mainNotebook->count()-1;j>-1;j--)
 		{
 			if(this->mainNotebook->isTabVisible(j)==true)
@@ -314,7 +313,7 @@ void KKEditClass::doToolsMenuItems()
 								setenv("KKEDIT_DATADIR",DATADIR,1);
 								str.replace("%i",DATADIR);
 
-								int trm=sl.indexOf(QRegularExpression(QString(".*%1.*").arg(TOOLRUNINTERM)));//todo//
+								int trm=sl.indexOf(QRegularExpression(QString(".*%1.*").arg(TOOLRUNINTERM)));
 								//run in term
 								if(sl.at(trm).section(TOOLRUNINTERM,1,1).trimmed().toInt()==1)
 									{
@@ -343,7 +342,7 @@ void KKEditClass::doToolsMenuItems()
 										return;
 									}
 
-								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_VIEW_OP)==TOOL_VIEW_OP)//TODO//
+								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_VIEW_OP)==TOOL_VIEW_OP)
 									{
 										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
 										str=runPipeAndCapture(str);
@@ -841,7 +840,9 @@ void KKEditClass::doTimer(void)
 							case QUITAPPMSG:
 								this->shutDownApp();
 								break;
-							case ACTIVATEAPPMSG://TODO//minimized
+							case ACTIVATEAPPMSG:
+								this->mainWindow->setWindowState(this->mainWindow->windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
+								this->mainWindow->raise();
 								this->application->setActiveWindow(this->mainWindow);
 								this->mainWindow->activateWindow();
 								break;

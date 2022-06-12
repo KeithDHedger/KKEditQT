@@ -386,9 +386,6 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->buildToolOutputWindow();
 	this->loadPlugins();
 
-//TODO//
-//	if(onExitSaveSession==true)
-//		restoreSession(NULL,(void*)restoreBookmarks);
 #ifdef _BUILDDOCVIEWER_
 	this->buildDocViewer();
 #endif
@@ -673,20 +670,19 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 					menuitem->setMenuID(this->tabContextMenuItems[cnt].what+tabIndex);
 					menu.addAction(menuitem);
 
-//ugly//TODO//
 					DocumentClass	*doc=this->getDocumentForTab(tabIndex);
 					if(cnt==(LOCKCONTENTS-COPYFOLDERPATH)/0x100)
 						{
-						if(doc->isReadOnly()==true)
-							{
-								menuitem->setText("Unlock Contents");
-								itemicon=QIcon::fromTheme("emblem-default");
-							}
-						else
-							{
-								itemicon=QIcon::fromTheme(this->tabContextMenuItems[cnt].icon);
-								menuitem->setText(this->tabContextMenuItems[cnt].label);
-							}
+							if(doc->isReadOnly()==true)
+								{
+									menuitem->setText("Unlock Contents");
+									itemicon=QIcon::fromTheme("emblem-default");
+								}
+							else
+								{
+									itemicon=QIcon::fromTheme(this->tabContextMenuItems[cnt].icon);
+									menuitem->setText(this->tabContextMenuItems[cnt].label);
+								}
 						}
 					else
 						itemicon=QIcon::fromTheme(this->tabContextMenuItems[cnt].icon);
@@ -1066,7 +1062,7 @@ void KKEditClass::setToolbarSensitive(void)
 	else
 		this->saveCurrentSessionMenuItem->setEnabled(true);
 		
-	this->restoreDefaultSessionMenuItem->setEnabled(this->onExitSaveSession);//TODO//
+	this->restoreDefaultSessionMenuItem->setEnabled(this->onExitSaveSession);
 
 	this->pluginMenu->setEnabled(!this->pluginMenu->isEmpty());
 
@@ -1215,7 +1211,7 @@ void KKEditClass::showWebPage(QString windowtitle,QString url)
 #ifdef _BUILDDOCVIEWER_
 	if(windowtitle.isEmpty()==false)
 		this->docView->setWindowTitle(windowtitle);
-	//this->webView->load(QUrl(url));
+
 	this->webView->load(QUrl::fromUserInput(url));
 	this->docView->show();
 	this->docView->activateWindow();
@@ -1290,7 +1286,7 @@ void KKEditClass::insertCompletion(const QString& completion)
     doc->setTextCursor(tc);
 }
 
-void KKEditClass::loadPlugins(void)//TODO// make load unload functions.
+void KKEditClass::loadPlugins(void)
 {
 	int				cnt=0;
     QDir				pluginsDir(this->homeDataFolder+"/plugins/");
@@ -1387,7 +1383,6 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 	int				tabnum=tab;
 	bool				vis=visible;
 
-//TODO//
 	if(this->sessionBusy==false)
 		if(tabnum==this->mainNotebook->count()-1)//ui bug fix no last tab invisible
 			vis=true;

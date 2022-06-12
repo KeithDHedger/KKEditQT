@@ -66,7 +66,7 @@ void KKEditClass::doFindReplace(int response_id)
 					doc->finishedSearch=false;
 					total+=doc->totalMatches;
 				}
-			this->statusText->setText(QString("Replaced %1 occurences in %2 files ...").arg(total).arg(this->mainNotebook->count()));//TODO//
+			this->statusText->setText(QString("Replaced %1 occurences in %2 files ...").arg(total).arg(this->mainNotebook->count()));
 			return;
 		}
 

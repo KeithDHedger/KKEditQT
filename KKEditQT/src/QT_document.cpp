@@ -403,7 +403,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 			return;
 		}
 
-	isshortcut=((event->modifiers() & Qt::ControlModifier) && event->key()== Qt::Key_E); // CTRL+E//TODO//
+	isshortcut=((event->modifiers() & Qt::ControlModifier) && event->key()== Qt::Key_E);
 	if(!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer
 		QPlainTextEdit::keyPressEvent(event);
 
@@ -870,7 +870,7 @@ bool DocumentClass::findStr(int what)
 				thiscursor.removeSelectedText();
 				thiscursor.insertText(doctext);
 			thiscursor.endEditBlock();
-			this->mainKKEditClass->statusText->setText(QString("Replaced %1 occurences ...").arg(this->totalMatches));//TODO//
+			this->mainKKEditClass->statusText->setText(QString("Replaced %1 occurences ...").arg(this->totalMatches));
 			return(true);
 		}
 

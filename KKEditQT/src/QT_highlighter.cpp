@@ -58,7 +58,7 @@ Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc,KKEditClass *
 {
 	this->loadLangPlugins();
 	this->loadToolkitPlugins();
-	this->setLanguage("SH");//TODO//default??
+	this->setLanguage("SH");
 	this->resetRules();
 	this->document=doc;
 	this->mainKKEditClass=kk;
@@ -129,8 +129,7 @@ void Highlighter::highlightBlock(const QString &text)
 			if(startExpression.pattern().compare(endExpression.pattern())==0)//fix for start/stop patterns the same ( a la bloody awaful python )
 				offset=startExpression.pattern().length();
 
-			if(getBit(prev,closecomment)==true)//TODO//use global
-			//if(this->docgetBit(prev,closecomment)==true)
+			if(this->getBit(prev,closecomment)==true)
 				{
 					startIndex=text.indexOf(startExpression);
 					if(startIndex!=-1)

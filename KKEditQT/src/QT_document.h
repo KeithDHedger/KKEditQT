@@ -88,8 +88,8 @@ class DocumentClass : public QPlainTextEdit
 		bool								gotRedo=false;
 		int								pageIndex;
 		bool								visible=true;
-		bool								fromMe=false;//TODO//
-		bool								modifiedOnDisk=false;//TODO//
+		bool								fromMe=false;
+		bool								modifiedOnDisk=false;
 		int								state=NORMALTAB;
 
 //find/replace
