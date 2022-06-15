@@ -1,4 +1,5 @@
 0.7.2
+Added 'Select All' to edit/context menu.
 Fixed d&d within document.
 Added local themes ( ~/.KKEditQT/themes ).
 Fixed changing theme in prefs.

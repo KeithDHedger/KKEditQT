@@ -577,6 +577,10 @@ void KKEditClass::doEditMenuItems()
 				if(document!=NULL)
 					document->paste();
 				break;
+			case SELECTALLMENUITEM:
+				if(document!=NULL)
+					document->selectAll();
+				break;
 			case FINDMENUITEM:
 				this->findReplaceDialog->show();
 				break;

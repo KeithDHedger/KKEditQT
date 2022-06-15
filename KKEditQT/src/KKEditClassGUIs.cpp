@@ -755,6 +755,9 @@ void KKEditClass::buildMainGui(void)
 	this->copyMenuItem=this->makeMenuItemClass(EDITMENU,"Copy",QKeySequence::Copy,"edit-copy",COPYMENUNAME,COPYMENUITEM);
 //paste
 	this->pasteMenuItem=this->makeMenuItemClass(EDITMENU,"Paste",QKeySequence::Paste,"edit-paste",PASTEMENUNAME,PASTEMENUITEM);
+//selectall
+	this->editMenu->addSeparator();
+	this->selectAllMenuItem=this->makeMenuItemClass(EDITMENU,"Select All",QKeySequence::SelectAll,"edit-select-all",SELECTALLMENUNAME,SELECTALLMENUITEM);
 
 	this->editMenu->addSeparator();
 
