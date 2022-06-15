@@ -1,4 +1,6 @@
 0.7.2
+Added 'Delete' to edit/context menu.
+CTRL+D now deletes word under cursor if no selection or deletes selected text.
 Added 'Select All' to edit/context menu.
 Fixed d&d within document.
 Added local themes ( ~/.KKEditQT/themes ).

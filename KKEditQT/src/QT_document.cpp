@@ -535,6 +535,7 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	menu.addAction(menuactions.at(CUTMENUITEM-UNDOMENUITEM));
 	menu.addAction(menuactions.at(COPYMENUITEM-UNDOMENUITEM));
 	menu.addAction(menuactions.at(PASTEMENUITEM-UNDOMENUITEM));
+	menu.addAction(menuactions.at(DELETEMENUITEM-UNDOMENUITEM));
 	menu.addSeparator();
 	menu.addAction(menuactions.at(SELECTALLMENUITEM-UNDOMENUITEM));
 	menu.addSeparator();

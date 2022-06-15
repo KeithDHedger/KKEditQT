@@ -471,7 +471,8 @@ void KKEditClass::doAppShortCuts(void)
 				doc->setTextCursor(cursor);
 				break;
 			case DELETEWORDSHORTCUT:
-				cursor.select(QTextCursor::WordUnderCursor);
+				if(cursor.hasSelection()==false)
+					cursor.select(QTextCursor::WordUnderCursor);
 				cursor.removeSelectedText();
 				break;
 			case DUPLICATELINESHORTCUT:

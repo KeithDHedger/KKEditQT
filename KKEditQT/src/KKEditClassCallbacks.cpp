@@ -577,6 +577,20 @@ void KKEditClass::doEditMenuItems()
 				if(document!=NULL)
 					document->paste();
 				break;
+			case DELETEMENUITEM:
+				{
+					QTextCursor	cursor;
+					cursor=document->textCursor();
+					cursor.beginEditBlock();
+
+					if(document!=NULL)
+						{
+							if(cursor.hasSelection()==true)
+								cursor.removeSelectedText();
+						}
+						cursor.endEditBlock();
+				}
+				break;
 			case SELECTALLMENUITEM:
 				if(document!=NULL)
 					document->selectAll();

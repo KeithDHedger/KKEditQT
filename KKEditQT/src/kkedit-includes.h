@@ -122,6 +122,7 @@ enum msgActions {ACTIVATEAPPMSG=100,OPENFILEMSG,SAVEFILEMSG,QUITAPPMSG,RESTORESE
 #define CUTMENUNAME "cutmenu"
 #define COPYMENUNAME "copymenu"
 #define PASTEMENUNAME "pastemenu"
+#define DELETEMENUNAME "deletemenu"
 #define SELECTALLMENUNAME "selectallmenu"
 #define FINDMENUNAME "findmenu"
 #define FINDNEXTMENUNAME "findnextmenu"
