@@ -302,6 +302,9 @@ void KKEditClass::buildPrefsWindow(void)
 //max bookmark strings
 	posy++;
 	makePrefsDial(MAXBMWIDTH,"Max Characters In Bookmarks:",this->maxBMChars,5,MAXTEXTWIDTH,posy);
+//check for msgs
+	posy++;
+	makePrefsDial(MSGCHECKTIME,"Check Messages Every (ms):",this->prefsMsgTimer,1,10000,posy);
 
 //end admin
 

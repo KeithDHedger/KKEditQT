@@ -920,9 +920,11 @@ void KKEditClass::setPreferences(void)
 	this->prefsNagScreen=qobject_cast<QCheckBox*>(this->prefsWidgets[BEKIND])->checkState();
 	this->recentFiles->maxFiles=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXRECENTS])->value();
 	this->autoShowMinChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[COMPLETIONSIZE])->value();
+	this->prefsMsgTimer=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MSGCHECKTIME])->value();
 	this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
 	this->prefStyleNameHold=this->prefStyleName;
 
+	this->checkMessages->setInterval(this->prefsMsgTimer);
 	this->recentFiles->updateRecents();
 
 	this->onExitSaveSession=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSAVE])->checkState();
