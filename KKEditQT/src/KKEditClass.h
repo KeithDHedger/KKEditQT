@@ -488,7 +488,7 @@ class KKEditClass : public QObject
 		QDialog						*prefsWindow;
 		QListWidget					*listWidget;
 		QToolBar						*fromHBox;
-		QAction						*tool[19];
+		QAction						*tool[20];
 		QDialog						*keyShortcutsWindow;
 
 //prefswindow functions

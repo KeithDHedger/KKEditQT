@@ -90,6 +90,10 @@ void KKEditClass::setUpToolBar(void)
 					case 'C':
 						this->toolBar->addAction(qobject_cast<QAction*>(this->copyMenuItem));
 						break;
+//delete
+					case 'd':
+						this->toolBar->addAction(qobject_cast<QAction*>(this->deleteMenuItem));
+						break;
 //paste
 					case 'P':
 						this->toolBar->addAction(qobject_cast<QAction*>(this->pasteMenuItem));
@@ -1095,6 +1099,10 @@ void KKEditClass::setToolbarSensitive(void)
 //paste
 					case 'P':
 						this->pasteMenuItem->setEnabled((gotdoc==true) && (doc->canPaste()));
+						break;
+//delete
+					case 'd':
+						this->deleteMenuItem->setEnabled((gotdoc==true) && (hasselection==true));
 						break;
 //undo
 					case 'U':

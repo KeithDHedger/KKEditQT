@@ -391,6 +391,7 @@ void KKEditClass::populateDnD(void)
 	this->addIcon("edit-undo","U",6,"Undo");
 	this->addIcon("edit-redo","R",7,"Redo");
 	this->addIcon("edit-find","F",8,"Find");
+	this->addIcon("edit-delete","d",19,"Delete");
 	this->addIcon("dialog-question","G",9,"Go To Definition");
 	this->addIcon("go-previous","B",17,"Go Back");
 	this->addIcon("go-next","W",18,"Go Forward");
@@ -449,6 +450,11 @@ void KKEditClass::populateStore(void)
 					case 'P':
 						this->addIconToList("edit-paste",'P');
 						this->tool[5]->setEnabled(false);
+						break;
+//delete
+					case 'd':
+						this->addIconToList("edit-delete",'d');
+						this->tool[19]->setEnabled(false);
 						break;
 //undo
 					case 'U':
