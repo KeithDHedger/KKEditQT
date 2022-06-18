@@ -594,7 +594,10 @@ void KKEditClass::doEditMenuItems()
 				break;
 			case SELECTALLMENUITEM:
 				if(document!=NULL)
-					document->selectAll();
+					{
+						document->selectAll();
+						this->setToolbarSensitive();
+					}
 				break;
 			case FINDMENUITEM:
 				this->findReplaceDialog->show();
