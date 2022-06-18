@@ -262,6 +262,7 @@ void KKEditClass::doToolsMenuItems()
 	DocumentClass	*document=this->getDocumentForTab(-1);
 	QFile			file;
 	QStringList		sl;
+	QString			filelist;
 
 	switch(mc->getMenuID())
 		{
@@ -274,20 +275,20 @@ void KKEditClass::doToolsMenuItems()
 			 	if(sl.isEmpty()==true)
 			 		return;
 
+				QHashIterator<int,DocumentClass*> i(this->pages);
+				while(i.hasNext())
+					{
+						i.next();
+						filelist+=i.value()->getFilePath()+" ";
+					}
+
 				if(sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed().isEmpty()==false)
 					{
 						QString str=sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed();
 						if(document!=NULL)
 							{
-								//%l
-								QString filelist;
-								for(int j=0;j<this->pages.count()-1;j++)
-									{
-										if(this->pages[j]!=NULL)
-											filelist+=this->pages[j]->getFilePath()+" ";
-									}
-								filelist+=this->pages[this->pages.count()-1]->getFilePath();
-								setenv("KKEDIT_FILE_LIST",filelist.toStdString().c_str(),1);
+//								//%l
+								setenv("KKEDIT_FILE_LIST",filelist.trimmed().toStdString().c_str(),1);
 								str.replace("%l",filelist);
 								//%f doc filepath
 								setenv("KKEDIT_CURRENTFILE",document->getFilePath().toStdString().c_str(),1);

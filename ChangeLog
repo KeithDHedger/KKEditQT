@@ -1,4 +1,5 @@
 0.7.2
+Fixed segfault when running tool with <2 open docs.
 Added delete icon to toolbar options.
 Added check for messages time interval ( ms ) to prefs ( default 1000ms ).
 Added 'Delete' to edit/context menu.
