@@ -516,7 +516,7 @@ void KKEditClass::doAppShortCuts(void)
 			case MOVELINEDOWNSHORTCUT:
 				anc=cursor.positionInBlock();
 				doc->moveCursor(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
-				cursor.select(QTextCursor::LineUnderCursor);
+				cursor.select(QTextCursor::BlockUnderCursor);
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
 				cursor.deleteChar();
