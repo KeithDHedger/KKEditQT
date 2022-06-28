@@ -1,4 +1,5 @@
 0.7.2
+Fixed move selection up/down via shortcut.
 Fixed move line up/down via shortcut.
 Fixed enabling cut copy etc when using 'Select All'.
 Fixed segfault when running tool with <2 open docs.
