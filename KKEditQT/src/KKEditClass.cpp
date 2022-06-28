@@ -533,7 +533,7 @@ void KKEditClass::doAppShortCuts(void)
 			case MOVESELECTIONUPSHORTCUT:
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
-				cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor);
+				cursor.movePosition(QTextCursor::PreviousBlock,QTextCursor::MoveAnchor);
 				anc=cursor.anchor();
 				cursor.insertText(txt);
 				cursor.setPosition(anc);
@@ -544,7 +544,7 @@ void KKEditClass::doAppShortCuts(void)
 			case MOVESELECTIONDOWNSHORTCUT:
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
-				cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor);
+				cursor.movePosition(QTextCursor::NextBlock,QTextCursor::MoveAnchor);
 				anc=cursor.anchor();
 				cursor.insertText(txt);
 				cursor.setPosition(anc);
