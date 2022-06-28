@@ -503,7 +503,7 @@ void KKEditClass::doAppShortCuts(void)
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
 				cursor.deleteChar();
-				doc->moveCursor(QTextCursor::Up,QTextCursor::MoveAnchor);
+				doc->moveCursor(QTextCursor::PreviousBlock,QTextCursor::MoveAnchor);
 				cursor=doc->textCursor();
 				cursor.insertText(txt+"\n");
 				doc->setTextCursor(cursor);
@@ -520,7 +520,7 @@ void KKEditClass::doAppShortCuts(void)
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
 				cursor.deleteChar();
-				doc->moveCursor(QTextCursor::Down,QTextCursor::MoveAnchor);
+				doc->moveCursor(QTextCursor::NextBlock,QTextCursor::MoveAnchor);
 				cursor=doc->textCursor();
 				cursor.insertText(txt+"\n");
 				doc->setTextCursor(cursor);
