@@ -443,6 +443,7 @@ void KKEditClass::doAppShortCuts(void)
 	QString			txt;
 	QTextCursor		cursor;
 	int				anc;
+	bool				retval=true;
 
 	if(doc==NULL)
 		return;
@@ -497,34 +498,37 @@ void KKEditClass::doAppShortCuts(void)
 				break;
 			case MOVELINEUPSHORTCUT:
 				anc=cursor.positionInBlock();
+				doc->moveCursor(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
 				cursor.select(QTextCursor::LineUnderCursor);
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
 				cursor.deleteChar();
-				cursor.clearSelection();
+				doc->moveCursor(QTextCursor::Up,QTextCursor::MoveAnchor);
+				cursor=doc->textCursor();
+				cursor.insertText(txt+"\n");
+				doc->setTextCursor(cursor);
+				doc->moveCursor(QTextCursor::Up,QTextCursor::MoveAnchor);
+				cursor=doc->textCursor();
 				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
-				cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor);
-				cursor.insertText(txt);
-				cursor.insertText("\n");
-				cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor);
-				cursor.setPosition(cursor.anchor()+anc);
+				cursor.movePosition(QTextCursor::Right,QTextCursor::MoveAnchor,anc);
 				doc->setTextCursor(cursor);
 				break;
 			case MOVELINEDOWNSHORTCUT:
 				anc=cursor.positionInBlock();
+				doc->moveCursor(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
 				cursor.select(QTextCursor::LineUnderCursor);
 				txt=cursor.selectedText();
 				cursor.removeSelectedText();
 				cursor.deleteChar();
-				cursor.clearSelection();
-				cursor.movePosition(QTextCursor::Down,QTextCursor::MoveAnchor);
-				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
-				cursor.insertText(txt);
-				cursor.insertText("\n");
-				cursor.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor);
-				cursor.setPosition(cursor.anchor()+anc);
+				doc->moveCursor(QTextCursor::Down,QTextCursor::MoveAnchor);
+				cursor=doc->textCursor();
+				cursor.insertText(txt+"\n");
 				doc->setTextCursor(cursor);
-				emit doc->cursorPositionChanged();
+				doc->moveCursor(QTextCursor::Up,QTextCursor::MoveAnchor);
+				cursor=doc->textCursor();
+				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
+				cursor.movePosition(QTextCursor::Right,QTextCursor::MoveAnchor,anc);
+				doc->setTextCursor(cursor);
 				break;
 			case MOVESELECTIONUPSHORTCUT:
 				txt=cursor.selectedText();
