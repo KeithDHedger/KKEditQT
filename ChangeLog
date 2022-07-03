@@ -1,4 +1,9 @@
 0.7.2
+Added 'very safe' mode, no plugins, themes, syntax highlighters loaded, no exit data written.
+Added 'safe' mode, all plugins disabled, no enable/disable data written.
+Added menu style to prefs ( I prefer a scrollable menu ).
+Cleaned up Prefs layout.
+Combined max chars in bookmarks/function defs to max chars in menus ( also affects recents ).
 Fixed move selection up/down via shortcut.
 Fixed move line up/down via shortcut.
 Fixed enabling cut copy etc when using 'Select All'.

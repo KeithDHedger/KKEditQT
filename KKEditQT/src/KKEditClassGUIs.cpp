@@ -28,8 +28,8 @@ void KKEditClass::makePrefsDial(int widgnum,const QString label,int value,int mi
 	prefsIntWidgets[widgnum]->setProperty("minimum",minvalue);
 	prefsIntWidgets[widgnum]->setProperty("value",value);
 	widgetlabel=new QLabel(label);
-	this->table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
-	this->table->addWidget(prefsIntWidgets[widgnum],posy,1,1,-1,Qt::AlignVCenter);
+	this->table->addWidget(widgetlabel,posy,0);
+	this->table->addWidget(prefsIntWidgets[widgnum],posy,1,1,-1);
 }
 
 void KKEditClass::makePrefsCheck(int widgnum,const QString label,bool onoff,int posx,int posy)
@@ -131,16 +131,24 @@ void KKEditClass::buildPrefsWindow(void)
 	table=new QGridLayout;
 	tab=new QWidget();
 
+//menu style
+	posy=1;
+    widgetlabel=new QLabel("Menu Style:");
+	prefsOtherWidgets[PREFSMENUSTYLE]=new QLineEdit(this->prefsMenuStyleString);
+	table->addWidget(widgetlabel,posy,0);
+	table->addWidget(prefsOtherWidgets[PREFSMENUSTYLE],posy,1,1,-1);
+
 //tabwidth
-	posy=0;
+	posy++;
 	makePrefsDial(TABWIDTH,"Tab width:",this->prefsTabWidth,2,64,posy);
 
 //style
 	posy++;
 	prefsOtherWidgets[THEMECOMBO]=new QComboBox;
 	widgetlabel=new QLabel("Theme:");
-	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
-	table->addWidget(prefsOtherWidgets[THEMECOMBO],posy,1,posy,-1,Qt::AlignVCenter);
+	table->addWidget(widgetlabel,posy,0);
+	table->addWidget(prefsOtherWidgets[THEMECOMBO],posy,1,1,-1);
+
 //local
 {
 	QDir		languagesDir(QString("%1/themes/").arg(this->homeDataFolder));
@@ -182,31 +190,29 @@ void KKEditClass::buildPrefsWindow(void)
     QObject::connect(prefsOtherWidgets[SHORTCUTSCOMBO],SIGNAL(activated(int)),this,SLOT(buildGetKeyShortCut(int)));
 
 	widgetlabel=new QLabel("Set Keyboard Shortcuts:");
-	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
-	table->addWidget(prefsOtherWidgets[SHORTCUTSCOMBO],posy,1,posy-1,-1,Qt::AlignBaseline);
+	table->addWidget(widgetlabel,posy,0);
+	table->addWidget(prefsOtherWidgets[SHORTCUTSCOMBO],posy,1,1,-1);
 
 //font button
 	posy++;
 	widgetlabel = new QLabel("Font:");
 	prefsOtherWidgets[PREFSCURRENTFONT]=new QLabel(QString("%1 %2").arg(this->prefsDocumentFont.family()).arg(this->prefsDocumentFont.pointSize()));
-	int frameStyle1 = QFrame::Sunken|QFrame::Panel;
-	qobject_cast<QLabel*>(prefsOtherWidgets[PREFSCURRENTFONT])->setFrameStyle(frameStyle1);
+	qobject_cast<QLabel*>(prefsOtherWidgets[PREFSCURRENTFONT])->setFrameStyle(QFrame::Sunken|QFrame::Panel);
     QPushButton *fontbutton = new QPushButton("Set Font");
-	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
-	table->addWidget(prefsOtherWidgets[PREFSCURRENTFONT],posy,1,Qt::AlignVCenter);
-	table->addWidget(fontbutton,posy,2,Qt::AlignVCenter);
+	table->addWidget(widgetlabel,posy,0);
+	table->addWidget(prefsOtherWidgets[PREFSCURRENTFONT],posy,1);
+	table->addWidget(fontbutton,posy,2);
 	QObject::connect(fontbutton,SIGNAL(clicked()),this,SLOT(setFont()));
 
 //current linecol
-	int frameStyle=QFrame::Raised | QFrame::Panel;
 	posy++;
     widgetlabel = new QLabel("Highlight Current Line Colour:");
 	prefsOtherWidgets[CURRENTLINECOLOUR]=new QLabel("LINE");
-    qobject_cast<QLabel*>(prefsOtherWidgets[CURRENTLINECOLOUR])->setFrameStyle(frameStyle);
+    qobject_cast<QLabel*>(prefsOtherWidgets[CURRENTLINECOLOUR])->setFrameStyle(QFrame::Raised | QFrame::Panel);
     QPushButton *colorButton = new QPushButton("Set Colour");
-	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
-	table->addWidget(prefsOtherWidgets[CURRENTLINECOLOUR],posy,1,Qt::AlignVCenter);
-	table->addWidget(colorButton,posy,2,Qt::AlignVCenter);
+	table->addWidget(widgetlabel,posy,0);
+	table->addWidget(prefsOtherWidgets[CURRENTLINECOLOUR],posy,1);
+	table->addWidget(colorButton,posy,2);
 
 	QColor colour=QColor(this->prefsHiLiteLineColor);
 	prefsOtherWidgets[CURRENTLINECOLOUR]->setProperty("palette",QPalette(colour));
@@ -217,11 +223,11 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
     widgetlabel = new QLabel("Bookmark Highlight Colour:");
 	prefsOtherWidgets[BMHIGHLIGHTCOLOUR]=new QLabel("BOOKMARK");
-    qobject_cast<QLabel*>(prefsOtherWidgets[BMHIGHLIGHTCOLOUR])->setFrameStyle(frameStyle);
+    qobject_cast<QLabel*>(prefsOtherWidgets[BMHIGHLIGHTCOLOUR])->setFrameStyle(QFrame::Raised | QFrame::Panel);
     QPushButton *colorButton1 = new QPushButton("Set Colour");
-	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
-	table->addWidget(prefsOtherWidgets[BMHIGHLIGHTCOLOUR],posy,1,Qt::AlignVCenter);
-	table->addWidget(colorButton1,posy,2,Qt::AlignVCenter);
+	table->addWidget(widgetlabel,posy,0);
+	table->addWidget(prefsOtherWidgets[BMHIGHLIGHTCOLOUR],posy,1);
+	table->addWidget(colorButton1,posy,2);
 
 	QColor colour1=QColor(this->prefsBookmarkHiLiteColor);
 	prefsOtherWidgets[BMHIGHLIGHTCOLOUR]->setProperty("palette",QPalette(colour1));
@@ -242,18 +248,15 @@ void KKEditClass::buildPrefsWindow(void)
 	qobject_cast<QComboBox*>(prefsOtherWidgets[FUNCTIONCOMBO])->addItem("Display functions etc in menu in categorised format");
 	prefsOtherWidgets[FUNCTIONCOMBO]->setProperty("currentIndex",this->prefsFunctionMenuLayout);
 
-	hbox=new QHBoxLayout;
-    hbox->addStretch(1);
-	hbox->addWidget(prefsOtherWidgets[FUNCTIONCOMBO]);
-	hbox->setStretch(1,2);
-	hbox->addStretch(1);
-	table->addLayout(hbox,posy,0,1,-1);
+	widgetlabel=new QLabel("Function Layout:");
+	table->addWidget(widgetlabel,posy,0);
+	table->addWidget(prefsOtherWidgets[FUNCTIONCOMBO],posy,1,1,-1);
 
 	QSpacerItem *space=new QSpacerItem(0,0,QSizePolicy::Maximum,QSizePolicy::Maximum);
 	posy++;
 	table->addItem(space,posy,0,100,-1);
 
-	table->setColumnStretch(1,1);
+	table->setColumnStretch(1,2);
 	tab->setLayout(table);
 
 	prefsnotebook->addTab(tab,"Text Style");
@@ -298,10 +301,7 @@ void KKEditClass::buildPrefsWindow(void)
 	makePrefsDial(MAXTABCHARS,"Max Characters In Tab:",this->prefsMaxTabChars,5,MAXTEXTWIDTH,posy);
 //max function strings
 	posy++;
-	makePrefsDial(MENUWIDTH,"Max Characters In Function Defs:",this->prefsMaxFuncChars,5,MAXTEXTWIDTH,posy);
-//max bookmark strings
-	posy++;
-	makePrefsDial(MAXBMWIDTH,"Max Characters In Bookmarks:",this->maxBMChars,5,MAXTEXTWIDTH,posy);
+	makePrefsDial(MENUWIDTH,"Max Characters In Menus:",this->prefsMaxMenuChars,5,MAXTEXTWIDTH,posy);
 //check for msgs
 	posy++;
 	makePrefsDial(MSGCHECKTIME,"Check Messages Every (ms):",this->prefsMsgTimer,1,10000,posy);
@@ -342,8 +342,7 @@ void KKEditClass::buildPrefsWindow(void)
 	mainvbox->addLayout(hbox,0);
  
     widgetlabel=new QLabel;
-    frameStyle=QFrame::Sunken | QFrame::HLine;
-	widgetlabel->setFrameStyle(frameStyle);
+	widgetlabel->setFrameStyle(QFrame::Sunken | QFrame::HLine);
 	mainvbox->addWidget(widgetlabel);
 
 //buttons
@@ -798,44 +797,47 @@ void KKEditClass::buildMainGui(void)
 	this->viewMenu=new QMenu("&View");
 	this->menuBar->addMenu(this->viewMenu);
 
-	QMenu		*thememenu;
-	thememenu=new QMenu("Theme");
-	this->viewMenu->addMenu(thememenu);
-
+	if(this->verySafeFlag==false)
+		{
+			QMenu		*thememenu;
+			thememenu=new QMenu("Theme");
+			this->viewMenu->addMenu(thememenu);
 //local
-{
-	QDir				languagesDir(QString("%1/themes/").arg(this->homeDataFolder));
-	QDirIterator		it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
-	while (it.hasNext())
-		{
-			QString s=it.next();
-			QAction *menuitem=new QAction(QFileInfo(s).baseName());
-			thememenu->addAction(menuitem);
-			QObject::connect(menuitem,&QAction::triggered,[this,s]()
-				{
-					this->prefStyleNameHold=QFileInfo(s).baseName();
-					this->theme->loadTheme(this->prefStyleNameHold);
-					this->resetAllFilePrefs();
-				});
-		}
-}
+			{
+				QDir				languagesDir(QString("%1/themes/").arg(this->homeDataFolder));
+				QDirIterator		it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
+				while (it.hasNext())
+					{
+						QString s=it.next();
+						QAction *menuitem=new QAction(QFileInfo(s).baseName());
+						thememenu->addAction(menuitem);
+						QObject::connect(menuitem,&QAction::triggered,[this,s]()
+							{
+								this->prefStyleNameHold=QFileInfo(s).baseName();
+								this->theme->loadTheme(this->prefStyleNameHold);
+								this->resetAllFilePrefs();
+							});
+					}
+			}
 //global
-{
-	QDir				languagesDir(QString("%1/themes/").arg(DATADIR));
-	QDirIterator		it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
-	while (it.hasNext())
-		{
-			QString s=it.next();
-			QAction *menuitem=new QAction(QFileInfo(s).baseName());
-			thememenu->addAction(menuitem);
-			QObject::connect(menuitem,&QAction::triggered,[this,s]()
-				{
-					this->prefStyleNameHold=QFileInfo(s).baseName();
-					this->theme->loadTheme(this->prefStyleNameHold);
-					this->resetAllFilePrefs();
-				});
+			{
+				QDir				languagesDir(QString("%1/themes/").arg(DATADIR));
+				QDirIterator		it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
+				while (it.hasNext())
+					{
+						QString s=it.next();
+						QAction *menuitem=new QAction(QFileInfo(s).baseName());
+						thememenu->addAction(menuitem);
+						QObject::connect(menuitem,&QAction::triggered,[this,s]()
+							{
+								this->prefStyleNameHold=QFileInfo(s).baseName();
+								this->theme->loadTheme(this->prefStyleNameHold);
+								this->resetAllFilePrefs();
+							});
+					}
+			}
 		}
-}
+
 //show docs
 	menuItemSink=this->makeMenuItemClass(VIEWMENU,"Show Documentation",0,NULL,SHOWDOCSMENUNAME,DOCSMENUITEM);
 
@@ -928,6 +930,7 @@ void KKEditClass::buildMainGui(void)
 //newbookmarks
 	this->bookMarkMenu=new QMenu("&Bookmarks");
 	this->menuBar->addMenu(this->bookMarkMenu);
+	//this->bookMarkMenu->setStyleSheet("QMenu{menu-scrollable: true;padding: 0px;margin: 0px}");
 	this->rebuildBookMarkMenu();
 
 //external tools	
@@ -1530,12 +1533,14 @@ void KKEditClass::buildPlugPrefs(void)
 							if(this->plugins[j].loaded==true)
 								{
 									this->unloadPlug(&this->plugins[j]);
-									this->disabledPlugins<<this->plugins[j].plugPath;
+									if(this->safeFlag==false)
+										this->disabledPlugins<<this->plugins[j].plugPath;
 								}
 							else
 								{
-									this->disabledPlugins.replaceInStrings(this->plugins[j].plugPath,"");
-									this->loadPlug(&this->plugins[j]);
+									if(this->safeFlag==false)
+										this->disabledPlugins.replaceInStrings(this->plugins[j].plugPath,"");
+									this->loadPlug(&this->plugins[j],true);
 								}
 						}
 				}
@@ -1605,14 +1610,14 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 													entrytype="Anonymous Functions";
 													label=QString("%1 Line %2").arg(doc->getFileName()).arg(linenumber);
 												}
-											menuitem=new MenuItemClass(this->truncateWithElipses(label,this->prefsMaxFuncChars));
+											menuitem=new MenuItemClass(this->truncateWithElipses(label,this->prefsMaxMenuChars));
 										}
 									else
 										{
 											if(label.length()<2)
 												menuitem=new MenuItemClass(QString("ANONYMOUS %1 Line %2").arg(doc->getFileName()).arg(linenumber));
 											else
-												menuitem=new MenuItemClass(this->truncateWithElipses(entrytype.toUpper() + " " +label,this->prefsMaxFuncChars));
+												menuitem=new MenuItemClass(this->truncateWithElipses(entrytype.toUpper() + " " +label,this->prefsMaxMenuChars));
 										}
 
 									menuitem->setMenuID(linenumber);
@@ -1624,7 +1629,7 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 												{
 													menus[entrytype]=new QMenu(entrytype);
 													this->funcMenu->addMenu(menus.value(entrytype));
-													menus.value(entrytype)->setStyleSheet("QMenu { menu-scrollable: true ;}");
+													//menus.value(entrytype)->setStyleSheet("QMenu { menu-scrollable: true ;padding: 0px;margin: 0px;}");
 												}
 											menus.value(entrytype)->addAction(menuitem);
 										}

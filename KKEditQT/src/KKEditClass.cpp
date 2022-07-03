@@ -284,7 +284,7 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 								}
 						}
 
-					bms.bmLabel=this->truncateWithElipses(cursor.block().text().simplified(),this->maxBMChars);
+					bms.bmLabel=this->truncateWithElipses(cursor.block().text().simplified(),this->prefsMaxMenuChars);
 					bms.line=cursor.blockNumber()+1;
 					if(bms.bmLabel.isEmpty()==true)
 						bms.bmLabel=doc->getFileName() + QString(" Line %1").arg(bms.line); 
@@ -563,8 +563,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsDepth=this->prefs.value("editor/prefsdepth",1).toInt();
 	this->prefsToolBarLayout=this->prefs.value("editor/toolbarlayout","NSOsURsBWsFGsE9ELEDEE").toString();
 	this->prefsMaxTabChars=this->prefs.value("editor/maxtabchars",20).toInt();
-	this->prefsMaxFuncChars=this->prefs.value("editor/maxfuncchars",64).toInt();
-	this->maxBMChars=this->prefs.value("editor/maxbmchars",64).toInt();
+	this->prefsMaxMenuChars=this->prefs.value("editor/maxfuncchars",64).toInt();
 	this->prefsTerminalCommand=this->prefs.value("editor/terminalcommand","xterm -e").toString();
 	this->prefsRootCommand=this->prefs.value("editor/rootcommand","gtksu -- ").toString();
 	this->prefsQtDocDir=this->prefs.value("editor/qtdocdir","/usr/share/doc/qt5").toString();
@@ -590,6 +589,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsBookmarkHiLiteColor=this->prefs.value("theme/bmhilitecol",QVariant(QColor(0,0,0,0x40))).value<QColor>();
 
 //application
+	this->prefsMenuStyleString=this->prefs.value("app/prefsmenustylestring","QMenu{menu-scrollable: true;padding: 0px;margin: 0px}").toString();
 	this->prefsMsgTimer=this->prefs.value("app/msgtimer",1000).toInt();
 	this->prefsUseSingle=this->prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
 	this->prefsNagScreen=this->prefs.value("app/bekind",QVariant(bool(false))).value<bool>();
@@ -712,6 +712,8 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 
 void KKEditClass::writeExitData(void)
 {
+	if(this->verySafeFlag==true)
+		return;
 //editor
 	if(this->forceDefaultGeom==false)
 		this->prefs.setValue("app/geometry",this->mainWindow->geometry());
@@ -724,8 +726,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("editor/prefsdepth",this->prefsDepth);
 	this->prefs.setValue("editor/toolbarlayout",this->prefsToolBarLayout);
 	this->prefs.setValue("editor/maxtabchars",this->prefsMaxTabChars);
-	this->prefs.setValue("editor/maxbmchars",this->maxBMChars);
-	this->prefs.setValue("editor/maxfuncchars",this->prefsMaxFuncChars);
+	this->prefs.setValue("editor/maxfuncchars",this->prefsMaxMenuChars);
 	this->prefs.setValue("editor/terminalcommand",this->prefsTerminalCommand);
 	this->prefs.setValue("editor/rootcommand",this->prefsRootCommand);
 	this->prefs.setValue("editor/toolbarlayout",this->prefsToolBarLayout);
@@ -751,6 +752,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("theme/bmhilitecol",this->prefsBookmarkHiLiteColor);
 
 //application
+	this->prefs.setValue("app/prefsmenustylestring",this->prefsMenuStyleString);
 	this->prefs.setValue("app/msgtimer",this->prefsMsgTimer);
 	this->prefs.setValue("app/usesingle",this->prefsUseSingle);
 	this->prefs.setValue("app/bekind",this->prefsNagScreen);
@@ -773,11 +775,14 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("find/findafterreplace",this->findAfterReplace);
 	this->prefs.setValue("find/maxfrhistory",this->maxFRHistory);
 
-	this->disabledPlugins.clear();
-	for(int j=0;j<this->plugins.count();j++)
+	if(this->safeFlag==false)
 		{
-			if(this->plugins[j].loaded==false)
-				this->disabledPlugins<<this->plugins[j].plugPath;
+			this->disabledPlugins.clear();
+			for(int j=0;j<this->plugins.count();j++)
+				{
+					if(this->plugins[j].loaded==false)
+						this->disabledPlugins<<this->plugins[j].plugPath;
+				}
 		}
 	this->prefs.setValue("app/disabledplugins",this->disabledPlugins);
 }
@@ -1302,7 +1307,11 @@ void KKEditClass::insertCompletion(const QString& completion)
 void KKEditClass::loadPlugins(void)
 {
 	int				cnt=0;
-    QDir				pluginsDir(this->homeDataFolder+"/plugins/");
+	QDir				pluginsDir(this->homeDataFolder+"/plugins/");
+
+	if(this->verySafeFlag==true)
+		return;
+
 //local plugins
 	QDirIterator		lit(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (lit.hasNext())
@@ -1334,7 +1343,7 @@ void KKEditClass::loadPlugins(void)
 		}
 }
 
-bool KKEditClass::loadPlug(pluginStruct *ps)
+bool KKEditClass::loadPlug(pluginStruct *ps,bool force)
 {
 	QObject	*plugininst=NULL;
 
@@ -1350,9 +1359,17 @@ bool KKEditClass::loadPlug(pluginStruct *ps)
 			ps->instance=qobject_cast<kkEditQTPluginInterface*>(plugininst);
 			if(this->disabledPlugins.contains(ps->plugPath)==false)
 				{
-					ps->instance->initPlug(this,ps->plugPath);//TODO//return false if cant init
-					ps->loaded=true;
-					ps->wants=ps->instance->plugWants();
+					if((this->safeFlag==false)||(force==true))
+						{
+							ps->instance->initPlug(this,ps->plugPath);//TODO//return false if cant init
+							ps->loaded=true;
+							ps->wants=ps->instance->plugWants();
+						}
+					else
+						{
+							ps->loaded=false;
+							//ps->wants=DONONE;
+						}
 				}
 			else
 				{

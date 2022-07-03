@@ -66,6 +66,7 @@ void RecentMenuClass::updateRecents(void)
 	bool		retval;
 	int		diff;
 	int		cnt=0;
+	QAction	*newact;
 
 	this->recentMenu->clear();
 	file.setFileName(this->recentFileList);
@@ -78,7 +79,9 @@ void RecentMenuClass::updateRecents(void)
 			while(in.atEnd()==false)
 				{
 					line=in.readLine().trimmed();
-					this->recentMenu->addAction(line);
+					newact=new QAction(this->mainKKEditClass->truncateWithElipses(line.trimmed(),this->mainKKEditClass->prefsMaxMenuChars));
+					newact->setObjectName(line);
+					this->recentMenu->addAction(newact);
 				}
 			file.close();
 		}
@@ -94,7 +97,7 @@ void RecentMenuClass::updateRecents(void)
 
 void RecentMenuClass::menuClicked(QAction *action)
 {
-	this->mainKKEditClass->openFile(action->text());
+	this->mainKKEditClass->openFile(action->objectName());
 }
 
 

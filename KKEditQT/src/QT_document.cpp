@@ -589,7 +589,7 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	pd.what=DOCONTEXTMENU;
 	this->mainKKEditClass->runAllPlugs(pd);
 
-	menu.setStyleSheet("QMenu { menu-scrollable: true ;}");
+//	menu.setStyleSheet("QMenu { menu-scrollable: true ;padding: 0;}");
 	menu.exec(event->globalPos());
 }
 

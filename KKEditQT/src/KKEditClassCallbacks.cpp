@@ -914,8 +914,7 @@ void KKEditClass::setPreferences(void)
 	this->prefsTabWidth=qobject_cast<QSpinBox*>(this->prefsIntWidgets[TABWIDTH])->value();
 	this->prefsMaxTabChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXTABCHARS])->value();
 	this->maxFRHistory=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXHISTORY])->value();
-	this->prefsMaxFuncChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MENUWIDTH])->value();
-	this->maxBMChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXBMWIDTH])->value();
+	this->prefsMaxMenuChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MENUWIDTH])->value();
 	this->prefsFunctionMenuLayout=qobject_cast<QComboBox*>(this->prefsOtherWidgets[FUNCTIONCOMBO])->currentIndex();
 	this->prefsSyntaxHilighting=qobject_cast<QCheckBox*>(this->prefsWidgets[SYNTAXHILITE])->checkState();
 	this->prefsAutoShowCompletions=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSHOW])->checkState();
@@ -932,6 +931,9 @@ void KKEditClass::setPreferences(void)
 	this->recentFiles->updateRecents();
 
 	this->onExitSaveSession=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSAVE])->checkState();
+
+//menu style
+	this->prefsMenuStyleString=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSMENUSTYLE])->text();
 
 //term command
 	this->prefsTerminalCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSTERMCOMMAND])->text();
@@ -966,6 +968,8 @@ void KKEditClass::setPreferences(void)
 	this->resetAllFilePrefs();
 	this->writeExitData();
 	this->setAppShortcuts();
+	this->application->setStyleSheet(this->prefsMenuStyleString);
+
 	switchPage(this->mainNotebook->currentIndex());
 }
 

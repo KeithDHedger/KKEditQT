@@ -56,12 +56,12 @@ void Highlighter::resetRules(void)
 
 Highlighter::Highlighter(QTextDocument *parent,QPlainTextEdit *doc,KKEditClass *kk) : QSyntaxHighlighter(parent)
 {
+	this->mainKKEditClass=kk;
 	this->loadLangPlugins();
 	this->loadToolkitPlugins();
 	this->setLanguage("SH");
 	this->resetRules();
 	this->document=doc;
-	this->mainKKEditClass=kk;
 }
 
 void Highlighter::setBit(int *data,int bit)
@@ -200,6 +200,9 @@ void Highlighter::loadLangPlugins(void)
 	QDir				pluginsDir(QString("%1/.KKEditQT/langplugins").arg(pluginsDir.homePath()));
 	QDirIterator		lit(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 
+	if(this->mainKKEditClass->verySafeFlag==true)
+		return;
+
 	while(lit.hasNext())
 		{
 			QString			s=lit.next();
@@ -301,6 +304,23 @@ void Highlighter::loadToolkitPlugins(void)
 
 void Highlighter::setTheme(void)
 {
+	if(this->mainKKEditClass->verySafeFlag==true)
+		{
+			this->documentBackground="#ffffff";
+			this->documentForeground="#000000";
+			this->docBackgroundCSS=QString("QPlainTextEdit {background-color: %1; color: %2;}").arg(this->documentBackground).arg(this->documentForeground);
+
+			this->findBGColour="#800000";
+			this->findFGColour="#ffffff";
+
+			this->lineNumbersBackground="#c0c0c0";
+			this->lineNumbersForeground="#000000";
+
+			this->bookMarkBGColour="#a0a0a4";
+			this->bookMarkFGColour=this->lineNumbersForeground;
+			this->mainKKEditClass->theme->themeParts["insertcolour"].colour=QColor("blue");
+			return;
+		}
 	this->documentBackground=this->mainKKEditClass->theme->themeParts.value("docbgcolour").colourString;
 	this->documentForeground=this->mainKKEditClass->theme->themeParts.value("docfgcolour").colourString;
 	this->docBackgroundCSS=QString("QPlainTextEdit {background-color: %1; color: %2;}").arg(this->documentBackground).arg(this->documentForeground);

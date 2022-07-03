@@ -44,8 +44,8 @@ enum {MANAGETOOLSMENUITEM=0xd000,TOOLNUMBER};
 enum {ABOUTMENUITEM=0xe000,ABOUTQTMENUITEM,HELPMENUITEM};
 
 enum	{AUTOINDENT=0,SHOWNUMS,WRAP,HIGHLIGHT,SYNTAXHILITE,USESINGLE,AUTOSAVE,NODUPLICATE,NOWARN,AUTOSHOW,BEKIND,SETFONT,MAXPREFSWIDGETS};
-enum {MAXTABCHARS=0,MAXHISTORY,MAXFUNCDEPTH,COMPLETIONSIZE,TABWIDTH,MENUWIDTH,MAXBMWIDTH,MAXRECENTS,MSGCHECKTIME,MAXPREFSINTWIDGETS};
-enum {FUNCTIONCOMBO=0,THEMECOMBO,FONTNAMECOMBO,FONTSIZECOMBO,PREFSTERMCOMMAND,PREFSROOTCOMMAND,PREFSQTDOCDIR,PREFSBROWSERCOMMAND,PREFSCURRENTFONT,BMHIGHLIGHTCOLOUR,CURRENTLINECOLOUR,SHORTCUTSCOMBO,MAXPREFSOTHERWIDGETS};
+enum {MAXTABCHARS=0,MAXHISTORY,MAXFUNCDEPTH,COMPLETIONSIZE,TABWIDTH,MENUWIDTH,MAXRECENTS,MSGCHECKTIME,MAXPREFSINTWIDGETS};
+enum {FUNCTIONCOMBO=0,THEMECOMBO,FONTNAMECOMBO,FONTSIZECOMBO,PREFSTERMCOMMAND,PREFSROOTCOMMAND,PREFSQTDOCDIR,PREFSBROWSERCOMMAND,PREFSCURRENTFONT,BMHIGHLIGHTCOLOUR,CURRENTLINECOLOUR,SHORTCUTSCOMBO,PREFSMENUSTYLE,MAXPREFSOTHERWIDGETS};
 
 enum {FINDNEXT=1,FINDPREV,FINDREPLACE};
 
@@ -193,6 +193,8 @@ class KKEditClass : public QObject
 		int							newPageIndex=1;
 		int							sessionID=-1;
 		int							queueID=-1;
+		bool							safeFlag=false;
+		bool							verySafeFlag=false;
 		int							currentWorkSpace=-1;
 		bool							forcedMultInst=false;
 		bool							forceDefaultGeom=false;
@@ -283,7 +285,7 @@ class KKEditClass : public QObject
 		unsigned int					prefsDepth=1;
 		QString						prefsToolBarLayout;
 		unsigned int					prefsMaxTabChars=20;
-		unsigned int					prefsMaxFuncChars=MAXTEXTWIDTH;
+		unsigned int					prefsMaxMenuChars=MAXTEXTWIDTH;
 		QString						prefsTerminalCommand;
 		QString						prefsRootCommand;
 		QString						prefsQtDocDir;
@@ -295,6 +297,7 @@ class KKEditClass : public QObject
 		bool							prefsUseSingle=true;
 		bool							prefsNagScreen=false;
 		bool							onExitSaveSession=false;
+		QString						prefsMenuStyleString;
 
 //editor vars
 		QStatusBar					*statusBar;
@@ -310,7 +313,6 @@ class KKEditClass : public QObject
 		int							currentPage=0;
 		bool							closingAllTabs=false;
 		unsigned int					autoShowMinChars=6;
-		unsigned int					maxBMChars;
 		unsigned int 				untitledNumber=1;
 		HistoryClass					*history;
 		QFileSystemWatcher			*fileWatch;
@@ -533,7 +535,7 @@ class KKEditClass : public QObject
 		QHash<int,pluginStruct>		plugins;
 
 //plug functions
-		bool							loadPlug(pluginStruct *ps);
+		bool							loadPlug(pluginStruct *ps,bool force=false);
 		bool							unloadPlug(pluginStruct *ps);
 		void							loadPlugins(void);
 		void							buildPlugPrefs(void);

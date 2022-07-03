@@ -21,8 +21,6 @@
 #include "kkedit-includes.h"
 #include "SingleInstanceClass.h"
 
-bool			singleOverRide=false;
-bool			loadPluginsFlag=true;
 KKEditClass	*kkedit;
 
 //unsigned long hashFromKey(const char *key)
@@ -38,23 +36,13 @@ KKEditClass	*kkedit;
 int main (int argc, char **argv)
 {
 	int				status;
-	bool				safeflag=false;
 	QDir				commsDir;
 	QApplication		app(argc,argv);
 	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");
 
-	app.setStyleSheet("QMenu { menu-scrollable: true ;}");
 	app.setOrganizationName("KDHedger");
 	app.setApplicationName("KKEditQT");
 
-	singleOverRide=false;
-	loadPluginsFlag=true;
-
-	if(safeflag==true)//TODO//
-		{
-			singleOverRide=true;
-			loadPluginsFlag=false;
-		}
 
 	kkedit=new KKEditClass(&app);
     kkedit->splash=new QSplashScreen(pixmap,Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
@@ -64,6 +52,8 @@ int main (int argc, char **argv)
 		{
 			{{"k","key"},"KeyID","Force key ID."},
 			{{"m","multi"},"Force multiple instance."},
+			{{"s","safe"},"Safe mode ( no plugins, no plugin enable/disable data written )."},
+			{{"v","very-safe"},"Very safe mode ( no plugins, no highlighting/themes, no prefs data written )."},
 			{{"q","quit"},"Quit app."},
 			{{"r","restore-session"},"SessionName","Open session by name."}
 	});
@@ -71,6 +61,15 @@ int main (int argc, char **argv)
 	kkedit->parser.process(app);
 	if(kkedit->parser.isSet("key"))
 		kkedit->sessionID=kkedit->parser.value("key").toInt(nullptr,0);
+
+	if(kkedit->parser.isSet("safe"))
+		kkedit->safeFlag=true;
+
+	if(kkedit->parser.isSet("very-safe"))
+		{
+			kkedit->safeFlag=true;
+			kkedit->verySafeFlag=true;
+		}
 
 	SingleInstanceClass siapp(&app,kkedit->sessionID,kkedit->parser.isSet("multi"));
 	if(siapp.getRunning()==true)
@@ -87,7 +86,8 @@ int main (int argc, char **argv)
 	kkedit->forceDefaultGeom=!siapp.isOnX11;
 
 	kkedit->initApp(argc,argv);
-
+	app.setStyleSheet(kkedit->prefsMenuStyleString);
+//QMenu{menu-scrollable: true;padding: 0px;margin: 0px}
 //test plugs
 #if 0
 #ifdef _DEBUGCODE_
