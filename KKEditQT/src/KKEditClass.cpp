@@ -1320,6 +1320,7 @@ void KKEditClass::loadPlugins(void)
 			pluginStruct	ps;
 
 			ps.plugPath=s;
+			ps.local=true;
 			if(this->loadPlug(&ps)==false)
 				qWarning()<<"Error loading plug > " << s;
 
@@ -1336,6 +1337,7 @@ void KKEditClass::loadPlugins(void)
 			pluginStruct	ps;
 
 			ps.plugPath=s;
+			ps.local=false;
 			if(this->loadPlug(&ps)==false)
 				qWarning()<<"Error loading plug > " << s;
 
@@ -1357,7 +1359,7 @@ bool KKEditClass::loadPlug(pluginStruct *ps,bool force)
 	if(plugininst!=nullptr)
 		{
 			ps->instance=qobject_cast<kkEditQTPluginInterface*>(plugininst);
-			if(this->disabledPlugins.contains(ps->plugPath)==false)
+			if((this->disabledPlugins.contains(ps->plugPath)==false) || (force==true))
 				{
 					if((this->safeFlag==false)||(force==true))
 						{

@@ -105,6 +105,7 @@ struct pluginStruct
 	bool								loaded=false;
 	bool								statusChanged=false;
 	bool								broken=false;
+	bool								local=false;
 #ifdef _DEBUGCODE_
 	void				printIt(void)
 		{

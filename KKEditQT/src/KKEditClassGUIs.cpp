@@ -1473,6 +1473,8 @@ void KKEditClass::buildToolOutputWindow(void)
 
 void KKEditClass::buildPlugPrefs(void)
 {
+	QVBoxLayout	*docvlayoutlocal=new QVBoxLayout;
+	QVBoxLayout	*docvlayoutsystem=new QVBoxLayout;
 	QVBoxLayout	*docvlayout=new QVBoxLayout;
 	QHBoxLayout	*dochlayout;
 	QPushButton	*btn;
@@ -1518,7 +1520,10 @@ void KKEditClass::buildPlugPrefs(void)
 					this->plugins[j].instance->plugAbout();
 				});
 			dochlayout->addWidget(btn);
-			docvlayout->addLayout(dochlayout);
+			if(this->plugins[j].local==false)
+				docvlayoutsystem->addLayout(dochlayout);
+			else
+				docvlayoutlocal->addLayout(dochlayout);
 		}
 
 	dochlayout=new QHBoxLayout;
@@ -1556,7 +1561,32 @@ void KKEditClass::buildPlugPrefs(void)
 		});
 	dochlayout->addWidget(btn);
 
+	QLabel	*widgetlabel;
+	widgetlabel=new QLabel;
+	widgetlabel->setText("Local Plugins");
+
+	QHBoxLayout *hbox=new QHBoxLayout;
+    hbox->addStretch(1);
+	hbox->addWidget(widgetlabel);
+	hbox->addStretch(1);
+	docvlayout->addLayout(hbox,0);
+	docvlayout->addLayout(docvlayoutlocal);
+	widgetlabel=new QLabel;
+	widgetlabel->setFrameStyle(QFrame::Sunken | QFrame::HLine);
+	docvlayout->addWidget(widgetlabel);
+	widgetlabel=new QLabel;
+	widgetlabel->setText("Global Plugins");
+	hbox=new QHBoxLayout;
+    hbox->addStretch(1);
+	hbox->addWidget(widgetlabel);
+	hbox->addStretch(1);
+	docvlayout->addLayout(hbox,0);
+
+	docvlayout->addLayout(docvlayoutsystem);
 	docvlayout->addLayout(dochlayout);
+	widgetlabel=new QLabel;
+	widgetlabel->setFrameStyle(QFrame::Sunken | QFrame::HLine);
+	docvlayout->addWidget(widgetlabel);
 	this->pluginPrefsWindow->setLayout(docvlayout);
 }
 
