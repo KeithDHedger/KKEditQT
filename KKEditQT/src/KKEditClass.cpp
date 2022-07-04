@@ -1328,7 +1328,6 @@ void KKEditClass::loadPlugins(void)
 		}
 
 //global plugins
-//TODO//prefs dont allow plugs with same name
 	pluginsDir.setPath(QString("%1/plugins/").arg(DATADIR));
 	QDirIterator				git(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (git.hasNext())
@@ -1370,7 +1369,7 @@ bool KKEditClass::loadPlug(pluginStruct *ps,bool force)
 					else
 						{
 							ps->loaded=false;
-							//ps->wants=DONONE;
+							ps->wants=DONONE;
 						}
 				}
 			else

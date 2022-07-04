@@ -24,6 +24,7 @@ void SaveHistory::initPlug(KKEditClass *kk,QString pathtoplug)//TODO//init more 
 {
 	QIcon	itemicon(QIcon::fromTheme("edit-clear"));
 	QIcon	itemicon2(QIcon::fromTheme("document-open"));
+	QIcon	itemicon3(QIcon::fromTheme("document-revert"));
 
 	this->mainKKEditClass=kk;
 	this->plugPath=pathtoplug;
@@ -31,6 +32,8 @@ void SaveHistory::initPlug(KKEditClass *kk,QString pathtoplug)//TODO//init more 
 	this->saveHistoryMenuitem->setIcon(itemicon);
 	this->openHistoryMenuitem=new QAction("Open Document History");
 	this->openHistoryMenuitem->setIcon(itemicon2);
+	this->openHistoryListMenuitem=new QMenu("History List");
+	this->openHistoryListMenuitem->setIcon(itemicon3);
 	this->clearMenuCon=QObject::connect(this->saveHistoryMenuitem,&QAction::triggered,[this]()
 		{
 			this->clearHistory();
@@ -47,9 +50,11 @@ void SaveHistory::plugRun(plugData *data)
 		{
 			data->menu->addAction(this->openHistoryMenuitem);
 			data->menu->addAction(this->saveHistoryMenuitem);
+			data->menu->addMenu(this->openHistoryListMenuitem);
 			this->homeDataFolder=data->userStrData1;
 			this->docDir=data->userStrData2;
 			this->docName=data->userStrData3;
+			this->showHistoryList();
 		}
 
 	if(data->what==DOSAVE)
@@ -62,6 +67,29 @@ void SaveHistory::plugRun(plugData *data)
 			args<<data->userStrData2+"/"+data->userStrData3;
 			args<<data->userStrData1+"/SaveFilesHistory"+data->userStrData2+"/"+data->userStrData3+"/"+data->userStrData3+"-"+dt.toString("yyyy.MM.dd-hh.mm.ss.z");
 			QProcess::execute("cp",args);
+		}
+}
+
+void SaveHistory::showHistoryList(void)
+{
+	QAction		*menuitem;
+	QDir			dir(this->homeDataFolder+"/SaveFilesHistory"+this->docDir+"/"+this->docName);
+	QStringList	flist=dir.entryList(QDir::Files);
+
+	this->openHistoryListMenuitem->clear();
+	for(int k=0;k<flist.count();k++)
+		{
+			menuitem=new QAction(flist.at(k));
+			this->openHistoryListMenuitem->addAction(menuitem);
+			QObject::connect(menuitem,&QAction::triggered,[this,menuitem,k,dir]()
+				{
+					QStringList args;
+
+					args<<"-k"<<QString("%1").arg(this->mainKKEditClass->sessionID);
+					args<<"-c"<<"openfile";
+					args<<"-d"<<QString("%2/%3").arg(dir.canonicalPath()).arg(menuitem->text());
+					QProcess::execute("kkeditqtmsg",args);
+				});
 		}
 }
 
@@ -124,6 +152,5 @@ void SaveHistory::unloadPlug(void)
 	QObject::disconnect(this->openMenuCon);
 	delete this->saveHistoryMenuitem;
 	delete this->openHistoryMenuitem;
+	delete this->openHistoryListMenuitem;
 }
-
-

@@ -45,11 +45,14 @@ class SaveHistory : public QObject, kkEditQTPluginInterface
 		QString					plugPath;
 		QAction					*saveHistoryMenuitem;
 		QAction					*openHistoryMenuitem;
+		QMenu					*openHistoryListMenuitem;
 		QMetaObject::Connection	clearMenuCon;
 		QMetaObject::Connection	openMenuCon;
+		QMetaObject::Connection	listMenuCon;
 
 		void						clearHistory(void);
 		void						openHistoryFolder(void);
+		void						showHistoryList(void);
 };
 
 #endif
