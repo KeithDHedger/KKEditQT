@@ -50,12 +50,12 @@ int main (int argc, char **argv)
 
 	kkedit->parser.addOptions(
 		{
-			{{"k","key"},"KeyID","Force key ID."},
+			{{"k","key"},"Force key ID.","KeyID"},
 			{{"m","multi"},"Force multiple instance."},
 			{{"s","safe"},"Safe mode ( no plugins, no plugin enable/disable data written )."},
 			{{"v","very-safe"},"Very safe mode ( no plugins, no highlighting/themes, no prefs data written )."},
 			{{"q","quit"},"Quit app."},
-			{{"r","restore-session"},"SessionName","Open session by name."}
+			{{"r","restore-session"},"Open session by name.","SessionName"}
 	});
 
 	kkedit->parser.process(app);
