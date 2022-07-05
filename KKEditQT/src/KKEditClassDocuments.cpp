@@ -44,6 +44,7 @@ void KKEditClass::resetAllFilePrefs(void)
 
 bool KKEditClass::goToDefinition(const QString txt)
 {
+qDebug()<<"goToDefinition"<<txt;
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 	DocumentClass	*dochold=this->getDocumentForTab(-1);
 	QString			searchfor;

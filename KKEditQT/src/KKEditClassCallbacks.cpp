@@ -1286,22 +1286,26 @@ void KKEditClass::docViewLinkTrap(const QUrl url)
 				}
 			else
 				{
-					if(QRegularExpression(".*/(class)(.*)$").match(str).captured(1).compare("class")==0)
+					QString datafile=QRegularExpression("file://(.*\\.html)#.*$").match(url.toString()).captured(1);
+					QString lnk=QRegularExpression("file://(.*)\\.html#(.*)$").match(url.toString()).captured(2);
+					if(datafile.isEmpty()==false)
 						{
-							if(goToDefinition(QRegularExpression(".*/(class)(.*)$").match(finalstring).captured(2))==true)
-								return;
+							str=this->runPipeAndCapture(QString("cat %1|sed -n 's|^.*%2\">\\(.*\\)</a>.*$|\\1|p'|head -n1").arg(datafile).arg(lnk)).remove("\n");
+							if(goToDefinition(str)==true)
+								return;	
 						}
+
 					if(QRegularExpression(".*/(struct)(.*)$").match(str).captured(1).compare("struct")==0)
 						{
 							if(goToDefinition(QRegularExpression(".*/(struct)(.*)$").match(finalstring).captured(2))==true)
 								return;
 						}
-					QString datafile=QRegularExpression("file://(.*\\.html)#.*$").match(url.toString()).captured(1);
-					QString lnk=QRegularExpression("file://(.*)\\.html#(.*)$").match(url.toString()).captured(2);
-
-					str=this->runPipeAndCapture(QString("cat %1|sed -n 's|^.*%2\">\\(.*\\)</a>.*$|\\1|p'|head -n1").arg(datafile).arg(lnk)).remove("\n");;
-					if(goToDefinition(str)==true)
-						return;	
+qDebug()<<"got here";
+					if(QRegularExpression(".*/(class)(.*)$").match(str).captured(1).compare("class")==0)
+						{
+							if(goToDefinition(QRegularExpression(".*/(class)(.*)$").match(finalstring).captured(2))==true)
+								return;
+						}
 				}
 		}
 #endif

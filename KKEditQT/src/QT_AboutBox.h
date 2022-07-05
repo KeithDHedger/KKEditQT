@@ -46,19 +46,19 @@ class AboutBoxClass : public QObject
 		AboutBoxClass(QWidget* window,QString pixpath);
 		~AboutBoxClass();
 
-		void runAbout(void);
-		void setLicence(QString);
-		void setAuthors(QString authors);
-		void showLicence(void);
-		void showCredits(void);
-		void killAboutBox(void);
+		void		runAbout(void);
+		void		setLicence(QString);
+		void		setAuthors(QString authors);
+		void		showLicence(void);
+		void		showCredits(void);
+		void		killAboutBox(void);
 
 	private:
-		QDialog*	aboutDialog;
-		QDialog*	licenceDialog;
-		QDialog*	creditsDialog;
-		QString		licence;
-		QString		authors;
+		QDialog	*aboutDialog;
+		QDialog	*licenceDialog;
+		QDialog	*creditsDialog;
+		QString	licence;
+		QString	authors;
 };
 
 #endif
