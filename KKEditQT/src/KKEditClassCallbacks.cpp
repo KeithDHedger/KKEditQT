@@ -150,7 +150,7 @@ void KKEditClass::doSessionsMenuItems(void)
 			int cntfiles=0;
 			if(retval==true)
 				{
-					this->showBarberPole("Restore Session","Please Wait","Cancel",retdata,QString("%1/session").arg(this->tmpFolderName));
+					this->showBarberPole("Restore Session","Please Wait","",retdata,QString("%1/session").arg(this->tmpFolderName));
 					this->splash->finish(this->mainWindow);
 					int		linenumber=999;
 					int		visible=666;

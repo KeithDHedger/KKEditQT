@@ -360,8 +360,9 @@ void KKEditClass::initApp(int argc,char** argv)
 
 	this->tmpFolderName=mkdtemp(tmpfoldertemplate);
 
-	this->gotManEditor=QProcess::execute("which",QStringList()<<"manpageeditor");
-	this->gotDoxygen=QProcess::execute("which",QStringList()<<"doxygen");
+	this->gotDoxygen=QProcess::execute("sh",QStringList()<<"-c"<<"which doxygen 2>&1 >/dev/null");
+	this->gotManEditor=QProcess::execute("sh",QStringList()<<"-c"<<"which manpageeditor 2>&1 >/dev/null");
+
 //	if(getuid()!=0)
 //		styleName="classic";
 //	else
@@ -845,13 +846,13 @@ void KKEditClass::buildDocs(void)
 	char				line[4096];
 	QString			pipecom;
 	QFileInfo		fileinfo;
+	QDir				currentdir;
 
 	if(doc==NULL)
 		return;
+	this->showBarberPole("Building Docs","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
 
-	pipecom=QString("KKEditQTProgressBar \"Building Docs\" \"Please Wait ...\" \"\" \"%1/progress\" &").arg(this->tmpFolderName);
-	this->runPipe(QString("KKEditQTProgressBar \"Building Docs\" \"Please Wait ...\" \"\" \"%1/progress\" &").arg(this->tmpFolderName));
-
+	currentdir=QDir::current();
 	QDir::setCurrent(doc->getDirPath());
 	stat("Doxyfile",&sb);
 	if(!S_ISREG(sb.st_mode))
@@ -862,7 +863,7 @@ void KKEditClass::buildDocs(void)
 	while(fgets(line,4095,fp))
 		{
 			line[strlen(line)-1]=0;
-			this->runPipe(QString("echo -n \"%1\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
+			this->runPipe(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
 		}
 	pclose(fp);
 
@@ -870,7 +871,9 @@ void KKEditClass::buildDocs(void)
 	QProcess::execute("/bin/sh",QStringList()<<"-c"<<com);
 
 	this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
-	this->runPipe(QString("echo quit>\"%1/progress\"").arg(this->tmpFolderName));
+	this->runPipe(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
+	QDir::setCurrent(currentdir.canonicalPath());
+
 }
 
 void KKEditClass::showDocs(void)

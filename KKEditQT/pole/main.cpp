@@ -49,6 +49,12 @@ int main(int argc, char **argv)
 	QString			cancellabel="Abort opertation";
 	int				maxitems=0;
 
+/*
+QT_STYLE_OVERRIDE=fusion
+Hack if using gtk2 style as pulse progress bar doesn't work.
+*/
+	QApplication::setStyle("fusion");
+
 	sprintf(command,"echo \"%s\" > '%s'",argv[BODYLABEL],argv[CONTROLFILE]);
 	system(command);
 
@@ -59,7 +65,9 @@ int main(int argc, char **argv)
 
 	if(cancellabel.isEmpty()==true)
 		cancellabel=QString();
-	QProgressDialog progress("",cancellabel,1,maxitems,nullptr,Qt::Dialog);
+	QProgressDialog progress("",cancellabel,0,maxitems,nullptr,Qt::Dialog);
+
+	progress.setMinimumWidth(400);
 	progress.setWindowModality(Qt::WindowModal);
 	progress.setWindowTitle(windowtitle);
 	progress.setWindowFlags(progress.windowFlags() | Qt::WindowStaysOnTopHint);
