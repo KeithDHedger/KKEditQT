@@ -1,4 +1,5 @@
 0.7.3
+Fixed duplicate files being added to recents menu.
 Fixed toggling tool output window.
 Fixed running tools as root.
 

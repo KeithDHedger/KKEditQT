@@ -46,7 +46,7 @@ void RecentMenuClass::addFilePath(QString path)
 
 	for(int j=0;j<acts.count();j++)
 		{
-			if(acts.at(j)->text().compare(path)==0)
+			if(acts.at(j)->objectName().compare(path)==0)
 				return;
 		}
 
