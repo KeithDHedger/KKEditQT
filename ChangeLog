@@ -1,3 +1,7 @@
+0.7.3
+Fixed toggling tool output window.
+Fixed running tools as root.
+
 0.7.2
 KKEditQTProgressBar cleanup.
 Speeded up finding definitions from documentation.

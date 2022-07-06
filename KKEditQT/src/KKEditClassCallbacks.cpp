@@ -263,6 +263,8 @@ void KKEditClass::doToolsMenuItems()
 	QFile			file;
 	QStringList		sl;
 	QString			filelist;
+	QString			userootgui="";
+	QString			userootcli="";
 
 	switch(mc->getMenuID())
 		{
@@ -314,12 +316,17 @@ void KKEditClass::doToolsMenuItems()
 								setenv("KKEDIT_DATADIR",DATADIR,1);
 								str.replace("%i",DATADIR);
 
-								int trm=sl.indexOf(QRegularExpression(QString(".*%1.*").arg(TOOLRUNINTERM)));
-								//run in term
-								if(sl.at(trm).section(TOOLRUNINTERM,1,1).trimmed().toInt()==1)
+								if(sl.at(TOOL_RUN_AS_ROOT).section(TOOLRUNASROOT,1,1).trimmed().toInt()==1)
 									{
-										str=this->prefsTerminalCommand + " " + str;
-										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
+										userootgui=this->prefsRootCommand;
+										userootcli="sudo";
+									}
+
+								//run in term
+								if(sl.at(TOOL_IN_TERM).section(TOOLRUNINTERM,1,1).trimmed().toInt()==1)
+									{
+										str=this->prefsTerminalCommand + " " + userootcli + " " + str;
+										str=QString("cd %1;%3").arg(this->toolsFolder).arg(str);
 										runPipe(str);
 										return;
 									}
@@ -345,7 +352,7 @@ void KKEditClass::doToolsMenuItems()
 
 								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_VIEW_OP)==TOOL_VIEW_OP)
 									{
-										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
+										str=QString("cd %1;%2 %3").arg(this->toolsFolder).arg(userootgui).arg(str);
 										str=runPipeAndCapture(str);
 										if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).toInt()==0)
 											{
@@ -360,6 +367,8 @@ void KKEditClass::doToolsMenuItems()
 											}
 										this->toolOutputWindow->setWindowTitle(sl.at(TOOL_NAME).section(TOOLNAME,1,1));
 										this->toolOutputWindow->show();
+										this->toggleToolWindowMenuItem->setText("Show Tool Output");
+										this->toolWindowVisible=true;
 										return;
 									}
 
@@ -480,9 +489,15 @@ void KKEditClass::doViewMenuItems()
 			case TOGGLETOOLWINDOWMENUITEM:
 				this->toolWindowVisible=!this->toolWindowVisible;
 				if(this->toolWindowVisible)
-					this->toggleToolWindowMenuItem->setText("Hide Tool Output");
+					{
+						this->toolOutputWindow->show();
+						this->toggleToolWindowMenuItem->setText("Hide Tool Output");
+					}
 				else
-					this->toggleToolWindowMenuItem->setText("Show Tool Output");
+					{
+						this->toolOutputWindow->hide();
+						this->toggleToolWindowMenuItem->setText("Show Tool Output");
+					}
 				break;
 			case TOGGLESTATUSBARMENUITEM:
 				this->statusBarVisible=!this->statusBarVisible;
@@ -720,6 +735,12 @@ void KKEditClass::doTimer(void)
 #ifdef _BUILDDOCVIEWER_
 	this->setDocMenu();
 #endif
+	this->toolWindowVisible=this->toolOutputWindow->isVisible();
+	if(this->toolWindowVisible==true)
+		this->toggleToolWindowMenuItem->setText("Hide Tool Output");
+	else
+		this->toggleToolWindowMenuItem->setText("Show Tool Output");
+
 	while(retcode!=-1)
 		{
 			buffer.mText[0]=0;
