@@ -21,6 +21,7 @@
 #include <QtGui>
 #include <QApplication>
 #include <QProgressDialog>
+#include <QFile>
 #include <unistd.h>
 
 enum labelEnums {WINDOWTITLE=1,BODYLABEL,CANCELLABEL,NUMBEROFITEMS,CONTROLFILE,NOMOREARGS};
@@ -39,15 +40,11 @@ QString truncateWithElipses(const QString str)
 
 int main(int argc, char **argv)
 {
-	FILE				*fp;
-	char				line[256];
-	char				command[256];
 	bool				flag=true; 
 	QApplication		app(argc, argv);
-	QString			dialoglabel="Building docs ...";
-	QString			windowtitle="Please wait ...";
-	QString			cancellabel="Abort opertation";
-	int				maxitems=0;
+	QString			cancellabel;
+	QFile			control(argv[CONTROLFILE]);
+	QString			result;
 
 /*
 QT_STYLE_OVERRIDE=fusion
@@ -55,28 +52,32 @@ Hack if using gtk2 style as pulse progress bar doesn't work.
 */
 	QApplication::setStyle("fusion");
 
-	sprintf(command,"echo \"%s\" > '%s'",argv[BODYLABEL],argv[CONTROLFILE]);
-	system(command);
+	if(control.open(QFile::WriteOnly|QFile::Truncate))
+		{
+			QTextStream out(&control);
+			out<<argv[BODYLABEL]<<"\n0";
+			control.close();
+		}
+	else
+		{
+			qCritical()<<"Can't open control file ...";
+			return(1);
+		}
 
-	windowtitle=argv[WINDOWTITLE];
-	dialoglabel=argv[BODYLABEL];
 	cancellabel=argv[CANCELLABEL];
-	maxitems=atoi(argv[NUMBEROFITEMS]);
 
 	if(cancellabel.isEmpty()==true)
 		cancellabel=QString();
-	QProgressDialog progress("",cancellabel,0,maxitems,nullptr,Qt::Dialog);
+	QProgressDialog progress(argv[BODYLABEL],cancellabel,0,QString(argv[NUMBEROFITEMS]).toInt(),nullptr,Qt::Dialog);
 
 	progress.setMinimumWidth(400);
 	progress.setWindowModality(Qt::WindowModal);
-	progress.setWindowTitle(windowtitle);
+	progress.setWindowTitle(argv[WINDOWTITLE]);
 	progress.setWindowFlags(progress.windowFlags() | Qt::WindowStaysOnTopHint);
 	progress.setAutoClose(false);
 	progress.setAutoReset(false);
-	progress.setValue(1);
+	progress.setValue(0);
 	progress.show();
-
-	sprintf(command,"cat '%s' 2>/dev/null",argv[CONTROLFILE]);
 
 	while(flag==true)
 		{
@@ -84,26 +85,27 @@ Hack if using gtk2 style as pulse progress bar doesn't work.
 			if (progress.wasCanceled())
 				flag=false;
 			usleep(500);
-			fp=popen(command, "r");
-			while(fgets(line,256,fp))
+			if(control.open(QFile::ReadOnly | QFile::Text))
 				{
-					if(strncasecmp(line,"quit",4)==0)
+					QTextStream in(&control);
+					result=in.readLine();
+					if(result.compare("quit")==0)
 						{
 							progress.setValue(progress.maximum());
 							progress.update();
 							app.processEvents();
 							flag=false;
+							control.close();
 							continue;
 						}
-					else
-						progress.setLabelText(truncateWithElipses(line));
-					fgets(line,256,fp);
-					progress.setValue(atoi(line));
+
+					progress.setLabelText(truncateWithElipses(result));
+					result=in.readLine();
+					progress.setValue(result.toInt());
+					control.close();
 				}
-			pclose(fp);
 		}
 
-	sprintf(command,"rm '%s' &>/dev/null",argv[CONTROLFILE]);
-	system(command);
+	QFile::remove(argv[CONTROLFILE]);
 	return 0;
 }

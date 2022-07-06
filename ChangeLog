@@ -1,4 +1,5 @@
 0.7.2
+KKEditQTProgressBar cleanup.
 Speeded up finding definitions from documentation.
 Various ui tweaks.
 Added save history file menu to SaveHistory plugin.

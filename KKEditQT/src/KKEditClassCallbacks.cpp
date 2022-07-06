@@ -1300,7 +1300,7 @@ void KKEditClass::docViewLinkTrap(const QUrl url)
 							if(goToDefinition(QRegularExpression(".*/(struct)(.*)$").match(finalstring).captured(2))==true)
 								return;
 						}
-qDebug()<<"got here";
+
 					if(QRegularExpression(".*/(class)(.*)$").match(str).captured(1).compare("class")==0)
 						{
 							if(goToDefinition(QRegularExpression(".*/(class)(.*)$").match(finalstring).captured(2))==true)
