@@ -1249,8 +1249,12 @@ void KKEditClass::showWebPage(QString windowtitle,QString url)
 void KKEditClass::printDocument(void)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
-	QPrinter		printer(QPrinter::HighResolution);
 
+	if(doc==NULL)
+		return;
+
+//N.B. Cups has a problem with QT5 so only print to pdf is available, this aint my fault! 
+	QPrinter		printer(QPrinter::HighResolution);
 	printer.setOutputFileName(QString("/tmp/%1.pdf").arg(doc->getFileName()));
  
     QPrintDialog	dialog(&printer,this->mainWindow);
