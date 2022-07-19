@@ -1,4 +1,7 @@
 0.7.3
+Started '"what's this' info for prefs dialog.
+Set native 'print to pdf' default output folder to ~/Documents/.
+Added option to set external application to handle printg ( QT5 doesn't play well with CUPS ).
 Fixed crash when trying to print with no docs.
 Fixed duplicate files being added to recents menu.
 Fixed toggling tool output window.

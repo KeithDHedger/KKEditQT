@@ -955,7 +955,8 @@ void KKEditClass::setPreferences(void)
 
 //menu style
 	this->prefsMenuStyleString=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSMENUSTYLE])->text();
-
+//print command
+	this->prefsPrintCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSPRINTCOMMAND])->text();
 //term command
 	this->prefsTerminalCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSTERMCOMMAND])->text();
 //root command

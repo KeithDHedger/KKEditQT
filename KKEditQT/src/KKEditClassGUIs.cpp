@@ -49,12 +49,42 @@ void KKEditClass::doPrefs(void)
 	this->prefsWindow->show();
 }
 
+//{"<html>Set line auto indenting\nLines are indented with space/tabs on pressing '<b>RETURN</b>'<br><img src=\"" DATADIR "/help/addtoolbutton.gif\" height=\"100\" width=\"200\"></html>",
+static const char *whatIsPrefsBool[MAXPREFSWIDGETS]={"<html>Set line auto indenting\nLines are indented with space/tabs on pressing '<b>RETURN</b>'",\
+"<html>Show line numbers.</html>",\
+"<html>Wrap long lines.</html>",\
+"<html>Highlight current line.</html>",\
+"<html>Use syntax highlighting.</html>",\
+"<html>Use single instance app.</html>",\
+"<html>Automatically save the currently open tabs on exit.<br><br>Use '<b>Restore Autosave Session</b>' to restore.</html>",\
+"<html>Don't open duplicate file, just switch tabs.</html>",\
+"<html>Don't warn if file changed on disk, just update document.</html>",\
+"<html>Auto show completions.</html>",\
+"<html><div align=\"center\">Check if you have sent me big bags of cash.<br>Big bags of jewels also acceptable.<br><center><span style='font-size:24px;'>&#128519;</span></center></div></html>"};
+
+//prefsOtherWidgets
+static const char *whatIsPrefsOther[MAXPREFSOTHERWIDGETS]={"<html>FUNCTIONCOMBO</html>",\
+"<html>THEMECOMBO</html>",\
+"<html>FONTNAMECOMBO</html>",\
+"<html>FONTSIZECOMBO</html>",\
+"<html>PREFSTERMCOMMAND</html>",\
+"<html>QT5 does not play well with CUPS ( nothing to do with me! )<br><br>You can set an external program to print your document, just enter the name or full path here, the full path to the current document will be added to the end as the file to print.<br>E.g. lpr to usr the line printer.<br><br>You can also use a gui application e.g. lprgui available here:<br><b>https://github.com/KeithDHedger/LprGUI</b><br><br>Leave this blank to use the built in QT5 print dialog ( but you may only get the native print to pdf option ).</html>",\
+"<html>PREFSROOTCOMMAND</html>",\
+"<html>PREFSQTDOCDIR</html>",\
+"<html>PREFSBROWSERCOMMAND</html>",\
+"<html>PREFSCURRENTFONT</html>",\
+"<html>BMHIGHLIGHTCOLOUR</html>",\
+"<html>CURRENTLINECOLOUR</html>",\
+"<html>SHORTCUTSCOMBO</html>"
+"<html>PREFSMENUSTYLE</html>"};
+
 void KKEditClass::buildPrefsWindow(void)
 {
 	QVBoxLayout			*mainvbox=new QVBoxLayout();
 	QHBoxLayout			*hbox=new QHBoxLayout;
 	QTabWidget			*prefsnotebook=new QTabWidget;
 	QWidget				*button;
+	QPushButton			*whatsbutton;
 	QWidget				*tab;
 	QLabel				*widgetlabel;
 	int					posy;
@@ -94,35 +124,48 @@ void KKEditClass::buildPrefsWindow(void)
 //prefsIndent
 	posy=0;
 	makePrefsCheck(AUTOINDENT,"Auto Indent Lines",this->prefsIndent,0,posy);
+	prefsWidgets[AUTOINDENT]->setWhatsThis(whatIsPrefsBool[AUTOINDENT]);
+	//qDebug()<<whatIsPrefsBool[AUTOINDENT];
+/*
+<img src="/media/LinuxData/Development64/Projects/KKEditQT/docs/addtoolbutton.gif" height="409" width="956">
+*/
+
 //linenumbers
 	posy++;
 	makePrefsCheck(SHOWNUMS,"Show Line Numbers",this->prefsShowLineNumbers,0,posy);
+	prefsWidgets[SHOWNUMS]->setWhatsThis(whatIsPrefsBool[SHOWNUMS]);
 //wraplines
 	posy++;
 	makePrefsCheck(WRAP,"Wrap Lines",this->prefsLineWrap,0,posy);
+	prefsWidgets[WRAP]->setWhatsThis(whatIsPrefsBool[WRAP]);
 //highlite
 	posy++;
 	makePrefsCheck(HIGHLIGHT,"Highlight Current Line",this->prefsHighLightline,0,posy);
+	prefsWidgets[HIGHLIGHT]->setWhatsThis(whatIsPrefsBool[HIGHLIGHT]);
 //no syntax colour
 	posy++;
 	makePrefsCheck(SYNTAXHILITE,"Syntax Highlighting",this->prefsSyntaxHilighting,0,posy);
+	prefsWidgets[SYNTAXHILITE]->setWhatsThis(whatIsPrefsBool[SYNTAXHILITE]);
 //single instance
 	posy++;
 	makePrefsCheck(USESINGLE,"Use Single Instance",this->prefsUseSingle,0,posy);
-
+	prefsWidgets[USESINGLE]->setWhatsThis(whatIsPrefsBool[USESINGLE]);
 //auto save session
 	posy++;
-	makePrefsCheck(AUTOSAVE,"Auto Save/Restore Session",this->onExitSaveSession,0,posy);
+	makePrefsCheck(AUTOSAVE,"Save Session On Exit",this->onExitSaveSession,0,posy);
+	prefsWidgets[AUTOSAVE]->setWhatsThis(whatIsPrefsBool[AUTOSAVE]);
 //no duplicates
 	posy++;
 	makePrefsCheck(NODUPLICATE,"Don't Open Duplicate File",this->prefsNoOpenduplicate,0,posy);
+	prefsWidgets[NODUPLICATE]->setWhatsThis(whatIsPrefsBool[NODUPLICATE]);
 //turn off warnings
 	posy++;
 	makePrefsCheck(NOWARN,"Don't Warn On File Change",this->prefsNoWarnings,0,posy);
-
+	prefsWidgets[NOWARN]->setWhatsThis(whatIsPrefsBool[NOWARN]);
 //autoshow completion
 	posy++;
 	makePrefsCheck(AUTOSHOW,"Show Completions",this->prefsAutoShowCompletions,0,posy);
+	prefsWidgets[AUTOSHOW]->setWhatsThis(whatIsPrefsBool[AUTOSHOW]);
 
 	tab->setLayout(table);
 	prefsnotebook->addTab(tab,"General Appearance");
@@ -276,6 +319,15 @@ void KKEditClass::buildPrefsWindow(void)
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[PREFSTERMCOMMAND],posy,1,1,-1,Qt::AlignVCenter);
 
+//print command
+	posy++;
+    widgetlabel=new QLabel("Print Command:");
+	prefsOtherWidgets[PREFSPRINTCOMMAND]=new QLineEdit(this->prefsPrintCommand);
+	prefsOtherWidgets[PREFSPRINTCOMMAND]->setWhatsThis(whatIsPrefsOther[PREFSPRINTCOMMAND]);
+	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
+	table->addWidget(prefsOtherWidgets[PREFSPRINTCOMMAND],posy,1,1,-1,Qt::AlignVCenter);
+//	prefsOtherWidgets[PREFSPRINTCOMMAND]->setAttribute(Qt::WA_CustomWhatsThis, true);
+//Qt::WA_CustomWhatsThis
 //root command
 	posy++;
     widgetlabel=new QLabel("Run As Root Command:");
@@ -328,6 +380,8 @@ void KKEditClass::buildPrefsWindow(void)
 	mainvbox->addLayout(hbox,0);
 
 	makePrefsCheck(BEKIND,"I have donated",this->prefsNagScreen,-1,-1);
+	prefsWidgets[BEKIND]->setWhatsThis(whatIsPrefsBool[BEKIND]);
+
 	hbox=new QHBoxLayout;
     hbox->addStretch(1);
 	hbox->addWidget(prefsWidgets[BEKIND]);
@@ -352,6 +406,16 @@ void KKEditClass::buildPrefsWindow(void)
 	QObject::connect(button,SIGNAL(clicked()),this,SLOT(setPreferences()));
 	hbox->addWidget(button);
 	hbox->addStretch(1);
+
+//whats this
+	whatsbutton=new QPushButton("What's this?");
+	QObject::connect(whatsbutton,&QPushButton::clicked,[this]()
+		{
+			QWhatsThis::enterWhatsThisMode();
+		});
+	hbox->addWidget(whatsbutton);
+	hbox->addStretch(1);
+
 	button=new QPushButton("Restore Prefs");
 	button->setObjectName(QString("%1").arg(CANCELPREFS));
 	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
@@ -1560,8 +1624,11 @@ void KKEditClass::buildPlugPrefs(void)
 			this->pluginPrefsWindow->hide();
 		});
 	dochlayout->addWidget(btn);
-
 	QLabel	*widgetlabel;
+//	widgetlabel=new QLabel;
+//	widgetlabel->setFrameStyle(QFrame::Sunken | QFrame::HLine);
+//	docvlayout->addWidget(widgetlabel);
+
 	widgetlabel=new QLabel;
 	widgetlabel->setText("Local Plugins");
 
@@ -1583,10 +1650,12 @@ void KKEditClass::buildPlugPrefs(void)
 	docvlayout->addLayout(hbox,0);
 
 	docvlayout->addLayout(docvlayoutsystem);
-	docvlayout->addLayout(dochlayout);
+
 	widgetlabel=new QLabel;
 	widgetlabel->setFrameStyle(QFrame::Sunken | QFrame::HLine);
 	docvlayout->addWidget(widgetlabel);
+
+	docvlayout->addLayout(dochlayout);
 	this->pluginPrefsWindow->setLayout(docvlayout);
 }
 

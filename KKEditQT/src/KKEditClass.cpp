@@ -423,6 +423,7 @@ void KKEditClass::initApp(int argc,char** argv)
 		r=this->prefs.value("app/geometry",QVariant(QRect(50,50,1024,768))).value<QRect>();
 	this->mainWindow->setGeometry(r);
 
+//this->onExitSaveSession //TODO//
 	this->setToolbarSensitive();
 	this->mainWindow->show();
 }
@@ -571,6 +572,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsNoOpenduplicate=this->prefs.value("editor/noopendup",QVariant(bool(true))).value<bool>();
 	this->prefsNoWarnings=this->prefs.value("editor/nowarnings",QVariant(bool(false))).value<bool>();
 	this->recentFiles->maxFiles=this->prefs.value("editor/maxrecents",10).toInt();
+	this->prefsPrintCommand=this->prefs.value("editor/printcommand","").toString();
 
 //document
 	this->prefsHighLightline=this->prefs.value("document/highlightline",QVariant(bool(true))).value<bool>();
@@ -735,6 +737,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("editor/noopendup",this->prefsNoOpenduplicate);
 	this->prefs.setValue("editor/nowarnings",this->prefsNoWarnings);
 	this->prefs.setValue("editor/maxrecents",this->recentFiles->maxFiles);
+	this->prefs.setValue("editor/printcommand",this->prefsPrintCommand);
 	
 //document
 	this->prefs.setValue("document/indent",this->prefsIndent);
@@ -1253,9 +1256,15 @@ void KKEditClass::printDocument(void)
 	if(doc==NULL)
 		return;
 
-//N.B. Cups has a problem with QT5 so only print to pdf is available, this aint my fault! 
+	if(this->prefsPrintCommand.isEmpty()!=true)
+		{
+			QProcess::startDetached(this->prefsPrintCommand,QStringList(doc->getFilePath()));
+			return;
+		}
+
+//N.B. CUPS/QT5 has a problem with QT5/CUPS so only print to pdf is available, this aint my fault! 
 	QPrinter		printer(QPrinter::HighResolution);
-	printer.setOutputFileName(QString("/tmp/%1.pdf").arg(doc->getFileName()));
+	printer.setOutputFileName(QString("%1/Documents/%2.pdf").arg(this->homeFolder).arg(doc->getFileName()));
  
     QPrintDialog	dialog(&printer,this->mainWindow);
 	if(dialog.exec()!=QDialog::Accepted)
