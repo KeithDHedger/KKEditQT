@@ -50,7 +50,8 @@ void KKEditClass::doPrefs(void)
 }
 
 //{"<html>Set line auto indenting\nLines are indented with space/tabs on pressing '<b>RETURN</b>'<br><img src=\"" DATADIR "/help/addtoolbutton.gif\" height=\"100\" width=\"200\"></html>",
-static const char *whatIsPrefsBool[MAXPREFSWIDGETS]={"<html>Set line auto indenting\nLines are indented with space/tabs on pressing '<b>RETURN</b>'",\
+static const char *whatIsPrefsBool[MAXPREFSWIDGETS]={\
+"<html>Set line auto indenting\nLines are indented with space/tabs on pressing '<b>RETURN</b>'",\
 "<html>Show line numbers.</html>",\
 "<html>Wrap long lines.</html>",\
 "<html>Highlight current line.</html>",\
@@ -60,23 +61,33 @@ static const char *whatIsPrefsBool[MAXPREFSWIDGETS]={"<html>Set line auto indent
 "<html>Don't open duplicate file, just switch tabs.</html>",\
 "<html>Don't warn if file changed on disk, just update document.</html>",\
 "<html>Auto show completions.</html>",\
-"<html><div align=\"center\">Check if you have sent me big bags of cash.<br>Big bags of jewels also acceptable.<br><center><span style='font-size:24px;'>&#128519;</span></center></div></html>"};
+"<html><div align=\"center\">Check this if you have sent me big bags of cash.<br>Big bags of jewels also acceptable.<br><center><span style='font-size:24px;'>&#128519;</span></center></div></html>"};
 
 //prefsOtherWidgets
-static const char *whatIsPrefsOther[MAXPREFSOTHERWIDGETS]={"<html>FUNCTIONCOMBO</html>",\
-"<html>THEMECOMBO</html>",\
-"<html>FONTNAMECOMBO</html>",\
-"<html>FONTSIZECOMBO</html>",\
-"<html>PREFSTERMCOMMAND</html>",\
+static const char *whatIsPrefsOther[MAXPREFSOTHERWIDGETS]={\
+"<html>Layout of 'Funtions' menu, default is '<b>Display functions etc in menu by type and alphabetically</b>'</html>",\
+"<html>Select document theme.</html>",\
+"<html>Set font and size etc.</html>",\
+"<html>Enter a command to run a command in a terminal, the command is added to the end of this string.<br><br>Default is '<b>xterm -e</b>'</html>",\
 "<html>QT5 does not play well with CUPS ( nothing to do with me! )<br><br>You can set an external program to print your document, just enter the name or full path here, the full path to the current document will be added to the end as the file to print.<br>E.g. lpr to usr the line printer.<br><br>You can also use a gui application e.g. lprgui available here:<br><b>https://github.com/KeithDHedger/LprGUI</b><br><br>Leave this blank to use the built in QT5 print dialog ( but you may only get the native print to pdf option ).</html>",\
-"<html>PREFSROOTCOMMAND</html>",\
-"<html>PREFSQTDOCDIR</html>",\
-"<html>PREFSBROWSERCOMMAND</html>",\
-"<html>PREFSCURRENTFONT</html>",\
-"<html>BMHIGHLIGHTCOLOUR</html>",\
-"<html>CURRENTLINECOLOUR</html>",\
-"<html>SHORTCUTSCOMBO</html>"
-"<html>PREFSMENUSTYLE</html>"};
+"<html>Enter a command to run a command as root, the command is added to the end of this string.<br><br>Default is '<b>gtksu -- </b>'</html>",\
+"<html>Path to installed QT documentation, default is '<b>/usr/share/doc/qt5</b>'</html>",\
+"<html>Set current font.</html>",\
+"<html>Set bookmark highlight colour.</html>",\
+"<html>Set current line colour.</html>",\
+"<html>Set keyboard shortcuts.</html>",\
+"<html>Custom menu style, I prefer scrolling menus rather than the defaut QT menus, default is '<b>QMenu{menu-scrollable: true;padding: 0px;margin: 0px}</b>'.</html>"};
+
+//prefs int widgets
+static const char *whatIsPrefsInt[MAXPREFSINTWIDGETS]={\
+"<html>Number of chacters in document tabs, default is <b>20</b></html>",\
+"<html>Maximum number of find/replace terms stored, default <b>5</b>.</html>",\
+"<html>Tags recursive search depth, default is <b>1</b>.<br><br>More than 1 can significantly slow down function search if you have a lot of subfolders in you source tree.</html>",\
+"<html>Minimum number of characters entered before the completion pop up shows, default <b>6</b>.</html>",\
+"<html>Number of characters to a text tab, default <b>4</b>.</html>",\
+"<html>Max characters in menu items and function definitions, default <b>64</b>.</html>",\
+"<html>Maximum number of recently opened files stored, default <b>10</b>.</html>",\
+"<html>Check for messages every X ms, default <b>1000</b>.</html>"};
 
 void KKEditClass::buildPrefsWindow(void)
 {
@@ -125,7 +136,6 @@ void KKEditClass::buildPrefsWindow(void)
 	posy=0;
 	makePrefsCheck(AUTOINDENT,"Auto Indent Lines",this->prefsIndent,0,posy);
 	prefsWidgets[AUTOINDENT]->setWhatsThis(whatIsPrefsBool[AUTOINDENT]);
-	//qDebug()<<whatIsPrefsBool[AUTOINDENT];
 /*
 <img src="/media/LinuxData/Development64/Projects/KKEditQT/docs/addtoolbutton.gif" height="409" width="956">
 */
@@ -178,16 +188,19 @@ void KKEditClass::buildPrefsWindow(void)
 	posy=1;
     widgetlabel=new QLabel("Menu Style:");
 	prefsOtherWidgets[PREFSMENUSTYLE]=new QLineEdit(this->prefsMenuStyleString);
+	prefsOtherWidgets[PREFSMENUSTYLE]->setWhatsThis(whatIsPrefsOther[PREFSMENUSTYLE]);
 	table->addWidget(widgetlabel,posy,0);
 	table->addWidget(prefsOtherWidgets[PREFSMENUSTYLE],posy,1,1,-1);
 
 //tabwidth
 	posy++;
 	makePrefsDial(TABWIDTH,"Tab width:",this->prefsTabWidth,2,64,posy);
+	prefsIntWidgets[TABWIDTH]->setWhatsThis(whatIsPrefsInt[TABWIDTH]);
 
 //style
 	posy++;
 	prefsOtherWidgets[THEMECOMBO]=new QComboBox;
+	prefsOtherWidgets[THEMECOMBO]->setWhatsThis(whatIsPrefsOther[THEMECOMBO]);
 	widgetlabel=new QLabel("Theme:");
 	table->addWidget(widgetlabel,posy,0);
 	table->addWidget(prefsOtherWidgets[THEMECOMBO],posy,1,1,-1);
@@ -229,6 +242,7 @@ void KKEditClass::buildPrefsWindow(void)
 //shortcuts
 	posy++;
 	prefsOtherWidgets[SHORTCUTSCOMBO]=new QComboBox;
+	prefsOtherWidgets[SHORTCUTSCOMBO]->setWhatsThis(whatIsPrefsOther[SHORTCUTSCOMBO]);
 	this->resetKeyCombo();
     QObject::connect(prefsOtherWidgets[SHORTCUTSCOMBO],SIGNAL(activated(int)),this,SLOT(buildGetKeyShortCut(int)));
 
@@ -240,6 +254,7 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
 	widgetlabel = new QLabel("Font:");
 	prefsOtherWidgets[PREFSCURRENTFONT]=new QLabel(QString("%1 %2").arg(this->prefsDocumentFont.family()).arg(this->prefsDocumentFont.pointSize()));
+	prefsOtherWidgets[PREFSCURRENTFONT]->setWhatsThis(whatIsPrefsOther[PREFSCURRENTFONT]);
 	qobject_cast<QLabel*>(prefsOtherWidgets[PREFSCURRENTFONT])->setFrameStyle(QFrame::Sunken|QFrame::Panel);
     QPushButton *fontbutton = new QPushButton("Set Font");
 	table->addWidget(widgetlabel,posy,0);
@@ -251,6 +266,7 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
     widgetlabel = new QLabel("Highlight Current Line Colour:");
 	prefsOtherWidgets[CURRENTLINECOLOUR]=new QLabel("LINE");
+	prefsOtherWidgets[CURRENTLINECOLOUR]->setWhatsThis(whatIsPrefsOther[CURRENTLINECOLOUR]);
     qobject_cast<QLabel*>(prefsOtherWidgets[CURRENTLINECOLOUR])->setFrameStyle(QFrame::Raised | QFrame::Panel);
     QPushButton *colorButton = new QPushButton("Set Colour");
 	table->addWidget(widgetlabel,posy,0);
@@ -266,6 +282,7 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
     widgetlabel = new QLabel("Bookmark Highlight Colour:");
 	prefsOtherWidgets[BMHIGHLIGHTCOLOUR]=new QLabel("BOOKMARK");
+	prefsOtherWidgets[BMHIGHLIGHTCOLOUR]->setWhatsThis(whatIsPrefsOther[BMHIGHLIGHTCOLOUR]);
     qobject_cast<QLabel*>(prefsOtherWidgets[BMHIGHLIGHTCOLOUR])->setFrameStyle(QFrame::Raised | QFrame::Panel);
     QPushButton *colorButton1 = new QPushButton("Set Colour");
 	table->addWidget(widgetlabel,posy,0);
@@ -280,10 +297,13 @@ void KKEditClass::buildPrefsWindow(void)
 //autoshow completion
 	posy++;
 	makePrefsDial(COMPLETIONSIZE,"Completion Minimum Word Size:",this->autoShowMinChars,2,20,posy);
+	prefsIntWidgets[COMPLETIONSIZE]->setWhatsThis(whatIsPrefsInt[COMPLETIONSIZE]);
 
 //sort functions
 	posy++;
 	prefsOtherWidgets[FUNCTIONCOMBO]=new QComboBox;
+	prefsOtherWidgets[FUNCTIONCOMBO]->setWhatsThis(whatIsPrefsOther[FUNCTIONCOMBO]);
+	
 	qobject_cast<QComboBox*>(prefsOtherWidgets[FUNCTIONCOMBO])->addItem("Display functions etc in menu by type and alphabetically");
 	qobject_cast<QComboBox*>(prefsOtherWidgets[FUNCTIONCOMBO])->addItem("Display functions etc in menu by type and file position");
 	qobject_cast<QComboBox*>(prefsOtherWidgets[FUNCTIONCOMBO])->addItem("Display functions etc in menu by file position");
@@ -311,11 +331,13 @@ void KKEditClass::buildPrefsWindow(void)
 //function search prefsDepth
 	posy=0;
 	makePrefsDial(MAXFUNCDEPTH,"Tag File Search Depth:",this->prefsDepth,0,20,posy);
+	prefsIntWidgets[MAXFUNCDEPTH]->setWhatsThis(whatIsPrefsInt[MAXFUNCDEPTH]);
 
 //terminalcommand
 	posy++;
     widgetlabel=new QLabel("Terminal Command:");
 	prefsOtherWidgets[PREFSTERMCOMMAND]=new QLineEdit(this->prefsTerminalCommand);
+	prefsOtherWidgets[PREFSTERMCOMMAND]->setWhatsThis(whatIsPrefsOther[PREFSTERMCOMMAND]);
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[PREFSTERMCOMMAND],posy,1,1,-1,Qt::AlignVCenter);
 
@@ -326,12 +348,12 @@ void KKEditClass::buildPrefsWindow(void)
 	prefsOtherWidgets[PREFSPRINTCOMMAND]->setWhatsThis(whatIsPrefsOther[PREFSPRINTCOMMAND]);
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[PREFSPRINTCOMMAND],posy,1,1,-1,Qt::AlignVCenter);
-//	prefsOtherWidgets[PREFSPRINTCOMMAND]->setAttribute(Qt::WA_CustomWhatsThis, true);
-//Qt::WA_CustomWhatsThis
+
 //root command
 	posy++;
     widgetlabel=new QLabel("Run As Root Command:");
 	prefsOtherWidgets[PREFSROOTCOMMAND]=new QLineEdit(this->prefsRootCommand);
+	prefsOtherWidgets[PREFSROOTCOMMAND]->setWhatsThis(whatIsPrefsOther[PREFSROOTCOMMAND]);
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[PREFSROOTCOMMAND],posy,1,1,-1,Qt::AlignVCenter);
 
@@ -339,24 +361,30 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
     widgetlabel=new QLabel("QT Document Folder:");
 	prefsOtherWidgets[PREFSQTDOCDIR]=new QLineEdit(this->prefsQtDocDir);
+	prefsOtherWidgets[PREFSQTDOCDIR]->setWhatsThis(whatIsPrefsOther[PREFSQTDOCDIR]);
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[PREFSQTDOCDIR],posy,1,1,-1,Qt::AlignVCenter);
 
 //recent history max
 	posy++;
 	makePrefsDial(MAXRECENTS,"Max Recent Files:",this->recentFiles->maxFiles,0,MAXTEXTWIDTH,posy);
+	prefsIntWidgets[MAXRECENTS]->setWhatsThis(whatIsPrefsInt[MAXRECENTS]);
 //find replace history max
 	posy++;
 	makePrefsDial(MAXHISTORY,"Max Find/Replace History:",this->maxFRHistory,0,MAXTEXTWIDTH,posy);
+	prefsIntWidgets[MAXHISTORY]->setWhatsThis(whatIsPrefsInt[MAXHISTORY]);
 //max tab label width
 	posy++;
 	makePrefsDial(MAXTABCHARS,"Max Characters In Tab:",this->prefsMaxTabChars,5,MAXTEXTWIDTH,posy);
-//max function strings
+	prefsIntWidgets[MAXTABCHARS]->setWhatsThis(whatIsPrefsInt[MAXTABCHARS]);
+//max menu strings
 	posy++;
 	makePrefsDial(MENUWIDTH,"Max Characters In Menus:",this->prefsMaxMenuChars,5,MAXTEXTWIDTH,posy);
+	prefsIntWidgets[MENUWIDTH]->setWhatsThis(whatIsPrefsInt[MENUWIDTH]);
 //check for msgs
 	posy++;
 	makePrefsDial(MSGCHECKTIME,"Check Messages Every (ms):",this->prefsMsgTimer,1,10000,posy);
+	prefsIntWidgets[MSGCHECKTIME]->setWhatsThis(whatIsPrefsInt[MSGCHECKTIME]);
 
 //end admin
 
