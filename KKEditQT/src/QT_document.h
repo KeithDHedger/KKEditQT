@@ -134,6 +134,7 @@ class DocumentClass : public QPlainTextEdit
 		bool								realSyntaxHighlighting(void);
 		const QString					textUnderCursor();
 		QTextCursor						holdCursor;
+		bool								lastCursorPosition=false;
 };
 
 class LineNumberArea : public QWidget

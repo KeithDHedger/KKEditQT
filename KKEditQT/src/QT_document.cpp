@@ -375,6 +375,42 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 			case Qt::Key_Backspace:
 				popupflag=false;
 				break;
+			case Qt::Key_Tab:
+				{
+					QTextCursor	cursor=this->textCursor();
+					QTextBlock	tb=cursor.block();
+					QString		data=tb.text();
+					int			posinblock=cursor.positionInBlock();
+					if(data.mid(0,posinblock).simplified().isEmpty())
+						this->lastCursorPosition=true;
+				}				
+				break;
+			case Qt::Key_Down:
+				{
+					if(this->lastCursorPosition==true)
+						{
+							QTextCursor	cursor=this->textCursor();
+							cursor.movePosition(QTextCursor::NextBlock);
+							this->setTextCursor(cursor);
+							return;
+						}
+				}
+				break;
+			case Qt::Key_Up:
+				{
+					if(this->lastCursorPosition==true)
+						{
+							QTextCursor	cursor=this->textCursor();
+							cursor.movePosition(QTextCursor::PreviousBlock);
+							this->setTextCursor(cursor);
+							return;
+						}
+				}
+				break;
+
+			default:
+				this->lastCursorPosition=false;
+				break;
 		}
 
 	if((event->modifiers() & Qt::ControlModifier)==Qt::ControlModifier)

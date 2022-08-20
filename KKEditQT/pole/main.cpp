@@ -26,7 +26,7 @@
 
 enum labelEnums {WINDOWTITLE=1,BODYLABEL,CANCELLABEL,NUMBEROFITEMS,CONTROLFILE,NOMOREARGS};
 
-#define MAXMESSAGELEN 96
+#define MAXMESSAGELEN 64
 
 QString truncateWithElipses(const QString str)
 {
@@ -70,7 +70,7 @@ Hack if using gtk2 style as pulse progress bar doesn't work.
 		cancellabel=QString();
 	QProgressDialog progress(argv[BODYLABEL],cancellabel,0,QString(argv[NUMBEROFITEMS]).toInt(),nullptr,Qt::Dialog);
 
-	progress.setMinimumWidth(400);
+	progress.setMinimumWidth(600);
 	progress.setWindowModality(Qt::WindowModal);
 	progress.setWindowTitle(argv[WINDOWTITLE]);
 	progress.setWindowFlags(progress.windowFlags() | Qt::WindowStaysOnTopHint);
