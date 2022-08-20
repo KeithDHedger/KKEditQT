@@ -321,7 +321,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	plugData			pd;
 	QIcon			tabicon(QString("%1/pixmaps/empty.png").arg(DATADIR));
 
-	if((this->prefsNoOpenduplicate==true) && (this->checkForOpenFile(filepath)==true))
+	if((this->prefsNoOpenduplicate==true) && (this->checkForOpenFile(fileinfo.canonicalFilePath())==true))
 		{
 			if(linenumber>0)
 				this->gotoLine(linenumber);

@@ -1,4 +1,5 @@
 0.7.3
+Fixed opening duplicate files with relative path.
 Tabbing at begining of line then pressing 'up/down' returns cursor to START/BEGINNING of previous/next line.
 Started '"what's this' info for prefs dialog.
 Set native 'print to pdf' default output folder to ~/Documents/.

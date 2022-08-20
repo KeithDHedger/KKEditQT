@@ -43,7 +43,6 @@ int main (int argc, char **argv)
 	app.setOrganizationName("KDHedger");
 	app.setApplicationName("KKEditQT");
 
-
 	kkedit=new KKEditClass(&app);
     kkedit->splash=new QSplashScreen(pixmap,Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
 	kkedit->parser.addHelpOption();
