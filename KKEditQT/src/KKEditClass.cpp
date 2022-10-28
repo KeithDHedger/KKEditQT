@@ -1181,6 +1181,7 @@ void KKEditClass::runCLICommands(int quid)
 	int			msglen;
 	QString		opensessionname;
 	QStringList	list;
+	char			*pathtopwd;
 
 	if(quid==-1)
 		fprintf(stderr,"From KKeditQT Can't create message queue, scripting wont work :( ...\n");
@@ -1201,16 +1202,23 @@ void KKEditClass::runCLICommands(int quid)
 					msgsnd(quid,&message,msglen,0);
 				}
 
+			pathtopwd=get_current_dir_name();
 			list=this->parser.positionalArguments();
 			for(int j=0;j<list.count();j++)
 				{
-					msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s",list.at(j).toStdString().c_str());
+					if(list.at(j).at(0)!="/")
+						msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s/%s",pathtopwd,list.at(j).toStdString().c_str());
+					else
+						msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s",list.at(j).toStdString().c_str());
 					message.mType=OPENFILEMSG;
 					msgsnd(quid,&message,msglen,0);
 				}
 			msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","ACTIVATE");
 			message.mType=ACTIVATEAPPMSG;
 			msgsnd(quid,&message,msglen,0);
+
+			if(pathtopwd!=NULL)
+				free(pathtopwd);
 		}
 }
 
