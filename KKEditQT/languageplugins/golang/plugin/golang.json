@@ -1,0 +1,6 @@
+{
+"name" : "Go Language Plugin",
+"version" : "0.0.1",
+"langname" : "Go",
+"mimetypes" : "text/x-go"
+}
