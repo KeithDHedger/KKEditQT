@@ -876,6 +876,7 @@ void KKEditClass::buildMainGui(void)
 	this->showAllTabsMenuItem=this->makeMenuItemClass(EDITMENU,"Show All Tabs",0,"list-add",SHOWALLTABSMENUNAME,SHOWALLTABSMENUITEM);
 //select tab
 	this->selectTabMenu=new QMenu("Select Tab");
+	this->selectTabMenu->setStyleSheet("QMenu{menu-scrollable: true;padding: 0px;margin: 0px}");
 	this->editMenu->addMenu(this->selectTabMenu);
 
 	this->editMenu->addSeparator();
