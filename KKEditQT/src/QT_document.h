@@ -50,6 +50,7 @@ class DocumentClass : public QPlainTextEdit
 		QTextEdit::ExtraSelection		selectedLine;
 		QColor							prefsHiLiteLineColor;
 		QColor							bookmarkLineColor;
+		int								oldBlockCount=0;
 
 		void								setHiliteLanguage(void);
 		void								lineNumberAreaPaintEvent(QPaintEvent *event);
@@ -101,6 +102,7 @@ class DocumentClass : public QPlainTextEdit
 		bool								findStr(int what=FINDNEXT);
 		void								setHighlightAll(void);
 
+		void paste(void);
 	protected:
 	    void								resizeEvent(QResizeEvent *event);
 		void								keyPressEvent(QKeyEvent *event);
@@ -118,7 +120,7 @@ class DocumentClass : public QPlainTextEdit
 
 	private slots:
 		void								highlightCurrentLine();
-		void								updateLineNumberAreaWidth(void);
+		void								updateLineNumberAreaWidth(int newcnt);
 		void								updateLineNumberArea(const QRect &, int);
 		void								modified();
 		void								setUndo(bool avail);
@@ -135,6 +137,8 @@ class DocumentClass : public QPlainTextEdit
 		const QString					textUnderCursor();
 		QTextCursor						holdCursor;
 		bool								lastCursorPosition=false;
+		int								holdColoumn=0;
+		bool								holdBlockEnd=false;
 };
 
 class LineNumberArea : public QWidget

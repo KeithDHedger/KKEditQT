@@ -359,6 +359,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 				this->fileWatch->addPath(fileinfo.canonicalFilePath());
 			doc->state=NORMALTAB;
 			doc->setTabColourType(doc->state);
+			doc->oldBlockCount=doc->blockCount();
 			file.close();
 		}
 	else

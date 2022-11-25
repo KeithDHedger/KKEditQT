@@ -107,12 +107,51 @@ DocumentClass::~DocumentClass()
 	this->mainKKEditClass->pages.remove(this->pageIndex);
 }
 
-void DocumentClass::updateLineNumberAreaWidth(void)
+void DocumentClass::updateLineNumberAreaWidth(int newcnt)
 {
 	if(this->realShowLineNumbers()==true)
 		setViewportMargins(lineNumberAreaWidth(),0,0,0);
 	else
 		setViewportMargins(0,0,0,0);
+
+	if(this->oldBlockCount!=newcnt)
+		{
+			int			diff=newcnt-this->oldBlockCount;
+			QTextCursor	txtc=this->textCursor();
+			int			oldline=this->getCurrentLineNumber()-diff;
+			bool			dore=false;
+			foreach(bookMarkStruct value,this->mainKKEditClass->bookMarks)
+				{
+					if(value.docIndex==this->pageIndex)
+						{
+							if((oldline)==(value.line))
+								{
+									if(this->holdBlockEnd==true)
+										continue;
+									if(this->holdColoumn==0)
+										{
+											this->mainKKEditClass->bookMarks[value.bmKey].line+=diff;	
+											dore=true;
+										}
+									continue;
+								}
+
+							if((oldline)==(value.line+diff))
+								continue;
+
+							if((oldline)<(value.line))
+								{
+									this->mainKKEditClass->bookMarks[value.bmKey].line+=diff;	
+									dore=true;
+									continue;
+								}
+						}
+				}
+			if(dore==true)
+				this->highlightCurrentLine();
+		}
+
+	this->oldBlockCount=newcnt;
 }
 
 void DocumentClass::modified()
@@ -314,7 +353,7 @@ void DocumentClass::updateLineNumberArea(const QRect &rect,int dy)
 		lineNumberArea->update(0,rect.y(),lineNumberArea->width(),rect.height());
 
 	if(rect.contains(viewport()->rect()))
-		updateLineNumberAreaWidth();
+		updateLineNumberAreaWidth(this->oldBlockCount);
 }
 
 void DocumentClass::focusInEvent(QFocusEvent *e)
@@ -331,6 +370,31 @@ const QString DocumentClass::textUnderCursor()
     return tc.selectedText();
 }
 
+void DocumentClass::paste(void)
+{
+QPlainTextEdit::paste();
+#if 0
+int startline=this->getCurrentLineNumber();
+qDebug()<<this->getCurrentLineNumber();
+QClipboard *clipboard = QGuiApplication::clipboard();
+
+//qDebug()<<"paste"<<clipboard->text()<<clipboard->text(QClipboard::Selection);
+
+qDebug()<<this->getCurrentLineNumber();
+int diff=this->getCurrentLineNumber()-startline;
+	foreach(bookMarkStruct value,this->mainKKEditClass->bookMarks)
+		{
+			if(value.docIndex==this->pageIndex)
+				{
+					if(this->getCurrentLineNumber()<value.line)
+						{
+							this->mainKKEditClass->bookMarks[value.bmKey].line+=diff;
+						}
+				}
+		}
+#endif
+}
+
 void DocumentClass::keyPressEvent(QKeyEvent *event)
 {
 	bool				isshortcut;
@@ -340,7 +404,10 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 	QString			completionPrefix;
 	const QString	eow("~!@#$%^&*()+{}|:\"<>?,./;'[]\\-= \t\n"); // end of word;
 	bool				popupflag=true;
-	
+
+	this->holdColoumn=this->textCursor().positionInBlock();
+	this->holdBlockEnd=this->textCursor().atBlockEnd();
+
 	if(this->isReadOnly()==true)
 		return;
 
@@ -491,7 +558,7 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	this->setCenterOnScroll(true);
 	lineNumberArea=new LineNumberArea(this);
 
-	connect(this,SIGNAL(blockCountChanged(int)),this,SLOT(updateLineNumberAreaWidth()));
+	connect(this,SIGNAL(blockCountChanged(int)),this,SLOT(updateLineNumberAreaWidth(int)));
 	connect(this,SIGNAL(updateRequest(QRect,int)),this,SLOT(updateLineNumberArea(QRect,int)));
 	connect(this,SIGNAL(cursorPositionChanged()),this,SLOT(highlightCurrentLine()));
 	connect(this,SIGNAL(textChanged()),this,SLOT(modified()));
@@ -499,7 +566,7 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	connect(this,SIGNAL(undoAvailable(bool)),this,SLOT(setUndo(bool)));
 	connect(this,SIGNAL(redoAvailable(bool)),this,SLOT(setRedo(bool)));
 
-	updateLineNumberAreaWidth();
+	updateLineNumberAreaWidth(this->oldBlockCount);
 	highlightCurrentLine();
 }
 
@@ -641,7 +708,7 @@ void DocumentClass::setFilePrefs(void)
 	this->setStyleSheet(this->highlighter->docBackgroundCSS);
 
 	this->dirty=holddirty;
-	this->updateLineNumberAreaWidth();
+	this->updateLineNumberAreaWidth(this->oldBlockCount);
 
 	this->setFont(this->mainKKEditClass->prefsDocumentFont);
 	this->prefsHiLiteLineColor=this->mainKKEditClass->prefsHiLiteLineColor;
@@ -669,7 +736,6 @@ void DocumentClass::setFilePrefs(void)
 
 void DocumentClass::setHiliteLanguage(void)
 {
-
 	for(int j=0;j<this->highlighter->langPlugins.count();j++)
 		{
 			if(this->highlighter->langPlugins[j].mimeType.contains(this->mimeType)==true)

@@ -1,4 +1,5 @@
 0.7.3
+Fixed bookmarks moving when adding/deleting line(s).
 Minor UI tweaks.
 Added Go language syntax highlighter.
 Fixed edge case where kkeditqt opened in one folder then trying to open a file with releative path from another folder.
