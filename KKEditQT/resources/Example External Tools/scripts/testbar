@@ -1,29 +1,31 @@
-#!/bin/bash -e
+#!/bin/bash
 
 #©keithhedger Tue 1 Jul 13:23:13 BST 2014 kdhedger68713@gmail.com
 
-echo "Counting to 100 ..."
+echo "Counting up to 100 ..."
+
 for i in {1..100}
 	do
-		echo $i >$KKEDIT_BAR_CONTROL
+		echo -ne "Counting up to 100 ...\n$i\n" >$KKEDIT_BAR_CONTROL
 		sleep 0.1
 	done
 
 echo "Pulse bar ..."	
-echo pulse >$KKEDIT_BAR_CONTROL
-
-sleep 4
+echo -en "pulse\nPulsing bar ...\n" >$KKEDIT_BAR_CONTROL
+sleep 2
 
 echo "Counting down from 100 ..."
+echo -ne "progress\nCounting down from 100 ...\n100\n1\n100\n" >$KKEDIT_BAR_CONTROL
+sleep 0.1
 for i in {100..0}
 	do
-		echo $i >$KKEDIT_BAR_CONTROL
+		echo -en "Counting down from 100 ...\n$i\n" >$KKEDIT_BAR_CONTROL
 		sleep 0.1
 	done
 	
 echo "Pulse bar ..."	
-echo pulse >$KKEDIT_BAR_CONTROL
+echo -en "pulse\nPulsing bar ...\n" >$KKEDIT_BAR_CONTROL
+sleep 2
 
-sleep 4
-
+echo -en "quit\n" > $KKEDIT_BAR_CONTROL
 echo "Done."

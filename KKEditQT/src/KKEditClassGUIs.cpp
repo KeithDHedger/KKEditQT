@@ -1133,7 +1133,8 @@ void KKEditClass::buildTools(void)
 %t - Currently selected text. Passed to command as $KKEDIT_SELECTION\n\
 %m - Mime type of file. Passed to command as $KKEDIT_MIMETYPE\n\
 %i - The location of the globally installed tools. Passed to command as $KKEDIT_DATADIR\n\
-%h - Tempory file for displaying html in doc viewer. Passed to command as $KKEDIT_HTMLFILE\n";
+%h - Tempory file for displaying html in doc viewer. Passed to command as $KKEDIT_HTMLFILE\n\
+%p - Progress bar control file. Passed to command as $KKEDIT_BAR_CONTROL\n";
 
 	widgetlabel=new QLabel(info);
 	grid->addWidget(widgetlabel,posy,posx,posy++,-1,Qt::AlignVCenter);

@@ -1,11 +1,11 @@
-name	Test Bar
+alwayspopup	0
+clearview	0
 command	../scripts/testbar
 comment	Demo of how to use progressbar
 flags	16
-interm	0
 inpopup	0
-alwayspopup	0
-clearview	0
+interm	0
+name	TestBar
 runasroot	0
+shortcutkey	
 usebar	1
-shortcutkey	0

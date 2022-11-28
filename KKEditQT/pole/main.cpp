@@ -84,7 +84,7 @@ Hack if using gtk2 style as pulse progress bar doesn't work.
 			app.processEvents();
 			if (progress.wasCanceled())
 				flag=false;
-			usleep(500);
+
 			if(control.open(QFile::ReadOnly | QFile::Text))
 				{
 					QTextStream in(&control);
@@ -99,11 +99,32 @@ Hack if using gtk2 style as pulse progress bar doesn't work.
 							continue;
 						}
 
+					if(result.compare("pulse")==0)
+						{
+							progress.setLabelText(truncateWithElipses(in.readLine()));
+							progress.setValue(0);
+							progress.setMaximum(0);
+							progress.setMinimum(0);
+							control.close();
+							continue;
+						}
+
+					if(result.compare("progress")==0)
+						{
+							progress.setLabelText(truncateWithElipses(in.readLine()));
+							progress.setValue(in.readLine().toInt());
+							progress.setMinimum(in.readLine().toInt());
+							progress.setMaximum(in.readLine().toInt());
+							control.close();
+							continue;
+						}
+
 					progress.setLabelText(truncateWithElipses(result));
 					result=in.readLine();
 					progress.setValue(result.toInt());
 					control.close();
 				}
+			usleep(500);
 		}
 
 	QFile::remove(argv[CONTROLFILE]);

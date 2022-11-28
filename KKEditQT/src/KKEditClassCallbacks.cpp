@@ -316,6 +316,14 @@ void KKEditClass::doToolsMenuItems()
 								setenv("KKEDIT_DATADIR",DATADIR,1);
 								str.replace("%i",DATADIR);
 
+								if(sl.at(TOOL_USE_BAR).section(TOOLUSEPOLE,1,1).trimmed().toInt()==1)
+									{
+										setenv("KKEDIT_BAR_CONTROL",QString("%1/progress").arg(this->tmpFolderName).toStdString().c_str(),1);
+										//%p progress bar control file
+										str.replace("%p",QString("%1/progress").arg(this->tmpFolderName));
+										this->showBarberPole(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"Running tool ..","","100",QString("%1/progress").arg(this->tmpFolderName));
+									}
+
 								if(sl.at(TOOL_RUN_AS_ROOT).section(TOOLRUNASROOT,1,1).trimmed().toInt()==1)
 									{
 										userootgui=this->prefsRootCommand;
@@ -375,14 +383,14 @@ void KKEditClass::doToolsMenuItems()
 								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==TOOL_ASYNC)
 									{
 										str=QString("cd %1;%2 &").arg(this->toolsFolder).arg(str);
-										runPipe(str);
+										this->runPipeAndCapture(str);
 										return;
 									}
 	
 								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_SHOW_DOC)==TOOL_SHOW_DOC)
 									{
 										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										runPipe(str);
+										this->runPipeAndCapture(str);
 										this->showWebPage(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"file://" + this->htmlFile);
 										return;
 									}
@@ -390,7 +398,7 @@ void KKEditClass::doToolsMenuItems()
 								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==0)
 									{
 										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										runPipe(str);
+										this->runPipeAndCapture(str);
 										return;
 									}
 							}

@@ -12,15 +12,15 @@
       tools" name="description">
     <link id="thumb" rel="icon" type="image/png" href="favicon.png">
   </head>
-  <body bgcolor="#CCCCCC" link="#0000EE" alink="#EE0000" vlink="#551A8B"
-    text="#000000">
+  <body bgcolor="#CCCCCC" alink="#EE0000" vlink="#551A8B" text="#000000"
+    link="#0000EE">
     <div align="center"> <u><b><font size="+4">KKEditQT</font></b></u><br>
       <br>
       <font size="+3">Source code text editor</font><br>
       <br>
-      <hr width="100%" size="2"> <img alt="main" src="main.gif"
+      <hr size="2" width="100%"> <img alt="main" src="main.gif"
         height="490" width="800"><br>
-      <hr width="100%" size="2">
+      <hr size="2" width="100%">
       <div align="center"> <b><font size="+1">Why another text editor?</font></b><br>
         <br>
         <font size="-1">Simple, I didn't like any of the others they
@@ -78,9 +78,9 @@
           Just type a line number into the edit box on the toolbar to
           jump straight to that line.</font><br>
         <br>
-        <hr width="100%" size="2"> <b><font size="+3">Manual</font></b><br>
+        <hr size="2" width="100%"> <b><font size="+3">Manual</font></b><br>
       </div>
-      <hr width="100%" size="2"> <b><a href="#navanc">Navigation Menu</a></b><b><br>
+      <hr size="2" width="100%"> <b><a href="#navanc">Navigation Menu</a></b><b><br>
       </b> <b><a href="#funcanc">Functions Menu</a></b><b><br>
       </b> <b><a href="#toolsanc">Tools Menu</a></b><b><br>
       </b> <b><a href="#prefsanc">Preferences</a></b><b><br>
@@ -88,7 +88,7 @@
       </b> <b><a href="#featanc">Other Features</a></b><b><br>
       </b> <b><a href="#getanc">Get It And Build It</a></b><br>
       <b><a href="#bugs">Bug Reporting</a></b><br>
-      <hr width="100%" size="2"> <br>
+      <hr size="2" width="100%"> <br>
       <a name="navanc" id="navanc"></a><b>Navigation Menu</b><br>
       <br>
       <font size="-1">The Navigation menu has five sub-menus - Go To
@@ -128,7 +128,7 @@
         in the usual places opening a file if necessary, the search is
         case insensitive.</font><br>
       <br>
-      <hr width="100%" size="2"> <br>
+      <hr size="2" width="100%"> <br>
       <a name="funcanc" id="funcanc"></a><b>Functions Menu</b><br>
       <br>
       <font size="-1">The Functions menu contains a list of all defined
@@ -141,7 +141,7 @@
         file or switching tabs.<br>
         You can select how the functions menu is displayed/sorted from
         the preferences.</font><br>
-      <hr width="100%" size="2"> <br>
+      <hr size="2" width="100%"> <br>
       <a name="toolsanc" id="toolsanc"></a><b>Tools Menu</b><br>
       <br>
       <font size="-1">The Tools menu allow you to run an external script
@@ -200,12 +200,12 @@
         The output pane will be shown automatically for any tool that
         has this option selected, the window title is set to the tool
         name like so:<br>
-        <strike></strike> <img alt="" src="outview.gif"
-          moz-do-not-send="true" height="359" width="792"><br>
+        <img alt="" src="outview.gif" moz-do-not-send="true"
+          height="359" width="792"><br>
         With no text selected, clicking 'Copy To Clipboard' copies all
         text to the main clipboard, else only copies selected text.<strike><br>
         </strike>No system wide tools are installed yet TBD.<br>
-        <strike></strike><font color="#CC0000"><b>IMPORTANT</b></font></font><br>
+        <font color="#CC0000"><b>IMPORTANT</b></font></font><br>
       <font size="-1">When using a tool that runs a command as root and
         a GUI root privileges program has NOT been set the tool is
         automatically run in a terminal</font>.<br>
@@ -213,6 +213,9 @@
       <font size="-1"> <font size="-1">Selecting <font size="-1">'Show
             HTML Doc' will display the file</font></font></font> <font
         size="-1"><font size="-1"><font size="-1"><font size="-1">$KKEDIT_HTMLFILE
+
+
+
 
 
 
@@ -234,6 +237,9 @@
 
 
 
+
+
+
                 browser<font size="-1">, this is used in the installed
                   example tool 'Open Man Page' to display the manpage of
                   the selec<font size="-1">tion ( if it exists and if
@@ -245,6 +251,9 @@
                       selected will show up in the pop-up menu if you
                       have also <font size="-1">selected some text.<br>
                         Tools that have the "Always <font size="-1">show
+
+
+
 
 
 
@@ -282,9 +291,15 @@
 
 
 
+
+
+
                         -f'' WILL <font size="-1">work and show the
                           tail of the file but <font size="-1">WILL NOT
                             follow properly this is a <font size="-1">feature/problem
+
+
+
 
 
 
@@ -315,33 +330,50 @@
 
 
 
+
+
+
         one in /usr/share/KKEditQT/tools ) you must have root
         privileges.<br>
         <br>
-        <strike>You can also display a progress bar from your tool by
-          selecting the 'Use Prgress Bar' checkbox, a bar will be
-          created for you and you can control it by writing simple
-          commands to a file, the file path is contained in the
-          environment variable '$KKEDIT_BAR_CONTROL", you can write
-          either a simple number between 0 and 100 to set the gauge ,
-          'pulse' to pulse the bar and 'quit' to kill the bar, you do
-          not need to specifically write the 'quit' command as it will
-          be sent automatically when your tool ends, N.B. if you set
-          your tool to run asynchronously then you must send the 'quit'
-          command your self.</strike><strike><br>
-        </strike><strike> There is an example of how to control the bar
-          in the example tools in /usr/share/KKEditQT/Example External
-          Tools.</strike></font><br>
-      <img alt="" src="countbar.gif" height="548" width="589"><br>
-      <br>
-      <img moz-do-not-send="true" src="pulsebar.gif" alt="" height="550"
-        width="669"><br>
-      <font size="-1"><br>
-        <strike>The title of the progress bar window is automatically
-          set to the name of your tool.</strike><br>
+        You can also display a progress bar from your tool by selecting
+        the 'Use Prgress Bar' checkbox, a bar will be created for you
+        and you can control it by writing simple commands to a file, the
+        file path is contained in the environment variable
+        '$KKEDIT_BAR_CONTROL".<br>
+        To set the bar to pulse just write "pulse</font><font size="-1"><font
+          size="-1">\nYOUR BODY TEXT\n" to the bar control file eg:<br>
+          echo -en "pulse\nPulsing bar ...\n" &gt;$KKEDIT_BAR_CONTROL<br>
+          You can set the bar to a normal progress bar by writing the
+          word "progress" followed by your body text, the current value,
+          minimum value and maximum value, like so:<br>
+          echo -ne "progress\nCounting down from 100 ...\n100\n1\n100\n"</font></font><font
+        size="-1"><font size="-1"><font size="-1"><font size="-1">
+              &gt;$KKEDIT_BAR_CONTROL<br>
+              You can update the progress bar with a new value like so:<br>
+              echo -en "Counting down from 100 ...\n10\n"
+              &gt;$KKEDIT_BAR_CONTROL<br>
+              Write "quit" to kill the progress bar like so:</font></font></font></font><font
+        size="-1"><font size="-1"><font size="-1"><font size="-1">
+              <meta name="qrichtext" content="1">
+              <font size="-1">
+                <meta http-equiv="Content-Type" content="text/html;
+                  charset=UTF-8">
+                <style type="text/css">
+p, li { white-space: pre-wrap; }
+</style>
+                <p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><!--StartFragment-->echo -en "quit\n" &gt; $KKEDIT_BAR_CONTROL<!--EndFragment--></p>
+              </font></font></font></font></font><font size="-1"><font
+          size="-1"><br>
+          There is an example of how to control the bar in the example
+          tools in /usr/share/KKEditQT/Example External Tools.</font></font><br>
+      <img alt="" src="pulsebar.gif" moz-do-not-send="true" height="565"
+        width="838"><font size="-1"><br>
+        The title of the progress bar window is automatically set to the
+        name of your tool.<br>
         <br>
       </font>
-      <hr width="100%" size="2"> <br>
+      <hr size="2" width="100%"> <br>
       <b><a name="prefsanc" id="prefsanc"></a></b><b>Preferences</b><br>
       <br>
       <img alt="prefs" src="prefs.gif" moz-do-not-send="true"
@@ -379,6 +411,9 @@
 
 
 
+
+
+
             here</a> ), the 'Terminal command' will be used to open a
           terminal, if this is blank then the default 'xterm -e' will be
           used.<br>
@@ -401,20 +436,15 @@
           folder the link is in or the folder were the real file is, try
           it and see it's a lot less complicated than it sounds!<br>
           &nbsp;<br>
-        </font> <strike>The 'Theme' can be set for the prefs via the
-          drop down, update of the current page is 'live', click 'Apply'
-          to set the theme globally or 'Cancel' to ignore changes.</strike><strike><br>
-        </strike><strike> Themes are stored in
-          "/usr/share/gtksourceview-2.0/styles" ( default installed
-          themes ) or locally in ~/.gnome2/gedit/styles, for
-          compatability with gedit as most gktsourceview themes seem to
-          be gedit-centric ;)</strike><br>
-        <img alt="" src="style.gif" moz-do-not-send="true" height="573"
-          width="637"><br>
-        <br>
-        <br>
+        </font> Themes can be set from the 'Prefs' dialog or from the
+        View-&gt;Themes menu.<br>
+        Global themes are in /usr/share/KKEditQT/themes, you can also
+        use a local theme in ~/.KKEditQT/themes, local themes are listed
+        first and can have the same name as global themes.<br>
+        <img alt="" src="style.gif" moz-do-not-send="true" height="509"
+          width="837"><br>
       </font>
-      <hr width="100%" size="2"> <br>
+      <hr size="2" width="100%"> <br>
       <a name="customtoolbar" id="customtoolbar"></a><b>Customize The
         Tool Bar</b><br>
       <br>
@@ -439,7 +469,7 @@
         You can also choose to hide/show the toolbar from the 'View'
         menu.<br>
       </font>
-      <hr width="100%" size="2"> <br>
+      <hr size="2" width="100%"> <br>
       <a name="featanc" id="featanc"></a><b>Other Features</b><br>
       <br>
       <b><a href="#copyfilenameanc">Copy filename from tab menu.</a></b><b><br>
@@ -457,6 +487,9 @@
       </b> <b><a href="#otherfeatsanc">Other</a></b><br>
       <br>
       <a name="copyfilenameanc" id="copyfilenameanc"></a><font size="-1">Right
+
+
+
 
 
 
@@ -614,6 +647,9 @@
 
 
 
+
+
+
         Root</b><font size="-1"><font size="-1"><font size="-1"><br>
             You can also open a <font size="-1">new instance of
               KKEditQT with admin <font size="-1">privileges</font>
@@ -624,6 +660,9 @@
                 size="-1"><font size="-1"><font size="-1"><font
                       size="-1">( <a
                         href="https://github.com/KeithDHedger/GtkSu">Available
+
+
+
 
 
 
@@ -675,6 +714,9 @@
                                                   size="-1"><strike>on
                                                     the </strike><font
                                                     size="-1"><strike>toolbar
+
+
+
 
 
 
@@ -739,8 +781,14 @@
 
 
 
+
+
+
                                                           <font
                                                           size="-1">A</font>ll'
+
+
+
 
 
 
@@ -771,11 +819,7 @@
                                                         size="-1"><font
                                                           size="-1"><font
                                                           size="-1">TBD<br>
-                                                          </font></font></font></font><strike><font
-                                                        size="-1"><font
-                                                          size="-1"><font
-                                                          size="-1"><font
-                                                          size="-1"></font></font></font></font></strike>
+                                                          </font></font></font></font>
                                                   </font></font></font></font></font></font></font></font></font></font></font></font></font><br>
                         </font></font></font></font></font></font></font></font></font>
         You can jump to a line using the toolbar entry:</font><br>
@@ -970,7 +1014,10 @@
             style="color: rgb(85, 26, 139);"><font color="#000000"><font
                 size="-1"><b>KKEditQT Plugins</b></font></font></a></strike>
       </div>
-      <hr width="100%" size="2"> <a name="getanc" id="getanc"></a><b>Get
+      <hr size="2" width="100%"> <a name="getanc" id="getanc"></a><b>Get
+
+
+
 
 
 
@@ -1008,6 +1055,9 @@
                             size="-1"><font size="-1">(</font></font></font></font></font><font
                       size="-1"><font size="-1"><font size="-1"><font
                             size="-1"><font size="-1"><font size="-1">optional
+
+
+
 
 
 
@@ -1079,7 +1129,10 @@
           <font size="-1">P<font size="-1">LEASE read the README file!</font></font><br>
         </font> See the 'INSTALL' file for full detail<font size="-1">s.<br>
         </font></font>
-      <hr width="100%" size="2"> <a name="bugs" id="bugs"></a><b>Reporting
+      <hr size="2" width="100%"> <a name="bugs" id="bugs"></a><b>Reporting
+
+
+
 
 
 
@@ -1099,10 +1152,13 @@
 
 
 
+
+
+
           me</a><br>
       </b> <br>
       I will get back to you as soon as I can.<br>
-      <hr width="100%" size="2"> <b><a
+      <hr size="2" width="100%"> <b><a
           href="https://keithdhedger.github.io/pages/apps.html">Applications</a></b>
       <br>
       <br>

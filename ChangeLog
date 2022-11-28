@@ -1,4 +1,6 @@
 0.7.3
+Added changing progress bar from pulse to progress and back via control file.
+Added using progress bar to external tools.
 Fixed bookmarks moving when adding/deleting line(s).
 Minor UI tweaks.
 Added Go language syntax highlighter.
