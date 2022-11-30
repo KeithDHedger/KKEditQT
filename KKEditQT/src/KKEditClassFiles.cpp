@@ -29,6 +29,31 @@ void KKEditClass::runPipe(QString command)
 		pclose(fp);
 }
 
+void KKEditClass::runPipeAndCaptureToToolOP(QString command)
+{
+	FILE		*fp=NULL;
+	char		line[1024];
+	QTextCursor tc=this->toolsOPText->textCursor();
+
+	this->toolOutputWindow->show();
+	this->toggleToolWindowMenuItem->setText("Show Tool Output");
+	this->toolWindowVisible=true;
+	this->application->processEvents();
+	fp=popen(command.toStdString().c_str(),"r");
+	if(fp!=NULL)
+		{
+			while(fgets(line,1024,fp))
+				{
+					tc.movePosition(QTextCursor::End,QTextCursor::MoveAnchor);
+					this->toolsOPText->setTextCursor(tc);
+					this->toolsOPText->insertPlainText(line);
+					this->application->processEvents();
+				}
+			pclose(fp);
+		}
+	this->application->processEvents();
+}
+
 QString KKEditClass::runPipeAndCapture(QString command)
 {
 	QString	dump("");

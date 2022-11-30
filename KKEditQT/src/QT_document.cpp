@@ -365,9 +365,11 @@ void DocumentClass::focusInEvent(QFocusEvent *e)
 
 const QString DocumentClass::textUnderCursor()
 {
-    QTextCursor tc=this->textCursor();
-    tc.select(QTextCursor::WordUnderCursor);
-    return tc.selectedText();
+	QTextCursor	cursor=this->textCursor();
+
+	if(cursor.atBlockStart()==false)
+		cursor.movePosition(QTextCursor::PreviousWord,QTextCursor::KeepAnchor);
+	return cursor.selectedText();
 }
 
 void DocumentClass::paste(void)
@@ -507,8 +509,9 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 		}
 
 	isshortcut=((event->modifiers() & Qt::ControlModifier) && event->key()== Qt::Key_E);
-	if(!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer
+	if(!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer???
 		QPlainTextEdit::keyPressEvent(event);
+
 
 	ctrlorshift=event->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
 	if(!this->mainKKEditClass->completer || (ctrlorshift && event->text().isEmpty()))

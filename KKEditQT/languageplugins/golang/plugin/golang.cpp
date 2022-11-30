@@ -18,7 +18,6 @@
  * along with golang.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "golang.h"
 
 void golang::initPlug(QString pathtoplug)

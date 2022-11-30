@@ -1388,6 +1388,7 @@ void KKEditClass::resetKeyCombo(void)
 	qobject_cast<QComboBox*>(prefsOtherWidgets[SHORTCUTSCOMBO])->addItem(QString("Move line down - %1").arg(this->defaultShortCutsList.at(MOVELINEDOWNSHORTCUT)));
 	qobject_cast<QComboBox*>(prefsOtherWidgets[SHORTCUTSCOMBO])->addItem(QString("Move Selection up - %1").arg(this->defaultShortCutsList.at(MOVESELECTIONUPSHORTCUT)));
 	qobject_cast<QComboBox*>(prefsOtherWidgets[SHORTCUTSCOMBO])->addItem(QString("Move Selection down - %1").arg(this->defaultShortCutsList.at(MOVESELECTIONDOWNSHORTCUT)));
+	qobject_cast<QComboBox*>(prefsOtherWidgets[SHORTCUTSCOMBO])->addItem(QString("Force show completion - %1").arg(this->defaultShortCutsList.at(FORCESHOWCOMPLETE)));
 }
 
 void KKEditClass::buildGetKeyShortCut(int index)

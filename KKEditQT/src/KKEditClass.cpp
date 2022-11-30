@@ -374,7 +374,6 @@ void KKEditClass::initApp(int argc,char** argv)
 		this->appShortcuts[j]=new QShortcut(this->mainWindow);
 
 	this->setAppShortcuts();
-
 	this->readConfigs();
 	if(this->queueID==-1)
 		{
@@ -384,7 +383,6 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->checkMessages=new QTimer();
 	QObject::connect(this->checkMessages,SIGNAL(timeout()),this,SLOT(doTimer()));
 	this->checkMessages->start(this->prefsMsgTimer);
-
 	this->theme->loadTheme(this->prefStyleName);
 	this->buildMainGui();
 	this->buildPrefsWindow();
@@ -438,126 +436,6 @@ QString KKEditClass::randomName(int len)
    return(retval);
 }
 
-void KKEditClass::doAppShortCuts(void)
-{
-	QShortcut		*sc=qobject_cast<QShortcut*>(sender());
-	DocumentClass	*doc=this->getDocumentForTab(-1);
-	QString			txt;
-	QTextCursor		cursor;
-	int				anc;
-	bool				retval=true;
-
-	if(doc==NULL)
-		return;
-
-	if(sc->objectName().toInt()==HIDETABSHORTCUT)
-		{
-			this->setTabVisibilty(this->mainNotebook->currentIndex(),false);
-			return;
-		}
-
-	cursor=doc->textCursor();
-	cursor.beginEditBlock();
-	switch(sc->objectName().toInt())
-		{
-			case DELETELINESHORTCUT:
-				cursor.select(QTextCursor::LineUnderCursor);
-				cursor.removeSelectedText();
-				cursor.deleteChar();
-				break;
-			case DELETETOEOLSHORTCUT:
-				cursor.movePosition(QTextCursor::EndOfLine,QTextCursor::KeepAnchor);
-				cursor.removeSelectedText();
-				break;
-			case DELETETOSOLSHORTCUT:
-				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::KeepAnchor);
-				cursor.removeSelectedText();
-				break;
-			case SELECTWORDSHORTCUT:
-				cursor.select(QTextCursor::WordUnderCursor);
-				doc->setTextCursor(cursor);
-				break;
-			case DELETEWORDSHORTCUT:
-				if(cursor.hasSelection()==false)
-					cursor.select(QTextCursor::WordUnderCursor);
-				cursor.removeSelectedText();
-				break;
-			case DUPLICATELINESHORTCUT:
-				anc=cursor.anchor();
-				cursor.select(QTextCursor::BlockUnderCursor);
-				txt=cursor.selectedText();
-				if(txt.isEmpty()==true)
-					txt='\n';
-				cursor.movePosition(QTextCursor::EndOfLine,QTextCursor::MoveAnchor);
-				cursor.insertText(txt);
-				cursor.setPosition(anc);
-				doc->setTextCursor(cursor);
-				emit doc->cursorPositionChanged();
-				break;
-			case SELECTLINESHORTCUT:
-				cursor.select(QTextCursor::LineUnderCursor);
-				doc->setTextCursor(cursor);
-				break;
-			case MOVELINEUPSHORTCUT:
-				anc=cursor.positionInBlock();
-				doc->moveCursor(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
-				cursor.select(QTextCursor::LineUnderCursor);
-				txt=cursor.selectedText();
-				cursor.removeSelectedText();
-				cursor.deleteChar();
-				doc->moveCursor(QTextCursor::PreviousBlock,QTextCursor::MoveAnchor);
-				cursor=doc->textCursor();
-				cursor.insertText(txt+"\n");
-				doc->setTextCursor(cursor);
-				doc->moveCursor(QTextCursor::Up,QTextCursor::MoveAnchor);
-				cursor=doc->textCursor();
-				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
-				cursor.movePosition(QTextCursor::Right,QTextCursor::MoveAnchor,anc);
-				doc->setTextCursor(cursor);
-				break;
-			case MOVELINEDOWNSHORTCUT:
-				anc=cursor.positionInBlock();
-				doc->moveCursor(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
-				cursor.select(QTextCursor::LineUnderCursor);
-				txt=cursor.selectedText();
-				cursor.removeSelectedText();
-				cursor.deleteChar();
-				doc->moveCursor(QTextCursor::NextBlock,QTextCursor::MoveAnchor);
-				cursor=doc->textCursor();
-				cursor.insertText(txt+"\n");
-				doc->setTextCursor(cursor);
-				doc->moveCursor(QTextCursor::Up,QTextCursor::MoveAnchor);
-				cursor=doc->textCursor();
-				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
-				cursor.movePosition(QTextCursor::Right,QTextCursor::MoveAnchor,anc);
-				doc->setTextCursor(cursor);
-				break;
-			case MOVESELECTIONUPSHORTCUT:
-				txt=cursor.selectedText();
-				cursor.removeSelectedText();
-				cursor.movePosition(QTextCursor::PreviousBlock,QTextCursor::MoveAnchor);
-				anc=cursor.anchor();
-				cursor.insertText(txt);
-				cursor.setPosition(anc);
-				cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor,txt.length());
-				doc->setTextCursor(cursor);
-				emit doc->cursorPositionChanged();
-				break;
-			case MOVESELECTIONDOWNSHORTCUT:
-				txt=cursor.selectedText();
-				cursor.removeSelectedText();
-				cursor.movePosition(QTextCursor::NextBlock,QTextCursor::MoveAnchor);
-				anc=cursor.anchor();
-				cursor.insertText(txt);
-				cursor.setPosition(anc);
-				cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor,txt.length());
-				doc->setTextCursor(cursor);
-				emit doc->cursorPositionChanged();
-				break;
-		}
-	cursor.endEditBlock();
-}
-
 void KKEditClass::readConfigs(void)
 {
 //editor
@@ -596,8 +474,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsMsgTimer=this->prefs.value("app/msgtimer",1000).toInt();
 	this->prefsUseSingle=this->prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
 	this->prefsNagScreen=this->prefs.value("app/bekind",QVariant(bool(false))).value<bool>();
-	this->defaultShortCutsList=this->prefs.value("app/shortcuts",QVariant(QStringList({"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'"}))).toStringList();
-
+	this->defaultShortCutsList=this->prefs.value("app/shortcuts",QVariant(QStringList({"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+C"}))).toStringList();
 	this->onExitSaveSession=this->prefs.value("app/onexitsavesession",QVariant(bool(true))).value<bool>();
 	this->disabledPlugins=this->prefs.value("app/disabledplugins").toStringList();
 
@@ -1031,9 +908,17 @@ void KKEditClass::setAppShortcuts(void)
 					delete this->appShortcuts[j];
 					this->appShortcuts[j]=new QShortcut(this->mainWindow);
 				}
-			this->appShortcuts[j]->setKey(QKeySequence(this->defaultShortCutsList.at(j)));
-			this->appShortcuts[j]->setObjectName(QString("%1").arg(j));
-			QObject::connect(this->appShortcuts[j],SIGNAL(activated()),this,SLOT(doAppShortCuts()));
+			if(this->defaultShortCutsList.size()>j)
+				{
+					this->appShortcuts[j]->setKey(QKeySequence(this->defaultShortCutsList.at(j)));
+					this->appShortcuts[j]->setObjectName(QString("%1").arg(j));
+					QObject::connect(this->appShortcuts[j],SIGNAL(activated()),this,SLOT(doAppShortCuts()));
+				}
+			else
+				{
+					this->defaultShortCutsList<<"";
+					this->appShortcuts[j]->setObjectName(QString("%1").arg(NOSHORTCUT));
+				}
 		}
 }
 
@@ -1318,12 +1203,12 @@ void KKEditClass::insertCompletion(const QString& completion)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 	QTextCursor		tc;
-
 	if(this->completer->widget()!=doc)
 		return;
 	tc=doc->textCursor();
-    tc.movePosition(QTextCursor::StartOfWord,QTextCursor::KeepAnchor);
-    tc.removeSelectedText();
+	tc.movePosition(QTextCursor::PreviousWord,QTextCursor::MoveAnchor);
+	tc.movePosition(QTextCursor::NextWord,QTextCursor::KeepAnchor);
+	tc.removeSelectedText();
     tc.insertText(completion);
     doc->setTextCursor(tc);
 }

@@ -102,7 +102,9 @@ class DocumentClass : public QPlainTextEdit
 		bool								findStr(int what=FINDNEXT);
 		void								setHighlightAll(void);
 
-		void paste(void);
+		void paste(void);//TODO//
+		const QString					textUnderCursor();
+
 	protected:
 	    void								resizeEvent(QResizeEvent *event);
 		void								keyPressEvent(QKeyEvent *event);
@@ -117,6 +119,8 @@ class DocumentClass : public QPlainTextEdit
 		void								dragLeaveEvent(QDragLeaveEvent* event);
 		void								dropEvent(QDropEvent* event);
 		void								dragMoveEvent(QDragMoveEvent *event);
+
+
 
 	private slots:
 		void								highlightCurrentLine();
@@ -134,7 +138,6 @@ class DocumentClass : public QPlainTextEdit
 		bool								realShowLineNumbers(void);
 		bool								realHiliteLine(void);
 		bool								realSyntaxHighlighting(void);
-		const QString					textUnderCursor();
 		QTextCursor						holdCursor;
 		bool								lastCursorPosition=false;
 		int								holdColoumn=0;

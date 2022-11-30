@@ -256,6 +256,7 @@ void KKEditClass::doBookmarkMenuItems()
 		}
 }
 
+#if 0
 void KKEditClass::doToolsMenuItems()
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
@@ -383,28 +384,169 @@ void KKEditClass::doToolsMenuItems()
 								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==TOOL_ASYNC)
 									{
 										str=QString("cd %1;%2 &").arg(this->toolsFolder).arg(str);
-										this->runPipeAndCapture(str);
+										this->runPipe(str);
 										return;
 									}
 	
 								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_SHOW_DOC)==TOOL_SHOW_DOC)
 									{
 										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										this->runPipeAndCapture(str);
+										this->runPipe(str);
 										this->showWebPage(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"file://" + this->htmlFile);
 										return;
 									}
 
 								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==0)
 									{
+									qDebug()<<"here";
 										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										this->runPipeAndCapture(str);
+										this->runPipe(str);
 										return;
 									}
 							}
 			 	break;
 		}
 }
+#else
+void KKEditClass::doToolsMenuItems()
+{
+	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+	DocumentClass	*document=this->getDocumentForTab(-1);
+	QFile			file;
+	QStringList		sl;
+	QString			filelist;
+	QString			userootgui="";
+	QString			userootcli="";
+
+	switch(mc->getMenuID())
+		{
+			 case MANAGETOOLSMENUITEM:
+			 	this->toolsWindow->show();
+			 	break;
+
+			 default:
+			 	sl=this->verifyTool(mc->getMenuString());
+			 	if(sl.isEmpty()==true)
+			 		return;
+
+				QHashIterator<int,DocumentClass*> i(this->pages);
+				while(i.hasNext())
+					{
+						i.next();
+						filelist+=i.value()->getFilePath()+" ";
+					}
+
+				if(sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed().isEmpty()==false)
+					{
+						QString str=sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed();
+						if(document!=NULL)
+							{
+//								//%l
+								setenv("KKEDIT_FILE_LIST",filelist.trimmed().toStdString().c_str(),1);
+								str.replace("%l",filelist);
+								//%f doc filepath
+								setenv("KKEDIT_CURRENTFILE",document->getFilePath().toStdString().c_str(),1);
+								str.replace("%f",document->getFilePath());
+								//%n
+								setenv("KKEDIT_FILECOUNT",QString("%1").arg(this->mainNotebook->count()).toStdString().c_str(),1);
+								str.replace("%n",QString("%1").arg(this->mainNotebook->count()));
+								//%d doc folder
+								setenv("KKEDIT_CURRENTDIR",document->getDirPath().toStdString().c_str(),1);
+								str.replace("%d",document->getDirPath());
+								//%t selected text
+								setenv("KKEDIT_SELECTION",document->textCursor().selectedText().replace(QRegularExpression("\u2029|\\r\\n|\\r"),"\n").toStdString().c_str(),1);
+								str.replace("%t",document->textCursor().selectedText());
+								//%m
+								setenv("KKEDIT_MIMETYPE",document->mimeType.toStdString().c_str(),1);
+								str.replace("%m",document->mimeType);
+							}
+
+								//%h html file
+								setenv("KKEDIT_HTMLFILE",this->htmlFile.toStdString().c_str(),1);
+								str.replace("%h",this->htmlFile);
+								//%i
+								setenv("KKEDIT_DATADIR",DATADIR,1);
+								str.replace("%i",DATADIR);
+
+								if(sl.at(TOOL_USE_BAR).section(TOOLUSEPOLE,1,1).trimmed().toInt()==1)
+									{
+										setenv("KKEDIT_BAR_CONTROL",QString("%1/progress").arg(this->tmpFolderName).toStdString().c_str(),1);
+										//%p progress bar control file
+										str.replace("%p",QString("%1/progress").arg(this->tmpFolderName));
+										this->showBarberPole(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"Running tool ..","","100",QString("%1/progress").arg(this->tmpFolderName));
+									}
+
+								if(sl.at(TOOL_RUN_AS_ROOT).section(TOOLRUNASROOT,1,1).trimmed().toInt()==1)
+									{
+										userootgui=this->prefsRootCommand;
+										userootcli="sudo";
+									}
+
+								//run in term
+								if(sl.at(TOOL_IN_TERM).section(TOOLRUNINTERM,1,1).trimmed().toInt()==1)
+									{
+										str=this->prefsTerminalCommand + " " + userootcli + " " + str;
+										str=QString("cd %1;%3").arg(this->toolsFolder).arg(str);
+										runPipe(str);
+										return;
+									}
+								//async
+								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==TOOL_ASYNC)
+									{
+										str=QString("%1 %2/%3 &").arg(userootgui).arg(this->toolsFolder).arg(str);
+										system(str.toStdString().c_str());
+										return;
+									}
+								//paste into doc
+								if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_PASTE_OP)==TOOL_PASTE_OP) && (document!=NULL))
+									{
+										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
+										document->textCursor().beginEditBlock();
+											document->textCursor().removeSelectedText();
+											document->textCursor().insertText(runPipeAndCapture(str));
+										document->textCursor().endEditBlock();
+										return;
+									}
+								//replace doc contents
+								if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_REPLACE_OP)==TOOL_REPLACE_OP) && (document!=NULL))
+									{
+										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
+										document->textCursor().beginEditBlock();
+											document->setPlainText(runPipeAndCapture(str));
+										document->textCursor().endEditBlock();
+										return;
+									}
+								//view op
+								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_VIEW_OP)==TOOL_VIEW_OP)
+									{
+										if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).toInt()==0)
+											{
+												QTextCursor tc=this->toolsOPText->textCursor();
+												tc.movePosition(QTextCursor::End,QTextCursor::MoveAnchor);
+												this->toolsOPText->setTextCursor(tc);
+											}
+										else
+											this->toolsOPText->setPlainText("");
+
+										this->toolOutputWindow->setWindowTitle(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed());
+										str=QString("cd %1;%2 %3 &").arg(this->toolsFolder).arg(userootgui).arg(str);
+										this->runPipeAndCaptureToToolOP(str);
+										return;
+									}
+	
+								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_SHOW_DOC)==TOOL_SHOW_DOC)
+									{
+										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
+										this->runPipe(str);
+										this->showWebPage(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"file://" + this->htmlFile);
+										return;
+									}
+							}
+			 	break;
+		}
+}
+
+#endif
 
 void KKEditClass::doHelpMenuItems()
 {
@@ -1397,4 +1539,139 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 						}
 				}
 		}
+}
+
+void KKEditClass::doAppShortCuts(void)
+{
+	QShortcut		*sc=qobject_cast<QShortcut*>(sender());
+	DocumentClass	*doc=this->getDocumentForTab(-1);
+	QString			txt;
+	QTextCursor		cursor;
+	int				anc;
+	bool				retval=true;
+
+	if(doc==NULL)
+		return;
+
+	if(sc->objectName().toInt()==HIDETABSHORTCUT)
+		{
+			this->setTabVisibilty(this->mainNotebook->currentIndex(),false);
+			return;
+		}
+
+	cursor=doc->textCursor();
+	cursor.beginEditBlock();
+	switch(sc->objectName().toInt())
+		{
+			case DELETELINESHORTCUT:
+				cursor.select(QTextCursor::LineUnderCursor);
+				cursor.removeSelectedText();
+				cursor.deleteChar();
+				break;
+			case DELETETOEOLSHORTCUT:
+				cursor.movePosition(QTextCursor::EndOfLine,QTextCursor::KeepAnchor);
+				cursor.removeSelectedText();
+				break;
+			case DELETETOSOLSHORTCUT:
+				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::KeepAnchor);
+				cursor.removeSelectedText();
+				break;
+			case SELECTWORDSHORTCUT:
+				cursor.select(QTextCursor::WordUnderCursor);
+				doc->setTextCursor(cursor);
+				break;
+			case DELETEWORDSHORTCUT:
+				if(cursor.hasSelection()==false)
+					cursor.select(QTextCursor::WordUnderCursor);
+				cursor.removeSelectedText();
+				break;
+			case DUPLICATELINESHORTCUT:
+				anc=cursor.anchor();
+				cursor.select(QTextCursor::BlockUnderCursor);
+				txt=cursor.selectedText();
+				if(txt.isEmpty()==true)
+					txt='\n';
+				cursor.movePosition(QTextCursor::EndOfLine,QTextCursor::MoveAnchor);
+				cursor.insertText(txt);
+				cursor.setPosition(anc);
+				doc->setTextCursor(cursor);
+				emit doc->cursorPositionChanged();
+				break;
+			case SELECTLINESHORTCUT:
+				cursor.select(QTextCursor::LineUnderCursor);
+				doc->setTextCursor(cursor);
+				break;
+			case MOVELINEUPSHORTCUT:
+				anc=cursor.positionInBlock();
+				doc->moveCursor(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
+				cursor.select(QTextCursor::LineUnderCursor);
+				txt=cursor.selectedText();
+				cursor.removeSelectedText();
+				cursor.deleteChar();
+				doc->moveCursor(QTextCursor::PreviousBlock,QTextCursor::MoveAnchor);
+				cursor=doc->textCursor();
+				cursor.insertText(txt+"\n");
+				doc->setTextCursor(cursor);
+				doc->moveCursor(QTextCursor::Up,QTextCursor::MoveAnchor);
+				cursor=doc->textCursor();
+				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
+				cursor.movePosition(QTextCursor::Right,QTextCursor::MoveAnchor,anc);
+				doc->setTextCursor(cursor);
+				break;
+			case MOVELINEDOWNSHORTCUT:
+				anc=cursor.positionInBlock();
+				doc->moveCursor(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
+				cursor.select(QTextCursor::LineUnderCursor);
+				txt=cursor.selectedText();
+				cursor.removeSelectedText();
+				cursor.deleteChar();
+				doc->moveCursor(QTextCursor::NextBlock,QTextCursor::MoveAnchor);
+				cursor=doc->textCursor();
+				cursor.insertText(txt+"\n");
+				doc->setTextCursor(cursor);
+				doc->moveCursor(QTextCursor::Up,QTextCursor::MoveAnchor);
+				cursor=doc->textCursor();
+				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
+				cursor.movePosition(QTextCursor::Right,QTextCursor::MoveAnchor,anc);
+				doc->setTextCursor(cursor);
+				break;
+			case MOVESELECTIONUPSHORTCUT:
+				txt=cursor.selectedText();
+				cursor.removeSelectedText();
+				cursor.movePosition(QTextCursor::PreviousBlock,QTextCursor::MoveAnchor);
+				anc=cursor.anchor();
+				cursor.insertText(txt);
+				cursor.setPosition(anc);
+				cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor,txt.length());
+				doc->setTextCursor(cursor);
+				emit doc->cursorPositionChanged();
+				break;
+			case MOVESELECTIONDOWNSHORTCUT:
+				txt=cursor.selectedText();
+				cursor.removeSelectedText();
+				cursor.movePosition(QTextCursor::NextBlock,QTextCursor::MoveAnchor);
+				anc=cursor.anchor();
+				cursor.insertText(txt);
+				cursor.setPosition(anc);
+				cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor,txt.length());
+				doc->setTextCursor(cursor);
+				emit doc->cursorPositionChanged();
+				break;
+			case FORCESHOWCOMPLETE:
+				if(this->completer)
+					{
+						QRect	cr;
+						QString	completionPrefix;
+
+						completionPrefix=doc->textUnderCursor();
+						this->completer->setCompletionPrefix(completionPrefix);
+						cr=doc->cursorRect();
+						cr.setWidth(this->completer->popup()->sizeHintForColumn(0)+this->completer->popup()->verticalScrollBar()->sizeHint().width());
+			  		 	if(this->completer->widget()==doc)
+							this->completer->complete(cr);
+					}
+
+			break;
+		}
+	cursor.endEditBlock();
 }

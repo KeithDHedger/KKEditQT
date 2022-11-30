@@ -1,4 +1,8 @@
 0.7.3
+Done more documentation.
+Fixed async tools.
+Added force show completion to shortcuts in prefs.
+Fixed completion bug.
 Added changing progress bar from pulse to progress and back via control file.
 Added using progress bar to external tools.
 Fixed bookmarks moving when adding/deleting line(s).
