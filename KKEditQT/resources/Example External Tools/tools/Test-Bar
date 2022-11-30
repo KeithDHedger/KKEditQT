@@ -1,7 +1,7 @@
 alwayspopup	0
 clearview	0
 command	../scripts/testbar
-comment	Demo of how to use progressbar
+comment	
 flags	16
 inpopup	0
 interm	0

@@ -3,7 +3,6 @@
 #©keithhedger Tue 1 Jul 13:23:13 BST 2014 kdhedger68713@gmail.com
 
 echo "Counting up to 100 ..."
-
 for i in {1..100}
 	do
 		echo -ne "Counting up to 100 ...\n$i\n" >$KKEDIT_BAR_CONTROL

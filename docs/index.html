@@ -228,7 +228,9 @@
 
 
 
+
               in either the Gtk Doc viewer or your <font size="-1">default
+
 
 
 
@@ -255,6 +257,7 @@
                       selected will show up in the pop-up menu if you
                       have also <font size="-1">selected some text.<br>
                         Tools that have the "Always <font size="-1">show
+
 
 
 
@@ -302,9 +305,11 @@
 
 
 
+
                         -f'' WILL <font size="-1">work and show the
                           tail of the file but <font size="-1">WILL NOT
                             follow properly this is a <font size="-1">feature/problem
+
 
 
 
@@ -330,6 +335,7 @@
         size="-1"><br>
         Tools can be edited by selecting from the drop down list, if you
         attempt to edit a globally installed tool ( <font size="-1">i.e.</font>i.e.
+
 
 
 
@@ -397,7 +403,7 @@ p, li { white-space: pre-wrap; }
       <img alt="" src="prefs3.gif" moz-do-not-send="true" height="618"
         width="716"><br>
       <br>
-      <font size="-1">The Prefs file is created
+      <font size="-1">The Prefs file is created at
         ~/.config/KDHedger/KKEditQT.conf and will be created/recreated
         when quitting KKEditQT.<br>
         Preferences should be set from 'Edit-&gt;Preferences'<br>
@@ -428,6 +434,7 @@ p, li { white-space: pre-wrap; }
 
 
 
+
             here</a> ), the 'Terminal command' will be used to open a
           terminal, if this is blank then the default 'xterm -e' will be
           used.<br>
@@ -442,16 +449,10 @@ p, li { white-space: pre-wrap; }
           want and click 'Apply' to keep the changes or 'Cancel' to
           guess what?<br>
           <br>
-          You can also choose to open a file normally or by first
-          reading the link ( if it's a symlink ), this means that
-          filepath will either be the path to the link OR the path to
-          the real file, this is handy when using the 'Open' option from
-          the tab menu as you will either select files to open from the
-          folder the link is in or the folder were the real file is, try
-          it and see it's a lot less complicated than it sounds!<br>
-          &nbsp;<br>
         </font> Themes can be set from the 'Prefs' dialog or from the
         View-&gt;Themes menu.<br>
+        Themes set from the View-&gt;themes menu are temporary.<br>
+        <br>
         Global themes are in /usr/share/KKEditQT/themes, you can also
         use a local theme in ~/.KKEditQT/themes, local themes are listed
         first and can have the same name as global themes.<br>
@@ -516,6 +517,7 @@ p, li { white-space: pre-wrap; }
 
 
 
+
         clicking on a tab allows copying of the document file name<font
           size="-1">,</font> file path, spell check the document, set
         the source highlighting and quickly open other files in the same
@@ -528,7 +530,6 @@ p, li { white-space: pre-wrap; }
       <a name="copyfunctiondefine" id="copyfunctiondefine"></a><font
         size="-1">The document context menu also contains the&nbsp; 'Go
         To Definition' function for convenience.<br>
-        Selecting the definition will copy it to the clipboard.<br>
         If there is no valid definition selected the menu item will not
         be shown.</font><br>
       <img src="contextgoto.gif" alt="context" moz-do-not-send="true"
@@ -548,14 +549,13 @@ p, li { white-space: pre-wrap; }
       <br>
       <font size="-1">Any amount of bookmarks can be added, selecting
         one will switch to that document and line.<br>
-        Bookmarks are stored with the 'Save Session' and can be restored
-        with the 'Restore Session With Bookmarks' menu.<br>
+        Bookmarks are stored with the 'Save Session' and will be
+        restored with the 'Restore Session' menu.<br>
         Bookmarks are now toggled so if you place the cursor on a line
         with a bookmark it will add it if it's not already bookmarked or
         remove the bookmark if it is, you can use the 'Toggle Bookmark'
         menu from the main menu or the main context menu, you can also
-        just click in the bookmarks bar to toggle a mark on or off ( you
-        will see a little bookmark icon ).<br>
+        just click in the bookmarks bar to toggle a mark on or off.<br>
         You can also remove all bookmarks from all open documents by
         selecting 'Remove All Bookmarks' from the menu.<br>
       </font> <img alt="boomark" src="bookmark.gif"
@@ -619,9 +619,10 @@ p, li { white-space: pre-wrap; }
           204, 204); display: inline !important; float: none;"><br>
           You can search within the displayed page by entering a search
           term in the box and clicking 'Down' to search forward and 'Up'
-          to search back.</span>.<br>
-      </font><br>
-      You can also search the QT5 class docs like so:<br>
+          to search back.</span><br>
+        <br>
+      </font><font size="-1">You can also search the QT5 class docs like
+        so </font><br>
       <img moz-do-not-send="true"
         src="file:///home/keithhedger/Projects/KKEditQT/docs/selectqt5api.gif"
         alt="" height="126" width="484"><br>
@@ -638,12 +639,12 @@ p, li { white-space: pre-wrap; }
       <a name="otherfeatsanc" id="otherfeatsanc"></a><b>Other Features
         include:</b><br>
       <font size="-1">Can be set to automatically save and restore a
-        session ( with or without bookmarks ) when starting and exiting.<br>
+        session when starting and exiting.<br>
         You can manually save and restore sessions via the 'File' menu,
-        you can also restore a session with or without the saved
-        bookmarks ( bookmarks are saved automatically with the session
-        ), if you change a file on disk without re-saving the session
-        you may find that some bookmarks are skewed.<br>
+        you can also restore a session&nbsp; bookmarks are saved
+        automatically with the session, if you change a file on disk
+        without re-saving the session you may find that some bookmarks
+        are skewed.<br>
         <a name="instanceanc" id="instanceanc"></a></font> <font
         size="-1">You can run KKEditQT either as a single instance app
         or as a multiple instance app , set via the prefs menu. Single
@@ -652,6 +653,7 @@ p, li { white-space: pre-wrap; }
           from the file menu regardless of the prefs settings.<br>
           <font size="-1"><br>
             <a name="gtksui" id="gtksui"></a></font></font></font><b>Using
+
 
 
 
@@ -678,6 +680,7 @@ p, li { white-space: pre-wrap; }
                 size="-1"><font size="-1"><font size="-1"><font
                       size="-1">( <a
                         href="https://github.com/KeithDHedger/GtkSu">Available
+
 
 
 
@@ -782,7 +785,9 @@ p, li { white-space: pre-wrap; }
 
 
 
+
                                                         <font size="-1">A</font>ll'
+
 
 
 
@@ -804,6 +809,7 @@ p, li { white-space: pre-wrap; }
                                                         confirm the
                                                         action.<br>
                                                         <font size="-1">The
+
 
                                                           'Wrap<font
                                                           size="-1">'
@@ -864,169 +870,96 @@ p, li { white-space: pre-wrap; }
           height="412" width="396"><br>
       </font> <b>Code Completion</b><font size="-1"><br>
         TBD<br>
-        <strike>If you have turned on 'Auto Show Completion' in the
-          prefs then as you type you will be shown various code
-          completion options like so:</strike><strike><br>
+        If you have turned on 'Auto Show Completion' in the prefs then
+        as you type you will be shown various code completion options
+        like so:<strike><br>
         </strike><strike> </strike><strike><img alt=""
-            src="autocomp1.gif" height="489" width="578"></strike><strike><br>
-        </strike><strike> The amount of letters in word before the pop
-          up appears is set in the prefs.</strike><strike><br>
+            src="autocomp1.gif" moz-do-not-send="true" height="633"
+            width="446"></strike><strike><br>
+        </strike> The amount of letters in word before the pop up
+        appears is set in the prefs.<strike><br>
         </strike><strike> </strike><strike><br>
-        </strike><strike> You can also force the completion dialog to
-          pop up by using a keyboard shortcut ( set via the prefs ) like
-          so:</strike><strike><br>
+        </strike> You can also force the completion dialog to pop up by
+        using a keyboard shortcut, set via the prefs, forcing the
+        completion pop up ignores the minimum word size from the prefs.<strike><br>
         </strike><strike> </strike><strike><img alt=""
-            src="autocomp2.gif" height="486" width="603"></strike><strike><br>
-        </strike><strike> As you can see in the above you can add a list
-          of custom words to add to the completion dialog by simpley
-          creating the file ~/.KKEditQT/customcompletions and adding
-          words to it, the file MUST end in a newline, if the file does
-          not exist no 'Custom Words' option will be shown.</strike><strike><br>
-        </strike><strike> Function and variable completions will show
-          the definition when the 'Details' button is toggled on, custom
-          and document words have no extra details.</strike><br>
+            src="autocomp2.gif" moz-do-not-send="true" height="533"
+            width="401"></strike><br>
         <br>
       </font> <b>Create</b> <b>D</b><b>ocumentation with Doxygen</b><br>
       <img alt="" src="docs.gif" moz-do-not-send="true" height="535"
         width="800"><br>
       <font size="-1">You can create documentation for your code if you
-        have doxygen installed by selecting "Create Documentation" from
+        have doxygen installed by selecting "Build Documentation" from
         the 'File' menu, the documentation will be created in the
-        current folder and displayed with either the built in docviewer
-        or the system browser, the first time you run this there may be
-        a small delay while the initial files are created by doxygen,
-        after that selecting "Create Documentation" again just updates
-        the files, if there is not a file a called 'Doxyfile' in the
-        current folder a default config file is created for you, this
-        file can manually edited to suit your needs, I would recommend
-        that you also install Graphviz for the nice fancy flow charts,
-        most distros will have packages for these two apps.<br>
-        If doxygen is NOT installed you won't have a "Create
-        Documentation" menu, just install it and ( optionally ) Graphviz
-        and restart KKEditQT and the menu will appear.</font><br>
+        folder of the current document and displayed with either the
+        built in docviewer or the system browser, the first time you run
+        this there may be a small delay while the initial files are
+        created by doxygen, after that selecting </font><font size="-1"><font
+          size="-1">"Build</font> Documentation" again just updates the
+        files, if there is not a file a called 'Doxyfile' in the current
+        folder a default config file is created for you, this file can
+        manually edited to suit your needs, I would recommend that you
+        also install Graphviz for the nice fancy flow charts, most
+        distros will have packages for these two apps.<br>
+        If doxygen is NOT installed you won't have a "</font><font
+        size="-1"><font size="-1">Build</font> Documentation" menu, just
+        install it and ( optionally ) Graphviz and restart KKEditQT and
+        the menu will appear.</font><br>
       <br>
       <b>Document Integration<br>
-        To Be Done<br>
-      </b> <strike><font size="-1">There is some integration with the
-          documents crated by doxygen when, and only when using the
-          built in docview, select 'Documentation' form the 'File' menu
-          and the doc viewer will appear as above, there may be a bit of
-          a delay the first time you use this function while doxygen
-          creates all the necessary files, subsequent uses will be much
-          faster as doxygen will just update the needed files.<br>
-          Click on the 'Files' tab to get a list of files, then SHIFT
-          click on a file name like so:<br>
-          <img alt="" src="clickfile.gif" height="447" width="359">&nbsp;</font></strike><strike><br>
-      </strike><strike> </strike><strike><font size="-1">The doc viewer
-          will open the page and the editor will also either open the
-          file or switch to the appropriate tab like so:<br>
-        </font></strike><strike> &nbsp; </strike><strike><img alt=""
-          src="edswitch.gif" moz-do-not-send="true" height="240"
-          width="374"></strike><strike><br>
-      </strike><strike> </strike><strike><img alt=""
-          src="docswitch.gif" moz-do-not-send="true" height="477"
-          width="626"></strike><strike><br>
-      </strike><strike> </strike><strike><br>
-      </strike><strike> </strike><strike><font size="-1">Select a
-          function for instance:</font></strike><strike><br>
-      </strike><strike> </strike><strike><img alt="" src="funclick.gif"
-          moz-do-not-send="true" height="496" width="464"></strike><strike><br>
-      </strike><strike> </strike><strike><br>
-      </strike><strike> </strike><strike><font size="-1">Shows this:</font></strike><strike><br>
-      </strike><strike> </strike><strike><img alt=""
-          src="gotofuncclick.gif" moz-do-not-send="true" height="677"
-          width="825"></strike><strike><br>
-      </strike><strike> </strike><strike><br>
-      </strike><strike> </strike><strike><font size="-1">From here you
-          can SHIFT click on the line number ( RED ) to open the
-          file/switch tab and goto the line in the editor and the docs
-          like so:</font></strike><strike><br>
-      </strike><strike> </strike><strike><img alt=""
-          src="sourceclicked.gif" moz-do-not-send="true" height="180"
-          width="573"></strike><strike><br>
-      </strike><strike> </strike><strike><br>
-      </strike><strike> </strike><strike><img alt=""
-          src="editsrcclicked.gif" moz-do-not-send="true" height="487"
-          width="572"></strike><strike><br>
-      </strike><strike> </strike><strike><font size="-1">Shift clicking
-          the file name ( BLUE ) will open the file or switch tabs as
-          above.<br>
-          Clicking a reference ( GREEN ) will go to the documentaion for
-          that refence where you can again select a line number/file
-          etc.<br>
-          You can also click on the various graph box's to go to a
-          function definition.<br>
-          You can open a file by SHIFT clicking on a box in the include
-          dependency graph for a file like so:<br>
-          <img alt="" src="clickopen.gif" height="552" width="406"><br>
-          This will open the file or switch to the relevant tab as
-          above.<br>
-          You can tweak the default doxyfile to add more/less info to
-          the browser.<br>
-          <br>
-          The main change you will want to make to the file 'Doxyfile'
-          is to change the project name so open then file 'doxyfile'
-          which will be in the same folder as your source&nbsp; code and
-          change the line "PROJECT_NAME="My Project"" to somthing more
-          appropriate.<br>
-          At the moment the documentation MUST&nbsp; be left in the html
-          folder created in the folder with your source code, this will
-          probably cjange later to allow you to set the folder for the
-          documentation.<br>
-          If you want more information on the various options available
-          in the doxyfile run 'doxygen -g' from the command line and a
-          default Doxyfile will be created which is heavily commented.</font></strike><br>
+      </b> <font size="-1">There is some integration with the documents
+        crated by doxygen when, and only when using the built in
+        docview, select 'Documentation' form the 'File' menu and the doc
+        viewer will appear as above, there may be a bit of a delay the
+        first time you use this function while doxygen creates all the
+        necessary files, subsequent uses will be much faster as doxygen
+        will just update the needed files.<br>
+        Click on the 'Files' tab to get a list of files, then CONTROL
+        click on a file name, and KKEditQT will switch to the tab for
+        that file name ( opening the filefirst&nbsp; if needed ).<br>
+        You can also "CONTROL" click a function or line number to go to
+        that function/linenumber in the editor.<br>
+        You can also "CONTROL" click on an item in the variuous graphs
+        to go to that function in the editor.</font><br>
+      <strike></strike><strike><font size="-1"><br>
+        </font></strike><font size="-1">You can tweak the default
+        doxyfile to add more/less info to the browser.<br>
+        The main change you will want to make to the file 'Doxyfile' is
+        to change the project name so open the file 'doxyfile' which
+        will be in the same folder as your source&nbsp; code and change
+        the line "PROJECT_NAME="My Project"" to somthing more
+        appropriate.<br>
+        At the moment the documentation MUST&nbsp; be left in the html
+        folder created in the folder with your source code, this will
+        probably change later to allow you to set the folder for the
+        documentation.<br>
+        If you want more information on the various options available in
+        the doxyfile run 'doxygen -g' from the command line and a
+        default Doxyfile will be created which is heavily commented.</font><br>
       <br>
       <b>Plugins<br>
-        TBD<br>
       </b>
       <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-      <font size="-1"><strike>KKedit now supports simple 'c' plugins, an
-          example plugin is available on the plugins page, this will add
-          a menu item to the 'Help' menu which will display all the
-          currently supported features of the plugin system this is
-          still a work in progress so bugs and suggestions are welcome,
-          I will be adding extra plugins that will be available from
-          this site but if you write a plugin or just have an idea for
-          one please let me know.</strike><strike><br>
-        </strike><strike> </strike><strike><br>
-        </strike><strike> Plugins can be enabled/disabled from the
-          'Plugin Prefs' menu from the 'Edit' menu.</strike><br>
+      <font size="-1">KKeditQT now supports simple 'c' plugins, an
+        example plugin is available in the KKEditQT/plugins folder along
+        with some usefule ones.<br>
+        Plugins can be enabled/disabled from the 'Plugin Prefs' menu
+        from the 'Edit' menu.<br>
+        Some plugins allow user settable prefs, if they don't the
+        relevent button will be disabled, the same goes for the "About"
+        button for the plugin.<br>
         <img alt="" src="plugprefs.gif" moz-do-not-send="true"
-          height="279" width="366"><br>
+          height="406" width="364"><br>
         <br>
-        <strike>There are two plugin folders that will be searched for
-          plugins: /usr/share/KKEditQT/plugins and ~/.KKEditQT/plugins,
-          plugins can be in subfolders and should be named like
-          'libPLUGNAME.so'</strike><strike><br>
-        </strike><strike> See the installed example plugin for basic
-          features and a basic Makefile.</strike><strike><br>
-        </strike><strike> </strike></font><strike><br>
-      </strike><strike> </strike>
-      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-      <strike> </strike>
-      <div style="color: rgb(51, 51, 51); font-family: Arial, Verdana,
-        sans-serif; font-size: 13px; font-style: normal; font-variant:
-        normal; font-weight: normal; letter-spacing: normal;
-        line-height: normal; orphans: auto; text-indent: 0px;
-        text-transform: none; white-space: normal; widows: auto;
-        word-spacing: 0px; -webkit-text-stroke-width: 0px;
-        background-color: rgb(204, 204, 204);" align="center"> <strike><font
-            color="#000000"><font size="-1">Full details and extra
-              plugins can be found here:</font></font></strike> </div>
-      <strike> </strike>
-      <div style="color: rgb(51, 51, 51); font-family: Arial, Verdana,
-        sans-serif; font-size: 13px; font-style: normal; font-variant:
-        normal; font-weight: normal; letter-spacing: normal;
-        line-height: normal; orphans: auto; text-indent: 0px;
-        text-transform: none; white-space: normal; widows: auto;
-        word-spacing: 0px; -webkit-text-stroke-width: 0px;
-        background-color: rgb(204, 204, 204);" align="center"><strike> </strike><strike><a
-            href="https://github.com/KeithDHedger/KKEditPlugins"
-            style="color: rgb(85, 26, 139);"><font color="#000000"><font
-                size="-1"><b>KKEditQT Plugins</b></font></font></a></strike>
-      </div>
+        There are two plugin folders that will be searched for plugins:
+        /usr/share/KKEditQT/plugins and ~/.KKEditQT/plugins, plugins can
+        be in subfolders and should be named like 'libPLUGNAME.so'<br>
+        See the installed plugins for basic features and a basic
+        Makefile.<strike><br>
+        </strike><strike> </strike></font><br>
       <hr size="2" width="100%"> <a name="getanc" id="getanc"></a><b>Get
+
 
 
 
@@ -1070,6 +1003,7 @@ p, li { white-space: pre-wrap; }
                             size="-1"><font size="-1">(</font></font></font></font></font><font
                       size="-1"><font size="-1"><font size="-1"><font
                             size="-1"><font size="-1"><font size="-1">optional
+
 
 
 
@@ -1162,11 +1096,13 @@ p, li { white-space: pre-wrap; }
 
 
 
+
         Bugs</b><font size="-1"><font size="-1"><br>
           <br>
           Please send bug reports, feature suggestions, large bags of
           jewels etc to:</font></font><br>
       <b><a href="mailto:keithdhedger@gmail.com" moz-do-not-send="true">Mail
+
 
 
 
