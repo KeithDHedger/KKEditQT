@@ -43,26 +43,15 @@ int main(int argc, char **argv)
 	bool				flag=true; 
 	QApplication		app(argc, argv);
 	QString			cancellabel;
-	QFile			control(argv[CONTROLFILE]);
 	QString			result;
+	bool				showing=false;
+	QFile			control(argv[CONTROLFILE]);
 
 /*
 QT_STYLE_OVERRIDE=fusion
 Hack if using gtk2 style as pulse progress bar doesn't work.
 */
 	QApplication::setStyle("fusion");
-
-	if(control.open(QFile::WriteOnly|QFile::Truncate))
-		{
-			QTextStream out(&control);
-			out<<argv[BODYLABEL]<<"\n0";
-			control.close();
-		}
-	else
-		{
-			qCritical()<<"Can't open control file ...";
-			return(1);
-		}
 
 	cancellabel=argv[CANCELLABEL];
 
@@ -77,18 +66,26 @@ Hack if using gtk2 style as pulse progress bar doesn't work.
 	progress.setAutoClose(false);
 	progress.setAutoReset(false);
 	progress.setValue(0);
-	progress.show();
+	progress.hide();
 
 	while(flag==true)
 		{
-			app.processEvents();
 			if (progress.wasCanceled())
-				flag=false;
+				{
+					flag=false;
+					continue;
+				}
 
 			if(control.open(QFile::ReadOnly | QFile::Text))
 				{
 					QTextStream in(&control);
 					result=in.readLine();
+					if((result.length()>1) && (showing==false))
+						{
+							progress.show();
+							showing=true;
+						}
+
 					if(result.compare("quit")==0)
 						{
 							progress.setValue(progress.maximum());
@@ -106,6 +103,7 @@ Hack if using gtk2 style as pulse progress bar doesn't work.
 							progress.setMaximum(0);
 							progress.setMinimum(0);
 							control.close();
+							app.processEvents();
 							continue;
 						}
 
@@ -116,6 +114,7 @@ Hack if using gtk2 style as pulse progress bar doesn't work.
 							progress.setMinimum(in.readLine().toInt());
 							progress.setMaximum(in.readLine().toInt());
 							control.close();
+							app.processEvents();
 							continue;
 						}
 
@@ -123,6 +122,7 @@ Hack if using gtk2 style as pulse progress bar doesn't work.
 					result=in.readLine();
 					progress.setValue(result.toInt());
 					control.close();
+					app.processEvents();
 				}
 			usleep(500);
 		}

@@ -2,13 +2,20 @@
 
 #©keithhedger Tue 1 Jul 13:23:13 BST 2014 kdhedger68713@gmail.com
 
+DELAY="0.05"
+echo "Starting ..."
+echo "Not showing progress bar yet .. ..."
+
+sleep 2
+
 echo "Counting up to 100 ..."
 for i in {1..100}
 	do
 		echo -ne "Counting up to 100 ...\n$i\n" >$KKEDIT_BAR_CONTROL
-		sleep 0.1
+		sleep $DELAY
 	done
 
+sleep 1
 echo "Pulse bar ..."	
 echo -en "pulse\nPulsing bar ...\n" >$KKEDIT_BAR_CONTROL
 sleep 2
@@ -19,9 +26,10 @@ sleep 0.1
 for i in {100..0}
 	do
 		echo -en "Counting down from 100 ...\n$i\n" >$KKEDIT_BAR_CONTROL
-		sleep 0.1
+		sleep $DELAY
 	done
 	
+sleep 1
 echo "Pulse bar ..."	
 echo -en "pulse\nPulsing bar ...\n" >$KKEDIT_BAR_CONTROL
 sleep 2

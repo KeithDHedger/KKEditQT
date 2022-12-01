@@ -1,4 +1,5 @@
 0.7.3
+Progress bar now doesn't show until there is data to show.
 Done more documentation.
 Fixed async tools.
 Added force show completion to shortcuts in prefs.
