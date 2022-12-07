@@ -308,7 +308,7 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 
 void KKEditClass::initApp(int argc,char** argv)
 {
-	char		tmpfoldertemplate[]="/tmp/KKEditQT-XXXXXX";
+	char		tmpfoldertemplate[]="/run/KKEditQT-XXXXXX";
 	QRect	r(0,0,1024,768);
 	QDir		tdir;
 	QString	tstr;
@@ -706,16 +706,17 @@ void KKEditClass::findFile(void)
 		this->openFile(retval.at(j));
 }
 
-void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile)
+void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile)//TODO//
 {
-	QString	pipecom;
+	QStringList	arguments;
 
 #ifdef _DEBUGCODE_
-	pipecom=QString("KKEditQT/app/KKEditQTProgressBar \"%1\" \"%2\" \"%3\" \"%4\" \"%5\" &").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(maxitems).arg(controlfile);
+	QString		app="KKEditQT/app/KKEditQTProgressBar";
 #else
-	pipecom=QString("KKEditQTProgressBar \"%1\" \"%2\" \"%3\" \"%4\" \"%5\" &").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(maxitems).arg(controlfile);
+	QString		app="KKEditQTProgressBar";
 #endif
-	this->runPipe(pipecom);
+	arguments<<"-c"<<QString("\"%6\" \"%1\" \"%2\" \"%3\" \"%4\" \"%5\"").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(maxitems).arg(controlfile).arg(app);
+	QProcess::startDetached("sh",arguments);
 }
 
 void KKEditClass::buildDocs(void)
@@ -743,7 +744,7 @@ void KKEditClass::buildDocs(void)
 	while(fgets(line,4095,fp))
 		{
 			line[strlen(line)-1]=0;
-			this->runPipe(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
+			this->runNoOutput(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
 		}
 	pclose(fp);
 
@@ -751,9 +752,8 @@ void KKEditClass::buildDocs(void)
 	QProcess::execute("/bin/sh",QStringList()<<"-c"<<com);
 
 	this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
-	this->runPipe(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
+	this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
 	QDir::setCurrent(currentdir.canonicalPath());
-
 }
 
 void KKEditClass::showDocs(void)
@@ -1392,5 +1392,27 @@ QStringList KKEditClass::tailStringList(QStringList list,int maxsize)
 	return(tlist);
 }
 
+void KKEditClass::runNoOutput(QString command,bool sync,bool asroot)
+{
+	QStringList	args;
+	QString		com;
 
+	if(asroot==false)
+		{
+			com="sh";
+			args<<"-c"<<QString("cd %1;%2").arg(this->toolsFolder).arg(command);
+		}
+	else
+		{
+			args=QProcess::splitCommand(this->prefsRootCommand);
+			com=args.at(0);
+			args.removeFirst();
+			args<<"sh"<<"-c"<<QString("cd %1;%2").arg(this->toolsFolder).arg(command);
+		}
+
+	if(sync==true)
+		QProcess::execute(com,args);
+	else
+		QProcess::startDetached(com,args);
+}
 

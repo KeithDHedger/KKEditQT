@@ -197,10 +197,10 @@ void KKEditClass::setToolsData(int what)
 	QFile					file;
 	QStringList				sl;
 	QLineEdit				*edit;
-	QRadioButton			*radio;
-	const QSignalBlocker	blocker(sender());
+	QRadioButton				*radio;
+	const QSignalBlocker		blocker(sender());
 	int						flags=0;
-	bool					setradioenable=true;
+	bool						setradioenable=true;
 	QCheckBox				*runintermcheck;
 	QCheckBox				*inpopupcheck;
 	QCheckBox				*alwaysincheck;
@@ -292,11 +292,6 @@ void KKEditClass::setToolsData(int what)
 				}
 //set show doc
 			doccheck->setChecked((flags & TOOL_SHOW_DOC)==TOOL_SHOW_DOC);
-			if(doccheck->isChecked()==true)
-				{
-					setradioenable=false;
-					clearcheck->setEnabled(false);
-				}
 //run as root
 			rootcheck->setChecked(sl.at(TOOL_RUN_AS_ROOT).section(TOOLRUNASROOT,1,1).toInt());
 //use bar
@@ -351,26 +346,32 @@ void KKEditClass::setToolsData(int what)
 				resetradios=true;
 //set sync
 			if(sender()->objectName().compare(TOOLRUNSYNC)==0)
-				resetradios=true;
-//set show doc
-			if(sender()->objectName().compare(TOOLSHOWDOC)==0)
-				resetradios=true;
+				{
+					if(synccheck->isChecked()==true)
+						{
+							doccheck->setEnabled(true);
+						}
+					else
+						{
+							doccheck->setEnabled(false);
+							doccheck->setChecked(false);
+						}
+					resetradios=true;
+				}
 
 //somthing changed
 			if(resetradios==true)
 				{
 					termflag=runintermcheck->isChecked();
 					syncflag=synccheck->isChecked();
-					docflag=doccheck->isChecked();
 
 					synccheck->setEnabled(!termflag);
 					setradioenable=true;
-					if((syncflag==false) || (termflag==true) || (docflag==true))
+					if((syncflag==false) || (termflag==true))
 						setradioenable=false;
 					else
 						setradioenable=true;
 
-					doccheck->setEnabled(true);
 					clearcheck->setEnabled(true);
 				
 					if(termflag==true)
@@ -380,9 +381,6 @@ void KKEditClass::setToolsData(int what)
 							synccheck->setChecked(false);
 						}
 					
-					if(docflag==true)
-						clearcheck->setEnabled(!docflag);
-				
 					radio=this->toolsWindow->findChild<QRadioButton*>(TOOLIGNOREOUT);
 					radio->setEnabled(setradioenable);
 					radio=this->toolsWindow->findChild<QRadioButton*>(TOOLPASTEOUT);

@@ -177,7 +177,7 @@ void KKEditClass::doSessionsMenuItems(void)
 							in >> visible;
 							filename=in.readLine().trimmed();
 							linenumber=-1;
-							this->runPipe(QString("echo -e \"Opening %1 ...\n%3\">\"%2/session\" &").arg(filename.trimmed()).arg(this->tmpFolderName).arg(cntfiles++));
+							this->runNoOutput(QString("echo -e \"Opening %1 ...\n%3\">\"%2/session\" &").arg(filename.trimmed()).arg(this->tmpFolderName).arg(cntfiles++));
 							this->openFile(filename,0,false,false);
 							do
 								{
@@ -194,9 +194,10 @@ void KKEditClass::doSessionsMenuItems(void)
 							this->setTabVisibilty(this->mainNotebook->currentIndex(),visible);
 							this->gotoLine(mainline);
 						}
-					this->runPipe(QString("echo -ne \"Finishing ...\n%1\">\"%2/session\"").arg(retdata).arg(this->tmpFolderName));
+					this->runNoOutput(QString("echo -ne \"Finishing ...\n%1\">\"%2/session\"").arg(retdata).arg(this->tmpFolderName));
 					sleep(1);
-					this->runPipe(QString("echo -e quit>\"%1/session\"").arg(this->tmpFolderName));
+					this->runNoOutput(QString("echo -e quit>\"%1/session\"").arg(this->tmpFolderName));
+
 					this->currentSessionNumber=sessionnumber;
 					file.close();
 					this->mainWindow->setGeometry(x,y,w,h);
@@ -256,7 +257,6 @@ void KKEditClass::doBookmarkMenuItems()
 		}
 }
 
-#if 0
 void KKEditClass::doToolsMenuItems()
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
@@ -287,266 +287,202 @@ void KKEditClass::doToolsMenuItems()
 
 				if(sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed().isEmpty()==false)
 					{
-						QString str=sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed();
+						QString	command=sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed();
+						bool		usebar=false;
+						bool		showdoc=false;
+						bool		rootrun=false;
+						bool		interm=false;
+						bool		sync=false;
+						bool		pasteop=false;
+						bool		replacedoc=false;
+						bool		ignoreop=true;
+						bool		viewop=false;
+						bool		clearop=false;
+						int		viewflags=sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_INSERT_MASK;
+
 						if(document!=NULL)
 							{
 //								//%l
 								setenv("KKEDIT_FILE_LIST",filelist.trimmed().toStdString().c_str(),1);
-								str.replace("%l",filelist);
+								command.replace("%l",filelist);
 								//%f doc filepath
 								setenv("KKEDIT_CURRENTFILE",document->getFilePath().toStdString().c_str(),1);
-								str.replace("%f",document->getFilePath());
+								command.replace("%f",document->getFilePath());
 								//%n
 								setenv("KKEDIT_FILECOUNT",QString("%1").arg(this->mainNotebook->count()).toStdString().c_str(),1);
-								str.replace("%n",QString("%1").arg(this->mainNotebook->count()));
+								command.replace("%n",QString("%1").arg(this->mainNotebook->count()));
 								//%d doc folder
 								setenv("KKEDIT_CURRENTDIR",document->getDirPath().toStdString().c_str(),1);
-								str.replace("%d",document->getDirPath());
+								command.replace("%d",document->getDirPath());
 								//%t selected text
 								setenv("KKEDIT_SELECTION",document->textCursor().selectedText().replace(QRegularExpression("\u2029|\\r\\n|\\r"),"\n").toStdString().c_str(),1);
-								str.replace("%t",document->textCursor().selectedText());
+								command.replace("%t",document->textCursor().selectedText());
 								//%m
 								setenv("KKEDIT_MIMETYPE",document->mimeType.toStdString().c_str(),1);
-								str.replace("%m",document->mimeType);
+								command.replace("%m",document->mimeType);
 							}
 
-								//%h html file
-								setenv("KKEDIT_HTMLFILE",this->htmlFile.toStdString().c_str(),1);
-								str.replace("%h",this->htmlFile);
-								//%i
-								setenv("KKEDIT_DATADIR",DATADIR,1);
-								str.replace("%i",DATADIR);
+						//%h html file
+						setenv("KKEDIT_HTMLFILE",this->htmlFile.toStdString().c_str(),1);
+						command.replace("%h",this->htmlFile);
+						//%i
+						setenv("KKEDIT_DATADIR",DATADIR,1);
+						command.replace("%i",DATADIR);
 
-								if(sl.at(TOOL_USE_BAR).section(TOOLUSEPOLE,1,1).trimmed().toInt()==1)
-									{
-										setenv("KKEDIT_BAR_CONTROL",QString("%1/progress").arg(this->tmpFolderName).toStdString().c_str(),1);
-										//%p progress bar control file
-										str.replace("%p",QString("%1/progress").arg(this->tmpFolderName));
-										this->showBarberPole(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"Running tool ..","","100",QString("%1/progress").arg(this->tmpFolderName));
-									}
+						if(sl.at(TOOL_USE_BAR).section(TOOLUSEPOLE,1,1).trimmed().toInt()==1)
+							usebar=true;
 
-								if(sl.at(TOOL_RUN_AS_ROOT).section(TOOLRUNASROOT,1,1).trimmed().toInt()==1)
-									{
-										userootgui=this->prefsRootCommand;
-										userootcli="sudo";
-									}
-
-								//run in term
-								if(sl.at(TOOL_IN_TERM).section(TOOLRUNINTERM,1,1).trimmed().toInt()==1)
-									{
-										str=this->prefsTerminalCommand + " " + userootcli + " " + str;
-										str=QString("cd %1;%3").arg(this->toolsFolder).arg(str);
-										runPipe(str);
-										return;
-									}
-								
-								if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_PASTE_OP)==TOOL_PASTE_OP) && (document!=NULL))
-									{
-										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										document->textCursor().beginEditBlock();
-											document->textCursor().removeSelectedText();
-											document->textCursor().insertText(runPipeAndCapture(str));
-										document->textCursor().endEditBlock();
-										return;
-									}
-
-								if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_REPLACE_OP)==TOOL_REPLACE_OP) && (document!=NULL))
-									{
-										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										document->textCursor().beginEditBlock();
-											document->setPlainText(runPipeAndCapture(str));
-										document->textCursor().endEditBlock();
-										return;
-									}
-
-								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_VIEW_OP)==TOOL_VIEW_OP)
-									{
-										str=QString("cd %1;%2 %3").arg(this->toolsFolder).arg(userootgui).arg(str);
-										str=runPipeAndCapture(str);
-										if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).toInt()==0)
-											{
-												QTextCursor tc=this->toolsOPText->textCursor();
-												tc.movePosition(QTextCursor::End,QTextCursor::MoveAnchor);
-												this->toolsOPText->setTextCursor(tc);
-												this->toolsOPText->insertPlainText(str);
-											}
-										else
-											{
-												this->toolsOPText->setPlainText(str);
-											}
-										this->toolOutputWindow->setWindowTitle(sl.at(TOOL_NAME).section(TOOLNAME,1,1));
-										this->toolOutputWindow->show();
-										this->toggleToolWindowMenuItem->setText("Show Tool Output");
-										this->toolWindowVisible=true;
-										return;
-									}
-
-								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==TOOL_ASYNC)
-									{
-										str=QString("cd %1;%2 &").arg(this->toolsFolder).arg(str);
-										this->runPipe(str);
-										return;
-									}
+						if(sl.at(TOOL_RUN_AS_ROOT).section(TOOLRUNASROOT,1,1).trimmed().toInt()==1)
+							rootrun=true;
 	
-								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_SHOW_DOC)==TOOL_SHOW_DOC)
-									{
-										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										this->runPipe(str);
-										this->showWebPage(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"file://" + this->htmlFile);
-										return;
-									}
+						if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_PASTE_OP)==TOOL_PASTE_OP) && (document!=NULL))
+							{
+								pasteop=true;
+								ignoreop=false;
+								replacedoc=false;
+								viewop=false;
+							}
 
-								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==0)
+						if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_REPLACE_OP)==TOOL_REPLACE_OP) && (document!=NULL))
+							{
+								replacedoc=true;
+								pasteop=false;
+								ignoreop=false;
+								viewop=false;
+							}
+
+						if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_VIEW_OP)==TOOL_VIEW_OP)
+							{
+								viewop=true;
+								replacedoc=false;
+								pasteop=false;
+								ignoreop=false;
+							}
+
+						if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).trimmed().toInt()==1)
+							clearop=true;
+
+						if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).trimmed().toInt()==1)
+							clearop=true;
+
+						if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_SHOW_DOC)==TOOL_SHOW_DOC)
+							showdoc=true;
+
+						if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==TOOL_ASYNC)
+							{
+								sync=false;
+								clearop=false;
+								pasteop=false;
+								replacedoc=false;
+								ignoreop=false;
+								showdoc=false;
+							}
+						else
+							{
+								sync=true;
+							}
+
+						if(sl.at(TOOL_IN_TERM).section(TOOLRUNINTERM,1,1).trimmed().toInt()==1)
+							{
+								interm=true;
+								showdoc=false;
+								clearop=false;
+								pasteop=false;
+								replacedoc=false;
+								ignoreop=false;
+								sync=false;
+							}
+
+						//%p progress bar control file
+						if(usebar==true)
+							{
+								setenv("KKEDIT_BAR_CONTROL",QString("%1/progress").arg(this->tmpFolderName).toStdString().c_str(),1);
+								command.replace("%p",QString("%1/progress").arg(this->tmpFolderName));
+								this->showBarberPole(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"Running tool ..","","100",QString("%1/progress").arg(this->tmpFolderName));
+							}
+
+						if(interm==true)
+							{
+								QString str;
+
+								if(rootrun==false)
+									str=QString("%1 'sh -c \"cd %2;%3\"'").arg(this->prefsTerminalCommand).arg(this->toolsFolder).arg(command);
+								else
+									str=QString("%1 'sudo sh -c \"cd %2;%3\"'").arg(this->prefsTerminalCommand).arg(this->toolsFolder).arg(command);
+
+								this->runNoOutput(str,false,false);
+								return;
+							}
+
+//qDebug()<<"sync"<<sync;
+//qDebug()<<"ignoreop"<<ignoreop;
+//qDebug()<<"pasteop"<<pasteop;
+//qDebug()<<"replacedoc"<<replacedoc;
+//qDebug()<<"clearop"<<clearop;
+//qDebug()<<"viewop"<<viewop;
+//qDebug()<<"viewflags"<<viewflags;
+//qDebug()<<"showdoc"<<showdoc;		
+//qDebug()<<"rootrun"<<rootrun;		
+
+						if(sync==true)
+							{
+								QString str;
+
+								str=QString("cd %1;%3").arg(this->toolsFolder).arg(command);
+								switch(viewflags)
 									{
-									qDebug()<<"here";
-										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										this->runPipe(str);
-										return;
+										case TOOL_PASTE_OP:
+											document->textCursor().beginEditBlock();
+												document->textCursor().removeSelectedText();
+												if(rootrun==false)
+													document->textCursor().insertText(this->runPipeAndCapture(str));
+												else
+													document->textCursor().insertText(this->runPipeAndCapture(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str)));						
+											document->textCursor().endEditBlock();
+											break;
+
+										case TOOL_REPLACE_OP:
+											document->textCursor().beginEditBlock();
+												if(rootrun==false)
+													document->setPlainText(this->runPipeAndCapture(str));
+												else
+													document->setPlainText(this->runPipeAndCapture(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str)));
+											document->textCursor().endEditBlock();
+											break;
+
+										case TOOL_VIEW_OP:
+											if(clearop==false)
+												{
+													QTextCursor tc=this->toolsOPText->textCursor();
+													tc.movePosition(QTextCursor::End,QTextCursor::MoveAnchor);
+													this->toolsOPText->setTextCursor(tc);
+												}
+											else
+												this->toolsOPText->setPlainText("");
+
+											this->toolOutputWindow->setWindowTitle(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed());
+											if(rootrun==false)
+												this->runPipeAndCaptureToToolOP(str);
+											else
+												this->runPipeAndCaptureToToolOP(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str));
+											break;
+
+										default:
+											this->runNoOutput(command,true,rootrun);
+											break;
 									}
 							}
-			 	break;
-		}
-}
-#else
-void KKEditClass::doToolsMenuItems()
-{
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	DocumentClass	*document=this->getDocumentForTab(-1);
-	QFile			file;
-	QStringList		sl;
-	QString			filelist;
-	QString			userootgui="";
-	QString			userootcli="";
+						else
+							{
+								this->runNoOutput(command,false,rootrun);
+							}
 
-	switch(mc->getMenuID())
-		{
-			 case MANAGETOOLSMENUITEM:
-			 	this->toolsWindow->show();
-			 	break;
-
-			 default:
-			 	sl=this->verifyTool(mc->getMenuString());
-			 	if(sl.isEmpty()==true)
-			 		return;
-
-				QHashIterator<int,DocumentClass*> i(this->pages);
-				while(i.hasNext())
-					{
-						i.next();
-						filelist+=i.value()->getFilePath()+" ";
+						if(showdoc==true)
+							this->showWebPage(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"file://" + this->htmlFile);
 					}
-
-				if(sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed().isEmpty()==false)
-					{
-						QString str=sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed();
-						if(document!=NULL)
-							{
-//								//%l
-								setenv("KKEDIT_FILE_LIST",filelist.trimmed().toStdString().c_str(),1);
-								str.replace("%l",filelist);
-								//%f doc filepath
-								setenv("KKEDIT_CURRENTFILE",document->getFilePath().toStdString().c_str(),1);
-								str.replace("%f",document->getFilePath());
-								//%n
-								setenv("KKEDIT_FILECOUNT",QString("%1").arg(this->mainNotebook->count()).toStdString().c_str(),1);
-								str.replace("%n",QString("%1").arg(this->mainNotebook->count()));
-								//%d doc folder
-								setenv("KKEDIT_CURRENTDIR",document->getDirPath().toStdString().c_str(),1);
-								str.replace("%d",document->getDirPath());
-								//%t selected text
-								setenv("KKEDIT_SELECTION",document->textCursor().selectedText().replace(QRegularExpression("\u2029|\\r\\n|\\r"),"\n").toStdString().c_str(),1);
-								str.replace("%t",document->textCursor().selectedText());
-								//%m
-								setenv("KKEDIT_MIMETYPE",document->mimeType.toStdString().c_str(),1);
-								str.replace("%m",document->mimeType);
-							}
-
-								//%h html file
-								setenv("KKEDIT_HTMLFILE",this->htmlFile.toStdString().c_str(),1);
-								str.replace("%h",this->htmlFile);
-								//%i
-								setenv("KKEDIT_DATADIR",DATADIR,1);
-								str.replace("%i",DATADIR);
-
-								if(sl.at(TOOL_USE_BAR).section(TOOLUSEPOLE,1,1).trimmed().toInt()==1)
-									{
-										setenv("KKEDIT_BAR_CONTROL",QString("%1/progress").arg(this->tmpFolderName).toStdString().c_str(),1);
-										//%p progress bar control file
-										str.replace("%p",QString("%1/progress").arg(this->tmpFolderName));
-										this->showBarberPole(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"Running tool ..","","100",QString("%1/progress").arg(this->tmpFolderName));
-									}
-
-								if(sl.at(TOOL_RUN_AS_ROOT).section(TOOLRUNASROOT,1,1).trimmed().toInt()==1)
-									{
-										userootgui=this->prefsRootCommand;
-										userootcli="sudo";
-									}
-
-								//run in term
-								if(sl.at(TOOL_IN_TERM).section(TOOLRUNINTERM,1,1).trimmed().toInt()==1)
-									{
-										str=this->prefsTerminalCommand + " " + userootcli + " " + str;
-										str=QString("cd %1;%3").arg(this->toolsFolder).arg(str);
-										runPipe(str);
-										return;
-									}
-								//async
-								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_ASYNC)==TOOL_ASYNC)
-									{
-										str=QString("%1 %2/%3 &").arg(userootgui).arg(this->toolsFolder).arg(str);
-										system(str.toStdString().c_str());
-										return;
-									}
-								//paste into doc
-								if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_PASTE_OP)==TOOL_PASTE_OP) && (document!=NULL))
-									{
-										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										document->textCursor().beginEditBlock();
-											document->textCursor().removeSelectedText();
-											document->textCursor().insertText(runPipeAndCapture(str));
-										document->textCursor().endEditBlock();
-										return;
-									}
-								//replace doc contents
-								if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_REPLACE_OP)==TOOL_REPLACE_OP) && (document!=NULL))
-									{
-										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										document->textCursor().beginEditBlock();
-											document->setPlainText(runPipeAndCapture(str));
-										document->textCursor().endEditBlock();
-										return;
-									}
-								//view op
-								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_VIEW_OP)==TOOL_VIEW_OP)
-									{
-										if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).toInt()==0)
-											{
-												QTextCursor tc=this->toolsOPText->textCursor();
-												tc.movePosition(QTextCursor::End,QTextCursor::MoveAnchor);
-												this->toolsOPText->setTextCursor(tc);
-											}
-										else
-											this->toolsOPText->setPlainText("");
-
-										this->toolOutputWindow->setWindowTitle(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed());
-										str=QString("cd %1;%2 %3 &").arg(this->toolsFolder).arg(userootgui).arg(str);
-										this->runPipeAndCaptureToToolOP(str);
-										return;
-									}
-	
-								if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_SHOW_DOC)==TOOL_SHOW_DOC)
-									{
-										str=QString("cd %1;%2").arg(this->toolsFolder).arg(str);
-										this->runPipe(str);
-										this->showWebPage(sl.at(TOOL_NAME).section(TOOLNAME,1,1).trimmed(),"file://" + this->htmlFile);
-										return;
-									}
-							}
 			 	break;
 		}
 }
-
-#endif
 
 void KKEditClass::doHelpMenuItems()
 {
@@ -938,7 +874,6 @@ void KKEditClass::doTimer(void)
 												{
 													this->setTabVisibilty(j,true);
 													break;
-//													return;
 												}
 										}
 								}
@@ -1325,8 +1260,7 @@ void KKEditClass::doOddButtons(void)
 							if(saveas==true)
 								flags=this->toolSelect->findText(this->toolsWindow->findChild<QLineEdit*>(TOOLNAME)->text());
 			 				this->toolSelect->setCurrentIndex(flags);
-							this->runPipe(QString("echo quit>\"%1/tools\"").arg(this->tmpFolderName));
-
+							this->runNoOutput(QString("echo quit>\"%1/tools\"").arg(this->tmpFolderName));
 							savebutton=this->toolsWindow->findChild<QPushButton*>(QString("%1").arg(TOOLSSAVE));
 							savebutton->setEnabled(true);
 						}
@@ -1342,7 +1276,7 @@ void KKEditClass::doOddButtons(void)
 
 					file.remove();
 					this->rebuildToolsMenu();
-					this->runPipe(QString("echo quit>\"%1/tools\"").arg(this->tmpFolderName));
+					this->runNoOutput(QString("echo quit>\"%1/tools\"").arg(this->tmpFolderName));
 				}
 				break;
 			case TOOLSCANCEL:

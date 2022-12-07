@@ -22,8 +22,8 @@
 
 RecentMenuClass::~RecentMenuClass()
 {
-	this->mainKKEditClass->runPipe(QString("tail -n%1 %2 > %3.bak").arg(this->maxFiles).arg(this->recentFileList).arg(this->recentFileList));
-	this->mainKKEditClass->runPipe(QString("mv %1.bak %2").arg(this->recentFileList).arg(this->recentFileList));
+	this->mainKKEditClass->runNoOutput(QString("tail -n%1 %2 > %3.bak").arg(this->maxFiles).arg(this->recentFileList).arg(this->recentFileList));
+	this->mainKKEditClass->runNoOutput(QString("mv %1.bak %2").arg(this->recentFileList).arg(this->recentFileList));
 }
 
 RecentMenuClass::RecentMenuClass(KKEditClass *kk)

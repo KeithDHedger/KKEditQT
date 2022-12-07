@@ -20,15 +20,6 @@
 
 #include "KKEditClass.h"
 
-void KKEditClass::runPipe(QString command)
-{
-	FILE		*fp=NULL;
-
-	fp=popen(command.toStdString().c_str(), "r");
-	if(fp!=NULL)
-		pclose(fp);
-}
-
 void KKEditClass::runPipeAndCaptureToToolOP(QString command)
 {
 	FILE		*fp=NULL;

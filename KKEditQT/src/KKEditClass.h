@@ -427,10 +427,10 @@ class KKEditClass : public QObject
 		void							openAsHexDump(void);
 		QString						runPipeAndCapture(QString command);
 		void							runPipeAndCaptureToToolOP(QString command);
+		void							runNoOutput(QString command,bool sync=true,bool asroot=false);
 
 		bool							saveFile(int tabnum,bool ask=true);
 		void							newEditor(int what);
-		void							runPipe(QString command);
 		bool							saveAllFiles(bool ask=false);
 		bool							saveFileAs(int tabnum);
 		int							askSaveDialog(const QString filename);

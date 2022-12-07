@@ -1,3 +1,13 @@
+0.7.4
+Fixed running tool in terminal as root.
+Fixed running tool in terminal.
+Fixed inserting top from tool into document if tool is run as root.
+Running tools as root and/or synchronously now works properly.
+Sorted out enabling/disabling switches on tools setup dialog.
+Code clean.
+Moved tempory folder to /run from /tmp.
+Updated external tools.
+
 0.7.3
 Progress bar now doesn't show until there is data to show.
 Done more documentation.
