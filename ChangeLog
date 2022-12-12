@@ -1,4 +1,6 @@
 0.7.4
+Set find/replace drop downs to last item on startup.
+Fixed saving too many items from replace.
 Fixed running tool in terminal as root.
 Fixed running tool in terminal.
 Fixed inserting top from tool into document if tool is run as root.

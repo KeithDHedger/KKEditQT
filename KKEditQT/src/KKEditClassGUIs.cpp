@@ -637,6 +637,7 @@ void KKEditClass::buildFindReplace(void)
 	reinterpret_cast<QComboBox*>(this->findDropBox)->setCompleter(0);
 	reinterpret_cast<QComboBox*>(this->findDropBox)->setInsertPolicy(QComboBox::InsertAtBottom);
 	this->findDropBox->addItems(this->findList);
+	this->findDropBox->setCurrentIndex(this->findDropBox->count()-1);
 	vlayout->addWidget(this->findDropBox);
 
 //replace
@@ -649,6 +650,7 @@ void KKEditClass::buildFindReplace(void)
 	reinterpret_cast<QComboBox*>(this->replaceDropBox)->setCompleter(0);
 	reinterpret_cast<QComboBox*>(this->replaceDropBox)->setInsertPolicy(QComboBox::InsertAtBottom);
 	this->replaceDropBox->addItems(this->replaceList);
+	this->replaceDropBox->setCurrentIndex(this->replaceDropBox->count()-1);
 	vlayout->addWidget(replaceDropBox);
 
 //switches 1st row

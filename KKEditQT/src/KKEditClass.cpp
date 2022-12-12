@@ -644,6 +644,7 @@ void KKEditClass::writeExitData(void)
 //find
 	this->setSearchPrefs();
 	this->findList=this->tailStringList(this->findList,this->maxFRHistory);
+	this->replaceList=this->tailStringList(this->replaceList,this->maxFRHistory);
 	this->prefs.setValue("find/findlist",this->findList);
 	this->prefs.setValue("find/replacelist",this->replaceList);
 	this->prefs.setValue("find/wrapsearch",this->wrapSearch);
