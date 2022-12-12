@@ -45,6 +45,7 @@ void FavouritesPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	system(data.toStdString().c_str());
 
 	this->favouritesMenu=new QMenu("Favourites");
+	this->favouritesMenu->setIcon(QIcon(QString("%1/Favorite.png").arg(QFileInfo(pathtoplug).absolutePath())));
 	this->mainKKEditClass->pluginMenu->addMenu(favouritesMenu);
 
 	adddoc=new QAction(QString("Add Current Document"));

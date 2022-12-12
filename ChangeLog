@@ -1,4 +1,5 @@
 0.7.4
+Added icons to plugin menus.
 Set find/replace drop downs to last item on startup.
 Fixed saving too many items from replace.
 Fixed running tool in terminal as root.

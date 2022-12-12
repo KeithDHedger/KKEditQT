@@ -261,11 +261,8 @@ void KKEditClass::doToolsMenuItems()
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
 	DocumentClass	*document=this->getDocumentForTab(-1);
-	QFile			file;
 	QStringList		sl;
 	QString			filelist;
-	QString			userootgui="";
-	QString			userootcli="";
 
 	switch(mc->getMenuID())
 		{

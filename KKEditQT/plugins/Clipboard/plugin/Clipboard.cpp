@@ -39,7 +39,9 @@ void ClipboardPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->plugPath=pathtoplug;
 
 	this->cliboardMenu=new QMenu("Clipboard");
+	this->cliboardMenu->setIcon(QIcon(QString("%1/ClipboardViewer.png").arg(QFileInfo(pathtoplug).absolutePath())));
 	this->mainKKEditClass->pluginMenu->addMenu(cliboardMenu);
+
 	for(int j=0;j<MAXCLIPS;j++)
 		{
 			this->clips[j]=new QAction(QString("Clip-%1").arg(j));

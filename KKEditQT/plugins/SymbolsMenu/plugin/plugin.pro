@@ -8,6 +8,7 @@ DESTDIR         = ../plugins
 
 data.files = indicator-chars.txt
 documentation.files = docs/*
+image.files = Symbols.png
 
 destdir = $$(INSTALLTO)
 isEmpty(destdir) {
@@ -25,10 +26,12 @@ else {
 
 data.path = $${target.path}
 documentation.path = $${target.path}/docs
+image.path = $${target.path}
 
 INSTALLS += target
 INSTALLS += data
 INSTALLS += documentation
+INSTALLS += image
 
 CONFIG += install_ok
 

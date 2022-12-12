@@ -30,6 +30,7 @@ void SymbolsMenuPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->plugPath=pathtoplug;
 
 	this->symbolMenu=new QMenu("Symbols");
+	this->symbolMenu->setIcon(QIcon(QString("%1/Symbols.png").arg(QFileInfo(pathtoplug).absolutePath())));
 	this->mainKKEditClass->pluginMenu->addMenu(symbolMenu);
 
 	QFileInfo	datafile(this->plugPath);
