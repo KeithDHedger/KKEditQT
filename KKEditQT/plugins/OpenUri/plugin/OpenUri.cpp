@@ -25,6 +25,7 @@ void OpenUri::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->mainKKEditClass=kk;
 	this->plugPath=pathtoplug;
 	this->openUriMenuitem=new QAction("Open Selection");
+	this->openUriMenuitem->setIcon(QIcon(QString("%1/OpenUri.png").arg(QFileInfo(pathtoplug).absolutePath())));
 	QObject::connect(this->openUriMenuitem,&QAction::triggered,[this]()
 		{
 			this->openUri();

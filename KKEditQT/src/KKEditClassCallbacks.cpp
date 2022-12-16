@@ -290,10 +290,6 @@ void KKEditClass::doToolsMenuItems()
 						bool		rootrun=false;
 						bool		interm=false;
 						bool		sync=false;
-						bool		pasteop=false;
-						bool		replacedoc=false;
-						bool		ignoreop=true;
-						bool		viewop=false;
 						bool		clearop=false;
 						int		viewflags=sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_INSERT_MASK;
 
@@ -334,34 +330,34 @@ void KKEditClass::doToolsMenuItems()
 	
 						if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_PASTE_OP)==TOOL_PASTE_OP) && (document!=NULL))
 							{
-								pasteop=true;
-								ignoreop=false;
-								replacedoc=false;
-								viewop=false;
+								//pasteop=true;
+//								//ignoreop=false;
+	//							//replacedoc=false;//
+								//viewop=false;
 							}
 
 						if(((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_REPLACE_OP)==TOOL_REPLACE_OP) && (document!=NULL))
 							{
-								replacedoc=true;
-								pasteop=false;
-								ignoreop=false;
-								viewop=false;
+								//replacedoc=true;
+							//	pasteop=false;
+								//ignoreop=false;
+								//viewop=false;
 							}
 
 						if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_VIEW_OP)==TOOL_VIEW_OP)
 							{
-								viewop=true;
-								replacedoc=false;
-								pasteop=false;
-								ignoreop=false;
+								//viewop=true;
+								//replacedoc=false;
+							//	pasteop=false;
+							//	ignoreop=false;
 							}
 
 						if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).trimmed().toInt()==1)
 							clearop=true;
-
-						if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).trimmed().toInt()==1)
-							clearop=true;
-
+//
+//						if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).trimmed().toInt()==1)
+//							clearop=true;
+//
 						if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_SHOW_DOC)==TOOL_SHOW_DOC)
 							showdoc=true;
 
@@ -369,9 +365,9 @@ void KKEditClass::doToolsMenuItems()
 							{
 								sync=false;
 								clearop=false;
-								pasteop=false;
-								replacedoc=false;
-								ignoreop=false;
+//								pasteop=false;
+//								replacedoc=false;
+//								ignoreop=false;/
 								showdoc=false;
 							}
 						else
@@ -384,9 +380,9 @@ void KKEditClass::doToolsMenuItems()
 								interm=true;
 								showdoc=false;
 								clearop=false;
-								pasteop=false;
-								replacedoc=false;
-								ignoreop=false;
+//								pasteop=false;
+//								replacedoc=false;
+//								ignoreop=false;
 								sync=false;
 							}
 
@@ -966,7 +962,7 @@ void KKEditClass::doTimer(void)
 								this->shutDownApp();
 								break;
 							case ACTIVATEAPPMSG:
-								this->mainWindow->setWindowState(this->mainWindow->windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
+								this->mainWindow->setWindowState((this->mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
 								this->mainWindow->raise();
 								this->application->setActiveWindow(this->mainWindow);
 								this->mainWindow->activateWindow();
@@ -1479,7 +1475,7 @@ void KKEditClass::doAppShortCuts(void)
 	QString			txt;
 	QTextCursor		cursor;
 	int				anc;
-	bool				retval=true;
+	//bool				retval=true;
 
 	if(doc==NULL)
 		return;

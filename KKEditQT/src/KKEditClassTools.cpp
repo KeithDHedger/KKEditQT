@@ -336,10 +336,10 @@ void KKEditClass::setToolsData(int what)
 		}
 	else
 		{
-			bool	resetradios=false;
-			bool	syncflag=false;
-			bool	termflag=false;
-			bool	docflag=false;
+			bool		resetradios=false;
+			bool		syncflag=false;
+			bool		termflag=false;
+			//bool		docflag=false;
 
 //run in term
 			if(sender()->objectName().compare(TOOLRUNINTERM)==0)

@@ -39,7 +39,11 @@ class htmllang : public QObject, SyntaxHighlitePluginInterface
 //multi line rules
 		void							setMultLineRules(QVector<highLightingRule> *rules) override;
 //custom code for edge cases etc
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 		void							runCustomRule(QString text,highLightingRule *hr) override {};
+#pragma GCC diagnostic pop
 
 	private:
 		QString						plugPath;

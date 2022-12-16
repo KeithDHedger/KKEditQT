@@ -314,7 +314,7 @@ class KKEditClass : public QObject
 		bool							findAfterReplace=false;
 		int							currentPage=0;
 		bool							closingAllTabs=false;
-		unsigned int					autoShowMinChars=6;
+		int							autoShowMinChars=6;
 		unsigned int 				untitledNumber=1;
 		HistoryClass					*history;
 		QFileSystemWatcher			*fileWatch;
@@ -593,6 +593,4 @@ class KKEditClass : public QObject
 };
 
 #endif
-
-
 

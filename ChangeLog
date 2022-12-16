@@ -1,4 +1,9 @@
 0.7.4
+Sorted function decs in docview.
+Improved qt5 function lookup.
+Suppressed some unneeed variable warnings.
+Added icons to plugin menus.
+Code clean.
 Added icons to plugin menus.
 Set find/replace drop downs to last item on startup.
 Fixed saving too many items from replace.

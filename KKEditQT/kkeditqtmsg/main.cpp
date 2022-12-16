@@ -101,6 +101,8 @@ void printHelp()
 
 void sendMsg()
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 	int	retcode;
 
 	if(waitContinue==true)
@@ -114,10 +116,13 @@ void sendMsg()
 
 	if(waitContinue==true)
 		retcode=msgrcv(queueID,&buffer,MAXMSGSIZE,CONTINUEMSG,WAITFORMSG);
+#pragma GCC diagnostic pop
 }
 
 void waitMsg()
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 	int retcode;
 
 	buffer.mText[0]=0;
@@ -129,6 +134,7 @@ void waitMsg()
 	retcode=msgrcv(queueID,&buffer,MAXMSGSIZE,GETMSG,WAITFORMSG);
 
 	printf("%s",buffer.mText);
+#pragma GCC diagnostic pop
 }
 
 int messageToType(const char *msgstring)

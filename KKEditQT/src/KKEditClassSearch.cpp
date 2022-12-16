@@ -141,6 +141,7 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 	QStringList		reslist;
 	QString			searchcommand;
 	QFile			html(this->htmlFile);
+	QStringList		deepstring;
 
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 
@@ -168,8 +169,78 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 		}
 
 	results=this->runPipeAndCapture(searchcommand);
-	reslist=results.split("\n",Qt::SkipEmptyParts);
+	if((what==1) && (results.isEmpty()==true))
+		{
+			searchcommand=QString("grep -iR --include=\"*-members.html\" \">%1<\" %2").arg(searchfor).arg(this->prefsQtDocDir);
+			results=this->runPipeAndCapture(searchcommand);
+			reslist.clear();
+			reslist=results.split("\n",Qt::SkipEmptyParts);
+			QStringList	list;
+			QRegExp		re(".*href=\"([^\"]*).*");
+			QString		link;
+			QString		type;
+			QString		data;
+			QStringList	subs;
+			QString		label;
+			QStringList	labellist;
+			int			cnt=0;
+			QFileInfo	finf;
 
+			for(int j=0;j<reslist.count();j++)
+				{
+					subs=reslist.at(j).split(":",Qt::SkipEmptyParts);
+					finf.setFile(subs.at(0));
+
+					re.indexIn(subs.at(1));
+					list=re.capturedTexts();
+					type=QString("grep -i '<li class=\"fn\"><span class=\"name\"><b>.*>%1<' %2|sed 's/<[^>]*//g;s/>//g'").arg(searchfor).arg(subs.at(0));
+					data=runPipeAndCapture(type);
+
+					label="";
+					labellist=data.split("\n",Qt::SkipEmptyParts);
+					if(labellist.count()>0)
+						{
+							if(cnt<labellist.count())
+								{
+									label=labellist.at(cnt);
+									cnt++;
+								}
+							if(cnt>=labellist.count())
+								cnt=0;
+						}
+
+					link=QString("<a href=\"file://%1/%2\"><b>%4</b></a> %3<br>").arg(finf.absolutePath()).arg(list.at(1)).arg(label).arg(finf.baseName());
+					deepstring<<link;
+				}
+
+			if(deepstring.isEmpty()==true)
+				return;
+			deepstring.removeDuplicates();
+			deepstring.sort();
+			if(html.open(QFile::WriteOnly|QFile::Truncate))
+				{
+    		 			QTextStream out(&html);
+					out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">" << Qt::endl;
+					out << "<html>" << Qt::endl;
+					out << "<head>" << Qt::endl;
+					out << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" << Qt::endl;
+					out << "</head>" << Qt::endl;
+					out << "<body>" << Qt::endl;
+
+					for(int loop=0;loop<deepstring.count();loop++)
+						out << deepstring.at(loop) << Qt::endl;
+
+					out << "</body>" << Qt::endl;
+					out << "</html>" << Qt::endl;
+					html.close();
+					this->htmlURI="file://"+this->htmlFile;
+				}
+			this->showWebPage("Results for: " + searchfor,this->htmlURI);
+			return;
+		}
+
+	if(reslist.isEmpty()==true)
+		reslist=results.split("\n",Qt::SkipEmptyParts);
 	if(reslist.isEmpty()==true)
 		{
 			this->htmlURI=QString("https://duckduckgo.com/?q=%1&ia=web").arg(searchfor);
@@ -178,7 +249,7 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 		{
 			if(html.open(QFile::WriteOnly|QFile::Truncate))
 				{
-    		 		QTextStream out(&html);
+    		 			QTextStream out(&html);
 					out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">" << Qt::endl;
 					out << "<html>" << Qt::endl;
 					out << "<head>" << Qt::endl;
@@ -186,6 +257,7 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 					out << "</head>" << Qt::endl;
 					out << "<body>" << Qt::endl;
 
+					reslist.sort();
 					for(int loop=0;loop<reslist.count();loop++)
 						{
 							switch(what)
@@ -209,7 +281,6 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 					this->htmlURI="file://"+this->htmlFile;
 				}
 		}
-
 	this->showWebPage("Results for: " + searchfor,this->htmlURI);
 }
 

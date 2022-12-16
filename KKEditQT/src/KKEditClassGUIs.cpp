@@ -1070,8 +1070,11 @@ void KKEditClass::showLineEntry(void)
 		this->gotoLine(text.toUInt());
 }
 
+
 void KKEditClass::buildTools(void)
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsequence-point"
 	QVBoxLayout		*mainvbox=new QVBoxLayout();
 	QHBoxLayout		*hbox=new QHBoxLayout;
 	QLabel			*widgetlabel;
@@ -1241,6 +1244,7 @@ void KKEditClass::buildTools(void)
 	this->toolsWindow->setLayout(mainvbox);
 
 	this->toolsWindow->setWindowModality(Qt::WindowModal);
+#pragma GCC diagnostic pop
 }
 
 void KKEditClass::sortTabs(void)
@@ -1309,7 +1313,6 @@ void KKEditClass::buildSpellCheckerGUI(void)
 	QVBoxLayout*	vlayout=new QVBoxLayout;
 	QWidget*		hbox;
 	QHBoxLayout*	hlayout;
-	QLabel			*label;
 	QPushButton		*button;
 	QIcon			icon;
 

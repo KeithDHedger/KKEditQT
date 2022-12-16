@@ -23,6 +23,9 @@
 
 #include <QtWidgets>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+
 #include "internet.h"
 
 static const char *defaultauthors="K.D.Hedger ©2013-2022<br><a href=\"mailto:" MYEMAIL "\">Email Me</a><br>" \
@@ -60,5 +63,6 @@ class AboutBoxClass : public QObject
 		QString	licence;
 		QString	authors;
 };
+#pragma GCC diagnostic pop
 
 #endif

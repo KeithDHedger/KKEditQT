@@ -7,6 +7,8 @@ TARGET          = $$qtLibraryTarget(OpenUri)
 DESTDIR         = ../plugins
 
 documentation.files = docs/*
+image.files = OpenUri.png
+
 destdir = $$(INSTALLTO)
 isEmpty(destdir) {
 	LOCAL = 1
@@ -22,9 +24,11 @@ else {
 }
 
 documentation.path = $${target.path}/docs
+image.path = $${target.path}
 
 INSTALLS += target
 INSTALLS += documentation
+INSTALLS += image
 
 CONFIG += install_ok
 

@@ -93,7 +93,6 @@ bool SingleInstanceClass::getRunning(void)
 			if(retval==true)
 				{
 					msgStruct	message;
-					int			msglen;
 					QString		content=this->fileMsg.readAll();
 					if(this->useKey==-1)
 						{

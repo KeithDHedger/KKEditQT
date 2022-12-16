@@ -237,6 +237,8 @@ void KKEditClass::switchPage(int index)
 
 void KKEditClass::rebuildBookMarkMenu()
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 	MenuItemClass	*menuItemSink;
 
 	this->bookMarkMenu->clear();
@@ -245,6 +247,7 @@ void KKEditClass::rebuildBookMarkMenu()
 
 	this->bookMarkMenu->addSeparator();
 	this->bookMarks.clear();
+#pragma GCC diagnostic pop
 }
 
 void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)

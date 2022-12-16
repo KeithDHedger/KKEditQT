@@ -37,7 +37,10 @@ class makelang : public QObject, SyntaxHighlitePluginInterface
 //new rules format
 		void							setLanguageRules(QVector<highLightingRule> *rules) override;
 //multi line rules
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 		void							setMultLineRules(QVector<highLightingRule> *rules) override {};
+#pragma GCC diagnostic pop
 //custom code for edge cases etc
 		void							runCustomRule(QString text,highLightingRule *hr) override;
 
