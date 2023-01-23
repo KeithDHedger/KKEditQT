@@ -51,20 +51,20 @@ struct option long_options[] =
 
 struct msgBuffer
 {
-	long mType;
-	char mText[MAXMSGSIZE];
+	long		mType;
+	char		mText[MAXMSGSIZE];
 };
 
 int			queueID;
 msgBuffer	buffer;
-bool		flushQueue=false;
+bool			flushQueue=false;
 int			sinkReturn;
-bool		waitForMsg=false;
-bool		waitContinue=false;
+bool			waitForMsg=false;
+bool			waitContinue=false;
 
-const char	*commandList[]={"activate","openfile","savefile","quit","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","bookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","insertfile","printfile","runtool","activatemenubylabel","openindocview",NULL};
+const char	*commandList[]={"activate","openfile","savefile","quit","savesession","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","bookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","insertfile","printfile","runtool","activatemenubylabel","openindocview",NULL};
 
-const char	*infoList[]={"selectbetween","sendposdata","sendselectedtext","sendcurrenturl",NULL};
+const char	*infoList[]={"selectbetween","sendposdata","sendselectedtext","sendcurrenturl","sendsessionname",NULL};
 
 void printHelp()
 {
@@ -96,7 +96,7 @@ void printHelp()
 		}
 	printf("\n");
 	printf("\nCommands that dont require a parameter:\n");
-	printf("activate,quit,bookmark,closetab,closealltabs,setusermark,unsetusermark,paste,copy,cut,insertnl,printfile\n");
+	printf("activate,quit,bookmark,closetab,closealltabs,setusermark,unsetusermark,paste,copy,cut,insertnl,printfile,savesession\n");
 }
 
 void sendMsg()

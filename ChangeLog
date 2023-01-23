@@ -1,4 +1,8 @@
 0.7.4
+Added save current session to remote control.
+Added send current session name to remote control.
+Added session name to info passed to external tools.
+Changed KKEditProjectPNG.png to KKEditQTProject.png.
 Sorted function decs in docview.
 Improved qt5 function lookup.
 Suppressed some unneeed variable warnings.

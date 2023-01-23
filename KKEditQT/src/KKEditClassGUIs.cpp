@@ -798,7 +798,10 @@ void KKEditClass::buildMainGui(void)
 	this->saveCurrentSessionMenuItem=this->makeMenuItemClass(SAVESESSIONSMENU,"Save Current Session",0,NULL,SAVESESSIONMENUNAME,CURRENTSESSION);
 	this->saveSessionsMenu->addSeparator();
 	for(int j=1;j<MAXSESSIONS;j++)
-		menuItemSink=this->makeMenuItemClass(SAVESESSIONSMENU,this->sessionNames.value(j),0,NULL,SAVESESSIONMENUNAME,j);
+		{
+			menuItemSink=this->makeMenuItemClass(SAVESESSIONSMENU,this->sessionNames.value(j),0,NULL,SAVESESSIONMENUNAME,j);
+			this->saveSessionMenuItemsList.append(menuItemSink);
+		}
 
 //restore session
 	this->restoreSessionsMenu=new QMenu("&Restore Session");
@@ -1130,15 +1133,16 @@ void KKEditClass::buildTools(void)
 	grid->addWidget(edit,posy++,posx+1,Qt::AlignVCenter);
 
 //info
-	QString info="PLACEHOLDERS:\n\
+	QString	info="PLACEHOLDERS:\n\
 %l - List of open files. Passed to command as $KKEDIT_FILE_LIST, files are space separated\n\
 %n - Number of open files. PASSED to command as $KKEDIT_FILECOUNT\n\
 %f - Filepath of the current document. Passed to command as $KKEDIT_CURRENTFILE\n\
 %d - Directory of the current document or $HOME. Passed to command as $KKEDIT_CURRENTDIR\n\
 %t - Currently selected text. Passed to command as $KKEDIT_SELECTION\n\
 %m - Mime type of file. Passed to command as $KKEDIT_MIMETYPE\n\
-%i - The location of the globally installed tools. Passed to command as $KKEDIT_DATADIR\n\
+%s - Currnt session name. Passed to command as $KKEDIT_CURRENT_SESSION, may be empty\n\
 %h - Tempory file for displaying html in doc viewer. Passed to command as $KKEDIT_HTMLFILE\n\
+%i - The location of the globally installed tools. Passed to command as $KKEDIT_DATADIR\n\
 %p - Progress bar control file. Passed to command as $KKEDIT_BAR_CONTROL\n";
 
 	widgetlabel=new QLabel(info);

@@ -72,6 +72,7 @@ void KKEditClass::doSessionsMenuItems(void)
 						}
 				}
 
+//TODO//set session name for save
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
 				{
@@ -295,6 +296,7 @@ void KKEditClass::doToolsMenuItems()
 
 						if(document!=NULL)
 							{
+							//qDebug()<<"session name="<<this->sessionNames.value(currentSessionNumber);
 //								//%l
 								setenv("KKEDIT_FILE_LIST",filelist.trimmed().toStdString().c_str(),1);
 								command.replace("%l",filelist);
@@ -315,6 +317,9 @@ void KKEditClass::doToolsMenuItems()
 								command.replace("%m",document->mimeType);
 							}
 
+						//%s
+						setenv("KKEDIT_CURRENT_SESSION",this->sessionNames.value(this->currentSessionNumber).toStdString().c_str(),1);
+						command.replace("%s",filelist);
 						//%h html file
 						setenv("KKEDIT_HTMLFILE",this->htmlFile.toStdString().c_str(),1);
 						command.replace("%h",this->htmlFile);
@@ -967,11 +972,25 @@ void KKEditClass::doTimer(void)
 								this->application->setActiveWindow(this->mainWindow);
 								this->mainWindow->activateWindow();
 								break;
+
+							case SAVECURRENTSESSIONMSG:
+								emit this->saveCurrentSessionMenuItem->triggered();
+								break;
 							case RESTORESESSIONMSG:
 								for(int j=0;j<this->restoreSessionMenuItemsList.count();j++)
 									{
 										if(QString(buffer.mText).compare(this->restoreSessionMenuItemsList.at(j)->text())==0)
 											emit this->restoreSessionMenuItemsList.at(j)->triggered();
+									}
+								break;
+
+							case SENDSESSIONNAMEMSG:
+								strcpy(buffer.mText,this->sessionNames.value(currentSessionNumber).toStdString().c_str());
+								buffer.mType=SENDMSG;
+								if((msgsnd(queueID,&buffer,strlen(buffer.mText)+1,0))==-1)
+									{
+										fprintf(stderr,"Can't send message :(\n");
+										exit(NOSENDMSG);
 									}
 								break;
 						}

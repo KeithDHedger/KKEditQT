@@ -340,6 +340,7 @@ class KKEditClass : public QObject
 		MenuItemClass				*saveCurrentSessionMenuItem;
 		MenuItemClass				*restoreDefaultSessionMenuItem;
 		QList<MenuItemClass*>		restoreSessionMenuItemsList;
+		QList<MenuItemClass*>		saveSessionMenuItemsList;
 
 		MenuItemClass				*newMenuItem;
 		MenuItemClass				*openMenuItem;
