@@ -1420,3 +1420,14 @@ void KKEditClass::runNoOutput(QString command,bool sync,bool asroot)
 		QProcess::startDetached(com,args);
 }
 
+void KKEditClass::sendMessgage(QString msg)
+{
+	msgStruct	buffer;
+
+	strncpy(buffer.mText,msg.toStdString().c_str(),MAXMSGSIZE-1);
+	buffer.mType=SENDMSG;
+	if((msgsnd(queueID,&buffer,strlen(buffer.mText)+1,0))==-1)
+		{
+			qDebug()<<"Can't send message :"<<msg;
+		}
+}

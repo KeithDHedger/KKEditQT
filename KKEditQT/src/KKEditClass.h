@@ -340,7 +340,6 @@ class KKEditClass : public QObject
 		MenuItemClass				*saveCurrentSessionMenuItem;
 		MenuItemClass				*restoreDefaultSessionMenuItem;
 		QList<MenuItemClass*>		restoreSessionMenuItemsList;
-		QList<MenuItemClass*>		saveSessionMenuItemsList;
 
 		MenuItemClass				*newMenuItem;
 		MenuItemClass				*openMenuItem;
@@ -589,6 +588,7 @@ class KKEditClass : public QObject
 //menu functions
 		void							clickMenu(QMenu *menu,QString name);
 		void							notDoneYet(QString string);
+		void							sendMessgage(QString msg);
 //editor functions
 		void							setTabVisibilty(int tab,bool visible);
 };

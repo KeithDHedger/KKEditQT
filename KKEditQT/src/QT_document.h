@@ -120,8 +120,6 @@ class DocumentClass : public QPlainTextEdit
 		void								dropEvent(QDropEvent* event);
 		void								dragMoveEvent(QDragMoveEvent *event);
 
-
-
 	private slots:
 		void								highlightCurrentLine();
 		void								updateLineNumberAreaWidth(int newcnt);

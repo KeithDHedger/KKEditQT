@@ -1,4 +1,8 @@
 0.7.4
+Added cut, copy and paste to remote control.
+Fixed hang if no data to send.
+Done send cursor position to remote control ( tabnumber:line:column ).
+Done send selected text to remote control.
 Added save current session to remote control.
 Added send current session name to remote control.
 Added session name to info passed to external tools.

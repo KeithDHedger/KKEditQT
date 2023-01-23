@@ -296,7 +296,6 @@ void KKEditClass::doToolsMenuItems()
 
 						if(document!=NULL)
 							{
-							//qDebug()<<"session name="<<this->sessionNames.value(currentSessionNumber);
 //								//%l
 								setenv("KKEDIT_FILE_LIST",filelist.trimmed().toStdString().c_str(),1);
 								command.replace("%l",filelist);
@@ -835,13 +834,7 @@ void KKEditClass::doTimer(void)
 					switch(buffer.mType & ALLMSGTYPES)
 						{
 							case SENDCURRENTURL:
-								strcpy(buffer.mText,this->currentURL.toStdString().c_str());
-								buffer.mType=SENDMSG;
-								if((msgsnd(queueID,&buffer,strlen(buffer.mText)+1,0))==-1)
-									{
-										fprintf(stderr,"Can't send message :(\n");
-										exit(NOSENDMSG);
-									}
+								this->sendMessgage(this->currentURL);
 								break;
 							case OPENINDOCVIEWMSG:
 								this->showWebPage("",buffer.mText);
@@ -912,13 +905,25 @@ void KKEditClass::doTimer(void)
 								this->notDoneYet("SELECTBETWEENMSG not yet implemented");
 								break;
 							case PASTEMSG:
-								this->notDoneYet("PASTEMSG not yet implemented");
+								{
+									DocumentClass	*doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										doc->paste();
+								}
 								break;
 							case COPYMSG:
-								this->notDoneYet("COPYMSG not yet implemented");
+								{
+									DocumentClass	*doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										doc->copy();
+								}
 								break;
 							case CUTMSG:
-								this->notDoneYet("CUTMSG not yet implemented");
+								{
+									DocumentClass	*doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										doc->cut();
+								}
 								break;
 							case INSERTTEXTMSG:
 								this->notDoneYet("INSERTTEXTMSG not yet implemented");
@@ -929,8 +934,8 @@ void KKEditClass::doTimer(void)
 							case INSERTFILEMSG:
 								this->notDoneYet("INSERTFILEMSG not yet implemented");
 								break;
-							case PRINTFILESMSG:
-								this->notDoneYet("PRINTFILESMSG not yet implemented");
+							case PRINTFILESMSG://TODO//just print with defaults//TODO//
+								emit this->printMenuItem->triggered();
 								break;
 							case RUNTOOLMSG:
 								this->clickMenu(this->toolsMenu,QString(buffer.mText));
@@ -945,17 +950,28 @@ void KKEditClass::doTimer(void)
 									}
 								break;
 							case SENDPOSDATAMSG:
-								this->notDoneYet("SENDPOSDATAMSG not yet implemented");
+								{
+									DocumentClass	*doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										{
+											QTextCursor	cursor=doc->textCursor();
+											this->sendMessgage(QString("%1:%2:%3").arg(this->mainNotebook->currentIndex()).arg(doc->getCurrentLineNumber()).arg(cursor.positionInBlock()+1));
+										}
+									else
+										this->sendMessgage("");
+								}
 								break;
 							case SENDSELECTEDTEXTMSG:
-								strcpy(buffer.mText,"test return message\n");
-								buffer.mType=SENDMSG;
-								if((msgsnd(queueID,&buffer,strlen(buffer.mText)+1,0))==-1)
-									{
-										fprintf(stderr,"Can't send message :(\n");
-										exit(NOSENDMSG);
-									}
-								this->notDoneYet("SENDSELECTEDTEXTMSG not yet implemented");
+								{
+									DocumentClass	*doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										{
+											QTextCursor	cursor=doc->textCursor();
+											this->sendMessgage(cursor.selection().toPlainText());
+										}
+									else
+										this->sendMessgage("");
+								}
 								break;
 							case OPENFILEMSG:
 								this->openFile(buffer.mText);
@@ -985,13 +1001,7 @@ void KKEditClass::doTimer(void)
 								break;
 
 							case SENDSESSIONNAMEMSG:
-								strcpy(buffer.mText,this->sessionNames.value(currentSessionNumber).toStdString().c_str());
-								buffer.mType=SENDMSG;
-								if((msgsnd(queueID,&buffer,strlen(buffer.mText)+1,0))==-1)
-									{
-										fprintf(stderr,"Can't send message :(\n");
-										exit(NOSENDMSG);
-									}
+								this->sendMessgage(this->sessionNames.value(currentSessionNumber));
 								break;
 						}
 

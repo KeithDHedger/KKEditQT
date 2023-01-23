@@ -800,7 +800,6 @@ void KKEditClass::buildMainGui(void)
 	for(int j=1;j<MAXSESSIONS;j++)
 		{
 			menuItemSink=this->makeMenuItemClass(SAVESESSIONSMENU,this->sessionNames.value(j),0,NULL,SAVESESSIONMENUNAME,j);
-			this->saveSessionMenuItemsList.append(menuItemSink);
 		}
 
 //restore session
