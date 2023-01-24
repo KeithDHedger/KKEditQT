@@ -847,7 +847,7 @@ void KKEditClass::doTimer(void)
 								break;
 							case SELECTTABMSG:
 								{
-									long	tabnum=strtol(buffer.mText,NULL,0);
+									long		tabnum=strtol(buffer.mText,NULL,0);
 									QTabBar	*bar=this->mainNotebook->tabBar();
 									if(1+tabnum>bar->count())
 										tabnum=bar->count()-1;
@@ -883,7 +883,14 @@ void KKEditClass::doTimer(void)
 								}
 								break;
 							case BOOKMARKMSG:
-								this->notDoneYet("BOOKMARKMSG not yet implemented");
+								{
+									DocumentClass	*doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										{
+											this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM,QTextCursor());
+											doc->repaint();
+										}
+								}
 								break;
 							case CLOSETABMSG:
 								this->closingAllTabs=false;
@@ -899,7 +906,44 @@ void KKEditClass::doTimer(void)
 								this->notDoneYet("UNSETUSERMARKMASG not yet implemented");
 								break;
 							case MOVETOMSG:
-								this->notDoneYet("MOVETOMSG not yet implemented");
+								{
+									QTabBar			*bar=this->mainNotebook->tabBar();
+									DocumentClass	*doc;
+									QTextCursor		cursor;
+									QString			str=buffer.mText;
+									QStringList		list1=str.split(QLatin1Char(':'));
+									long				tabnum=list1.at(0).toInt();
+									int				line=list1.at(1).toInt();
+									QTextBlock		block;
+
+									if(bar->count()==0)
+										break;
+									if(line<1)
+										line=1;
+									if(1+tabnum>bar->count())
+										tabnum=bar->count()-1;
+									if(tabnum<0)
+										tabnum=0;
+									this->setTabVisibilty(tabnum,true);
+									doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										{
+											this->gotoLine(line);
+											block=doc->document()->findBlockByNumber(line-1);
+
+											if(block.isValid()==false)
+												block=doc->document()->lastBlock();
+											cursor=doc->textCursor();
+											int	col=list1.at(2).toInt();
+											if(col<1)
+												col=1;
+											if(block.length()<col-1)
+												cursor.setPosition(block.position()+block.length()-1);
+											else
+												cursor.setPosition(block.position()+col-1);
+											doc->setTextCursor(cursor);
+										}
+								}
 								break;
 							case SELECTBETWEENMSG:
 								this->notDoneYet("SELECTBETWEENMSG not yet implemented");
@@ -926,10 +970,29 @@ void KKEditClass::doTimer(void)
 								}
 								break;
 							case INSERTTEXTMSG:
-								this->notDoneYet("INSERTTEXTMSG not yet implemented");
+								{
+									DocumentClass	*doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										{
+											QTextCursor	cursor=doc->textCursor();
+											QString txt=buffer.mText;
+											cursor.clearSelection();
+											cursor.insertText(txt);
+											doc->setTextCursor(cursor);
+										}
+								}
 								break;
 							case INSERTNLMSG:
-								this->notDoneYet("INSERTNLMSG not yet implemented");
+								{
+									DocumentClass	*doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										{
+											QTextCursor	cursor=doc->textCursor();
+											cursor.clearSelection();
+											cursor.insertText("\n");
+											doc->setTextCursor(cursor);
+										}
+								}
 								break;
 							case INSERTFILEMSG:
 								this->notDoneYet("INSERTFILEMSG not yet implemented");

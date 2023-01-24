@@ -102,7 +102,7 @@ class DocumentClass : public QPlainTextEdit
 		bool								findStr(int what=FINDNEXT);
 		void								setHighlightAll(void);
 
-		void paste(void);//TODO//
+		//void paste(void);//TODO//
 		const QString					textUnderCursor();
 
 	protected:

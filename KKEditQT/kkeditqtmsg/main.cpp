@@ -62,7 +62,7 @@ int			sinkReturn;
 bool			waitForMsg=false;
 bool			waitContinue=false;
 
-const char	*commandList[]={"activate","openfile","savefile","quit","savesession","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","bookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","insertfile","printfile","runtool","activatemenubylabel","openindocview",NULL};
+const char	*commandList[]={"activate","openfile","savefile","quit","savesession","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","togglebookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","insertfile","printfile","runtool","activatemenubylabel","openindocview",NULL};
 
 const char	*infoList[]={"selectbetween","sendposdata","sendselectedtext","sendcurrenturl","sendsessionname",NULL};
 
@@ -87,6 +87,7 @@ void printHelp()
 			printf("%s ",commandList[cnt]);
 			cnt++;
 		}
+	printf("\nN.B. Newline escapes( '\\n' ) in inserttext data are passed as literal '\\n', ( a quirk of argv ).\n");
 	cnt=0;
 	printf("\n\nInformation resquests recognised by KKEditQT:\n");
 	while(infoList[cnt]!=NULL)
@@ -94,6 +95,7 @@ void printHelp()
 			printf("%s ",infoList[cnt]);
 			cnt++;
 		}
+	printf("\nN.B. 'sendposdata' sends data in the format the tab number ( 0 based ):line number ( 1 based ):column number ( 1 based ).\n");
 	printf("\n");
 	printf("\nCommands that dont require a parameter:\n");
 	printf("activate,quit,bookmark,closetab,closealltabs,setusermark,unsetusermark,paste,copy,cut,insertnl,printfile,savesession\n");
@@ -182,7 +184,7 @@ int main(int argc, char **argv)
 						break;
 
 					case 'd':
-						strcpy(buffer.mText,optarg);
+						strncpy(buffer.mText,optarg,MAXMSGSIZE-1);
 						break;
 
 					case 'f':
