@@ -1017,9 +1017,7 @@ void KKEditClass::doTimer(void)
 
 											cursor.setPosition(blockfromstart+colfrom);
 //to
-											blockto=doc->document()->findBlockByNumber(lineto);
-											//qDebug()<<blockto.isValid();
-											
+											blockto=doc->document()->findBlockByNumber(lineto);											
 											if(blockto.isValid()==false)
 												blockto=doc->document()->lastBlock();
 											blocktostart=blockto.position();
