@@ -62,7 +62,7 @@ int			sinkReturn;
 bool			waitForMsg=false;
 bool			waitContinue=false;
 
-const char	*commandList[]={"activate","openfile","newfile","savefile","quit","savesession","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","togglebookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","selectbetween","insertfile","printfile","runtool","activatemenubylabel","openindocview",NULL};
+const char	*commandList[]={"activate","openfile","newfile","savefile","savefileas","quit","savesession","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","togglebookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","selectbetween","insertfile","printfile","runtool","activatemenubylabel","openindocview",NULL};
 
 const char	*infoList[]={"sendposdata","sendselectedtext","sendcurrenturl","sendsessionname",NULL};
 
@@ -96,6 +96,7 @@ void printHelp()
 			cnt++;
 		}
 	printf("\nN.B. 'sendposdata' sends data in the format the tab number ( 0 based ):line number ( 1 based ):column number ( 1 based ).\n");
+	printf("\nN.B. 'sendposdata' Will send a maximum 4096 characters, defined in kkedit-includes.h as MAXMSGSIZE.\n");
 	printf("\n");
 	printf("\nCommands that dont require a parameter:\n");
 	printf("activate,quit,bookmark,closetab,closealltabs,setusermark,unsetusermark,paste,copy,cut,insertnl,printfile,savesession\n");

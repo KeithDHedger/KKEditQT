@@ -1018,6 +1018,10 @@ void KKEditClass::doTimer(void)
 											cursor.setPosition(blockfromstart+colfrom);
 //to
 											blockto=doc->document()->findBlockByNumber(lineto);
+											//qDebug()<<blockto.isValid();
+											
+											if(blockto.isValid()==false)
+												blockto=doc->document()->lastBlock();
 											blocktostart=blockto.position();
 											if((colto)>blockto.length()-1)
 												colto=blockto.length();
@@ -1147,10 +1151,30 @@ void KKEditClass::doTimer(void)
 								this->openFile(buffer.mText);
 								break;
 							case NEWFILEMSG:
-								this->newFile();
+								emit this->newMenuItem->triggered();
 								break;
 							case SAVEFILEMSG:
-								this->notDoneYet("SAVEFILEMSG not yet implemented");
+								emit this->saveMenuItem->triggered();
+								break;
+							case SAVEFILEASMSG:
+								{
+									DocumentClass	*doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										{
+											QFile			file(buffer.mText);
+											QMimeType		type;
+											QMimeDatabase	db;
+	
+											this->saveFileAs(-1,buffer.mText);
+											type=db.mimeTypeForFile(buffer.mText);
+											doc->mimeType=type.name();
+											doc->setHiliteLanguage();
+											doc->highlighter->rehighlight();
+											doc->setFilePrefs();
+											doc->dirty=false;
+											doc->setTabColourType(NORMALTAB);
+										}
+								}
 								break;
 							case QUITAPPMSG:
 								this->shutDownApp();

@@ -132,7 +132,7 @@ int KKEditClass::askSaveDialog(const QString filename)
 	return(msgBox.exec());
 }
 
-bool KKEditClass::saveFileAs(int tabnum)
+bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 {
 	DocumentClass	*doc=this->getDocumentForTab(tabnum);
 	QFile			file;
@@ -141,13 +141,21 @@ bool KKEditClass::saveFileAs(int tabnum)
 	QString			dialogpath;
 	int				calctabnum=this->mainNotebook->indexOf(doc);
 	plugData			pd;
+	QString			fileName="";
 
-	if(doc->getFilePath().isEmpty()==true)
-		dialogpath=getenv("HOME") + QString("/") + doc->getFileName();
+	if(filepath.isEmpty()==true)
+		{
+			if(doc->getFilePath().isEmpty()==true)
+				dialogpath=getenv("HOME") + QString("/") + doc->getFileName();
+			else
+				dialogpath=doc->getFilePath();
+
+			fileName=QFileDialog::getSaveFileName(this->mainWindow,"Save File",dialogpath);
+		}
 	else
-		dialogpath=doc->getFilePath();
-
-	QString fileName = QFileDialog::getSaveFileName(this->mainWindow,"Save File",dialogpath);
+		{
+			fileName=filepath;
+		}
 
 	if(fileName.isEmpty()==true)
 		return(false);

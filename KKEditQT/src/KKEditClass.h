@@ -432,7 +432,7 @@ class KKEditClass : public QObject
 		bool							saveFile(int tabnum,bool ask=true);
 		void							newEditor(int what);
 		bool							saveAllFiles(bool ask=false);
-		bool							saveFileAs(int tabnum);
+		bool							saveFileAs(int tabnum,QString filepath="");
 		int							askSaveDialog(const QString filename);
 		QStringList					getNewRecursiveTagList(QString filepath);
 
