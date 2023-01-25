@@ -910,43 +910,122 @@ void KKEditClass::doTimer(void)
 									QTabBar			*bar=this->mainNotebook->tabBar();
 									DocumentClass	*doc;
 									QTextCursor		cursor;
+									QTextBlock		blockfrom;
 									QString			str=buffer.mText;
 									QStringList		list1=str.split(QLatin1Char(':'));
-									long				tabnum=list1.at(0).toInt();
-									int				line=list1.at(1).toInt();
-									QTextBlock		block;
+
+									if(list1.count()<3)
+										{
+											qWarning()<<"Move To need 3 values, eg 'TABNUM:LINENUM:COLNUM'";
+											break;
+										}
+									int				tabnum=list1.at(0).toInt();
+									int				linefrom=list1.at(1).toInt();
+									int				colfrom=list1.at(2).toInt();
+									int				blockfromstart;
 
 									if(bar->count()==0)
 										break;
-									if(line<1)
-										line=1;
-									if(1+tabnum>bar->count())
+
+									if(tabnum>bar->count()-1)
 										tabnum=bar->count()-1;
 									if(tabnum<0)
 										tabnum=0;
+
+									colfrom--;
+									if(colfrom<0)
+										colfrom=0;
+
+									linefrom--;
+									if(linefrom<0)
+										linefrom=0;
 									this->setTabVisibilty(tabnum,true);
 									doc=this->getDocumentForTab(-1);
 									if(doc!=NULL)
 										{
-											this->gotoLine(line);
-											block=doc->document()->findBlockByNumber(line-1);
-
-											if(block.isValid()==false)
-												block=doc->document()->lastBlock();
 											cursor=doc->textCursor();
-											int	col=list1.at(2).toInt();
-											if(col<1)
-												col=1;
-											if(block.length()<col-1)
-												cursor.setPosition(block.position()+block.length()-1);
-											else
-												cursor.setPosition(block.position()+col-1);
+
+											blockfrom=doc->document()->findBlockByNumber(linefrom);
+											blockfromstart=blockfrom.position();
+											if((colfrom)>blockfrom.length()-1)
+												colfrom=blockfrom.length()-1;
+
+											cursor.setPosition(blockfromstart+colfrom);
 											doc->setTextCursor(cursor);
 										}
 								}
 								break;
 							case SELECTBETWEENMSG:
-								this->notDoneYet("SELECTBETWEENMSG not yet implemented");
+								{
+									QTabBar			*bar=this->mainNotebook->tabBar();
+									DocumentClass	*doc;
+									QTextCursor		cursor;
+									QTextBlock		blockfrom;
+									QTextBlock		blockto;
+									QString			str=buffer.mText;
+									QStringList		list1=str.split(QLatin1Char(':'));
+									if(list1.count()<3)
+										{
+											qWarning()<<"Move To need 5 values, eg 'TABNUM:LINEFROM:COLFROM:LINETO:COLTO'";
+											break;
+										}
+
+									int				tabnum=list1.at(0).toInt();
+									int				linefrom=list1.at(1).toInt();
+									int				lineto=list1.at(3).toInt();
+									int				colfrom=list1.at(2).toInt();
+									int				colto=list1.at(4).toInt();
+									int				blockfromstart;
+									int				blocktostart;
+
+									if(bar->count()==0)
+										break;
+
+									if(lineto<linefrom)
+										break;
+									if((lineto==linefrom) && (colto<=colfrom))
+										break;
+									if(tabnum>bar->count()-1)
+										tabnum=bar->count()-1;
+									if(tabnum<0)
+										tabnum=0;
+
+									colfrom--;
+									colto--;
+									if(colto<0)
+										colto=0;
+									if(colfrom<0)
+										colfrom=0;
+
+									linefrom--;
+									lineto--;
+									if(lineto<0)
+										lineto=0;
+									if(linefrom<0)
+										linefrom=0;
+									this->setTabVisibilty(tabnum,true);
+									doc=this->getDocumentForTab(-1);
+									if(doc!=NULL)
+										{
+//from
+											cursor=doc->textCursor();
+
+											blockfrom=doc->document()->findBlockByNumber(linefrom);
+											blockfromstart=blockfrom.position();
+											if((colfrom)>blockfrom.length()-1)
+												colfrom=blockfrom.length();
+
+											cursor.setPosition(blockfromstart+colfrom);
+//to
+											blockto=doc->document()->findBlockByNumber(lineto);
+											blocktostart=blockto.position();
+											if((colto)>blockto.length()-1)
+												colto=blockto.length();
+
+											cursor.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,blocktostart-blockfromstart+(colto-colfrom));
+											doc->setTextCursor(cursor);
+										}
+								}
 								break;
 							case PASTEMSG:
 								{
@@ -975,7 +1054,8 @@ void KKEditClass::doTimer(void)
 									if(doc!=NULL)
 										{
 											QTextCursor	cursor=doc->textCursor();
-											QString txt=buffer.mText;
+											QString		txt=buffer.mText;
+
 											cursor.clearSelection();
 											cursor.insertText(txt);
 											doc->setTextCursor(cursor);
@@ -985,9 +1065,10 @@ void KKEditClass::doTimer(void)
 							case INSERTNLMSG:
 								{
 									DocumentClass	*doc=this->getDocumentForTab(-1);
+									QTextCursor		cursor;
 									if(doc!=NULL)
 										{
-											QTextCursor	cursor=doc->textCursor();
+											cursor=doc->textCursor();
 											cursor.clearSelection();
 											cursor.insertText("\n");
 											doc->setTextCursor(cursor);
@@ -995,7 +1076,31 @@ void KKEditClass::doTimer(void)
 								}
 								break;
 							case INSERTFILEMSG:
-								this->notDoneYet("INSERTFILEMSG not yet implemented");
+								{
+									bool				retval=false;
+									QFile			file(buffer.mText);
+									DocumentClass	*doc=this->getDocumentForTab(-1);
+									QTextCursor		cursor;
+									QString			content;
+									if(doc!=NULL)
+										{
+											cursor=doc->textCursor();
+
+											retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
+											if(retval==true)
+												{
+													content=QString::fromUtf8(file.readAll());
+													cursor.beginEditBlock();
+														cursor.insertText(content);
+														doc->highlighter->rehighlight();
+														doc->dirty=true;
+													cursor.endEditBlock();
+													doc->state=DIRTYTAB;
+													doc->setTabColourType(DIRTYTAB);
+													this->setToolbarSensitive();
+												}
+										}
+								}
 								break;
 							case PRINTFILESMSG://TODO//just print with defaults//TODO//
 								emit this->printMenuItem->triggered();
@@ -1015,9 +1120,10 @@ void KKEditClass::doTimer(void)
 							case SENDPOSDATAMSG:
 								{
 									DocumentClass	*doc=this->getDocumentForTab(-1);
+									QTextCursor		cursor;
 									if(doc!=NULL)
 										{
-											QTextCursor	cursor=doc->textCursor();
+											cursor=doc->textCursor();
 											this->sendMessgage(QString("%1:%2:%3").arg(this->mainNotebook->currentIndex()).arg(doc->getCurrentLineNumber()).arg(cursor.positionInBlock()+1));
 										}
 									else
@@ -1027,9 +1133,10 @@ void KKEditClass::doTimer(void)
 							case SENDSELECTEDTEXTMSG:
 								{
 									DocumentClass	*doc=this->getDocumentForTab(-1);
+									QTextCursor		cursor;
 									if(doc!=NULL)
 										{
-											QTextCursor	cursor=doc->textCursor();
+											cursor=doc->textCursor();
 											this->sendMessgage(cursor.selection().toPlainText());
 										}
 									else
@@ -1038,6 +1145,9 @@ void KKEditClass::doTimer(void)
 								break;
 							case OPENFILEMSG:
 								this->openFile(buffer.mText);
+								break;
+							case NEWFILEMSG:
+								this->newFile();
 								break;
 							case SAVEFILEMSG:
 								this->notDoneYet("SAVEFILEMSG not yet implemented");

@@ -62,9 +62,9 @@ int			sinkReturn;
 bool			waitForMsg=false;
 bool			waitContinue=false;
 
-const char	*commandList[]={"activate","openfile","savefile","quit","savesession","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","togglebookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","insertfile","printfile","runtool","activatemenubylabel","openindocview",NULL};
+const char	*commandList[]={"activate","openfile","newfile","savefile","quit","savesession","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","togglebookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","selectbetween","insertfile","printfile","runtool","activatemenubylabel","openindocview",NULL};
 
-const char	*infoList[]={"selectbetween","sendposdata","sendselectedtext","sendcurrenturl","sendsessionname",NULL};
+const char	*infoList[]={"sendposdata","sendselectedtext","sendcurrenturl","sendsessionname",NULL};
 
 void printHelp()
 {

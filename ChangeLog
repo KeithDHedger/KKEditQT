@@ -1,4 +1,7 @@
 0.7.4
+Added newfile to remote control.
+Done insertfile to in remote control.
+Done selectbetween to in remote control.
 Done move to tab:line:col in remote control.
 Done printfile in remote control.
 Done togglebookmark in remote control.

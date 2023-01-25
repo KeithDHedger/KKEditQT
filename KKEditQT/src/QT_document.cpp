@@ -372,31 +372,6 @@ const QString DocumentClass::textUnderCursor()
 	return cursor.selectedText();
 }
 
-//void DocumentClass::paste(void)
-//{
-//QPlainTextEdit::paste();
-//#if 0
-//int startline=this->getCurrentLineNumber();
-//qDebug()<<this->getCurrentLineNumber();
-//QClipboard *clipboard = QGuiApplication::clipboard();
-//
-////qDebug()<<"paste"<<clipboard->text()<<clipboard->text(QClipboard::Selection);
-//
-//qDebug()<<this->getCurrentLineNumber();
-//int diff=this->getCurrentLineNumber()-startline;
-//	foreach(bookMarkStruct value,this->mainKKEditClass->bookMarks)
-//		{
-//			if(value.docIndex==this->pageIndex)
-//				{
-//					if(this->getCurrentLineNumber()<value.line)
-//						{
-//							this->mainKKEditClass->bookMarks[value.bmKey].line+=diff;
-//						}
-//				}
-//		}
-//#endif
-//}
-
 void DocumentClass::keyPressEvent(QKeyEvent *event)
 {
 	bool				isshortcut;
