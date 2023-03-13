@@ -693,7 +693,7 @@ void KKEditClass::findFile(void)
 	if(this->openFile(QString("%1/%2").arg(document->getDirPath()).arg(filename))==true)
 		return;
 
-	results=this->runPipeAndCapture(QString("find \"%1\" -iname \"%2\"").arg(document->getDirPath()).arg(filename));
+	results=this->runPipeAndCapture(QString("find \"%1\" -iwholename \"%2\"").arg(document->getDirPath()).arg(filename));
 	if(results.isEmpty()==false)
 		{
 			retval=results.split("\n",Qt::SkipEmptyParts);
@@ -701,7 +701,7 @@ void KKEditClass::findFile(void)
 				this->openFile(retval.at(j));
 		}
 
-	results=this->runPipeAndCapture(QString("find \"/usr/include\" -iname \"%1\"").arg(filename));
+	results=this->runPipeAndCapture(QString("find \"/usr/include\" -iwholename \"/usr/include/%1\"").arg(filename));
 	if(results.isEmpty()==true)
 		return;
 

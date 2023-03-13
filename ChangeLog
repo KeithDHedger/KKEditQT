@@ -1,4 +1,5 @@
 0.7.4
+Fixed opening include files from nav menu if name includes '/'.
 Added winter theme.
 Done savefileas in remote control.
 Added newfile to remote control.
