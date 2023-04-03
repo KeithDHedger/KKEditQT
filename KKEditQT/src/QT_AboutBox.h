@@ -32,14 +32,15 @@ static const char *defaultauthors="K.D.Hedger ©2013-2022<br><a href=\"mailto:" 
 				"<a href=\"" GLOBALWEBSITE "\">Homepage</a>" \
 				"<br><br>More by the same author<br>" \
 				
-				"<a href=\"https://keithdhedger.github.io/KKEdit/\">KKEdit<br>" \
-				"<a href=\"https://keithdhedger.github.io/pages/xdecorations/xdecorations.html\">XDecorations<br>" \
-				"<a href=\"https://keithdhedger.github.io/pages/apps.html#themeed\">Xfce-Theme-Manager<br>" \
-				"<a href=\"https://keithdhedger.github.io/pages/apps.html#xfcecomp\">Xfce4-Composite-Editor<br>" \
-				"<a href=\"https://keithdhedger.github.io/pages/manpageeditor/manpageeditor.html\">Manpage Editor<br>" \
-				"<a href=\"https://keithdhedger.github.io/pages/gtksu/gtksu.html\">GtkSu<br>" \
-				"<a href=\"https://keithdhedger.github.io/pages/aspellgui/aspelgui.html\">ASpell<br>" \
-				"<a href=\"https://keithdhedger.github.io/pages/clipviewer/clip.html\">Clipboard Viewer<br>";
+				"<a href=\"" KKEDITQTPAGE "\">KKEditQT<br>" \
+				"<a href=\"" KKEDITPAGE "\">KKEdit<br>" \
+				"<a href=\"" XDECSPAGE "\">XDecorations<br>" \
+				"<a href=\"" THEMEMANAGER "\">Xfce-Theme-Manager<br>" \
+				"<a href=\"" COMPMANAGER "\">Xfce4-Composite-Editor<br>" \
+				"<a href=\"" MANPAGEPAGE "\">Manpage Editor<br>" \
+				"<a href=\"" GTKSUPAGE "\">GtkSu<br>" \
+				"<a href=\"" ASPELLPAGE "\">ASpell<br>" \
+				"<a href=\"" CLIPVIEW "\">Clipboard Viewer<br>";
 
 class AboutBoxClass : public QObject
 {

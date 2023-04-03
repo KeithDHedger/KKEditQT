@@ -1,4 +1,6 @@
 0.7.4
+Updated aboutbox links.
+Added "Spring" theme.
 Fixed opening include files from nav menu if name includes '/'.
 Added winter theme.
 Done savefileas in remote control.

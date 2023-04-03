@@ -31,6 +31,9 @@ Ported to QT5.<br>
 This is the QT5 version of KKEDit and is not yet as full featured as the gtk version that it will soon replace.<br>
 I now consider this version to be fully functional ( if not fully featured ).<br>
 
+BUGS etc.
+kdhedger68713@gmail.com
+
 TODO ( in no particular order ):
 
 Global tools ( Minor )<br>
