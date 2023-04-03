@@ -33,6 +33,7 @@
 #define KKEDITQTPAGE "https://keithdhedger.github.io/KKEditQT/"
 #define XDECSPAGE GLOBALWEBSITE "/pages/xdecorations/xdecorations.html"
 #define GTKSUPAGE GLOBALWEBSITE "/pages/gtksu/gtksu.html"
+#define KKFILEMANAGER "https://github.com/KeithDHedger/KKFileManager"
 
 #define COPYRITE "Copyright © 2013-2023 K.D.Hedger"
 
