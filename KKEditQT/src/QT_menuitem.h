@@ -34,12 +34,12 @@ class MenuItemClass : public QAction
 	public:
 		explicit MenuItemClass(const QString &text, QWidget *parent = 0);
 		~MenuItemClass();
-		KKEditClass			*mainKKEditClass=NULL;
+		KKEditClass		*mainKKEditClass=NULL;
 
 		void				setMenuID(unsigned int id);
-		unsigned int 		getMenuID(void);
+		unsigned int 	getMenuID(void);
 		void				setMenuString(QString str);
-		QString				getMenuString(void);
+		QString			getMenuString(void);
 
 
 		bool				inPopup=false;
@@ -49,8 +49,8 @@ class MenuItemClass : public QAction
 		void				menuClickedGotoLine();
 
 	private:
-		int					menuID;
-		QString				menuString;
+		int				menuID;
+		QString			menuString;
 };
 
 #endif

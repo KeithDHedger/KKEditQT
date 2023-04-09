@@ -542,7 +542,10 @@ void KKEditClass::doNavMenuItems()
 				this->searchAPIDocs("",0);
 				break;
 			case SEARCHQT5DOCS:
-				this->searchAPIDocs("",1);
+				this->searchDoxyDocs("");
+				break;
+			case SEARCHDOXYDOCS:
+				this->searchDoxyDocs("");
 				break;
 		}
 }
@@ -1555,9 +1558,10 @@ void KKEditClass::doOddButtons(void)
 		}
 }
 
-void KKEditClass::docViewLinkTrap(const QUrl url)
+bool KKEditClass::docViewLinkTrap(const QUrl url)
 {
 #ifdef _BUILDDOCVIEWER_
+//TODO//needs improving
 	Qt::KeyboardModifiers key=QGuiApplication::keyboardModifiers();
 	if(key!=Qt::ControlModifier)
 		this->webView->load(url);
@@ -1602,10 +1606,10 @@ void KKEditClass::docViewLinkTrap(const QUrl url)
 						}
 					stringcnt++;
 					}
-					
+
 			if(this->openFile(finalstring,linenum)==true)
 				{
-					return;
+					return(true);
 				}
 			else
 				{
@@ -1615,22 +1619,23 @@ void KKEditClass::docViewLinkTrap(const QUrl url)
 						{
 							str=this->runPipeAndCapture(QString("cat %1|sed -n 's|^.*%2\">\\(.*\\)</a>.*$|\\1|p'|head -n1").arg(datafile).arg(lnk)).remove("\n");
 							if(goToDefinition(str)==true)
-								return;	
+								return(true);	
 						}
 
 					if(QRegularExpression(".*/(struct)(.*)$").match(str).captured(1).compare("struct")==0)
 						{
 							if(goToDefinition(QRegularExpression(".*/(struct)(.*)$").match(finalstring).captured(2))==true)
-								return;
+								return(true);
 						}
 
 					if(QRegularExpression(".*/(class)(.*)$").match(str).captured(1).compare("class")==0)
 						{
 							if(goToDefinition(QRegularExpression(".*/(class)(.*)$").match(finalstring).captured(2))==true)
-								return;
+								return(true);
 						}
 				}
 		}
+	return(false);
 #endif
 }
 

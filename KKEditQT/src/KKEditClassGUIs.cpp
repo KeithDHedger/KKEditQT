@@ -1443,7 +1443,12 @@ void KKEditClass::buildDocViewer(void)
 	this->webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 	QObject::connect(this->webView,&QWebView::linkClicked,[this](const QUrl url)
 		{
-			this->docViewLinkTrap(url);
+			bool ret=this->docViewLinkTrap(url);//TODO//needs improving
+			if(ret==true)
+				{
+					this->mainWindow->activateWindow();
+					this->mainWindow->raise();
+				}
 		});
 
 	docvlayout->addWidget(this->webView);

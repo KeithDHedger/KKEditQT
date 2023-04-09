@@ -40,7 +40,9 @@ static const char *defaultauthors="K.D.Hedger ©2013-2022<br><a href=\"mailto:" 
 				"<a href=\"" MANPAGEPAGE "\">Manpage Editor<br>" \
 				"<a href=\"" GTKSUPAGE "\">GtkSu<br>" \
 				"<a href=\"" ASPELLPAGE "\">ASpell<br>" \
-				"<a href=\"" CLIPVIEW "\">Clipboard Viewer<br>";
+				"<a href=\"" CLIPVIEW "\">Clipboard Viewer<br>" \
+				"<a href=\"" KKFILEMANAGER "\">KKFileManager<br>" \
+				"<a href=\"" KKTERMINALPAGE "\">KKTerminal<br>";
 
 class AboutBoxClass : public QObject
 {

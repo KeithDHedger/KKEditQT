@@ -1,4 +1,5 @@
 0.7.4
+Fixed "Find in documentation".
 Updated aboutbox links.
 Added "Spring" theme.
 Fixed opening include files from nav menu if name includes '/'.

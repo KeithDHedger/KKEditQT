@@ -483,7 +483,7 @@ class KKEditClass : public QObject
 #endif
 		void							buildDocViewer(void);
 		void							setDocMenu(void);
-		void							docViewLinkTrap(const QUrl url);
+		bool							docViewLinkTrap(const QUrl url);
 
 //prefswindow
 //prefswindow vars
@@ -528,6 +528,7 @@ class KKEditClass : public QObject
 //search vars
 //search functions
 		void							searchAPIDocs(const QString txt,int what);
+		void							searchDoxyDocs(const QString txt);
 
 //plugins
 //plugin menu

@@ -741,7 +741,63 @@ void KKEditClass::buildDocs(void)
 	QDir::setCurrent(doc->getDirPath());
 	stat("Doxyfile",&sb);
 	if(!S_ISREG(sb.st_mode))
-		QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile .");
+		{
+			QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<".");
+			
+			QDialog		*diag=new QDialog();
+			QVBoxLayout	*docvlayout=new QVBoxLayout;
+			QLineEdit	*projectname;
+			QLineEdit	*versionbox;
+			QWidget		*hbox;
+			QHBoxLayout	*hlayout;
+			QPushButton	*cancelbutton=new QPushButton("&Cancel");
+			QPushButton	*okbutton=new QPushButton("&Apply");
+
+			QObject::connect(cancelbutton,&QPushButton::clicked,[this,diag]()
+				{
+					diag->reject();
+				});
+			QObject::connect(okbutton,&QPushButton::clicked,[this,diag]()
+				{
+					diag->accept();
+				});
+			projectname=new QLineEdit;
+			versionbox=new QLineEdit;
+
+			hbox=new QWidget;
+			hlayout=new QHBoxLayout;
+			hlayout->setContentsMargins(0,0,0,0);
+			hbox->setLayout(hlayout);
+			hlayout->addWidget(new QLabel("Project Name\t"),Qt::AlignLeft);
+			hlayout->addWidget(projectname,Qt::AlignRight);
+			docvlayout->addWidget(hbox);
+
+			hbox=new QWidget;
+			hlayout=new QHBoxLayout;
+			hlayout->setContentsMargins(0,0,0,0);
+			hbox->setLayout(hlayout);
+			hlayout->addWidget(new QLabel("Project Version\t"),Qt::AlignLeft);
+			hlayout->addWidget(versionbox,Qt::AlignRight);
+			docvlayout->addWidget(hbox);
+
+			hbox=new QWidget;
+			hlayout=new QHBoxLayout;
+			hlayout->setContentsMargins(0,0,0,0);
+			hbox->setLayout(hlayout);
+			hlayout->addWidget(cancelbutton);
+			hlayout->addStretch(0);
+			hlayout->addWidget(okbutton);
+
+			docvlayout->addWidget(hbox);
+
+			diag->setLayout(docvlayout);
+
+			int res=diag->exec();
+			if(res==1)
+				{
+					runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/' '%3'").arg(projectname->text()).arg(versionbox->text()).arg("Doxyfile"));
+				}
+		}
 
 	fileinfo=QString("%1/html/index.html").arg(doc->getDirPath());
 	fp=popen("doxygen Doxyfile","r");

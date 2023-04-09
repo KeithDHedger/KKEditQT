@@ -131,6 +131,94 @@ void KKEditClass::doFindReplace(int response_id)
 		}
 }
 
+void KKEditClass::searchDoxyDocs(const QString txt)
+{
+	struct docResultStruct
+		{
+			QString	mainSearchResult;
+			QString	str2;
+		};
+
+	int							cnt=0;
+	FILE							*findfile;
+	char							line[1024];
+	QString						searchfor;
+	QFile						html(this->htmlFile);
+	DocumentClass				*doc=this->getDocumentForTab(-1);
+	QMap<int,docResultStruct>	resultmap;
+	QString						finddata;
+
+
+	if((txt.isEmpty()==true) && (doc==NULL))
+		return;
+
+	if((txt.isEmpty()==true) && (doc->textCursor().hasSelection()==false))
+		return;
+	else
+		{
+			if(txt.isEmpty()==true)
+				searchfor=doc->textCursor().selectedText().trimmed();
+			else
+				searchfor=txt.trimmed();
+
+			if(searchfor.isEmpty()==false)
+				{
+					finddata=QString("cat %1/searchdata.xml|grep 'name=\"name\".*%2.*field'|sed 's/^[ \\t]*<field name=\"name\">//;s/<\\/field>//'").arg(doc->getDirPath()).arg(searchfor);
+					findfile=popen(finddata.toStdString().c_str(),"r");
+					if(findfile!=NULL)
+						{
+							while(fgets(line,1024,findfile))
+								{
+									resultmap[cnt]={line,""};
+									cnt++;
+								}
+							pclose(findfile);
+						}
+
+					cnt=0;
+					finddata=QString("cat %1/searchdata.xml|grep -C 2 'name=\"name\".*%2.*field'|grep -i url|sed 's/^[ \\t]*<field name=\"url\">//;s/<\\/field>//'").arg(doc->getDirPath()).arg(searchfor);
+					findfile=popen(finddata.toStdString().c_str(),"r");
+					if(findfile!=NULL)
+						{
+							while(fgets(line,1024,findfile))
+								{
+									resultmap[cnt].str2=QString("%1/html/%2").arg(doc->getDirPath()).arg(line);
+									cnt++;
+								}
+							pclose(findfile);
+						}
+
+					if(cnt>1)
+						{
+							if(html.open(QFile::WriteOnly|QFile::Truncate))
+								{
+		    		 					QTextStream out(&html);
+									out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">" << Qt::endl;
+									out << "<html>" << Qt::endl;
+									out << "<head>" << Qt::endl;
+									out << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" << Qt::endl;
+									out << "</head>" << Qt::endl;
+									out << "<body>" << Qt::endl;
+
+									for(int loop=0;loop<cnt;loop++)
+										out <<QString("<a href=\"%1\">%2</a><br>\n").arg(resultmap[loop].str2).arg(resultmap[loop].mainSearchResult) << Qt::endl;
+
+									out << "</body>" << Qt::endl;
+									out << "</html>" << Qt::endl;
+									html.close();
+									this->htmlURI="file://"+this->htmlFile;
+								}
+						}
+					else
+						{
+							this->htmlURI=QString("file://%1").arg(resultmap[0].str2);
+						}
+
+					this->showWebPage("Results for: " + searchfor,this->htmlURI);
+				}
+		}	
+}
+
 void KKEditClass::searchAPIDocs(const QString txt,int what)
 {
 	QString			searchfor;
