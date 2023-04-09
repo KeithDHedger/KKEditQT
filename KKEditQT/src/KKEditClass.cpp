@@ -735,15 +735,12 @@ void KKEditClass::buildDocs(void)
 
 	if(doc==NULL)
 		return;
-	this->showBarberPole("Building Docs","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
 
 	currentdir=QDir::current();
 	QDir::setCurrent(doc->getDirPath());
 	stat("Doxyfile",&sb);
 	if(!S_ISREG(sb.st_mode))
-		{
-			QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<".");
-			
+		{			
 			QDialog		*diag=new QDialog();
 			QVBoxLayout	*docvlayout=new QVBoxLayout;
 			QLineEdit	*projectname;
@@ -795,9 +792,16 @@ void KKEditClass::buildDocs(void)
 			int res=diag->exec();
 			if(res==1)
 				{
+					QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<".");
 					runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/' '%3'").arg(projectname->text()).arg(versionbox->text()).arg("Doxyfile"));
 				}
+			else
+				{
+					return;
+				}
 		}
+
+	this->showBarberPole("Building Docs","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
 
 	fileinfo=QString("%1/html/index.html").arg(doc->getDirPath());
 	fp=popen("doxygen Doxyfile","r");

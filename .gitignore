@@ -25,3 +25,4 @@ build/*
 *.bak
 KKEditQT/app/kkeditqtmsg
 buildlocal
+Doxyfile
