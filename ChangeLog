@@ -1,4 +1,5 @@
 0.7.4
+Fixed show docs when no files open.
 Fixed "Find in documentation".
 Updated aboutbox links.
 Added "Spring" theme.

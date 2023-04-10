@@ -823,6 +823,10 @@ void KKEditClass::buildDocs(void)
 void KKEditClass::showDocs(void)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
+
+	if(doc==NULL)
+		return;
+
 	QFileInfo		fileinfo=QString("%1/html/index.html").arg(doc->getDirPath());
 
 	if(fileinfo.exists()==false)
