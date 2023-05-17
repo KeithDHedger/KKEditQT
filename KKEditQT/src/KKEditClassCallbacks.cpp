@@ -542,7 +542,7 @@ void KKEditClass::doNavMenuItems()
 				this->searchAPIDocs("",0);
 				break;
 			case SEARCHQT5DOCS:
-				this->searchDoxyDocs("");
+				this->searchAPIDocs("",1);
 				break;
 			case SEARCHDOXYDOCS:
 				this->searchDoxyDocs("");

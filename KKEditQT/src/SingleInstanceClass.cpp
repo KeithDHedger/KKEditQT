@@ -23,9 +23,9 @@
 SingleInstanceClass::SingleInstanceClass(QApplication *app,int key,bool forcem)
 {
 	QSettings	prefs;
+	bool			single=prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
 
 	this->app=app;
-	bool		single=prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
 
 	if(QX11Info::isPlatformX11()==false)
 		this->isOnX11=false;
@@ -37,7 +37,9 @@ SingleInstanceClass::SingleInstanceClass(QApplication *app,int key,bool forcem)
 			this->usingMulti=true;
 		}
 	else
-		this->workspace=this->getSIWorkSpace();
+		{
+			this->workspace=this->getSIWorkSpace();
+		}
 
 	if(key!=-1)
 		this->useKey=key;
@@ -57,9 +59,13 @@ bool SingleInstanceClass::getRunning(void)
 	QString	commsFolderName;
 	QString	commsDeskfile;
 	QString	commsDeskfilePID;
-	bool	retval=false;
-	QDir	commsDir;
-	bool	isrunning=false;
+	bool		retval=false;
+	QDir		commsDir;
+	bool		isrunning=false;
+	int		msgplusdisplay;
+	QString	disp=getenv("DISPLAY");
+
+	msgplusdisplay=disp.replace(QRegularExpression(".*:([0-9]*)"),"\\1").remove(QRegularExpression("[^0-9]*")).toInt()*0x100;
 
 	if(this->usingMulti==true)
 		return(false);
@@ -67,8 +73,8 @@ bool SingleInstanceClass::getRunning(void)
 	commsFolderName=commsDir.tempPath() + "/KKEditQTComms";
 	commsDir.mkpath(commsFolderName);
 
-	commsDeskfile=QString("%1/desktop%2").arg(commsFolderName).arg(this->workspace);
-	commsDeskfilePID=QString("%1/pid%2").arg(commsFolderName).arg(this->workspace);
+	commsDeskfile=QString("%1/desktop%2%3").arg(commsFolderName).arg(this->workspace).arg(getenv("DISPLAY"));
+	commsDeskfilePID=QString("%1/pid%2%3").arg(commsFolderName).arg(this->workspace).arg(getenv("DISPLAY"));
 
 	this->fileMsg.setFileName(commsDeskfile);
 	this->filePID.setFileName(commsDeskfilePID);
@@ -113,9 +119,9 @@ bool SingleInstanceClass::getRunning(void)
 					QTextStream	out(&this->fileMsg);
 					if(this->useKey==-1)
 						{
-							out << MSGKEY+this->workspace << "\n";
-							this->queueID=msgget(MSGKEY+this->workspace,IPC_CREAT|0660);
-							this->useKey=MSGKEY+this->workspace;
+							out << MSGKEY+msgplusdisplay+this->workspace << "\n";
+							this->queueID=msgget(MSGKEY+msgplusdisplay+this->workspace,IPC_CREAT|0660);
+							this->useKey=MSGKEY+msgplusdisplay+this->workspace;
 						}
 					else
 						{
@@ -170,10 +176,14 @@ long SingleInstanceClass::getSIWorkSpace(void)
 	Atom			NET_WM_DESKTOP;
 	long			*deskp;
 
-	NET_WM_DESKTOP=XInternAtom(disp, "_NET_CURRENT_DESKTOP",False);
+	NET_WM_DESKTOP=XInternAtom(disp,"_NET_CURRENT_DESKTOP",False);
 	deskp=(long*)getX11Prop(rootwin,NET_WM_DESKTOP,XA_CARDINAL,32,&n);
 	if (n !=0)
-		return(*deskp);
+		{
+			long retval=*deskp;
+			XFree(deskp);
+			return(retval);
+		}
 
 	return(-1);
 }

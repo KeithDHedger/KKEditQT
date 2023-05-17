@@ -1,3 +1,7 @@
+0.7.5
+Fixed msgid and single mode when opening on same workspace number but different display ( display is taken fromm DISPLAY var ).
+Fixed misplaced call to search qt5 api docs.
+
 0.7.4
 Fixed show docs when no files open.
 Fixed "Find in documentation".

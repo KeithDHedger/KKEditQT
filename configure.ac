@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([KKEditQT],[0.7.4],[PROJ],[KKEditQT])
+AC_INIT([KKEditQT],[0.7.5],[PROJ],[KKEditQT])
 
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_CXX

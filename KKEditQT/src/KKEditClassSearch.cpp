@@ -231,6 +231,7 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 	QFile			html(this->htmlFile);
 	QStringList		deepstring;
 
+qDebug()<<"<<<<<<<<<<<<<<<<<<<<<"<<this->prefsQtDocDir<<searchfor;
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 
 	if((txt.isEmpty()==true) && (doc==NULL))
@@ -246,6 +247,7 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 				searchfor=txt.trimmed();
 		}
 
+qDebug()<<"<<<<<<<<<<<<<<<<<<<<<"<<this->prefsQtDocDir<<searchfor;
 	switch(what)
 		{
 			case 0:
@@ -255,6 +257,7 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 				searchcommand=QString("find %1 -iname \"%2*.html\"|sed 's/.html$//'|sort").arg(this->prefsQtDocDir).arg(searchfor);
 				break;
 		}
+qDebug()<<searchcommand;
 
 	results=this->runPipeAndCapture(searchcommand);
 	if((what==1) && (results.isEmpty()==true))
