@@ -1561,10 +1561,11 @@ void KKEditClass::doOddButtons(void)
 bool KKEditClass::docViewLinkTrap(const QUrl url)
 {
 #ifdef _BUILDDOCVIEWER_
-//TODO//needs improving
 	Qt::KeyboardModifiers key=QGuiApplication::keyboardModifiers();
 	if(key!=Qt::ControlModifier)
-		this->webView->load(url);
+		{
+			return(false);
+		}
 	else
 		{
 			QString	str=url.toString();

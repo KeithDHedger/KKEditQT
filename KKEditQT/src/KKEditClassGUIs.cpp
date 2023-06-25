@@ -1432,17 +1432,11 @@ void KKEditClass::buildDocViewer(void)
 	widget->setLayout(docvlayout);
 	this->docView->setCentralWidget(widget);
 
-	this->webView=new QWebView(widget);
-	this->webView->load(QUrl("file://" DATADIR "/help/index.html"));
-
-	QObject::connect(this->webView,&QWebView::urlChanged,[this](const QUrl url)
+	this->webEngView=new QWebEngineView(widget);
+	this->webEngView->setUrl(QUrl("file://" DATADIR "/help/index.html"));
+	QObject::connect(this->webEngView,&QWebEngineView::urlChanged,[this](const QUrl url)
 		{
 			this->currentURL=url.toString();
-		});
-
-	this->webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-	QObject::connect(this->webView,&QWebView::linkClicked,[this](const QUrl url)
-		{
 			bool ret=this->docViewLinkTrap(url);//TODO//needs improving
 			if(ret==true)
 				{
@@ -1451,12 +1445,13 @@ void KKEditClass::buildDocViewer(void)
 				}
 		});
 
-	docvlayout->addWidget(this->webView);
+	docvlayout->addWidget(this->webEngView);
 
 	button=new QPushButton(QIcon::fromTheme("go-previous"),"Back");
-	QObject::connect(button,&QPushButton::clicked,[=]() {this->webView->page()->triggerAction(QWebPage::Back);});
-	dochlayout->addWidget(button);
+	QObject::connect(button,&QPushButton::clicked,[=]() {this->webEngView->page()->triggerAction(QWebEnginePage::Back);});
 
+	dochlayout->addSpacing(6);
+	dochlayout->addWidget(button);
 	dochlayout->addStretch(1);
 
 	button=new QPushButton(QIcon::fromTheme("go-home"),"Home");
@@ -1479,25 +1474,21 @@ void KKEditClass::buildDocViewer(void)
 			this->htmlURI=QString("https://duckduckgo.com/?q=%1&ia=web").arg(findbox->text());
 			this->showWebPage("Results for: " + findbox->text(),this->htmlURI);
 		});
-	dochlayout->addWidget(button);
 
+	dochlayout->addWidget(button);
 	dochlayout->addWidget(findbox);
 
 	button=new QPushButton(QIcon::fromTheme("go-down"),"Down");
 	QObject::connect(button,&QPushButton::clicked,[this,findbox]()
 		{
-			this->webView->page()->findText("",QWebPage::HighlightAllOccurrences);
-			this->webView->page()->findText(findbox->text(),QWebPage::HighlightAllOccurrences);
-			this->webView->page()->findText(findbox->text(),QWebPage::FindWrapsAroundDocument);
+			this->webEngView->page()->findText(findbox->text());
 		});
 	dochlayout->addWidget(button);
 
 	button=new QPushButton(QIcon::fromTheme("go-up"),"Up");
 	QObject::connect(button,&QPushButton::clicked,[this,findbox]()
 		{
-			this->webView->page()->findText("",QWebPage::HighlightAllOccurrences);
-			this->webView->page()->findText(findbox->text(),QWebPage::HighlightAllOccurrences);
-			this->webView->page()->findText(findbox->text(),QWebPage::FindBackward|QWebPage::FindWrapsAroundDocument);
+			this->webEngView->page()->findText(findbox->text(),QWebEnginePage::FindBackward);
 		});
 	dochlayout->addWidget(button);
 
@@ -1505,11 +1496,11 @@ void KKEditClass::buildDocViewer(void)
 
 	button=new QPushButton(QIcon::fromTheme("go-next"),"Forward");
 	dochlayout->addWidget(button);
-	QObject::connect(button,&QPushButton::clicked,[=]() {this->webView->page()->triggerAction(QWebPage::Forward);});
+	QObject::connect(button,&QPushButton::clicked,[=]() {this->webEngView->page()->triggerAction(QWebEnginePage::Forward);});
 
-	widget=new QWidget;
-	widget->setLayout(dochlayout);
-	docvlayout->addWidget(widget);
+	dochlayout->addSpacing(6);
+	docvlayout->addLayout(dochlayout);
+	docvlayout->addSpacing(6);
 
 	this->docView->hide();
 #endif

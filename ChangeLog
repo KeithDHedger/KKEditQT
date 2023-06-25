@@ -1,3 +1,6 @@
+1.0.0
+Switch to qtwebengine from obsolete qtwebkit.
+
 0.7.5
 Fixed msgid and single mode when opening on same workspace number but different display ( display is taken fromm DISPLAY var ).
 Fixed misplaced call to search qt5 api docs.

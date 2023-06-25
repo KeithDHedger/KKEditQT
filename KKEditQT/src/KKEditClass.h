@@ -476,7 +476,7 @@ class KKEditClass : public QObject
 		QString						currentURL;
 #ifdef _BUILDDOCVIEWER_
 		QMainWindow					*docView=NULL;
-		QWebView						*webView=NULL;
+		QWebEngineView				*webEngView=NULL;
 		bool							docviewerVisible=false;
 		MenuItemClass				*toggleDocViewMenuItem;
 //docviewer functions

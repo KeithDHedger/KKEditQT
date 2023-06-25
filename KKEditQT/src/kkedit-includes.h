@@ -58,7 +58,8 @@
 #endif
 
 #ifdef _BUILDDOCVIEWER_
-#include <QtWebKitWidgets>
+//#include <QtWebKitWidgets>
+#include <QWebEngineView>
 #endif
 
 #define MAXMSGSIZE 4096

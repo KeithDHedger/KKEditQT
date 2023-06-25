@@ -1,6 +1,6 @@
 TEMPLATE        = lib
 CONFIG         += plugin
-QT             += widgets printsupport webkitwidgets
+QT             += widgets printsupport webenginewidgets
 HEADERS         = SymbolsMenu.h
 SOURCES         = SymbolsMenu.cpp
 TARGET          = $$qtLibraryTarget(SymbolsMenu)
