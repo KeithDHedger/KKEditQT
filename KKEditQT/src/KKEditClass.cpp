@@ -1401,6 +1401,9 @@ void KKEditClass::setTabVisibilty(int tab,bool visible)
 
 	this->mainNotebook->setTabVisible(tabnum,vis);
 	doc=this->getDocumentForTab(tabnum);
+	if(doc==NULL)
+		return;
+
 	doc->visible=vis;
 
 	if(vis==false)//hacks for tab gliches

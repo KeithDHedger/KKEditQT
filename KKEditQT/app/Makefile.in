@@ -1030,9 +1030,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-docfilesDATA \
 .PRECIOUS: Makefile
 
 
-#			$(WEBKITWIDGETS_CFLAGS)
-#			$(WEBKITWIDGETS_LIBS)
-
 install-exec-hook:
 	install -D ../resources/pixmaps/KKEditQTPlug.png $(DESTDIR)${prefix}/share/pixmaps/KKEditQTPlug.png
 	install -D ../resources/pixmaps/KKEditQTPlugMenu.png $(DESTDIR)${prefix}/share/pixmaps/KKEditQTPlugMenu.png
