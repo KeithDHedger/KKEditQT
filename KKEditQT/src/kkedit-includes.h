@@ -58,7 +58,6 @@
 #endif
 
 #ifdef _BUILDDOCVIEWER_
-//#include <QtWebKitWidgets>
 #include <QWebEngineView>
 #endif
 
