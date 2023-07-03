@@ -1614,6 +1614,7 @@ bool KKEditClass::docViewLinkTrap(const QUrl url)
 				}
 			else
 				{
+					//QString datafile=QRegularExpression("file://(.*\\.html)#.*$").match(url.toString()).captured(1);
 					QString datafile=QRegularExpression("file://(.*\\.html)#.*$").match(url.toString()).captured(1);
 					QString lnk=QRegularExpression("file://(.*)\\.html#(.*)$").match(url.toString()).captured(2);
 					if(datafile.isEmpty()==false)

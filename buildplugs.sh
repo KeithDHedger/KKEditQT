@@ -6,6 +6,8 @@ BUILDLANGPLUGS=${BUILDLANGPLUGS:-1}
 BUILDPLUGS=${BUILDPLUGS:-1}
 BUILDTOOLKITPLUGS=${BUILDTOOLKITPLUGS:-1}
 
+export LOCAL=${LOCAL:-0}
+
 INSTALLTO="$2"
 export INSTALLTO
 
@@ -16,73 +18,74 @@ if [[ "$1" = "clean" ]];then
 	exit 0
 fi
 
+if [ ${LOCAL:-0} -eq 1 ];then
+	unset DESTDIR
+fi
+
+buildPlug ()
+{
+	WHAT="$1"
+	WHERE="$2"
+	THISDIR=$(basename $(pwd))
+	PARENTDIR="$(basename "$(dirname $(pwd))")"
+
+	mkdir -vp build
+
+	case $WHAT in
+		"clean")
+			rm -rf build
+			;;
+		"build")
+			mkdir -vp build
+			cd build
+			qmake ..
+			make
+			;;
+		 "install")
+			cd build
+		 	make install
+			if [ ${LOCAL:-0} -eq 1 ];then
+				mkdir -vp  ~/.KKEditQT/$PARENTDIR/$THISDIR
+				cp -r plugins/* ~/.KKEditQT/$PARENTDIR/$THISDIR
+			else
+				mkdir -vp "${WHERE}/$PARENTDIR/$THISDIR"
+				cp -r plugins/* "${WHERE}/$PARENTDIR/$THISDIR"
+			fi
+		 	;;
+	esac
+}
+
 if [ $BUILDLANGPLUGS -eq 1 ];then
-	pushd KKEditQT/languageplugins
-		if [[ "$1" = "build" ]];then
-			while read
-				do
-					pushd $(dirname $REPLY)
-						mkdir -p build && cd build
-						qmake ..
-						make -j3
-					popd
-				done < <(find -maxdepth 2 -iname "*.pro")
-		else
-			while read
-				do
-					pushd $(dirname $REPLY)
-						cd build
-						make -j3 install
-					popd
-				done < <(find -maxdepth 2 -iname "*.pro")
-		fi
+	pushd KKEditQT/langplugins
+		while read
+			do
+				pushd $(dirname $REPLY)
+					buildPlug "$1" "$2"
+				popd
+			done < <(find -maxdepth 2 -iname "*.pro")
 	popd
 fi
 
 if [ $BUILDPLUGS -eq 1 ];then
 	pushd KKEditQT/plugins
-		if [[ "$1" = "build" ]];then
 			while read
 				do
 					pushd $(dirname $REPLY)
-						mkdir -p build && cd build
-						qmake ..
-						make -j3
+						buildPlug "$1" "$2"
 					popd
+
 				done < <(find -maxdepth 2 -iname "*.pro")
-		else
-			while read
-				do
-					pushd $(dirname $REPLY)
-						cd build
-						make -j3 install
-					popd
-				done < <(find -maxdepth 2 -iname "*.pro")
-		fi
 	popd
 fi
 
 if [ $BUILDTOOLKITPLUGS -eq 1 ];then
 	pushd KKEditQT/toolkitplugins
-		if [[ "$1" = "build" ]];then
-			while read
-				do
-					pushd $(dirname $REPLY)
-						mkdir -p build && cd build
-						qmake ..
-						make -j3
-					popd
-				done < <(find -maxdepth 2 -iname "*.pro")
-		else
-			while read
-				do
-					pushd $(dirname $REPLY)
-						cd build
-						make -j3 install
-					popd
-				done < <(find -maxdepth 2 -iname "*.pro")
-		fi
+		while read
+			do
+				pushd $(dirname $REPLY)
+					buildPlug "$1" "$2"
+				popd
+			done < <(find -maxdepth 2 -iname "*.pro")
 	popd
 fi
-
 

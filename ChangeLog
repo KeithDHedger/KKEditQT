@@ -1,4 +1,8 @@
 1.0.0
+Fixed displaying plugin 'Help'
+Removed confusing 'Home' button from docviewer.
+Redone plugin build system.
+Fixed staged install via DESTDIR.
 Switch to qtwebengine from obsolete qtwebkit.
 
 0.7.5

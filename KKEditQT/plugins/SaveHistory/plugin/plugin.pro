@@ -4,24 +4,14 @@ QT             += widgets printsupport webenginewidgets
 HEADERS         = SaveHistory.h
 SOURCES         = SaveHistory.cpp
 TARGET          = $$qtLibraryTarget(SaveHistory)
-DESTDIR         = ../plugins
+DESTDIR         = plugins
 
 documentation.files = docs/*
-destdir = $$(INSTALLTO)
-isEmpty(destdir) {
-	LOCAL = 1
-}
 
-equals(LOCAL,1) {
-	message(Installing in ~/.KKEditQT/plugins/SaveHistory)
-	target.path = ~/.KKEditQT/plugins/SaveHistory
-}
-else {
-	message(Installing in $$(INSTALLTO))
-	target.path = $$(INSTALLTO)/plugins/SaveHistory
-}
-
+target.path = ../build/plugins
+data.path = $${target.path}
 documentation.path = $${target.path}/docs
+image.path = $${target.path}
 
 INSTALLS += target
 INSTALLS += documentation

@@ -4,24 +4,14 @@ QT             += widgets printsupport webenginewidgets
 HEADERS         = kkeditqtPluginExample.h
 SOURCES         = kkeditqtPluginExample.cpp
 TARGET          = $$qtLibraryTarget(kkeditqtPluginExample)
-DESTDIR         = ../plugins
+DESTDIR         = .plugins
 
 documentation.files = docs/*
-destdir = $$(INSTALLTO)
-isEmpty(destdir) {
-	LOCAL = 1
-}
 
-equals(LOCAL,1) {
-	message(Installing in ~/.KKEditQT/plugins/kkeditqtPluginExample)
-	target.path = ~/.KKEditQT/plugins/kkeditqtPluginExample
-}
-else {
-	message(Installing in $$(INSTALLTO))
-	target.path = $$(INSTALLTO)/plugins/kkeditqtPluginExample
-}
-
+target.path = ../build/plugins
+data.path = $${target.path}
 documentation.path = $${target.path}/docs
+image.path = $${target.path}
 
 INSTALLS += target
 INSTALLS += documentation

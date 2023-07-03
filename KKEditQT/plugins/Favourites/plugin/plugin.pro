@@ -4,29 +4,18 @@ QT             += widgets printsupport webenginewidgets
 HEADERS         = Favourites.h
 SOURCES         = Favourites.cpp
 TARGET          = $$qtLibraryTarget(Favourites)
-DESTDIR         = ../plugins
+DESTDIR         = plugins
 
 documentation.files = docs/*
 image.files = Favorite.png
 
-destdir = $$(INSTALLTO)
-isEmpty(destdir) {
-	LOCAL = 1
-}
-
-equals(LOCAL,1) {
-	message(Installing in ~/.KKEditQT/plugins/Favourites)
-	target.path = ~/.KKEditQT/plugins/Favourites
-}
-else {
-	message(Installing in $$(INSTALLTO))
-	target.path = $$(INSTALLTO)/plugins/Favourites
-}
-
+target.path = ../build/plugins
+data.path = $${target.path}
 documentation.path = $${target.path}/docs
 image.path = $${target.path}
 
 INSTALLS += target
+INSTALLS += data
 INSTALLS += documentation
 INSTALLS += image
 

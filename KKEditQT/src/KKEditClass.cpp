@@ -1197,11 +1197,7 @@ void KKEditClass::showWebPage(QString windowtitle,QString url)
 	if(windowtitle.isEmpty()==false)
 		this->docView->setWindowTitle(windowtitle);
 
-	if(access(this->htmlFile.toStdString().c_str(),F_OK)!=F_OK)
-		this->webEngView->load(QUrl("file://" DATADIR "/help/index.html"));
-	else
-		this->webEngView->load(QUrl::fromUserInput(url));
-
+	this->webEngView->load(QUrl::fromUserInput(url));
 	this->docView->show();
 	this->docView->activateWindow();
 	this->docView->raise();

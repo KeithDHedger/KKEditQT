@@ -4,26 +4,13 @@ QT             += widgets printsupport webenginewidgets
 HEADERS         = SymbolsMenu.h
 SOURCES         = SymbolsMenu.cpp
 TARGET          = $$qtLibraryTarget(SymbolsMenu)
-DESTDIR         = ../plugins
+DESTDIR         = plugins
 
 data.files = indicator-chars.txt
 documentation.files = docs/*
 image.files = Symbols.png
 
-destdir = $$(INSTALLTO)
-isEmpty(destdir) {
-	LOCAL = 1
-}
-
-equals(LOCAL,1) {
-	message(Installing in ~/.KKEditQT/plugins/SymbolsMenu)
-	target.path = ~/.KKEditQT/plugins/SymbolsMenu
-}
-else {
-	message(Installing in $$(INSTALLTO))
-	target.path = $$(INSTALLTO)/plugins/SymbolsMenu
-}
-
+target.path = ../build/plugins
 data.path = $${target.path}
 documentation.path = $${target.path}/docs
 image.path = $${target.path}

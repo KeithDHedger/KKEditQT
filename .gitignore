@@ -26,3 +26,4 @@ build/*
 KKEditQT/app/kkeditqtmsg
 buildlocal
 Doxyfile
+*/plugins/*/build/

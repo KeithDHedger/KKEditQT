@@ -1454,13 +1454,6 @@ void KKEditClass::buildDocViewer(void)
 	dochlayout->addWidget(button);
 	dochlayout->addStretch(1);
 
-	button=new QPushButton(QIcon::fromTheme("go-home"),"Home");
-	dochlayout->addWidget(button);
-	button->setObjectName(QString("%1").arg(DOCVIEWERGOHOME));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
-
-	dochlayout->addStretch(1);
-
 	findbox=new QLineEdit;
 	QObject::connect(findbox,&QLineEdit::returnPressed,[this,findbox]()
 		{

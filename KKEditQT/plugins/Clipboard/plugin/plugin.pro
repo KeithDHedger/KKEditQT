@@ -4,31 +4,21 @@ QT             += widgets printsupport webenginewidgets
 HEADERS         = Clipboard.h
 SOURCES         = Clipboard.cpp
 TARGET          = $$qtLibraryTarget(Clipboard)
-DESTDIR         = ../plugins
+DESTDIR         = plugins
 
 documentation.files = docs/*
 image.files = ClipboardViewer.png
 
-destdir = $$(INSTALLTO)
-isEmpty(destdir) {
-	LOCAL = 1
-}
-
-equals(LOCAL,1) {
-	message(Installing in ~/.KKEditQT/plugins/Clipboard)
-	target.path = ~/.KKEditQT/plugins/Clipboard
-}
-else {
-	message(Installing in $$(INSTALLTO))
-	target.path = $$(INSTALLTO)/plugins/Clipboard
-}
-
+target.path = ../build/plugins
+data.path = $${target.path}
 documentation.path = $${target.path}/docs
 image.path = $${target.path}
 
 INSTALLS += target
+INSTALLS += data
 INSTALLS += documentation
 INSTALLS += image
 
 CONFIG += install_ok
+
 

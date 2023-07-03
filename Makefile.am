@@ -4,10 +4,10 @@ SUBDIRS = KKEditQT/app
 all-am: plugs
 
 plugs:
-	./buildplugs.sh build $(DESTDIR)/${pkgdatadir}
+	./buildplugs.sh build
 
-#install-plugs: plugs
-#	./buildplugs.sh install $(DESTDIR)/${pkgdatadir}
+install-plugs: plugs
+	./buildplugs.sh install $(DESTDIR)/${pkgdatadir}
 
 clean-am:
 	./buildplugs.sh clean
