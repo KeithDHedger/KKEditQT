@@ -214,11 +214,11 @@ void DocumentClass::highlightCurrentLine()
 	QTextCursor		bracketcursor=this->textCursor();
 	const QString	openbrackets("({[<");
 	const QString	closebrackets(")}]>");
-	int				pos;
-	int				whatbracket;
-	int				stack;
-	int				cnt;
-	bool			gotone=false;
+	int				pos=-1;
+	int				whatbracket=-1;
+	int				stack=-1;
+	int				cnt=0;
+	bool				gotone=false;
 
 	if(txt.length()>1)
 		{
@@ -318,10 +318,10 @@ void DocumentClass::setXtraSelections(void)
 {
 	this->extraSelections.clear();
 	this->extraSelections=this->extraSelections+this->hilightSelections;
-	this->extraSelections.append(this->selectedLine);
 	this->extraSelections.append(this->extraBMSelections);
 	this->extraSelections.append(this->bracketMatch);
 	this->extraSelections.append(this->findMatch);
+	this->extraSelections.append(this->selectedLine);
 	this->setExtraSelections(this->extraSelections);
 }
 
