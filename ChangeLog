@@ -1,4 +1,5 @@
 1.0.0
+Fixed bracket match.
 Fixed displaying plugin 'Help'
 Removed confusing 'Home' button from docviewer.
 Redone plugin build system.
