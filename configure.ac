@@ -32,7 +32,7 @@ AC_ARG_ENABLE(docviewer,AS_HELP_STRING([--enable-docviewer],[Build the Doc viewe
     [enable_docviewer="yes"])
 AC_MSG_RESULT($enable_docviewer)
 if test "$enable_docviewer" = "yes"; then
-	WEBENGINEWIDGETS_MODULES="Qt5WebEngineWidgets >= 5.15.8"
+	WEBENGINEWIDGETS_MODULES="Qt5WebEngineWidgets >= 5.15.3"
 	PKG_CHECK_MODULES(WEBENGINEWIDGETS, $WEBENGINEWIDGETS_MODULES)
 	AC_SUBST(WEBENGINEWIDGETS_CFLAGS)
 	AC_SUBST(WEBENGINEWIDGETS_LIBS)

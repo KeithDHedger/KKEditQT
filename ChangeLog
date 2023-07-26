@@ -1,4 +1,8 @@
 1.0.0
+Fixed ctags version not supporting depth to recurse.
+Fixed creating temporary files/folders.
+Lowered version needed for Qt5WebEngineWidgets.
+Fixed wrong foldername in buildplugs.sh
 Fixed bracket match.
 Fixed displaying plugin 'Help'
 Removed confusing 'Home' button from docviewer.

@@ -12,7 +12,7 @@ INSTALLTO="$2"
 export INSTALLTO
 
 if [[ "$1" = "clean" ]];then
-	find KKEditQT/languageplugins -type d -iname "build" -exec rm -rf '{}' \; &>/dev/null
+	find KKEditQT/langplugins -type d -iname "build" -exec rm -rf '{}' \; &>/dev/null
 	find KKEditQT/plugins -type d -iname "build" -exec rm -rf '{}' \; &>/dev/null
 	find KKEditQT/toolkitplugins -type d -iname "build" -exec rm -rf '{}' \; &>/dev/null
 	exit 0

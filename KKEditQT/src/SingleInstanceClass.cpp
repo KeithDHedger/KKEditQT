@@ -72,6 +72,7 @@ bool SingleInstanceClass::getRunning(void)
 
 	commsFolderName=commsDir.tempPath() + "/KKEditQTComms";
 	commsDir.mkpath(commsFolderName);
+	QProcess::execute("chmod",QStringList()<<"777"<<commsFolderName);
 
 	commsDeskfile=QString("%1/desktop%2%3").arg(commsFolderName).arg(this->workspace).arg(getenv("DISPLAY"));
 	commsDeskfilePID=QString("%1/pid%2%3").arg(commsFolderName).arg(this->workspace).arg(getenv("DISPLAY"));

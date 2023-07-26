@@ -48,6 +48,7 @@ KKEditClass::~KKEditClass()
 		}
 
 	fold.removeRecursively();
+	//qDebug()<<this->tmpFolderName;
 	delete this->webEngView;
 }
 
@@ -311,7 +312,7 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 
 void KKEditClass::initApp(int argc,char** argv)
 {
-	char		tmpfoldertemplate[]="/run/KKEditQT-XXXXXX";
+	char		tmpfoldertemplate[]="/tmp/KKEditQT-XXXXXX";
 	QRect	r(0,0,1024,768);
 	QDir		tdir;
 	QString	tstr;
@@ -361,7 +362,16 @@ void KKEditClass::initApp(int argc,char** argv)
 				}
 		}
 
-	this->tmpFolderName=mkdtemp(tmpfoldertemplate);
+
+//qDebug()<<tmpfoldertemplate;
+		this->tmpFolderName=mkdtemp(tmpfoldertemplate);
+		if(this->tmpFolderName==NULL)
+			{
+				qDebug()<<"Can't create temporary folder, quitting ...";
+				exit (100);
+			}
+
+//qDebug()<<this->tmpFolderName;
 
 	this->gotDoxygen=QProcess::execute("sh",QStringList()<<"-c"<<"which doxygen 2>&1 >/dev/null");
 	this->gotManEditor=QProcess::execute("sh",QStringList()<<"-c"<<"which manpageeditor 2>&1 >/dev/null");

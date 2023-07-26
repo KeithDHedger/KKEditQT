@@ -133,7 +133,7 @@ bool KKEditClass::goToDefinition(const QString txt)
 					doc=this->getDocumentForTab(loop);
 					if(doc->filePath!=NULL)
 						{
-							command=QString("ctags -R --maxdepth=%1 -x '%2'|sed 's@ \\+@ @g'").arg(this->prefsDepth).arg(doc->getDirPath());
+							command=QString("find \"%1\" -maxdepth %2|ctags -L - -x|sed 's@ \\+@ @g'").arg(doc->getDirPath()).arg(this->prefsDepth);
 							results=this->runPipeAndCapture(command);
 							list=results.split("\n",Qt::SkipEmptyParts);
 
