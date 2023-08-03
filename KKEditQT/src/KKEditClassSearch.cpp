@@ -230,7 +230,7 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 	QString			searchcommand;
 	QFile			html(this->htmlFile);
 	QStringList		deepstring;
-
+	bool		extra=false;
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 
 	if((txt.isEmpty()==true) && (doc==NULL))
@@ -250,14 +250,21 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 		{
 			case 0:
 				searchcommand=QString("find /usr/share/gtk-doc/html -iname \"*.devhelp2\" -exec grep -iHe %1 '{}' \\;").arg(searchfor);
+				
 				break;
 			case 1:
 				searchcommand=QString("find %1 -iname \"%2*.html\"|sed 's/.html$//'|sort").arg(this->prefsQtDocDir).arg(searchfor);
 				break;
 		}
-//qDebug()<<searchcommand;
 
 	results=this->runPipeAndCapture(searchcommand);
+	if((what==0) && (results.isEmpty()==true))
+		{
+			searchcommand=QString("find /usr/share/gtk-doc/html -iname \"api-index-full.html\" -exec grep -l %1 '{}' \\;").arg(searchfor);
+			results=this->runPipeAndCapture(searchcommand);
+			extra=true;
+		}
+
 	if((what==1) && (results.isEmpty()==true))
 		{
 			searchcommand=QString("grep -iR --include=\"*-members.html\" \">%1<\" %2").arg(searchfor).arg(this->prefsQtDocDir);
@@ -352,15 +359,30 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 							switch(what)
 								{
 									case 0:
+									if(extra==false)
+									{
 										funcname=reslist.at(loop).section("\" link=",0,0).section("name=\"",1,1);
 										link=reslist.at(loop).section("link=\"",1,1).section("\"",0,0);
 										basefile=reslist.at(loop).section(":",0,0).section("/",0,-2);
 										out << "<a href=\"file://" << basefile << "/" << link << "\">" << funcname << "</a><br>" << Qt::endl;
+									}
+									else
+									{
+										QString		data;
+										QFileInfo	fi(reslist.at(loop));
+										QString		base=fi.absolutePath();
+										QString		l=QString("grep %1 %2 |sed 's@href=\"@href=\"%3/@g'|sed 's@</a>$@</a><br>@g'").arg(searchfor).arg(reslist.at(loop)).arg(base);
+										data=runPipeAndCapture(l);
+										out <<data;
+									}
 										break;
 									case 1:
 										link="file://" + reslist.at(loop) + ".html";
 										funcname=reslist.at(loop).section("/",-1,-1);
 										out << "<a href=\"" << link << "\">" << funcname << "</a><br>" << Qt::endl;
+										break;
+									case 2:
+										
 										break;
 								}
 						}

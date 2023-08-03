@@ -1,4 +1,5 @@
 1.0.0
+Fixes for getting glib/gio etc defs in 'Search in GTK Docs'.
 Fixed ctags version not supporting depth to recurse.
 Fixed creating temporary files/folders.
 Lowered version needed for Qt5WebEngineWidgets.
