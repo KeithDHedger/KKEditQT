@@ -280,7 +280,7 @@ void KKEditClass::doToolsMenuItems()
 				while(i.hasNext())
 					{
 						i.next();
-						filelist+=i.value()->getFilePath()+" ";
+						filelist+=i.value()->getFilePath()+"\n";
 					}
 
 				if(sl.at(TOOL_COMMAND).section(TOOLCOMMAND,1,1).trimmed().isEmpty()==false)
