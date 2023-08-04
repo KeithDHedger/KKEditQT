@@ -1,5 +1,5 @@
 1.0.0
-Changed $KKEDIT_FILE_LIST passed to tools to newline seperated list.
+Changed KKEDIT_FILE_LIST passed to tools to newline seperated list.
 Fixes for getting glib/gio etc defs in 'Search in GTK Docs'.
 Fixed ctags version not supporting depth to recurse.
 Fixed creating temporary files/folders.

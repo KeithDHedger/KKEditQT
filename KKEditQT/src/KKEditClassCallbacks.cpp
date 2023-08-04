@@ -3,7 +3,6 @@
  * ©K. D. Hedger. Thu 23 Dec 20:38:31 GMT 2021 keithdhedger@gmail.com
 
  * This file (KKEditClassCallbacks.cpp) is part of KKEditQT.
-
  * KKEditQT is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
