@@ -64,7 +64,9 @@ bool SingleInstanceClass::getRunning(void)
 	bool		isrunning=false;
 	int		msgplusdisplay;
 	QString	disp=getenv("DISPLAY");
+	QString msgnodisplay;
 
+	msgnodisplay=disp.remove(QRegularExpression("[:.]+"));
 	msgplusdisplay=disp.replace(QRegularExpression(".*:([0-9]*)"),"\\1").remove(QRegularExpression("[^0-9]*")).toInt()*0x100;
 
 	if(this->usingMulti==true)
@@ -74,8 +76,8 @@ bool SingleInstanceClass::getRunning(void)
 	commsDir.mkpath(commsFolderName);
 	QProcess::execute("chmod",QStringList()<<"777"<<commsFolderName);
 
-	commsDeskfile=QString("%1/desktop%2%3").arg(commsFolderName).arg(this->workspace).arg(getenv("DISPLAY"));
-	commsDeskfilePID=QString("%1/pid%2%3").arg(commsFolderName).arg(this->workspace).arg(getenv("DISPLAY"));
+	commsDeskfile=QString("%1/desktop%2:%3").arg(commsFolderName).arg(this->workspace).arg(msgnodisplay,4,'0');
+	commsDeskfilePID=QString("%1/pid%2:%3").arg(commsFolderName).arg(this->workspace).arg(msgnodisplay,4,'0');
 
 	this->fileMsg.setFileName(commsDeskfile);
 	this->filePID.setFileName(commsDeskfilePID);
