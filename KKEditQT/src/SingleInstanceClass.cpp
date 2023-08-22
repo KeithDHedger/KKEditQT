@@ -67,8 +67,8 @@ bool SingleInstanceClass::getRunning(void)
 	QString msgnodisplay;
 
 	msgnodisplay=disp.remove(QRegularExpression("[:.]+"));
-	msgplusdisplay=disp.replace(QRegularExpression(".*:([0-9]*)"),"\\1").remove(QRegularExpression("[^0-9]*")).toInt()*0x100;
-
+	//msgplusdisplay=disp.replace(QRegularExpression(".*:([0-9]*)"),"\\1").remove(QRegularExpression("[^0-9]*")).toInt()*0x100;
+	msgplusdisplay=disp.remove(QRegularExpression("[:.]+")).toInt()*0x100;
 	if(this->usingMulti==true)
 		return(false);
 
