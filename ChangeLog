@@ -1,4 +1,5 @@
 1.0.0
+Tweaked shlang plugin.
 Tweaked single instance.
 Fixed badly exported DISPLAY variable.
 Changed KKEDIT_FILE_LIST passed to tools to newline seperated list.

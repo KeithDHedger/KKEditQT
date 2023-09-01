@@ -66,7 +66,7 @@ void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 		hr.format.setFontWeight(QFont::Bold);
 	else
 		hr.format.setFontWeight(QFont::Normal);
-	hr.pattern=QRegularExpression("([[:word:]]*)(?==)");
+	hr.pattern=QRegularExpression("(([[:word:]]*)(?==)|\\$[[:word:]]*)");
 	rules->append(hr);
 
 //curly brackets class
@@ -76,7 +76,7 @@ void shlang::setLanguageRules(QVector<highLightingRule> *rules)
 		hr.format.setFontWeight(QFont::Bold);
 	else
 		hr.format.setFontWeight(QFont::Normal);
-	hr.pattern=QRegularExpression("(\\${[[:print:]]*}|\\$\\([[:print:]]*\\)|\\$[[:word:]_]+)");
+	hr.pattern=QRegularExpression("(\\${[[:word:]]*}|\\$\\([[:print:]]*\\)|\\$[[:word:]_]+|\\${.*})");
 	rules->append(hr);
 
 //functions dec
