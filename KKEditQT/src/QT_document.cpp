@@ -856,6 +856,75 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 	if(pos>=this->toPlainText().length())
 		pos=this->toPlainText().length()-1;
 
+	if((this->toPlainText().at(pos).isLetter()==true))
+		{
+			bool loopflag=true;
+			if(cursor.atBlockStart()==false)
+				{
+					cursor.movePosition(QTextCursor::PreviousWord,QTextCursor::MoveAnchor);
+					pos=cursor.position();
+				}
+			while(loopflag==true)
+				{
+					if(cursor.atBlockEnd()==true)
+						{
+							loopflag=false;
+							continue;
+						}
+					
+					while(((this->toPlainText().at(cursor.position()).isLetterOrNumber()==true) || (this->toPlainText().at(cursor.position())=='-')) && (cursor.atBlockStart()==false))
+						cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::MoveAnchor);
+					
+					if((cursor.atBlockStart()==false) || (this->toPlainText().at(cursor.position()).isLetterOrNumber()==false))
+						cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::MoveAnchor);
+					while((this->toPlainText().at(cursor.position()).isLetterOrNumber()==true) || (this->toPlainText().at(cursor.position())=='-'))
+						{
+							if((this->toPlainText().at(cursor.position())=='-') && (this->toPlainText().at(cursor.position()+1).isDigit()==true))
+								break;
+							else
+								cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor);
+						}
+					
+					loopflag=false;
+					continue;
+				}
+			this->setTextCursor(cursor);
+			this->mainKKEditClass->application->clipboard()->setText(cursor.selectedText(),QClipboard::Selection);
+			return;
+		}
+
+	if((this->toPlainText().at(pos).isDigit()==true))
+		{
+			bool loopflag=true;
+			if(cursor.atBlockStart()==false)
+				{
+					cursor.movePosition(QTextCursor::PreviousWord,QTextCursor::MoveAnchor);
+					pos=cursor.position();
+				}
+			while(loopflag==true)
+				{
+					if(cursor.atBlockEnd()==true)
+						{
+							loopflag=false;
+							continue;
+						}
+					
+					while(((this->toPlainText().at(cursor.position()).isDigit()==true) || (this->toPlainText().at(cursor.position())=='.')) && (cursor.atBlockStart()==false))
+						cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::MoveAnchor);
+					
+					if((cursor.atBlockStart()==false) || (this->toPlainText().at(cursor.position()).isDigit()==false))
+						cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::MoveAnchor);
+					while((this->toPlainText().at(cursor.position()).isDigit()==true) || (this->toPlainText().at(cursor.position())=='.'))
+						cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor);
+					
+					loopflag=false;
+					continue;
+				}
+			this->setTextCursor(cursor);
+			this->mainKKEditClass->application->clipboard()->setText(cursor.selectedText(),QClipboard::Selection);
+			return;
+		}
+
 	if((this->toPlainText().at(pos)==" ") || (this->toPlainText().at(pos)=="\t"))
 		{
 			if(cursor.atBlockStart()==false)
@@ -865,6 +934,8 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 				}
 			cursor.movePosition(QTextCursor::NextWord,QTextCursor::KeepAnchor);
 			this->setTextCursor(cursor);
+			this->mainKKEditClass->application->clipboard()->setText(cursor.selectedText(),QClipboard::Selection);
+			return;
 		}
 }
 
