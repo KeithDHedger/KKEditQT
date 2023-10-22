@@ -1,4 +1,5 @@
 1.0.0
+Raise find/replace dialog when dialog is already open.
 Improved Double click on hyphenated word to include "_"
 Double click on hyphenated word ( aaa-bbb-ccc ) or on version string ( 1.2.3 ) now selects correctly.
 Tweaked shlang plugin.
