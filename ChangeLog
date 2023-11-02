@@ -1,4 +1,7 @@
 1.0.0
+Updated installaled roo .desktop file.
+Updated default "Run As Root" pref.
+Fixed opening root editor from menu.
 Raise find/replace dialog when dialog is already open.
 Improved Double click on hyphenated word to include "_"
 Double click on hyphenated word ( aaa-bbb-ccc ) or on version string ( 1.2.3 ) now selects correctly.

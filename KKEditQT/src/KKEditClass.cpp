@@ -458,7 +458,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsMaxTabChars=this->prefs.value("editor/maxtabchars",20).toInt();
 	this->prefsMaxMenuChars=this->prefs.value("editor/maxfuncchars",64).toInt();
 	this->prefsTerminalCommand=this->prefs.value("editor/terminalcommand","xterm -e").toString();
-	this->prefsRootCommand=this->prefs.value("editor/rootcommand","gtksu -- ").toString();
+	this->prefsRootCommand=this->prefs.value("editor/rootcommand","gtksu -- env QTWEBENGINE_DISABLE_SANDBOX=1 env QT_QPA_PLATFORMTHEME=qt5ct ").toString();
 	this->prefsQtDocDir=this->prefs.value("editor/qtdocdir","/usr/share/doc/qt5").toString();
 	this->prefsNoOpenduplicate=this->prefs.value("editor/noopendup",QVariant(bool(true))).value<bool>();
 	this->prefsNoWarnings=this->prefs.value("editor/nowarnings",QVariant(bool(false))).value<bool>();
