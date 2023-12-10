@@ -1,5 +1,6 @@
 1.0.0
-Updated installaled roo .desktop file.
+Fixed double click select on large wrapped line.
+Updated installaled root .desktop file.
 Updated default "Run As Root" pref.
 Fixed opening root editor from menu.
 Raise find/replace dialog when dialog is already open.

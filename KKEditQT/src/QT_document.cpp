@@ -851,8 +851,8 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 	QTextCursor	cursor=this->textCursor();
 	QString		text=cursor.block().text();
 	int			pos=cursor.position();
-	int			startpos=cursor.columnNumber();
-	int			endpos=cursor.columnNumber();
+	int			startpos=cursor.positionInBlock();
+	int			endpos=cursor.positionInBlock();
 
 	QPlainTextEdit::mouseDoubleClickEvent(event);
 
