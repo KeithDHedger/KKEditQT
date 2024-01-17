@@ -176,8 +176,8 @@ long SingleInstanceClass::getSIWorkSpace(void)
 	Display			*disp=QX11Info::display();
 	unsigned long	rootwin=QX11Info::appRootWindow(-1);
 	unsigned long	n=0;
-	Atom			NET_WM_DESKTOP;
-	long			*deskp;
+	Atom				NET_WM_DESKTOP;
+	long				*deskp;
 
 	NET_WM_DESKTOP=XInternAtom(disp,"_NET_CURRENT_DESKTOP",False);
 	deskp=(long*)getX11Prop(rootwin,NET_WM_DESKTOP,XA_CARDINAL,32,&n);
