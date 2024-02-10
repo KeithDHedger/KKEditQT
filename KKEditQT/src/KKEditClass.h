@@ -82,6 +82,7 @@ class kkEditQTPluginInterface;
 
 #include "kkedit-includes.h"
 
+#include "ChooserDialog.h"
 #include "QT_themeClass.h"
 #include "QT_AboutBox.h"
 #include "QT_menuitem.h"
@@ -420,6 +421,9 @@ class KKEditClass : public QObject
 		void							setUpToolBar(void);
 //file vars
 		bool							openFromDialog=false;
+		QString						lastOpenDir;
+		QString						lastSaveDir;
+
 //file functions
 		void							newFile(const QString data="",const QString filename="");
 		bool							openFile(QString filepath,int linenumber=1,bool warn=false,bool addtorecents=true);

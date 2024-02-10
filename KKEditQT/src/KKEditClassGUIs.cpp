@@ -1367,14 +1367,19 @@ void KKEditClass::buildSpellCheckerGUI(void)
 
 bool KKEditClass::openFileDialog(void)
 {
-	QStringList fileNames;
+	QRect				r(400,100,800,600);
+	chooserDialogClass	chooser(this->lastOpenDir);
 
-	fileNames=QFileDialog::getOpenFileNames(this->mainWindow,"Open File","","",0);
-	if (fileNames.count())
+	chooser.dialogWindow.setGeometry(r);
+	chooser.setMultipleSelect(true);
+	chooser.dialogWindow.exec();
+
+	if(chooser.multiFileList.count()>0)
 		{
-			this->openFromDialog=true;
-			for (int j=0;j<fileNames.size();j++)
-				this->openFile(fileNames.at(j).toUtf8().constData(),0,true);
+			for(int j=0;j<chooser.multiFileList.count();j++)
+				this->openFile(chooser.multiFileList.at(j).toUtf8().constData(),0,true);
+
+			this->lastOpenDir=chooser.localWD;
 		}
 	this->openFromDialog=false;
 	switchPage(this->mainNotebook->currentIndex());
