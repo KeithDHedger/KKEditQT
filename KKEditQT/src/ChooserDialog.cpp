@@ -214,6 +214,12 @@ void chooserDialogClass::selectItem(const QModelIndex &index)
 	this->realFilePath=QFileInfo(this->selectedFilePath).canonicalFilePath();
 	this->realFolderPath=QFileInfo(this->realFilePath).canonicalPath();
 	this->realName=QFileInfo(this->realFilePath).fileName();;
+
+	if((this->useMulti==true) && (QFileInfo(t).isDir()!=true) && (QGuiApplication::keyboardModifiers()!=Qt::ControlModifier))
+		{
+			this->multiFileList.clear();
+			this->multiFileList.push_back(t);
+		}
 	if((this->useMulti==true) && (QFileInfo(t).isDir()!=true) && (QGuiApplication::keyboardModifiers()==Qt::ControlModifier))
 		this->multiFileList.push_back(t);
 	this->showPreViewData();
