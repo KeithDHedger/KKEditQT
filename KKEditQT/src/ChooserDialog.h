@@ -37,6 +37,7 @@
 #include <QStandardItemModel>
 #include <QMimeDatabase>
 #include <QInputDialog>
+#include <QGuiApplication>
 
 #include "LFSTKFindClass.h"
 #include "LFSTKUtilityClass.h"
