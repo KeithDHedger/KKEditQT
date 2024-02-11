@@ -202,7 +202,6 @@ void chooserDialogClass::showPreViewData(void)
 void chooserDialogClass::selectItem(const QModelIndex &index)
 {
 	QString t;
-
 	t=QFileInfo(this->localWD+"/"+index.data(Qt::UserRole).toString()).absoluteFilePath();
 	if(this->saveDialog==false)
 		this->filepathEdit.setText(t);
@@ -215,13 +214,6 @@ void chooserDialogClass::selectItem(const QModelIndex &index)
 	this->realFolderPath=QFileInfo(this->realFilePath).canonicalPath();
 	this->realName=QFileInfo(this->realFilePath).fileName();;
 
-	if((this->useMulti==true) && (QFileInfo(t).isDir()!=true) && (QGuiApplication::keyboardModifiers()!=Qt::ControlModifier))
-		{
-			this->multiFileList.clear();
-			this->multiFileList.push_back(t);
-		}
-	if((this->useMulti==true) && (QFileInfo(t).isDir()!=true) && (QGuiApplication::keyboardModifiers()==Qt::ControlModifier))
-		this->multiFileList.push_back(t);
 	this->showPreViewData();
 }
 
@@ -277,7 +269,10 @@ void chooserDialogClass::selectSideItem(const QModelIndex &index)
 
 void chooserDialogClass::setFileData(void)
 {
-	QString	fp;
+	QString				fp;
+	QItemSelectionModel	*model;
+	QModelIndexList		list;
+	QString				filepath;
 
 	this->localWD=QFileInfo(this->localWD).absoluteFilePath();
 	if(this->saveDialog==true)
@@ -305,6 +300,17 @@ void chooserDialogClass::setFileData(void)
 		this->realFolderPath=QFileInfo(this->localWD).canonicalFilePath();
 
 	this->fileExists=QFileInfo(this->realFilePath).exists();
+	
+	model=this->fileList.selectionModel();
+	list=model->selectedIndexes();
+	this->multiFileList.clear();
+
+	for(int j=0;j<list.count();j++)
+		{
+			filepath=QFileInfo(this->localWD+"/"+list.at(j).data(Qt::UserRole).toString()).absoluteFilePath();
+			if(QFileInfo(filepath).isDir()==false)
+				this->multiFileList.push_back(filepath);
+		}
 }
 
 void chooserDialogClass::buildMainGui(void)
@@ -353,7 +359,6 @@ void chooserDialogClass::buildMainGui(void)
 						this->filepathEdit.setText(dirp);
 					this->localWD=dirp;
 					this->setFileList();
-					this->multiFileList.clear();
 				}
 			else
 				{
@@ -372,7 +377,6 @@ void chooserDialogClass::buildMainGui(void)
 		{
 			this->localWD=index.data(Qt::UserRole).toString();
 			this->setFileList();
-			this->multiFileList.clear();
 			if(this->saveDialog==false)
 				this->filepathEdit.setText(this->localWD);
 		});
@@ -409,7 +413,6 @@ void chooserDialogClass::buildMainGui(void)
 	cancel->setIcon(QIcon::fromTheme("stock_cancel"));
 	QObject::connect(cancel,&QPushButton::clicked,[this]()
 		{
-			this->multiFileList.clear();
 			this->dialogWindow.hide();
 		});
 
@@ -454,7 +457,6 @@ void chooserDialogClass::buildMainGui(void)
 				{
 					this->localWD=selectedFilePath;
 					this->setFileList();	
-					this->multiFileList.clear();
 				}
 			else
 				{
