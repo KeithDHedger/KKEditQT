@@ -1367,10 +1367,8 @@ void KKEditClass::buildSpellCheckerGUI(void)
 
 bool KKEditClass::openFileDialog(void)
 {
-	QRect				r(400,100,800,600);
 	chooserDialogClass	chooser(this->lastOpenDir);
 
-	chooser.dialogWindow.setGeometry(r);
 	chooser.setMultipleSelect(true);
 	chooser.dialogWindow.exec();
 

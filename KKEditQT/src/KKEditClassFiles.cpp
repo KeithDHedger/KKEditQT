@@ -166,7 +166,6 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 	int				calctabnum=this->mainNotebook->indexOf(doc);
 	plugData			pd;
 	QString			fileName="";
-	QRect			r(400,100,800,600);
 
 	if(filepath.isEmpty()==true)
 		{
@@ -176,7 +175,6 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 				dialogpath=doc->getFilePath();
 
 			chooserDialogClass	chooser(this->lastSaveDir,doc->getFileName());
-			chooser.dialogWindow.setGeometry(r);
 			chooser.dialogWindow.exec();
 
 			fileName=chooser.selectedFilePath;

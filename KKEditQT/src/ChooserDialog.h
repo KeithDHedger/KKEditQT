@@ -1,22 +1,22 @@
 /*
  *
- * ©K. D. Hedger. Sun 11 Feb 14:10:01 GMT 2024 keithdhedger@gmail.com
+ * ©K. D. Hedger. Sun 11 Feb 14:14:45 GMT 2024 keithdhedger@gmail.com
 
- * This file (ChooserDialog.h) is part of KKEditQT.
+ * This file (ChooserDialog.h) is part of QT5FileDialog.
 
- * KKEditQT is free software: you can redistribute it and/or modify
+ * QT5FileDialog is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
 
- * KKEditQT is distributed in the hope that it will be useful,
+ * QT5FileDialog is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
- */
+ * along with QT5FileDialog.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef _CHOOSERDIALOG_
 #define _CHOOSERDIALOG_
@@ -38,6 +38,7 @@
 #include <QMimeDatabase>
 #include <QInputDialog>
 #include <QGuiApplication>
+#include <QSettings>
 
 #include "LFSTKFindClass.h"
 #include "LFSTKUtilityClass.h"
@@ -86,7 +87,6 @@ class chooserDialogClass
 		bool					showHidden=false;
 		bool					showThumbsInList=false;
 		bool					saveDialog=false;
-
 		void					buildMainGui(void);
 		void					setSideList(void);
 		void					setFileList(void);

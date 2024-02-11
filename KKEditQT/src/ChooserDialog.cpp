@@ -1,22 +1,22 @@
 /*
  *
- * ©K. D. Hedger. Sun 11 Feb 14:10:15 GMT 2024 keithdhedger@gmail.com
+ * ©K. D. Hedger. Sun 11 Feb 14:15:00 GMT 2024 keithdhedger@gmail.com
 
- * This file (ChooserDialog.cpp) is part of KKEditQT.
+ * This file (ChooserDialog.cpp) is part of QT5FileDialog.
 
- * KKEditQT is free software: you can redistribute it and/or modify
+ * QT5FileDialog is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
 
- * KKEditQT is distributed in the hope that it will be useful,
+ * QT5FileDialog is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
- */
+ * along with QT5FileDialog.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "ChooserDialog.h"
 
@@ -273,6 +273,7 @@ void chooserDialogClass::setFileData(void)
 	QItemSelectionModel	*model;
 	QModelIndexList		list;
 	QString				filepath;
+	QSettings			prefs("KDHedger","ChooserDialog");
 
 	this->localWD=QFileInfo(this->localWD).absoluteFilePath();
 	if(this->saveDialog==true)
@@ -290,7 +291,6 @@ void chooserDialogClass::setFileData(void)
 
 			this->realFilePath=QFileInfo(QFileInfo(this->filepathEdit.text()).absoluteFilePath()).canonicalFilePath();
 			this->realName=QFileInfo(this->realFilePath).fileName();
-
 		}
 
 	fp=QFileInfo(this->selectedFilePath).canonicalFilePath();
@@ -311,6 +311,7 @@ void chooserDialogClass::setFileData(void)
 			if(QFileInfo(filepath).isDir()==false)
 				this->multiFileList.push_back(filepath);
 		}
+	prefs.setValue("size",this->dialogWindow.size());
 }
 
 void chooserDialogClass::buildMainGui(void)
@@ -490,6 +491,9 @@ void chooserDialogClass::buildMainGui(void)
 
 chooserDialogClass::chooserDialogClass(QString folder,QString savename)
 {
+	QSettings	prefs("KDHedger","ChooserDialog");
+	QSize		geom(800,600);
+
 	if(folder.isEmpty()==true)
 		this->localWD="/";
 	else
@@ -498,4 +502,10 @@ chooserDialogClass::chooserDialogClass(QString folder,QString savename)
 	this->saveDialog=!savename.isEmpty();
 	this->saveName=savename;
 	this->buildMainGui();
+
+	geom=prefs.value("size").toSize();
+	if(geom.isEmpty()==true)
+		geom=QSize(800,600);
+
+	this->dialogWindow.resize(geom);
 }
