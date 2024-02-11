@@ -1,21 +1,21 @@
 /*
  *
- * ©K. D. Hedger. Sun  4 Feb 19:41:20 GMT 2024 keithdhedger@gmail.com
+ * ©K. D. Hedger. Sun 11 Feb 14:10:15 GMT 2024 keithdhedger@gmail.com
 
- * This file (QT5ChooserDialog.cpp) is part of QT5FileDialog.
+ * This file (ChooserDialog.cpp) is part of KKEditQT.
 
- * QT5FileDialog is free software: you can redistribute it and/or modify
+ * KKEditQT is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
 
- * QT5FileDialog is distributed in the hope that it will be useful,
+ * KKEditQT is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with QT5FileDialog.  If not, see <http://www.gnu.org/licenses/>.
+ * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "ChooserDialog.h"
