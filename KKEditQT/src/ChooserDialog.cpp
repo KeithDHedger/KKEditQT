@@ -314,6 +314,11 @@ void chooserDialogClass::setFileData(void)
 		prefs.setValue("lastloadfolder",this->localWD);
 }
 
+void chooserDialogClass::setOverwriteWarning(bool warn)
+{
+	this->overwriteWarning=warn;
+}
+
 void chooserDialogClass::buildMainGui(void)
 {
 	QVBoxLayout	*windowvlayout=new QVBoxLayout;
@@ -343,7 +348,6 @@ void chooserDialogClass::buildMainGui(void)
 			if((this->localWD.compare("/")==0) && (index.data(Qt::UserRole).toString().compare("..")==0))
 				{
 					this->localWD="/";
-					this->filepathEdit.setText(this->localWD);
 					return;
 				}
 
@@ -446,7 +450,7 @@ void chooserDialogClass::buildMainGui(void)
 
 	QPushButton *apply;
 	if(this->saveDialog==false)
-		apply=new QPushButton("Apply");
+		apply=new QPushButton("Open");
 	else
 		apply=new QPushButton("Save");
 	apply->setIcon(QIcon::fromTheme("stock_apply"));
@@ -466,6 +470,12 @@ void chooserDialogClass::buildMainGui(void)
 					if(this->filepathEdit.text().isEmpty()==true)
 						return;
 					this->setFileData();
+					if((QFileInfo(this->selectedFilePath).exists()==true) && (this->overwriteWarning==true) && (this->saveDialog==true))
+						{
+							QMessageBox::StandardButton reply=QMessageBox::question(&this->dialogWindow,"File exists","File exists! Overwrite?",QMessageBox::Yes|QMessageBox::No);
+							if(reply==QMessageBox::No)
+								return;
+						}
 					this->dialogWindow.hide();
 				}
 		});
@@ -509,25 +519,22 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 				this->localWD=prefs.value("lastsavefolder").toString();
 			else
 				this->localWD=startfolder;
-
-			if(this->localWD.isEmpty()==true)
-				this->localWD="/";
 		}
 
 	if(type==chooserDialogType::loadDialog)
 		{
 			if(name.isEmpty()==true)
-				{
-					this->localWD=prefs.value("lastloadfolder").toString();
-					if((this->localWD.isEmpty()==true) || (QFileInfo(this->localWD).exists()==false))
-						this->localWD="/";
-				}
+				this->localWD=prefs.value("lastloadfolder").toString();
 			else
 				this->localWD=name;
+
 
 			this->saveDialog=false;
 			this->saveName="";
 		}
+
+	if((this->localWD.isEmpty()==true) || (QFileInfo(this->localWD).exists()==false))
+		this->localWD="/";
 
 	this->buildMainGui();
 	geom=prefs.value("size").toSize();

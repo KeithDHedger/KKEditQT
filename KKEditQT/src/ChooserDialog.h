@@ -69,6 +69,7 @@ class chooserDialogClass
 		void					setFileListMode(QListView::ViewMode mode);
 		void					setShowImagesInList(bool show=false);
 		void					setMultipleSelect(bool select);
+		void					setOverwriteWarning(bool warn);
 
 	private:
 		QLineEdit			filepathEdit;
@@ -88,6 +89,7 @@ class chooserDialogClass
 		bool					showHidden=false;
 		bool					showThumbsInList=false;
 		bool					saveDialog=false;
+		bool					overwriteWarning=true;
 		QString				lastSaveFolder;
 		QString				lastLoadFolder;
 
