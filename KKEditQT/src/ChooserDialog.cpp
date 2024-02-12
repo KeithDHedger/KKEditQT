@@ -27,11 +27,7 @@ chooserDialogClass::~chooserDialogClass()
 void chooserDialogClass::setShowImagesInList(bool show)
 {
 	this->showThumbsInList=show;
-}
-
-void chooserDialogClass::setSaveDialog(bool save)
-{
-	this->saveDialog=save;
+	this->setFileList();
 }
 
 void chooserDialogClass::setMultipleSelect(bool select)
@@ -312,6 +308,10 @@ void chooserDialogClass::setFileData(void)
 				this->multiFileList.push_back(filepath);
 		}
 	prefs.setValue("size",this->dialogWindow.size());
+	if(this->saveDialog==true)
+		prefs.setValue("lastsavefolder",this->localWD);
+	else
+		prefs.setValue("lastloadfolder",this->localWD);
 }
 
 void chooserDialogClass::buildMainGui(void)
@@ -379,7 +379,7 @@ void chooserDialogClass::buildMainGui(void)
 			this->localWD=index.data(Qt::UserRole).toString();
 			this->setFileList();
 			if(this->saveDialog==false)
-				this->filepathEdit.setText(this->localWD);
+				this->filepathEdit.setText("");
 		});
 
 	this->sideListModel=new QStandardItemModel(0,1);
@@ -454,6 +454,8 @@ void chooserDialogClass::buildMainGui(void)
 
 	QObject::connect(apply,&QPushButton::clicked,[this]()
 		{
+			if(this->filepathEdit.text().isEmpty()==true)
+				return;
 			if(QFileInfo(this->selectedFilePath).isDir()==true)
 				{
 					this->localWD=selectedFilePath;
@@ -461,6 +463,8 @@ void chooserDialogClass::buildMainGui(void)
 				}
 			else
 				{
+					if(this->filepathEdit.text().isEmpty()==true)
+						return;
 					this->setFileData();
 					this->dialogWindow.hide();
 				}
@@ -480,7 +484,7 @@ void chooserDialogClass::buildMainGui(void)
 	this->setSideList();
 	this->setFileList();
 	if(this->saveDialog==false)
-		this->filepathEdit.setText(QFileInfo(this->localWD).absoluteFilePath());
+		this->filepathEdit.setText("");
 	else
 		{
 			this->selectedFilePath=this->localWD+"/"+this->saveName;
@@ -489,23 +493,45 @@ void chooserDialogClass::buildMainGui(void)
 		}
 }
 
-chooserDialogClass::chooserDialogClass(QString folder,QString savename)
+chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QString startfolder)
 {
 	QSettings	prefs("KDHedger","ChooserDialog");
 	QSize		geom(800,600);
 
-	if(folder.isEmpty()==true)
-		this->localWD="/";
-	else
-		this->localWD=folder;
+	if(type==chooserDialogType::saveDialog)
+		{
+			this->saveDialog=true;
+			if(name.isEmpty()==false)
+				this->saveName=name;
+			else
+				this->saveName="Untitled";
+			if(startfolder.isEmpty()==true)
+				this->localWD=prefs.value("lastsavefolder").toString();
+			else
+				this->localWD=startfolder;
 
-	this->saveDialog=!savename.isEmpty();
-	this->saveName=savename;
+			if(this->localWD.isEmpty()==true)
+				this->localWD="/";
+		}
+
+	if(type==chooserDialogType::loadDialog)
+		{
+			if(name.isEmpty()==true)
+				{
+					this->localWD=prefs.value("lastloadfolder").toString();
+					if((this->localWD.isEmpty()==true) || (QFileInfo(this->localWD).exists()==false))
+						this->localWD="/";
+				}
+			else
+				this->localWD=name;
+
+			this->saveDialog=false;
+			this->saveName="";
+		}
+
 	this->buildMainGui();
-
 	geom=prefs.value("size").toSize();
 	if(geom.isEmpty()==true)
 		geom=QSize(800,600);
-
 	this->dialogWindow.resize(geom);
 }

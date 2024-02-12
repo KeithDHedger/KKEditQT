@@ -43,12 +43,14 @@
 #include "LFSTKFindClass.h"
 #include "LFSTKUtilityClass.h"
 
-#define MAXIMAGESIZETOTHUMB 1000000
+#define MAXIMAGESIZETOTHUMB 2000000
+
+enum class chooserDialogType{saveDialog,loadDialog};
 
 class chooserDialogClass
 {
 	public:
-		chooserDialogClass(QString folder="/",QString savename="");
+		chooserDialogClass(chooserDialogType type,QString savename="",QString startfolder="");
 		~chooserDialogClass();
 
 		QDialog				dialogWindow;
@@ -66,7 +68,6 @@ class chooserDialogClass
 		void					setSideListMode(QListView::ViewMode mode);
 		void					setFileListMode(QListView::ViewMode mode);
 		void					setShowImagesInList(bool show=false);
-		void					setSaveDialog(bool save=false);
 		void					setMultipleSelect(bool select);
 
 	private:
@@ -87,6 +88,9 @@ class chooserDialogClass
 		bool					showHidden=false;
 		bool					showThumbsInList=false;
 		bool					saveDialog=false;
+		QString				lastSaveFolder;
+		QString				lastLoadFolder;
+
 		void					buildMainGui(void);
 		void					setSideList(void);
 		void					setFileList(void);

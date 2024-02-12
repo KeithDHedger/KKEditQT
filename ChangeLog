@@ -1,4 +1,7 @@
 1.0.0
+Fixed open as hexdump with spaces in filepath.
+File chooser now remembers last load/save folder.
+Fixes for file chooser.
 Added custom file chooser.
 Improved opening c,c++ etc style include files from nav menu.
 Fixed double click select on large wrapped line.

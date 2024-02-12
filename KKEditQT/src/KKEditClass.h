@@ -421,8 +421,6 @@ class KKEditClass : public QObject
 		void							setUpToolBar(void);
 //file vars
 		bool							openFromDialog=false;
-		QString						lastOpenDir;
-		QString						lastSaveDir;
 
 //file functions
 		void							newFile(const QString data="",const QString filename="");

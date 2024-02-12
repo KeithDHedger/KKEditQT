@@ -324,8 +324,6 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->toolsFolder=QString("%1/%2/%3").arg(this->homeFolder).arg(KKEDITFOLDER).arg("tools");
 	this->recentFiles=new RecentMenuClass(this);
 	this->theme=new ThemeClass(this);
-	this->lastOpenDir=getenv("PWD");
-	this->lastSaveDir=getenv("PWD");
 	QObject::connect(this->fileWatch,&QFileSystemWatcher::fileChanged,[this](const QString &path)
 		{
 			this->fileChangedOnDisk(path);

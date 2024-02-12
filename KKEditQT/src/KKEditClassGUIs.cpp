@@ -1367,7 +1367,7 @@ void KKEditClass::buildSpellCheckerGUI(void)
 
 bool KKEditClass::openFileDialog(void)
 {
-	chooserDialogClass	chooser(this->lastOpenDir);
+	chooserDialogClass	chooser(chooserDialogType::loadDialog);
 
 	chooser.setMultipleSelect(true);
 	chooser.dialogWindow.exec();
@@ -1376,8 +1376,6 @@ bool KKEditClass::openFileDialog(void)
 		{
 			for(int j=0;j<chooser.multiFileList.count();j++)
 				this->openFile(chooser.multiFileList.at(j).toUtf8().constData(),0,true);
-
-			this->lastOpenDir=chooser.localWD;
 		}
 	this->openFromDialog=false;
 	switchPage(this->mainNotebook->currentIndex());

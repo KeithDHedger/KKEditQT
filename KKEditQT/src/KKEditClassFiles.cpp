@@ -61,33 +61,12 @@ QString KKEditClass::runPipeAndCapture(QString command)
 	return(dump);
 }
 
-/*
-	QRect				r(400,100,800,600);
-	chooserDialogClass	chooser(this->lastOpenDir);
-
-	chooser.dialogWindow.setGeometry(r);
-	chooser.setMultipleSelect(true);
-	chooser.dialogWindow.exec();
-
-	if(chooser.multiFileList.count()>0)
-		{
-			for(int j=0;j<chooser.multiFileList.count();j++)
-				this->openFile(chooser.multiFileList.at(j).toUtf8().constData(),0,true);
-
-			this->lastOpenDir=chooser.localWD;
-		}
-	this->openFromDialog=false;
-	switchPage(this->mainNotebook->currentIndex());
-	return(true);
-*/
 void KKEditClass::openAsHexDump(void)
 {
 	QString				dump;
-	QString				command;
-	QRect				r(400,100,800,600);
-	chooserDialogClass	chooser(this->lastOpenDir);
+	//QString				command;
+	chooserDialogClass	chooser(chooserDialogType::loadDialog);
 
-	chooser.dialogWindow.setGeometry(r);
 	chooser.setMultipleSelect(true);
 	chooser.dialogWindow.exec();
 
@@ -95,13 +74,12 @@ void KKEditClass::openAsHexDump(void)
 		{
 			for (int j=0;j<chooser.multiFileList.count();j++)
 				{
-					command=QString("hexdump -C %1").arg(chooser.multiFileList.at(j));
-					dump=this->runPipeAndCapture(QString("hexdump -C %1").arg(chooser.multiFileList.at(j)));
+					//command=QString("hexdump -C '%1'").arg(chooser.multiFileList.at(j));
+					dump=this->runPipeAndCapture(QString("hexdump -C '%1'").arg(chooser.multiFileList.at(j)));
 					QFile		file(chooser.multiFileList.at(j));
 					QFileInfo	fileinfo(file);
 					this->newFile(dump,QString("%1.hexdump").arg(fileinfo.fileName()));
 				}			
-			this->lastOpenDir=chooser.localWD;
 		}
 }
 
@@ -174,12 +152,10 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 			else
 				dialogpath=doc->getFilePath();
 
-			chooserDialogClass	chooser(this->lastSaveDir,doc->getFileName());
+			chooserDialogClass	chooser(chooserDialogType::saveDialog,doc->getFileName());
 			chooser.dialogWindow.exec();
 
 			fileName=chooser.selectedFilePath;
-			if(chooser.localWD.isEmpty()==false)
-				this->lastSaveDir=chooser.localWD;
 		}
 	else
 		{
