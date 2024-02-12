@@ -1,4 +1,5 @@
 1.0.0
+Fixed canceling in file chooser.
 Fixed open as hexdump with spaces in filepath.
 File chooser now remembers last load/save folder.
 Fixes for file chooser.

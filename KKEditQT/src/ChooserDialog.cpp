@@ -419,6 +419,7 @@ void chooserDialogClass::buildMainGui(void)
 	QObject::connect(cancel,&QPushButton::clicked,[this]()
 		{
 			this->dialogWindow.hide();
+			this->valid=false;
 		});
 
 	QPushButton *hidden=new QPushButton("Hidden");

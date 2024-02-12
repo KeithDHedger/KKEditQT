@@ -64,17 +64,17 @@ QString KKEditClass::runPipeAndCapture(QString command)
 void KKEditClass::openAsHexDump(void)
 {
 	QString				dump;
-	//QString				command;
 	chooserDialogClass	chooser(chooserDialogType::loadDialog);
 
 	chooser.setMultipleSelect(true);
 	chooser.dialogWindow.exec();
+	if(chooser.valid==false)
+		return;
 
 	if(chooser.multiFileList.count()>0)
 		{
 			for (int j=0;j<chooser.multiFileList.count();j++)
 				{
-					//command=QString("hexdump -C '%1'").arg(chooser.multiFileList.at(j));
 					dump=this->runPipeAndCapture(QString("hexdump -C '%1'").arg(chooser.multiFileList.at(j)));
 					QFile		file(chooser.multiFileList.at(j));
 					QFileInfo	fileinfo(file);
@@ -154,7 +154,8 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 
 			chooserDialogClass	chooser(chooserDialogType::saveDialog,doc->getFileName());
 			chooser.dialogWindow.exec();
-
+			if(chooser.valid==false)
+				return(false);
 			fileName=chooser.selectedFilePath;
 		}
 	else

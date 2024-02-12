@@ -1371,7 +1371,8 @@ bool KKEditClass::openFileDialog(void)
 
 	chooser.setMultipleSelect(true);
 	chooser.dialogWindow.exec();
-
+	if(chooser.valid==false)
+		return(false);
 	if(chooser.multiFileList.count()>0)
 		{
 			for(int j=0;j<chooser.multiFileList.count();j++)
