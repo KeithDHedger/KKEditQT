@@ -272,6 +272,7 @@ void LFSTK_findClass::LFSTK_sortCaseSensitive(bool casesensitive)
 void LFSTK_findClass::LFSTK_sortByName(void)
 {
 	std::sort(this->data.begin(),this->data.end(),sortDataN);
+	this->moveNavItem();
 }
 
 /**
@@ -280,6 +281,7 @@ void LFSTK_findClass::LFSTK_sortByName(void)
 void LFSTK_findClass::LFSTK_sortByPath(void)
 {
 	std::sort(this->data.begin(),this->data.end(),sortDataP);
+	this->moveNavItem();
 }
 
 /**
@@ -288,6 +290,7 @@ void LFSTK_findClass::LFSTK_sortByPath(void)
 void LFSTK_findClass::LFSTK_sortByType(void)
 {
 	std::sort(this->data.begin(),this->data.end(),sortDataT);
+	this->moveNavItem();
 }
 
 /**
@@ -296,6 +299,29 @@ void LFSTK_findClass::LFSTK_sortByType(void)
 void LFSTK_findClass::LFSTK_sortByTypeAndName(void)
 {
 	std::sort(this->data.begin(),this->data.end(),sortDataTN);
+	this->moveNavItem();
+}
+
+/**
+* Move nav item to top
+*/
+void LFSTK_findClass::moveNavItem(void)
+{
+	dataStruct data;
+
+	if(this->ignoreNavLinks==true)
+		return;
+
+	for(unsigned j=0;j<this->data.size();j++)
+		{
+			if(this->data.at(j).name.compare("..")==0)
+				{
+					data=this->data.at(j);
+					this->data.erase(this->data.begin()+j);
+					this->data.emplace(this->data.begin(),data);
+					return;
+				}
+		}
 }
 
 /**
@@ -304,7 +330,8 @@ void LFSTK_findClass::LFSTK_sortByTypeAndName(void)
 */
 int LFSTK_findClass::LFSTK_getDataCount(void)
 {
-	return((int)this->dataCnt);
+	return(this->data.size());
+	//return((int)this->dataCnt);
 }
 
 /**
@@ -434,23 +461,31 @@ void LFSTK_findClass::LFSTK_findFiles(const char *dir,bool multi)//TODO//
 					if((datas.fileType==BROKENLINKTYPE) && (this->ignoreBroken==true))
 						continue;
 
-					if(((datas.fileType==FILETYPE) || (datas.fileType==FILELINKTYPE)) || ((this->ignoreBroken==false) && (datas.fileType==BROKENLINKTYPE)))
+					if((this->findType!=FOLDERTYPE) && (this->findType!=FOLDERLINKTYPE))
 						{
-							if(this->LFSTK_getFileTypes().empty()==false)
+							if( ((datas.fileType==FILETYPE) || (datas.fileType==FILELINKTYPE)) || ((this->ignoreBroken==false) && (datas.fileType==BROKENLINKTYPE)))
 								{
-									skip=true;
-									std::vector<std::string> tokenstrings=LFSTK_UtilityClass::LFSTK_strTok(this->LFSTK_getFileTypes(),";");
-									for(unsigned j=0;j<tokenstrings.size();j++)
+									if(this->LFSTK_getFileTypes().empty()==false)
 										{
-											if(LFSTK_UtilityClass::LFSTK_hasSuffix(entry->d_name,tokenstrings.at(j))==true)
+											skip=true;
+											std::vector<std::string> tokenstrings=LFSTK_UtilityClass::LFSTK_strTok(this->LFSTK_getFileTypes(),";");
+											for(unsigned j=0;j<tokenstrings.size();j++)
 												{
-													skip=false;
-													j=tokenstrings.size()+1;
+													if(LFSTK_UtilityClass::LFSTK_hasSuffix(entry->d_name,tokenstrings.at(j))==true)
+														{
+															skip=false;
+															j=tokenstrings.size()+1;
+														}
 												}
+											if(skip==true)
+												continue;
 										}
-									if(skip==true)
-										continue;
 								}
+						}
+					else
+						{
+							if((datas.fileType!=FOLDERTYPE) && (datas.fileType!=FOLDERLINKTYPE))
+								continue;
 						}
 
 					if((this->ignoreNavLinks==true) && ((strcmp(entry->d_name,".")==0) || (strcmp(entry->d_name,"..")==0)))

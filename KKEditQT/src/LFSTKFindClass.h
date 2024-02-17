@@ -32,7 +32,7 @@
 #ifndef _FINDCLASS_
 #define _FINDCLASS_
 
-enum {BROKENLINKTYPE=0,FILELINKTYPE,FILETYPE,FOLDERLINKTYPE,FOLDERTYPE,ANYTYPE};
+enum {BROKENLINKTYPE=0,ANYTYPE,FILELINKTYPE,FILETYPE,FOLDERLINKTYPE,FOLDERTYPE};
 
 struct	dataStruct
 {
@@ -100,6 +100,7 @@ class LFSTK_findClass
 		bool		ignoreNavLinks=false;
 
 		int		getRealType(std::string path);
+		void		moveNavItem(void);
 };
 
 #endif

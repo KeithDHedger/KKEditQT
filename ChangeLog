@@ -1,4 +1,5 @@
 1.0.0
+Improved sorting in file dialog.
 Added 'Refresh' to file dialog.
 Fixed file type sorting.
 Fixed showing broken links.

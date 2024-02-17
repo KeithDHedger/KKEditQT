@@ -93,19 +93,12 @@ void chooserDialogClass::setFileList(void)
 	QStandardItem	*item;
 
 	this->fileListModel->clear();
-	this->gFind.LFSTK_setIgnoreNavLinks(true);
 	this->gFind.LFSTK_setIncludeHidden(this->showHidden);
-
 	this->gFind.LFSTK_findFiles(this->localWD.toStdString().c_str());
 	this->gFind.LFSTK_sortByTypeAndName();
 
-	item=new QStandardItem(QIcon(),"..");
-	item->setData("..",Qt::UserRole);
-	this->fileListModel->appendRow(item);
-
 	for(int j=0;j<gFind.LFSTK_getDataCount();j++)
 		{
-			//if(QFileInfo(this->localWD+"/"+gFind.data.at(j).name.c_str()).isSymLink()==true)
 			if((gFind.data.at(j).fileType==FILELINKTYPE) || (gFind.data.at(j).fileType==FOLDERLINKTYPE))
 				{
 					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind.data.at(j).name.c_str()),QString("->%1").arg(gFind.data.at(j).name.c_str()));
