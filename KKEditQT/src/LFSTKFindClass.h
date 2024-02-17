@@ -1,21 +1,21 @@
 /*
  *
- * ©K. D. Hedger. Sun 11 Feb 14:11:19 GMT 2024 keithdhedger@gmail.com
+ * ©K. D. Hedger. Sun 21 Oct 13:09:07 BST 2018 keithdhedger@gmail.com
 
- * This file (LFSTKFindClass.h) is part of KKEditQT.
+ * This file (LFSTKFindClass.h) is part of LFSToolKit.
 
- * KKEditQT is free software: you can redistribute it and/or modify
+ * LFSToolKit is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * at your option) any later version.
 
- * KKEditQT is distributed in the hope that it will be useful,
+ * LFSToolKit is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
+ * along with LFSToolKit.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <stdio.h>
@@ -26,6 +26,8 @@
 #include <ftw.h>
 #include <functional>
 #include <string.h>
+
+#include "LFSTKUtilityClass.h"
 
 #ifndef _FINDCLASS_
 #define _FINDCLASS_
@@ -39,15 +41,6 @@ struct	dataStruct
 	std::string	namesanssuffix;
 	int			fileType;
 };
-
-__attribute__((unused)) static void freeAndNull(char **data)
-{
-	if((data!=NULL) && (*data!=NULL))
-		{
-			free(*data);
-			*data=NULL;
-		}
-}
 
 /**
  * \brief Find files etc.
@@ -103,10 +96,10 @@ class LFSTK_findClass
 		bool		fullPath=false;
 		bool		sortDescending=false;
 		bool		ignoreBroken=false;
-		//char		*fileTypes=NULL;
-		//std::vector<std::string> fileTypes;
 		std::string	fileTypes;
 		bool		ignoreNavLinks=false;
+
+		int		getRealType(std::string path);
 };
 
 #endif

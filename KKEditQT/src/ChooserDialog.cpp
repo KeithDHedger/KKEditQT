@@ -76,7 +76,6 @@ QIcon chooserDialogClass::getFileIcon(QString path)
 	return(icon);
 }
 
-
 void chooserDialogClass::setSideListMode(QListView::ViewMode mode)
 {
 	this->sideList.setViewMode(mode);
@@ -96,7 +95,8 @@ void chooserDialogClass::setFileList(void)
 	this->fileListModel->clear();
 	this->gFind.LFSTK_setIgnoreNavLinks(true);
 	this->gFind.LFSTK_setIncludeHidden(this->showHidden);
-	this->gFind.LFSTK_findFiles(this->localWD.toStdString().c_str());//TODO//
+
+	this->gFind.LFSTK_findFiles(this->localWD.toStdString().c_str());
 	this->gFind.LFSTK_sortByTypeAndName();
 
 	item=new QStandardItem(QIcon(),"..");
@@ -105,10 +105,16 @@ void chooserDialogClass::setFileList(void)
 
 	for(int j=0;j<gFind.LFSTK_getDataCount();j++)
 		{
-			if(QFileInfo(this->localWD+"/"+gFind.data.at(j).name.c_str()).isSymLink()==true)
+			//if(QFileInfo(this->localWD+"/"+gFind.data.at(j).name.c_str()).isSymLink()==true)
+			if((gFind.data.at(j).fileType==FILELINKTYPE) || (gFind.data.at(j).fileType==FOLDERLINKTYPE))
 				{
 					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind.data.at(j).name.c_str()),QString("->%1").arg(gFind.data.at(j).name.c_str()));
 					item->setFont(QFont(item->font().family(),-1,QFont::Bold));
+				}
+			else if(gFind.data.at(j).fileType==BROKENLINKTYPE)
+				{
+					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind.data.at(j).name.c_str()),QString("%1 - Broken Link").arg(gFind.data.at(j).name.c_str()));
+					item->setFont(QFont(item->font().family(),-1,QFont::Bold));				
 				}
 			else
 				item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind.data.at(j).name.c_str()),gFind.data.at(j).name.c_str());
@@ -319,6 +325,11 @@ void chooserDialogClass::setOverwriteWarning(bool warn)
 	this->overwriteWarning=warn;
 }
 
+void chooserDialogClass::addFileTypes(QString types)
+{
+	this->fileTypes.addItem(types);
+}
+
 void chooserDialogClass::buildMainGui(void)
 {
 	QVBoxLayout	*windowvlayout=new QVBoxLayout;
@@ -332,6 +343,7 @@ void chooserDialogClass::buildMainGui(void)
 
 	this->fileListModel=new QStandardItemModel(0,1);
     this->fileList.setModel(this->fileListModel);
+	//this->fileTypes.addItem("All Files");
 
 	QObject::connect(&this->fileList,&QListView::clicked,[this](const QModelIndex &index)
 		{
@@ -412,6 +424,15 @@ void chooserDialogClass::buildMainGui(void)
 	windowvlayout->addLayout(hlayout);
 
 	controlsvlayout->addWidget(&this->filepathEdit);
+	controlsvlayout->addWidget(&this->fileTypes);
+	QObject::connect(&this->fileTypes,&QComboBox::currentTextChanged,[this](const QString &text)
+		{
+			if(text.compare("All Files")==0)
+				this->gFind.LFSTK_setFileTypes("");
+			else
+				this->gFind.LFSTK_setFileTypes(text.toStdString());
+			this->setFileList();
+		});
 
 	hlayout=new QHBoxLayout;
 	QPushButton *cancel=new QPushButton("Cancel");
@@ -447,6 +468,13 @@ void chooserDialogClass::buildMainGui(void)
 						this->filepathEdit.setText(this->localWD);
 					this->setFileList();
 				}
+		});
+
+	QPushButton *refresh=new QPushButton("Refresh");
+	refresh->setIcon(QIcon::fromTheme("refresh"));
+	QObject::connect(refresh,&QPushButton::clicked,[this]()
+		{
+			this->setFileList();
 		});
 
 	QPushButton *apply;
@@ -486,6 +514,8 @@ void chooserDialogClass::buildMainGui(void)
 	hlayout->addWidget(hidden);
 	hlayout->addStretch();
 	hlayout->addWidget(newfolder);
+	hlayout->addStretch();
+	hlayout->addWidget(refresh);
 	hlayout->addStretch();
 	hlayout->addWidget(apply);
 	controlsvlayout->addLayout(hlayout);

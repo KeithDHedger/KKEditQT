@@ -33,6 +33,7 @@
 #include <QVariant>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QComboBox>
 
 #include <QStandardItemModel>
 #include <QMimeDatabase>
@@ -71,9 +72,11 @@ class chooserDialogClass
 		void					setShowImagesInList(bool show=false);
 		void					setMultipleSelect(bool select);
 		void					setOverwriteWarning(bool warn);
+		void					addFileTypes(QString types);
 
 	private:
 		QLineEdit			filepathEdit;
+		QComboBox			fileTypes;
 		QListView			fileList;
 		QStandardItemModel	*fileListModel;
 

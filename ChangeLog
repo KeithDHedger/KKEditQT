@@ -1,4 +1,8 @@
 1.0.0
+Added 'Refresh' to file dialog.
+Fixed file type sorting.
+Fixed showing broken links.
+Fixed filetypes on remote share.
 Fixed canceling in file chooser.
 Fixed open as hexdump with spaces in filepath.
 File chooser now remembers last load/save folder.

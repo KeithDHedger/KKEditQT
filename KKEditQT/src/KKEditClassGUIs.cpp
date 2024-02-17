@@ -1370,6 +1370,13 @@ bool KKEditClass::openFileDialog(void)
 	chooserDialogClass	chooser(chooserDialogType::loadDialog);
 
 	chooser.setMultipleSelect(true);
+	chooser.gFind.LFSTK_sortByTypeAndName();
+	chooser.gFind.LFSTK_setIgnoreBroken(true);
+	chooser.setShowImagesInList(false);
+	chooser.addFileTypes(".cpp;.c;.h;.hpp;.m;.mm;.py;.go;.java;.js;.rb;.sh;.rs;.tcl;.pl");
+	chooser.addFileTypes(".html;.xml;.css;.php;.pro;.in;.am;.m4;.md;.ac;.json;.class;.sql");
+	chooser.addFileTypes("All Files");
+
 	chooser.dialogWindow.exec();
 	if(chooser.valid==false)
 		return(false);

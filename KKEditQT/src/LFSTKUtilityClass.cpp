@@ -1,23 +1,23 @@
 /*
  *
- * ©K. D. Hedger. Sun 11 Feb 14:11:30 GMT 2024 keithdhedger@gmail.com
+ * ©K. D. Hedger. Fri 29 Dec 20:16:05 GMT 2023 keithdhedger@gmail.com
 
- * This file (LFSTKUtilityClass.cpp) is part of KKEditQT.
+ * This file (LFSTKUtilityClass.cpp) is part of LFSToolKit.
 
- * KKEditQT is free software: you can redistribute it and/or modify
+ * LFSToolKit is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
 
- * KKEditQT is distributed in the hope that it will be useful,
+ * LFSToolKit is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
+ * along with LFSToolKit.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+ 
 #include "LFSTKUtilityClass.h"
 
 LFSTK_UtilityClass::~LFSTK_UtilityClass()
@@ -174,6 +174,26 @@ unsigned long LFSTK_UtilityClass::LFSTK_hashFromKey(std::string key)
 		hash=31*hash+key.at(i);
 
 	return(hash);
+}
+
+/**
+* Get if string has suffix.
+* \param std::string str haystack.
+* \param std::string str suffix.
+* \return bool has suffix.
+*/
+bool LFSTK_UtilityClass::LFSTK_hasSuffix(std::string haystack,std::string suffix)
+{
+	std::string upperhaystack=haystack;
+	std::string upperneedle=suffix;
+	std::transform(upperhaystack.begin(),upperhaystack.end(),upperhaystack.begin(),::toupper);
+	std::transform(upperneedle.begin(),upperneedle.end(),upperneedle.begin(),::toupper);
+
+	if(upperneedle.length()>upperhaystack.length())
+		return(false);
+	if(upperhaystack.substr(upperhaystack.length()-upperneedle.length(),upperneedle.length()).compare(upperneedle)==0)
+			return(true);
+	return(false);
 }
 
 /**
