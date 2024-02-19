@@ -107,11 +107,19 @@ void chooserDialogClass::setFileList(void)
 			else if(gFind.data.at(j).fileType==BROKENLINKTYPE)
 				{
 					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind.data.at(j).name.c_str()),QString("%1 - Broken Link").arg(gFind.data.at(j).name.c_str()));
-					item->setFont(QFont(item->font().family(),-1,QFont::Bold));				
+					item->setFont(QFont(item->font().family(),-1,QFont::Bold));
 				}
 			else
-				item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind.data.at(j).name.c_str()),gFind.data.at(j).name.c_str());
+				{
+					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind.data.at(j).name.c_str()),gFind.data.at(j).name.c_str());
+				}
+			if((gFind.data.at(j).fileType==FOLDERTYPE) || (gFind.data.at(j).fileType==FOLDERLINKTYPE))
+				item->setDragEnabled(true);
+			else
+				item->setDragEnabled(false);
+			
 			item->setData(gFind.data.at(j).name.c_str(),Qt::UserRole);
+			item->setStatusTip(this->localWD+"/"+gFind.data.at(j).name.c_str());
 			this->fileListModel->appendRow(item);
 		}
 	this->fileList.scrollToTop();
@@ -124,6 +132,8 @@ void chooserDialogClass::setSideList(void)
 	QStandardItem		*item;
 	QList<QStorageInfo>	ml=QStorageInfo::mountedVolumes();
 	QString				disktype;
+	QSettings			prefs("KDHedger","ChooserDialog");
+	QStringList			sl=prefs.value("customfolders").toStringList();
 
 ///standard items
 	this->sideListModel->clear();
@@ -134,6 +144,10 @@ void chooserDialogClass::setSideList(void)
 	fullFilePathData=QDir::homePath();
 	item=new QStandardItem(QIcon::fromTheme("user-home"),QFileInfo(QDir().homePath()).baseName());
 	item->setData(fullFilePathData,Qt::UserRole);
+	this->sideListModel->appendRow(item);
+
+	item=new QStandardItem("");
+	item->setEnabled(false);
 	this->sideListModel->appendRow(item);
 
 //mounted drives	 
@@ -153,9 +167,20 @@ void chooserDialogClass::setSideList(void)
 					this->sideListModel->appendRow(item);
 				}
 		}
+	item=new QStandardItem("");
+	item->setEnabled(false);
+	this->sideListModel->appendRow(item);
+
+//favs
+	for(int j=0;j<sl.size();j++)
+		{
+			item=new QStandardItem(QIcon::fromTheme("folder"),QFileInfo(sl.at(j)).fileName());
+			item->setData(QFileInfo(sl.at(j)).fileName(),Qt::UserRole);
+			item->setStatusTip(sl.at(j));
+			this->sideListModel->appendRow(item);	
+		}
 //TODO//
 //recent
-//favs
 }
 
 void chooserDialogClass::showPreViewData(void)
@@ -214,15 +239,17 @@ void chooserDialogClass::selectItem(const QModelIndex &index)
 
 void chooserDialogClass::selectSideItem(const QModelIndex &index)
 {
-	QList<QStorageInfo>	ml=QStorageInfo::mountedVolumes();
-	QStorageInfo			storage;
-	QString				disktype;
-	QPixmap				pixmap;
-	QIcon				icon; 
-	QLocale				locale;
-	QString				type;
-	qint64				sze=0;
-	qint64				freeb=0;
+	QList<QStorageInfo>		ml=QStorageInfo::mountedVolumes();
+	QStorageInfo				storage;
+	QString					disktype;
+	QPixmap					pixmap;
+	QIcon					icon; 
+	QLocale					locale;
+	QString					type;
+	qint64					sze=0;
+	qint64					freeb=0;
+	const QAbstractItemModel	*model;
+	QMap<int,QVariant>		map;
 
 	disktype="drive-harddisk";
 
@@ -241,17 +268,50 @@ void chooserDialogClass::selectSideItem(const QModelIndex &index)
 				sze=0;
 				freeb=0;
 				break;
+			case 2:
+				return;
 			default:
-				storage=ml.at(index.row()+1);
-				if((storage.rootPath().compare("/")!=0) && (storage.rootPath().compare(QDir().homePath())!=0))
+				if((index.row())<ml.size())
 					{
-						if(storage.fileSystemType().contains("nfs"))
-							disktype="folder-remote";
-						if(storage.fileSystemType().contains("ssh"))
-							disktype="network_local";	
-						sze=storage.bytesTotal();
-					type=storage.fileSystemType();
-						freeb=storage.bytesFree();
+						storage=ml.at(index.row());
+						if((storage.rootPath().compare("/")!=0) && (storage.rootPath().compare(QDir().homePath())!=0))
+							{
+								if(storage.fileSystemType().contains("nfs"))
+									disktype="folder-remote";
+								if(storage.fileSystemType().contains("ssh"))
+									disktype="network_local";	
+								sze=storage.bytesTotal();
+								type=storage.fileSystemType();
+								freeb=storage.bytesFree();
+							}
+					}
+				else
+					{
+						struct stat	sb;
+						int			md;
+						QString		mod;
+						QString		str;
+
+						model=index.model();
+						map=model->itemData(index);
+						if(map.find(Qt::StatusTipRole)!=map.end())
+							{
+								str=map[Qt::StatusTipRole].toString();
+								if(str.isEmpty()==true)
+									return;
+								icon=QIcon::fromTheme("folder");
+								pixmap=icon.pixmap(QSize(128,128));
+								this->previewIcon.setPixmap(pixmap);
+								this->previewSize.setText(QString("Size: %1").arg(QFileInfo(str).size()));
+								this->previewMimeType.setText("inode/directory");
+								if(lstat(str.toStdString().c_str(),&sb)!=-1)
+									{
+										md=sb.st_mode & 07777;
+										mod.setNum(md,8);
+										this->previewMode.setText(QString("Mode: %1").arg(mod));
+									}
+							}
+						return;
 					}
 		}
 	icon=QIcon::fromTheme(disktype);
@@ -260,6 +320,28 @@ void chooserDialogClass::selectSideItem(const QModelIndex &index)
 	this->previewSize.setText(QString("Size: %1").arg(locale.formattedDataSize(sze)));
 	this->previewMimeType.setText(QString("FS Type: %1").arg(type));
 	this->previewMode.setText(QString("Free: %1").arg(locale.formattedDataSize(freeb)));
+}
+
+void chooserDialogClass::setFavs(void)
+{
+	QSettings			prefs("KDHedger","ChooserDialog");
+	QStringList			sl;
+	QItemSelectionModel	*model;
+	QModelIndexList		list;
+	QString				filepath;
+
+	this->sideList.setSelectionMode(QAbstractItemView::ExtendedSelection);
+	this->sideList.selectAll();
+	model=this->sideList.selectionModel();
+	list=model->selectedIndexes();
+
+	for(int j=0;j<list.count();j++)
+		{
+			filepath=QFileInfo(list.at(j).data(Qt::StatusTipRole).toString()).absoluteFilePath();
+			if(filepath.isEmpty()==false)
+				sl<<filepath;
+		}
+	prefs.setValue("customfolders",sl);
 }
 
 void chooserDialogClass::setFileData(void)
@@ -311,6 +393,8 @@ void chooserDialogClass::setFileData(void)
 		prefs.setValue("lastsavefolder",this->localWD);
 	else
 		prefs.setValue("lastloadfolder",this->localWD);
+
+	this->setFavs();
 }
 
 void chooserDialogClass::setOverwriteWarning(bool warn)
@@ -336,7 +420,6 @@ void chooserDialogClass::buildMainGui(void)
 
 	this->fileListModel=new QStandardItemModel(0,1);
     this->fileList.setModel(this->fileListModel);
-	//this->fileTypes.addItem("All Files");
 
 	QObject::connect(&this->fileList,&QListView::clicked,[this](const QModelIndex &index)
 		{
@@ -385,7 +468,16 @@ void chooserDialogClass::buildMainGui(void)
 
 	QObject::connect(&this->sideList,&QListView::doubleClicked,[this](const QModelIndex &index)
 		{
-			this->localWD=index.data(Qt::UserRole).toString();
+			const QAbstractItemModel	*model;
+			model=index.model();
+			QMap map(model->itemData(index));
+			if(map.find(Qt::StatusTipRole)!=map.end())
+			{
+				QString str=map[Qt::StatusTipRole].toString();
+				this->localWD=QFileInfo(str).absoluteFilePath();
+			}
+			else
+				this->localWD=index.data(Qt::UserRole).toString();
 			this->setFileList();
 			if(this->saveDialog==false)
 				this->filepathEdit.setText("");
@@ -397,6 +489,16 @@ void chooserDialogClass::buildMainGui(void)
 	this->fileList.setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	sidevlayout->addWidget(&this->sideList);
+	QPushButton *deletefav=new QPushButton("Remove Fav");
+	deletefav->setIcon(QIcon::fromTheme("stock_cancel"));
+	QObject::connect(deletefav,&QPushButton::clicked,[this]()
+		{
+			QModelIndex ind=this->sideList.currentIndex();
+			if(ind.data(Qt::StatusTipRole).toString().isEmpty()==false)
+				this->sideListModel->removeRow(this->sideList.currentIndex().row());
+		});
+	sidevlayout->addWidget(deletefav);
+
 	filevlayout->addWidget(&this->fileList);
 
 	this->previewIcon.setMaximumWidth(128);
@@ -433,6 +535,7 @@ void chooserDialogClass::buildMainGui(void)
 	QObject::connect(cancel,&QPushButton::clicked,[this]()
 		{
 			this->dialogWindow.hide();
+			this->setFavs();
 			this->valid=false;
 		});
 
@@ -525,6 +628,8 @@ void chooserDialogClass::buildMainGui(void)
 			this->selectedFileName=this->saveName;
 			this->filepathEdit.setText(this->saveName);
 		}
+	this->fileList.setDragEnabled(true);
+	this->sideList.setAcceptDrops(true);
 }
 
 chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QString startfolder)

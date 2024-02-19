@@ -1,4 +1,10 @@
 1.0.0
+Added remove fav button to side list to remove currently selected favourite.
+Added favorites ( dAndd a folder from file list to sidelist ).
+Added filter drop down.
+Added filetypes filter.
+Fixed non-existant last folder.
+Added check for file exists warning.
 Improved sorting in file dialog.
 Added 'Refresh' to file dialog.
 Fixed file type sorting.

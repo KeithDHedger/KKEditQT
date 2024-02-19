@@ -40,6 +40,7 @@
 #include <QInputDialog>
 #include <QGuiApplication>
 #include <QSettings>
+#include <QMap>
 
 #include "LFSTKFindClass.h"
 #include "LFSTKUtilityClass.h"
@@ -105,5 +106,6 @@ class chooserDialogClass
 		void					selectSideItem(const QModelIndex &index);
 		void					showPreViewData(void);
 		void					setFileData(void);
+		void					setFavs(void);
 };
 #endif
