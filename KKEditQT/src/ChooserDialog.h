@@ -74,6 +74,7 @@ class chooserDialogClass
 		void					setMultipleSelect(bool select);
 		void					setOverwriteWarning(bool warn);
 		void					addFileTypes(QString types);
+		void					setMaxRecents(int maxrecents);
 
 	private:
 		QLineEdit			filepathEdit;
@@ -97,6 +98,9 @@ class chooserDialogClass
 		bool					overwriteWarning=true;
 		QString				lastSaveFolder;
 		QString				lastLoadFolder;
+		int					maxRecents=21;
+		QString				recentFoldersPath;
+		QString				recentFilesPath;
 
 		void					buildMainGui(void);
 		void					setSideList(void);

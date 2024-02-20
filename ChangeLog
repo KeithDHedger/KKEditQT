@@ -1,4 +1,10 @@
 1.0.0
+Fixed minor gui glitch with overwrite msg.
+Fixed some filetypes.
+Added set maximimum nuber of recent files/folders.
+Check and create necessary folders.
+Added recent files.
+Added recent folders.
 Added remove fav button to side list to remove currently selected favourite.
 Added favorites ( dAndd a folder from file list to sidelist ).
 Added filter drop down.
