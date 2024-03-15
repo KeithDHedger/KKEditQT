@@ -1,4 +1,5 @@
 1.0.0
+Removed some debug messages.
 Fixed minor gui glitch with overwrite msg.
 Fixed some filetypes.
 Added set maximimum nuber of recent files/folders.

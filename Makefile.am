@@ -22,4 +22,7 @@ uninstall-hook:
 	rm -f $(DESTDIR)${prefix}/share/applications/KKEditQT.desktop $(DESTDIR)${prefix}/share/applications/KKEditQTRoot.desktop $(DESTDIR)${prefix}/share/pixmaps/KKEditQT.png $(DESTDIR)${prefix}/share/icons/hicolor/256x256/apps/KKEditQT.png $(DESTDIR)${prefix}/share/icons/hicolor/256x256/apps/KKEditQTRoot.png  $(DESTDIR)${prefix}/share/pixmaps/KKEditQTPlug.png
 	rm -fr $(pkgdatadir)
 
+distclean-local:
+	rm KKEditQT/src/moc_*
+
 
