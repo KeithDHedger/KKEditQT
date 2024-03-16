@@ -1,21 +1,21 @@
 /*
  *
- * ©K. D. Hedger. Sun 11 Feb 14:15:00 GMT 2024 keithdhedger@gmail.com
+ * ©K. D. Hedger. Sat 16 Mar 13:56:25 GMT 2024 keithdhedger@gmail.com
 
- * This file (ChooserDialog.cpp) is part of QT5FileDialog.
+ * This file (ChooserDialog.cpp) is part of KKEditQT.
 
- * QT5FileDialog is free software: you can redistribute it and/or modify
+ * KKEditQT is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
 
- * QT5FileDialog is distributed in the hope that it will be useful,
+ * KKEditQT is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with QT5FileDialog.  If not, see <http://www.gnu.org/licenses/>.
+ * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "ChooserDialog.h"
@@ -496,8 +496,11 @@ void chooserDialogClass::buildMainGui(void)
 					dirp=QDir::cleanPath(dirp);
 					if(this->saveDialog==false)
 						this->filepathEdit.setText(dirp);
+
 					this->localWD=dirp;
 					this->setFileList();
+					if(this->filepathEdit.text().isEmpty()==false)
+						this->selectedFilePath=this->filepathEdit.text();
 				}
 			else
 				{
@@ -532,15 +535,17 @@ void chooserDialogClass::buildMainGui(void)
 			model=index.model();
 			QMap map(model->itemData(index));
 			if(map.find(Qt::StatusTipRole)!=map.end())
-			{
-				QString str=map[Qt::StatusTipRole].toString();
-				this->localWD=QFileInfo(str).absoluteFilePath();
-			}
+				{
+					QString str=map[Qt::StatusTipRole].toString();
+					this->localWD=QFileInfo(str).absoluteFilePath();
+				}
 			else
 				this->localWD=index.data(Qt::UserRole).toString();
 			this->setFileList();
 			if(this->saveDialog==false)
 				this->filepathEdit.setText("");
+			if(this->filepathEdit.text().isEmpty()==false)
+				this->selectedFilePath=this->filepathEdit.text();
 		});
 
 	this->sideListModel=new QStandardItemModel(0,1);
@@ -579,6 +584,11 @@ void chooserDialogClass::buildMainGui(void)
 	windowvlayout->addLayout(hlayout);
 
 	controlsvlayout->addWidget(&this->filepathEdit);
+	QObject::connect(&this->filepathEdit,&QLineEdit::textChanged,[this](const QString &text)
+		{
+			this->selectedFilePath=text;
+		});
+
 	controlsvlayout->addWidget(&this->fileTypes);
 	QObject::connect(&this->fileTypes,&QComboBox::currentTextChanged,[this](const QString &text)
 		{
@@ -744,8 +754,8 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 		geom=QSize(800,600);
 	this->dialogWindow.resize(geom);
 
-	command=QString("pushd %1/ &>/dev/null ;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd &>/dev/null").arg(this->recentFilesPath).arg(this->maxRecents);
+	command=QString("pushd %1/;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd").arg(this->recentFilesPath).arg(this->maxRecents);
 	system(command.toStdString().c_str());
-	command=QString("pushd %1 &>/dev/null ;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd &>/dev/null").arg(this->recentFoldersPath).arg(this->maxRecents);
+	command=QString("pushd %1;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd").arg(this->recentFoldersPath).arg(this->maxRecents);
 	system(command.toStdString().c_str());
 }
