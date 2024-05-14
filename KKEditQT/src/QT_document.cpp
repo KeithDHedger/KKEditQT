@@ -388,6 +388,9 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 	if(this->isReadOnly()==true)
 		return;
 
+	if(this->mouseVisible==true)
+		this->setMouseState(false);
+
 //fix for vnc/linuxfb tab key
 	if(((this->mainKKEditClass->application->platformName().compare("vnc")==0) || (this->mainKKEditClass->application->platformName().compare("linuxfb")==0)) && (event->key()==Qt::Key_Tab))
 		{
@@ -413,7 +416,6 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 					return;
 				}
 		}
-		
 	switch (event->key())
 		{
 			case Qt::Key_Backspace:
@@ -546,6 +548,7 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 
 	updateLineNumberAreaWidth(this->oldBlockCount);
 	highlightCurrentLine();
+	this->setMouseTracking(true);
 }
 
 void DocumentClass::setFileName(const QString filename)
@@ -835,6 +838,29 @@ void DocumentClass::setBMFromLineBar(QMouseEvent *event)
 
 	this->mainKKEditClass->handleBMMenu(this,TOGGLEBOOKMARKMENUITEM,cursor);
 	this->highlightCurrentLine();
+}
+
+void DocumentClass::setMouseState(bool mouseon)
+{
+	if((mouseon==false) && (this->mouseVisible==true))
+		{
+			this->mainKKEditClass->application->setOverrideCursor(QCursor(Qt::BlankCursor));
+			this->mouseVisible=false;
+			return;
+		}
+
+	if((mouseon==true) && (this->mouseVisible==false))
+		{
+			this->mainKKEditClass->application->restoreOverrideCursor();
+			this->mouseVisible=true;
+		}
+}
+
+void DocumentClass::mouseMoveEvent(QMouseEvent *event)
+{
+	if(this->mouseVisible==false)
+		this->setMouseState(true);
+	QPlainTextEdit::mouseMoveEvent(event);
 }
 
 void DocumentClass::mouseReleaseEvent(QMouseEvent *event)

@@ -1,3 +1,7 @@
+1.0.1
+Hide mouse pointer while typing.
+Changed min required Qt5WebEngineWidgets version to 5.15.0.
+
 1.0.0
 Removed some debug messages.
 Fixed minor gui glitch with overwrite msg.

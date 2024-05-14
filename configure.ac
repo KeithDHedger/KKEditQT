@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([KKEditQT],[1.0.0],[PROJ],[KKEditQT])
+AC_INIT([KKEditQT],[1.0.1],[PROJ],[KKEditQT])
 
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_CXX
@@ -32,7 +32,7 @@ AC_ARG_ENABLE(docviewer,AS_HELP_STRING([--enable-docviewer],[Build the Doc viewe
     [enable_docviewer="yes"])
 AC_MSG_RESULT($enable_docviewer)
 if test "$enable_docviewer" = "yes"; then
-	WEBENGINEWIDGETS_MODULES="Qt5WebEngineWidgets >= 5.15.3"
+	WEBENGINEWIDGETS_MODULES="Qt5WebEngineWidgets >= 5.15.0"
 	PKG_CHECK_MODULES(WEBENGINEWIDGETS, $WEBENGINEWIDGETS_MODULES)
 	AC_SUBST(WEBENGINEWIDGETS_CFLAGS)
 	AC_SUBST(WEBENGINEWIDGETS_LIBS)

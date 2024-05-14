@@ -109,8 +109,8 @@ am_KKEditQTProgressBar_OBJECTS = ../pole/main.$(OBJEXT)
 KKEditQTProgressBar_OBJECTS = $(am_KKEditQTProgressBar_OBJECTS)
 KKEditQTProgressBar_LDADD = $(LDADD)
 am__objects_1 = ../src/ChooserDialog.$(OBJEXT) \
-	../src/KKEditClassCallbacks.$(OBJEXT) \
 	../src/KKEditClass.$(OBJEXT) \
+	../src/KKEditClassCallbacks.$(OBJEXT) \
 	../src/KKEditClassDocuments.$(OBJEXT) \
 	../src/KKEditClassFiles.$(OBJEXT) \
 	../src/KKEditClassGUIs.$(OBJEXT) \
@@ -118,7 +118,13 @@ am__objects_1 = ../src/ChooserDialog.$(OBJEXT) \
 	../src/KKEditClassSearch.$(OBJEXT) \
 	../src/KKEditClassTools.$(OBJEXT) \
 	../src/LFSTKFindClass.$(OBJEXT) \
-	../src/LFSTKUtilityClass.$(OBJEXT) ../src/main.$(OBJEXT) \
+	../src/LFSTKUtilityClass.$(OBJEXT) \
+	../src/QT_AboutBox.$(OBJEXT) ../src/QT_document.$(OBJEXT) \
+	../src/QT_highlighter.$(OBJEXT) \
+	../src/QT_historyClass.$(OBJEXT) ../src/QT_menuitem.$(OBJEXT) \
+	../src/QT_notebook.$(OBJEXT) ../src/QT_recentMenu.$(OBJEXT) \
+	../src/QT_themeClass.$(OBJEXT) ../src/QT_toolbar.$(OBJEXT) \
+	../src/SingleInstanceClass.$(OBJEXT) ../src/main.$(OBJEXT) \
 	../src/moc_KKEditClass.$(OBJEXT) \
 	../src/moc_QT_AboutBox.$(OBJEXT) \
 	../src/moc_QT_document.$(OBJEXT) \
@@ -128,12 +134,7 @@ am__objects_1 = ../src/ChooserDialog.$(OBJEXT) \
 	../src/moc_QT_notebook.$(OBJEXT) \
 	../src/moc_QT_recentMenu.$(OBJEXT) \
 	../src/moc_QT_themeClass.$(OBJEXT) \
-	../src/moc_QT_toolbar.$(OBJEXT) ../src/QT_AboutBox.$(OBJEXT) \
-	../src/QT_document.$(OBJEXT) ../src/QT_highlighter.$(OBJEXT) \
-	../src/QT_historyClass.$(OBJEXT) ../src/QT_menuitem.$(OBJEXT) \
-	../src/QT_notebook.$(OBJEXT) ../src/QT_recentMenu.$(OBJEXT) \
-	../src/QT_themeClass.$(OBJEXT) ../src/QT_toolbar.$(OBJEXT) \
-	../src/SingleInstanceClass.$(OBJEXT)
+	../src/moc_QT_toolbar.$(OBJEXT)
 am_kkeditqt_OBJECTS = $(am__objects_1)
 kkeditqt_OBJECTS = $(am_kkeditqt_OBJECTS)
 kkeditqt_LDADD = $(LDADD)
@@ -387,7 +388,7 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 			-DLIBDIR=\""${libdir}/${PACKAGE}"\" \
 			-fPIC
 
-COMMONSRC = ../src/ChooserDialog.cpp ../src/KKEditClassCallbacks.cpp ../src/KKEditClass.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/LFSTKFindClass.cpp ../src/LFSTKUtilityClass.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_themeClass.cpp ../src/moc_QT_toolbar.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_themeClass.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp
+COMMONSRC = ../src/ChooserDialog.cpp ../src/KKEditClass.cpp ../src/KKEditClassCallbacks.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/LFSTKFindClass.cpp ../src/LFSTKUtilityClass.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_themeClass.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_themeClass.cpp ../src/moc_QT_toolbar.cpp
 kkeditqt_SOURCES = $(COMMONSRC)
 KKEditQTProgressBar_SOURCES = ../pole/main.cpp
 kkeditqtmsg_SOURCES = ../kkeditqtmsg/main.cpp
@@ -497,9 +498,9 @@ KKEditQTProgressBar$(EXEEXT): $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressB
 	@: > ../src/$(DEPDIR)/$(am__dirstamp)
 ../src/ChooserDialog.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
-../src/KKEditClassCallbacks.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/KKEditClass.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/KKEditClassCallbacks.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/KKEditClassDocuments.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
@@ -516,6 +517,26 @@ KKEditQTProgressBar$(EXEEXT): $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressB
 ../src/LFSTKFindClass.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/LFSTKUtilityClass.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/QT_AboutBox.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/QT_document.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/QT_highlighter.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/QT_historyClass.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/QT_menuitem.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/QT_notebook.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/QT_recentMenu.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/QT_themeClass.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/QT_toolbar.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/SingleInstanceClass.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/main.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
@@ -538,26 +559,6 @@ KKEditQTProgressBar$(EXEEXT): $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressB
 ../src/moc_QT_themeClass.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/moc_QT_toolbar.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/QT_AboutBox.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/QT_document.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/QT_highlighter.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/QT_historyClass.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/QT_menuitem.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/QT_notebook.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/QT_recentMenu.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/QT_themeClass.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/QT_toolbar.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/SingleInstanceClass.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 
 kkeditqt$(EXEEXT): $(kkeditqt_OBJECTS) $(kkeditqt_DEPENDENCIES) $(EXTRA_kkeditqt_DEPENDENCIES) 

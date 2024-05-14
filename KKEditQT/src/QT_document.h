@@ -112,6 +112,8 @@ class DocumentClass : public QPlainTextEdit
 		void								contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
 		void								mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 		void								mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+		void								mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+		
 		void								paintEvent(QPaintEvent* event);
 //dand
 		void								dragEnterEvent(QDragEnterEvent* event);
@@ -135,6 +137,8 @@ class DocumentClass : public QPlainTextEdit
 		bool								realShowLineNumbers(void);
 		bool								realHiliteLine(void);
 		bool								realSyntaxHighlighting(void);
+		void								setMouseState(bool mouseon);
+		bool								mouseVisible=true;
 		QTextCursor						holdCursor;
 		bool								lastCursorPosition=false;
 		int								holdColoumn=0;
