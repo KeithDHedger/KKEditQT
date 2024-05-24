@@ -164,4 +164,9 @@ void NoteBookClass::scrollTabsRight(void)
 		this->setCurrentIndex(ctab);
 }
 
-
+void NoteBookClass::leaveEvent(QEvent *event)
+{
+	if(this->mainKKEditClass->mouseVisible==false)
+		this->mainKKEditClass->setMouseState(true);
+	QTabWidget::leaveEvent(event);
+}

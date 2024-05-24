@@ -388,8 +388,8 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 	if(this->isReadOnly()==true)
 		return;
 
-	if(this->mouseVisible==true)
-		this->setMouseState(false);
+	if(this->mainKKEditClass->mouseVisible==true)
+		this->mainKKEditClass->setMouseState(false);
 
 //fix for vnc/linuxfb tab key
 	if(((this->mainKKEditClass->application->platformName().compare("vnc")==0) || (this->mainKKEditClass->application->platformName().compare("linuxfb")==0)) && (event->key()==Qt::Key_Tab))
@@ -840,26 +840,10 @@ void DocumentClass::setBMFromLineBar(QMouseEvent *event)
 	this->highlightCurrentLine();
 }
 
-void DocumentClass::setMouseState(bool mouseon)
-{
-	if((mouseon==false) && (this->mouseVisible==true))
-		{
-			this->mainKKEditClass->application->setOverrideCursor(QCursor(Qt::BlankCursor));
-			this->mouseVisible=false;
-			return;
-		}
-
-	if((mouseon==true) && (this->mouseVisible==false))
-		{
-			this->mainKKEditClass->application->restoreOverrideCursor();
-			this->mouseVisible=true;
-		}
-}
-
 void DocumentClass::mouseMoveEvent(QMouseEvent *event)
 {
-	if(this->mouseVisible==false)
-		this->setMouseState(true);
+	if(this->mainKKEditClass->mouseVisible==false)
+		this->mainKKEditClass->setMouseState(true);
 	QPlainTextEdit::mouseMoveEvent(event);
 }
 

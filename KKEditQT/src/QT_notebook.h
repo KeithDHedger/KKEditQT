@@ -48,6 +48,7 @@ class NoteBookClass : public QTabWidget
 		void			dragEnterEvent(QDragEnterEvent* event);
 		void			dropEvent(QDropEvent* event);
 		void			dragMoveEvent(QDragMoveEvent *event);
+		void			leaveEvent(QEvent *event) Q_DECL_OVERRIDE;
 
 //internals
 	private:

@@ -1515,3 +1515,19 @@ void KKEditClass::sendMessgage(QString msg)
 			qDebug()<<"Can't send message :"<<msg;
 		}
 }
+
+void KKEditClass::setMouseState(bool mouseon)
+{
+	if((mouseon==false) && (this->mouseVisible==true))
+		{
+			this->application->setOverrideCursor(QCursor(Qt::BlankCursor));
+			this->mouseVisible=false;
+			return;
+		}
+
+	if((mouseon==true) && (this->mouseVisible==false))
+		{
+			this->application->restoreOverrideCursor();
+			this->mouseVisible=true;
+		}
+}

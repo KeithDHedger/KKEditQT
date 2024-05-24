@@ -1,4 +1,5 @@
 1.0.1
+Fixed hiding tab whilst mouse hidden.
 Hide mouse pointer while typing.
 Changed min required Qt5WebEngineWidgets version to 5.15.0.
 

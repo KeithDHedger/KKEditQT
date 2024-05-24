@@ -137,8 +137,6 @@ class DocumentClass : public QPlainTextEdit
 		bool								realShowLineNumbers(void);
 		bool								realHiliteLine(void);
 		bool								realSyntaxHighlighting(void);
-		void								setMouseState(bool mouseon);
-		bool								mouseVisible=true;
 		QTextCursor						holdCursor;
 		bool								lastCursorPosition=false;
 		int								holdColoumn=0;
