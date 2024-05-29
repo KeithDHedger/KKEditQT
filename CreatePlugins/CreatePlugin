@@ -1,0 +1,28 @@
+#!/bin/bash -e
+
+#©keithhedger Tue 28 May 14:50:19 BST 2024 kdhedger68713@gmail.com
+
+NAME="$1"
+
+if [ -e "../KKEditQT/plugins/$NAME" ];then
+	echo "$NAME already exists please choose another name, exiting ..."
+	exit 1
+fi
+
+cp -rv "PLUGNAME" ../KKEditQT/plugins/$NAME||true
+
+pushd ../KKEditQT/plugins/$NAME
+	find -type f -name "PLUGNAME*" -exec rename "PLUGNAME" $NAME '{}' \;
+
+	while read
+		do
+			sed -i "s@PLUGNAME@$NAME@g" "$REPLY"
+		done< <(find -type f)
+	mkdir -vp build
+	cd build
+	qmake ..
+	make install
+	mkdir -vp  ~/.KKEditQT/plugins/$NAME
+	cp -rv plugins/* ~/.KKEditQT/plugins
+	rm -r plugins
+popd
