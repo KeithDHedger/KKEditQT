@@ -21,8 +21,8 @@ pushd ../KKEditQT/plugins/$NAME
 	mkdir -vp build
 	cd build
 	qmake ..
-	make install
+	make
 	mkdir -vp  ~/.KKEditQT/plugins/$NAME
-	cp -rv plugins/* ~/.KKEditQT/plugins
-	rm -r plugins
+	ln -sv $(realpath ../plugin/${NAME}.png ) ~/.KKEditQT/plugins/$NAME
+	ln -sv $(realpath plugin/plugins/* ) ~/.KKEditQT/plugins/$NAME
 popd
