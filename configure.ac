@@ -84,6 +84,9 @@ if test "$enable_debugcode" = "yes"; then
 	AC_DEFINE([_DEBUGCODE_], [], [Debug code])
 fi
 
+QT5TERM_MODULES="qtermwidget5 >= 1.4.0"
+PKG_CHECK_MODULES(QT5TERM, $QT5TERM_MODULES)
+
 AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile)
 AC_OUTPUT
 
