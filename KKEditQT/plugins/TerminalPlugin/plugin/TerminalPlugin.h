@@ -54,7 +54,9 @@ class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 
 		int						cbnum=0;
 		bool						openOnStart=false;
-
+		plugData					*data=NULL;
+		QString					filePath;
+		QString					folderPath;
 		void						doMenuItem(int what);
 };
 

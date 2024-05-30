@@ -233,6 +233,9 @@ void KKEditClass::switchPage(int index)
 	pd.tabNumber=this->mainNotebook->currentIndex();
 	pd.userIntData1=index;
 	pd.what=DOSWITCHPAGE;
+	pd.userStrData1=this->currentFilepath;
+	pd.userStrData2=currentFilename;
+	pd.userStrData3=doc->getDirPath();
 	this->runAllPlugs(pd);
 }
 

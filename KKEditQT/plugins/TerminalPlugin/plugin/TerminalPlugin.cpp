@@ -45,6 +45,12 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->openOnStart=this->plugPrefs->value("openonstart").toBool();
 
 	this->dw=new QDockWidget(this->mainKKEditClass->mainWindow);
+
+//QString x="QDockWidget::title {background: grey;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;}\nQDockWidget {font-family: \"ani\";font-size: 8pt;}";
+	QString x="QDockWidget::title {background: grey;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;}\nQDockWidget {font-size: 10pt;}";
+//this->dw->setStyleSheet("QDockWidget {font-family: \"ani\";font-size: 8pt;};\nQDockWidget::title {background: red;padding-left: 0px;padding-top: 0px;};");
+//this->dw->setStyleSheet("QDockWidget::title {background: red;padding-left: 0px;padding-top: 0px;};");
+	this->dw->setStyleSheet(x);
 	this->dw->setVisible(this->openOnStart);
     dw->setWidget(console);
 	act=dw->toggleViewAction();
@@ -135,7 +141,7 @@ void TerminalPluginPlug::plugSettings(void)
 
 unsigned int TerminalPluginPlug::plugWants(void)
 {
-	return(DOABOUT|DOSETTINGS);
+	return(DOABOUT|DOSETTINGS|DOSWITCHPAGE);
 }
 
 void TerminalPluginPlug::plugRun(plugData *data)
@@ -144,19 +150,26 @@ void TerminalPluginPlug::plugRun(plugData *data)
 	qDebug()<<"Name: "<<data->plugName;
 	qDebug()<<"Version: "<<data->plugVersion;
 	qDebug()<<"What to do: "<<data->what;
+	qDebug()<<data->userStrData1;
+	qDebug()<<data->userStrData2;
+	qDebug()<<data->userStrData3;
+	this->filePath=data->userStrData1;
+	this->folderPath=data->userStrData3;
+	if(data->what==DOSWITCHPAGE)
+		this->dw->setWindowTitle(this->filePath);
 }
 
 void TerminalPluginPlug::doMenuItem(int what)
 {
-//	switch(what)
-//		{
-//			case 1:
-//				qDebug()<<"Toggle term action ...";
-//				qDebug()<<this->dw->isVisible();//TODO//
-//				break;
-//			case 2:
-//				qDebug()<<"CD to Doc Folder ...";//TODO//
-//				break;
-//		}
+	switch(what)
+		{
+			case 1:
+				qDebug()<<"Toggle term action ...";
+				qDebug()<<this->dw->isVisible();//TODO//
+				break;
+			case 2:
+				this->console->changeDir(this->folderPath);
+				break;
+		}
 }
 
