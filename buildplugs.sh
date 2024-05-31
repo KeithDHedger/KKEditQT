@@ -12,9 +12,9 @@ INSTALLTO="$2"
 export INSTALLTO
 
 if [[ "$1" = "clean" ]];then
-	find KKEditQT/langplugins -type d -iname "build" -exec rm -rf '{}' \; &>/dev/null
-	find KKEditQT/plugins -type d -iname "build" -exec rm -rf '{}' \; &>/dev/null
-	find KKEditQT/toolkitplugins -type d -iname "build" -exec rm -rf '{}' \; &>/dev/null
+	find KKEditQT/langplugins -type d -iname "build" -exec rm -rf '{}' \;
+	find KKEditQT/plugins -type d -iname "build" -exec rm -rf '{}' \;
+	find KKEditQT/toolkitplugins -type d -iname "build" -exec rm -rf '{}' \;
 	exit 0
 fi
 
@@ -29,7 +29,9 @@ buildPlug ()
 	THISDIR=$(basename $(pwd))
 	PARENTDIR="$(basename "$(dirname $(pwd))")"
 
-	mkdir -vp build
+	if [ -e pass ];then
+		return
+	fi
 
 	case $WHAT in
 		"clean")
@@ -42,6 +44,7 @@ buildPlug ()
 			make
 			;;
 		 "install")
+			mkdir -vp build
 			cd build
 		 	make install
 			if [ ${LOCAL:-0} -eq 1 ];then

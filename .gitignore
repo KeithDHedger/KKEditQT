@@ -28,3 +28,4 @@ buildlocal
 Doxyfile
 */plugins/*/build/
 */plugins/*-NOGIT
+pass

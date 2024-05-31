@@ -85,7 +85,13 @@ if test "$enable_debugcode" = "yes"; then
 fi
 
 QT5TERM_MODULES="qtermwidget5 >= 1.4.0"
-PKG_CHECK_MODULES(QT5TERM, $QT5TERM_MODULES)
+PKG_CHECK_MODULES(XQT5TERM, $QT5TERM_MODULES, [gotterm=yes], [:])
+if test "$gotterm" = "yes"; then
+		rm -f KKEditQT/plugins/TerminalPlugin/pass
+	else
+		touch KKEditQT/plugins/TerminalPlugin/pass
+		AC_MSG_NOTICE([No QTermWidget, not building TerminalPlugin])
+fi
 
 AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile)
 AC_OUTPUT

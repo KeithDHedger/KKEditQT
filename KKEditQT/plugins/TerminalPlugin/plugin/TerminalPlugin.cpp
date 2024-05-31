@@ -25,6 +25,7 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	QAction		*act;
 	QStringList	themenames=QTermWidget::availableColorSchemes();
 	int			what=1;
+	QString		dwss="QDockWidget::title {background: grey;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;}\nQDockWidget {font-size: 10pt;}";
 
 	this->mainKKEditClass=kk;
 	this->plugPath=pathtoplug;
@@ -45,12 +46,7 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->openOnStart=this->plugPrefs->value("openonstart").toBool();
 
 	this->dw=new QDockWidget(this->mainKKEditClass->mainWindow);
-
-//QString x="QDockWidget::title {background: grey;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;}\nQDockWidget {font-family: \"ani\";font-size: 8pt;}";
-	QString x="QDockWidget::title {background: grey;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;}\nQDockWidget {font-size: 10pt;}";
-//this->dw->setStyleSheet("QDockWidget {font-family: \"ani\";font-size: 8pt;};\nQDockWidget::title {background: red;padding-left: 0px;padding-top: 0px;};");
-//this->dw->setStyleSheet("QDockWidget::title {background: red;padding-left: 0px;padding-top: 0px;};");
-	this->dw->setStyleSheet(x);
+	this->dw->setStyleSheet(dwss);
 	this->dw->setVisible(this->openOnStart);
     dw->setWidget(console);
 	act=dw->toggleViewAction();

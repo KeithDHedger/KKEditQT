@@ -1,4 +1,6 @@
 1.0.1
+If qtermwidget5 not available will not try to build TerminalPlugin.
+Creating file 'pass' in the root folder of a plugin will skip building/installing that plugin.
 Added terminal plugin ( needs qtermwidget5 ).
 Fixed hiding tab whilst mouse hidden.
 Hide mouse pointer while typing.
