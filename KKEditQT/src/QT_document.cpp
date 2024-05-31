@@ -671,6 +671,10 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	pd.menu=&menu;
 	pd.tabNumber=this->mainKKEditClass->mainNotebook->currentIndex();
 	pd.what=DOCONTEXTMENU;
+	pd.userStrData1=this->filePath;
+	pd.userStrData2=this->fileName;
+	pd.userStrData3=this->dirPath;
+
 	this->mainKKEditClass->runAllPlugs(pd);
 
 //	menu.setStyleSheet("QMenu { menu-scrollable: true ;padding: 0;}");

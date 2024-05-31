@@ -22,7 +22,6 @@
 
 void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 {
-	QAction		*act;
 	QStringList	themenames=QTermWidget::availableColorSchemes();
 	int			what=1;
 	QString		dwss="QDockWidget::title {background: grey;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;}\nQDockWidget {font-size: 10pt;}";
@@ -41,7 +40,7 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 	this->console=new QTermWidget(0,NULL);
 	this->console->setScrollBarPosition(QTermWidget::ScrollBarRight);
-	this->console->setWorkingDirectory(QString("/tmp"));
+	//this->console->setWorkingDirectory(QString("~"));
 	this->console->setColorScheme(themenames.at(this->cbnum));
 	this->openOnStart=this->plugPrefs->value("openonstart").toBool();
 
@@ -49,18 +48,18 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->dw->setStyleSheet(dwss);
 	this->dw->setVisible(this->openOnStart);
     dw->setWidget(console);
-	act=dw->toggleViewAction();
-	act->setText("Toggle Terminal");
+	this->toggleViewAct=dw->toggleViewAction();
+	this->toggleViewAct->setText("Toggle Terminal");
 	//dw->setFeatures(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetFloatable);//TODO in lfswm2//
 	dw->setFeatures(QDockWidget::DockWidgetClosable);
 	what=1;
-	QObject::connect(act,&QAction::triggered,[this,what]() { this->doMenuItem(what); });
-	this->TerminalPluginMenu->addAction(act);
+	QObject::connect(this->toggleViewAct,&QAction::triggered,[this,what]() { this->doMenuItem(what); });
+	this->TerminalPluginMenu->addAction(this->toggleViewAct);
  
-	act=new QAction("CD to Doc Folder ...");
-	this->TerminalPluginMenu->addAction(act);
+	this->cdToAct=new QAction("CD to Doc Folder ...");
+	this->TerminalPluginMenu->addAction(this->cdToAct);
 	what=2;
-	QObject::connect(act,&QAction::triggered,[this,what]() { this->doMenuItem(what); });
+	QObject::connect(this->cdToAct,&QAction::triggered,[this,what]() { this->doMenuItem(what); });
 
 	this->mainKKEditClass->mainWindow->addDockWidget(Qt::BottomDockWidgetArea,dw);
 	this->console->startShellProgram ();
@@ -137,22 +136,20 @@ void TerminalPluginPlug::plugSettings(void)
 
 unsigned int TerminalPluginPlug::plugWants(void)
 {
-	return(DOABOUT|DOSETTINGS|DOSWITCHPAGE);
+	return(DOABOUT|DOSETTINGS|DOSWITCHPAGE|DOCONTEXTMENU);
 }
 
 void TerminalPluginPlug::plugRun(plugData *data)
 {
-	qDebug()<<"plugRun called";
-	qDebug()<<"Name: "<<data->plugName;
-	qDebug()<<"Version: "<<data->plugVersion;
-	qDebug()<<"What to do: "<<data->what;
-	qDebug()<<data->userStrData1;
-	qDebug()<<data->userStrData2;
-	qDebug()<<data->userStrData3;
 	this->filePath=data->userStrData1;
 	this->folderPath=data->userStrData3;
 	if(data->what==DOSWITCHPAGE)
-		this->dw->setWindowTitle(this->filePath);
+		{
+			this->dw->setWindowTitle(this->filePath);
+			this->toggleViewAct->setText("Toggle Terminal");
+		}
+	if(data->what==DOCONTEXTMENU)
+		data->menu->addAction(this->cdToAct);
 }
 
 void TerminalPluginPlug::doMenuItem(int what)
@@ -160,11 +157,12 @@ void TerminalPluginPlug::doMenuItem(int what)
 	switch(what)
 		{
 			case 1:
-				qDebug()<<"Toggle term action ...";
-				qDebug()<<this->dw->isVisible();//TODO//
+				//qDebug()<<"Toggle term action ...";
+				//qDebug()<<this->dw->isVisible();//TODO//
 				break;
 			case 2:
 				this->console->changeDir(this->folderPath);
+				this->toggleViewAct->setText("Toggle Terminal");
 				break;
 		}
 }

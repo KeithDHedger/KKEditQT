@@ -46,15 +46,15 @@ class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 		KKEditClass				*mainKKEditClass;
 		QString					plugPath;
 		QMenu					*TerminalPluginMenu;
-		QAction					*TerminalPluginaction;
-		QMetaObject::Connection	TerminalPlugincon;
+		QAction					*cdToAct;
+		QAction					*toggleViewAct;
+
 		QTermWidget				*console;
 		QDockWidget				*dw;
-		QSettings				*plugPrefs;//("KDHedger","TerminalPlugin");
+		QSettings				*plugPrefs;
 
 		int						cbnum=0;
 		bool						openOnStart=false;
-		plugData					*data=NULL;
 		QString					filePath;
 		QString					folderPath;
 		void						doMenuItem(int what);
