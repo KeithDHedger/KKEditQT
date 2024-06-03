@@ -1,4 +1,6 @@
 1.0.1
+Now saves size, position, floating and viibility of Terminal Plug.
+Added save current state to terminal plug settings.
 Fixed annoying qtermwidget5 changing menu text.
 If qtermwidget5 not available will not try to build TerminalPlugin.
 Creating file 'pass' in the root folder of a plugin will skip building/installing that plugin.

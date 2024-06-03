@@ -51,10 +51,11 @@ class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 
 		QTermWidget				*console;
 		QDockWidget				*dw;
-		QSettings				*plugPrefs;
 
 		int						cbnum=0;
 		bool						openOnStart=false;
+		bool						saveCurrentVis=false;
+
 		QString					filePath;
 		QString					folderPath;
 		void						doMenuItem(int what);

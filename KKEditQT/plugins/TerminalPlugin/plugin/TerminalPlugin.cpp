@@ -25,12 +25,12 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	QStringList	themenames=QTermWidget::availableColorSchemes();
 	int			what=1;
 	QString		dwss="QDockWidget::title {background: grey;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;}\nQDockWidget {font-size: 10pt;}";
+	QSettings	plugprefs("KDHedger","TerminalPlugin");
 
 	this->mainKKEditClass=kk;
 	this->plugPath=pathtoplug;
 
-	this->plugPrefs=new QSettings("KDHedger","TerminalPlugin");
-	this->cbnum=this->plugPrefs->value("themenumber").toInt();
+	this->cbnum=plugprefs.value("themenumber").toInt();
 
 	themenames.sort();
 
@@ -42,16 +42,26 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->console->setScrollBarPosition(QTermWidget::ScrollBarRight);
 	//this->console->setWorkingDirectory(QString("~"));
 	this->console->setColorScheme(themenames.at(this->cbnum));
-	this->openOnStart=this->plugPrefs->value("openonstart").toBool();
+	this->openOnStart=plugprefs.value("openonstart").toBool();
+	this->saveCurrentVis=plugprefs.value("savevis").toBool();
 
 	this->dw=new QDockWidget(this->mainKKEditClass->mainWindow);
 	this->dw->setStyleSheet(dwss);
-	this->dw->setVisible(this->openOnStart);
-    dw->setWidget(console);
+	this->dw->setFloating(false);
+	if((this->openOnStart==true) && (this->saveCurrentVis==true))
+		{
+			this->dw->setVisible(plugprefs.value("currentstate").toBool());
+			this->dw->setFloating(plugprefs.value("floating").toBool());
+		}
+	else
+		this->dw->setVisible(this->openOnStart);
+
+	this->dw->setWidget(console);
+	what=1;
+	QObject::connect(this->dw,&QDockWidget::visibilityChanged,[this,what](bool) { this->doMenuItem(what); });
+
 	this->toggleViewAct=dw->toggleViewAction();
 	this->toggleViewAct->setText("Toggle Terminal");
-	//dw->setFeatures(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetFloatable);//TODO in lfswm2//
-	dw->setFeatures(QDockWidget::DockWidgetClosable);
 	what=1;
 	QObject::connect(this->toggleViewAct,&QAction::triggered,[this,what]() { this->doMenuItem(what); });
 	this->TerminalPluginMenu->addAction(this->toggleViewAct);
@@ -63,6 +73,13 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 	this->mainKKEditClass->mainWindow->addDockWidget(Qt::BottomDockWidgetArea,dw);
 	this->console->startShellProgram ();
+	if(this->dw->isFloating()==true)
+		{
+			if((plugprefs.value("geom").toRect().width()==0) || (plugprefs.value("geom").toRect().height()==0))
+				this->dw->setFloating(false);
+			else
+				this->dw->setGeometry(plugprefs.value("geom").toRect());
+		}
 }
 
 void TerminalPluginPlug::unloadPlug(void)
@@ -92,6 +109,7 @@ void TerminalPluginPlug::plugSettings(void)
 	QPushButton	*btn;
 	QStringList	themenames;
 	QCheckBox	*openonstart;
+	QCheckBox	*savevis;
 
 	themenames=QTermWidget::availableColorSchemes();
 	themenames.sort();
@@ -113,6 +131,11 @@ void TerminalPluginPlug::plugSettings(void)
 	QObject::connect(openonstart,&QCheckBox::stateChanged,[this](bool what) { this->openOnStart=what; });
 	vlayout->addWidget(openonstart);
 
+	savevis=new QCheckBox("Save Current State");
+	savevis->setChecked(this->saveCurrentVis);
+	QObject::connect(savevis,&QCheckBox::stateChanged,[this](bool what) { this->saveCurrentVis=what; });
+	vlayout->addWidget(savevis);
+
 	hlayout=new QHBoxLayout();
 	btn=new QPushButton("Apply");
 	QObject::connect(btn,&QPushButton::clicked,[&settings]() { settings.done(1); });
@@ -127,22 +150,37 @@ void TerminalPluginPlug::plugSettings(void)
 
 	if(settings.result()==1)
 		{
+			QSettings	plugprefs("KDHedger","TerminalPlugin");
 			this->console->setColorScheme(themebox.currentText());
 			this->cbnum=themebox.currentIndex();
-			this->plugPrefs->setValue("themenumber",this->cbnum);
-			this->plugPrefs->setValue("openonstart",this->openOnStart);
+			plugprefs.setValue("themenumber",this->cbnum);
+			plugprefs.setValue("openonstart",this->openOnStart);
+			plugprefs.setValue("savevis",this->saveCurrentVis);
 		}
 }
 
 unsigned int TerminalPluginPlug::plugWants(void)
 {
-	return(DOABOUT|DOSETTINGS|DOSWITCHPAGE|DOCONTEXTMENU);
+	return(DOABOUT|DOSETTINGS|DOSWITCHPAGE|DOCONTEXTMENU|DOSHUTDOWN);
 }
 
 void TerminalPluginPlug::plugRun(plugData *data)
 {
+	QSettings plugprefs("KDHedger","TerminalPlugin");
+
+	if(data==NULL)
+		return;
+
 	this->filePath=data->userStrData1;
 	this->folderPath=data->userStrData3;
+
+	if(data->what==DOSHUTDOWN)
+		{	
+ 			plugprefs.setValue("floating",this->dw->isFloating());
+ 			plugprefs.setValue("geom",this->dw->geometry());
+ 			plugprefs.setValue("currentstate",this->dw->isVisible());
+		}
+		
 	if(data->what==DOSWITCHPAGE)
 		{
 			this->dw->setWindowTitle(this->filePath);
@@ -154,11 +192,11 @@ void TerminalPluginPlug::plugRun(plugData *data)
 
 void TerminalPluginPlug::doMenuItem(int what)
 {
+	QSettings plugprefs("KDHedger","TerminalPlugin");
 	switch(what)
 		{
 			case 1:
-				//qDebug()<<"Toggle term action ...";
-				//qDebug()<<this->dw->isVisible();//TODO//
+				plugprefs.setValue("currentstate",this->dw->isVisible());
 				break;
 			case 2:
 				this->console->changeDir(this->folderPath);

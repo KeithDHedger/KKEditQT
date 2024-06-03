@@ -30,7 +30,8 @@ KKEditClass::KKEditClass(QApplication *app)
 
 KKEditClass::~KKEditClass()
 {
-	QDir	fold(this->tmpFolderName);
+	plugData		pd;
+	QDir			fold(this->tmpFolderName);
 
 	delete this->fileWatch;
 
@@ -962,6 +963,7 @@ bool KKEditClass::closeTab(int index)
 void KKEditClass::shutDownApp()
 {
 //	if(this->forcedMultInst==false)//TODO//
+
 	this->writeExitData();
 
 	if(this->onExitSaveSession==true)
@@ -973,8 +975,11 @@ void KKEditClass::shutDownApp()
 			delete_aspell_config(this->aspellConfig);
 			delete_aspell_speller(this->spellChecker);
 #endif
-			QApplication::quit();
 		}
+					plugData pd;
+					pd.what=DOSHUTDOWN;
+					this->runAllPlugs(pd);
+			QApplication::quit();
 }
 
 QString KKEditClass::truncateWithElipses(const QString str,int maxlen)
