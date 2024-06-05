@@ -20,66 +20,103 @@
 
 #include "TerminalPlugin.h"
 
+enum {FOCUSTERM,VISCHANGED,CDTOFOLDER,NEWTERM};
+
+void TerminalPluginPlug::addTerminal(void)
+{
+	QSettings		plugprefs("KDHedger","TerminalPlugin");
+	QStringList		themenames=QTermWidget::availableColorSchemes();
+	QString			dwss="QDockWidget::title {background: grey;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;}\nQDockWidget {font-size: 10pt;}";
+
+	termDataStruct	ts;
+	QDockWidget		*newdw;
+	QTermWidget		*newconsole;
+	int				whome;
+
+	themenames.sort();
+	newconsole=new QTermWidget(0,NULL);
+	newconsole->setScrollBarPosition(QTermWidget::ScrollBarRight);
+	newconsole->setColorScheme(themenames.at(this->cbnum));
+
+	newdw=new QDockWidget(this->mainKKEditClass->mainWindow);
+	newdw->setStyleSheet(dwss);
+	newdw->setFloating(false);
+	if((this->openOnStart==true) && (this->saveCurrentVis==true))
+		{
+			newdw->setVisible(plugprefs.value("currentstate").toBool());
+			newdw->setFloating(plugprefs.value("floating").toBool());
+		}
+	else
+		newdw->setVisible(this->openOnStart);
+
+	newdw->setWidget(newconsole);
+
+	this->mainKKEditClass->mainWindow->addDockWidget(Qt::BottomDockWidgetArea,newdw);
+	newconsole->startShellProgram ();
+	if(newdw->isFloating()==true)
+		{
+			if((plugprefs.value("geom").toRect().width()==0) || (plugprefs.value("geom").toRect().height()==0))
+				newdw->setFloating(false);
+			else
+				newdw->setGeometry(plugprefs.value("geom").toRect());
+		}
+
+	whome=this->terminals.size();
+	QObject::connect(newconsole,&QTermWidget::termGetFocus,[this,whome]()
+		{
+			this->currentTerminal=whome;
+		});
+
+	ts.console=newconsole;
+	ts.dockWidget=newdw;
+
+	ts.toggleTerm=ts.dockWidget->toggleViewAction();
+	ts.toggleTerm->setText("Toggle Terminal");
+	QObject::connect(ts.toggleTerm,&QAction::triggered,[this,whome]() { this->doMenuItem(VISCHANGED,whome); });
+
+	this->dw=newdw;
+	this->console=newconsole;
+	this->terminals.push_back(ts);
+	this->terminals.at(whome).dockWidget->setWindowTitle(QString("Terminal %1").arg(whome+1));
+
+	QMenu *termmenu=new QMenu(QString("Terminal %1").arg(this->terminals.size()));
+	QAction *act=new QAction("CD TO Doc Folder ...");
+	QObject::connect(act,&QAction::triggered,[this,ts,whome]()
+		{
+			ts.console->setFocus();
+			this->doMenuItem(CDTOFOLDER,whome);
+		});
+	termmenu->addAction(act);
+
+	ts.toggleTerm->setText(QString("Terminal %1").arg(whome+1));
+	termmenu->addAction(ts.toggleTerm);
+
+	this->terminalsMenu->addMenu(termmenu);
+}
+
 void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 {
-	QStringList	themenames=QTermWidget::availableColorSchemes();
-	int			what=1;
-	QString		dwss="QDockWidget::title {background: grey;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;}\nQDockWidget {font-size: 10pt;}";
 	QSettings	plugprefs("KDHedger","TerminalPlugin");
 
 	this->mainKKEditClass=kk;
 	this->plugPath=pathtoplug;
 
 	this->cbnum=plugprefs.value("themenumber").toInt();
-
-	themenames.sort();
-
 	this->TerminalPluginMenu=new QMenu("TerminalPlugin");
 	this->TerminalPluginMenu->setIcon(QIcon(QString("%1/TerminalPlugin.png").arg(QFileInfo(pathtoplug).absolutePath())));
 	this->mainKKEditClass->pluginMenu->addMenu(TerminalPluginMenu);
 
-	this->console=new QTermWidget(0,NULL);
-	this->console->setScrollBarPosition(QTermWidget::ScrollBarRight);
-	//this->console->setWorkingDirectory(QString("~"));
-	this->console->setColorScheme(themenames.at(this->cbnum));
 	this->openOnStart=plugprefs.value("openonstart").toBool();
 	this->saveCurrentVis=plugprefs.value("savevis").toBool();
 
-	this->dw=new QDockWidget(this->mainKKEditClass->mainWindow);
-	this->dw->setStyleSheet(dwss);
-	this->dw->setFloating(false);
-	if((this->openOnStart==true) && (this->saveCurrentVis==true))
-		{
-			this->dw->setVisible(plugprefs.value("currentstate").toBool());
-			this->dw->setFloating(plugprefs.value("floating").toBool());
-		}
-	else
-		this->dw->setVisible(this->openOnStart);
+	this->terminalsMenu=new QMenu("Terminals");
+	this->addTerminal();
 
-	this->dw->setWidget(console);
-	what=1;
-	QObject::connect(this->dw,&QDockWidget::visibilityChanged,[this,what](bool) { this->doMenuItem(what); });
+	this->newAct=new QAction("New Terminal ...");
+	this->TerminalPluginMenu->addAction(this->newAct);
+	QObject::connect(this->newAct,&QAction::triggered,[this]() { this->doMenuItem(NEWTERM,-1); });
 
-	this->toggleViewAct=dw->toggleViewAction();
-	this->toggleViewAct->setText("Toggle Terminal");
-	what=1;
-	QObject::connect(this->toggleViewAct,&QAction::triggered,[this,what]() { this->doMenuItem(what); });
-	this->TerminalPluginMenu->addAction(this->toggleViewAct);
- 
-	this->cdToAct=new QAction("CD to Doc Folder ...");
-	this->TerminalPluginMenu->addAction(this->cdToAct);
-	what=2;
-	QObject::connect(this->cdToAct,&QAction::triggered,[this,what]() { this->doMenuItem(what); });
-
-	this->mainKKEditClass->mainWindow->addDockWidget(Qt::BottomDockWidgetArea,dw);
-	this->console->startShellProgram ();
-	if(this->dw->isFloating()==true)
-		{
-			if((plugprefs.value("geom").toRect().width()==0) || (plugprefs.value("geom").toRect().height()==0))
-				this->dw->setFloating(false);
-			else
-				this->dw->setGeometry(plugprefs.value("geom").toRect());
-		}
+	this->TerminalPluginMenu->addMenu(this->terminalsMenu);
 }
 
 void TerminalPluginPlug::unloadPlug(void)
@@ -170,10 +207,6 @@ void TerminalPluginPlug::plugRun(plugData *data)
 
 	if(data==NULL)
 		return;
-
-	this->filePath=data->userStrData1;
-	this->folderPath=data->userStrData3;
-
 	if(data->what==DOSHUTDOWN)
 		{	
  			plugprefs.setValue("floating",this->dw->isFloating());
@@ -183,24 +216,32 @@ void TerminalPluginPlug::plugRun(plugData *data)
 		
 	if(data->what==DOSWITCHPAGE)
 		{
-			this->dw->setWindowTitle(this->filePath);
-			this->toggleViewAct->setText("Toggle Terminal");
+			this->filePath=data->userStrData1;
+			this->folderPath=data->userStrData3;
 		}
+
 	if(data->what==DOCONTEXTMENU)
-		data->menu->addAction(this->cdToAct);
+		{
+			QAction *act=new QAction("CD to Doc Folder ...");
+			data->menu->addAction(act);
+			QObject::connect(act,&QAction::triggered,[this]() { this->doMenuItem(CDTOFOLDER,this->currentTerminal); });
+		}
 }
 
-void TerminalPluginPlug::doMenuItem(int what)
+void TerminalPluginPlug::doMenuItem(int what,int whome)
 {
 	QSettings plugprefs("KDHedger","TerminalPlugin");
 	switch(what)
 		{
-			case 1:
-				plugprefs.setValue("currentstate",this->dw->isVisible());
+			case VISCHANGED:
+				this->terminals.at(whome).toggleTerm->setText(QString("Terminal %1").arg(whome+1));
+				plugprefs.setValue("currentstate",this->terminals.at(0).dockWidget->isVisible());
 				break;
-			case 2:
-				this->console->changeDir(this->folderPath);
-				this->toggleViewAct->setText("Toggle Terminal");
+			case CDTOFOLDER:
+				this->terminals.at(whome).console->changeDir(this->folderPath);
+				break;
+			case NEWTERM:
+				this->addTerminal();
 				break;
 		}
 }

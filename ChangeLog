@@ -1,4 +1,5 @@
 1.0.1
+Added multiple terminals.
 Now saves size, position, floating and viibility of Terminal Plug.
 Added save current state to terminal plug settings.
 Fixed annoying qtermwidget5 changing menu text.

@@ -25,6 +25,13 @@
 #include <qtermwidget5/qtermwidget.h>
 #include <QSettings>
 
+struct termDataStruct
+{
+	QTermWidget	*console;
+	QDockWidget	*dockWidget;
+	QAction		*toggleTerm;
+};
+
 class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 {
 	Q_OBJECT
@@ -46,11 +53,16 @@ class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 		KKEditClass				*mainKKEditClass;
 		QString					plugPath;
 		QMenu					*TerminalPluginMenu;
+		QMenu					*terminalsMenu;
 		QAction					*cdToAct;
 		QAction					*toggleViewAct;
+		QAction					*newAct;
 
 		QTermWidget				*console;
 		QDockWidget				*dw;
+
+		QVector<termDataStruct>	terminals;
+		int						currentTerminal=0;
 
 		int						cbnum=0;
 		bool						openOnStart=false;
@@ -58,7 +70,8 @@ class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 
 		QString					filePath;
 		QString					folderPath;
-		void						doMenuItem(int what);
+		void						doMenuItem(int what,int whome);
+		void						addTerminal(void);
 };
 
 #endif
