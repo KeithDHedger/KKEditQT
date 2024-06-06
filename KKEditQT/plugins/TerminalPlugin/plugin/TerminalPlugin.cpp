@@ -27,10 +27,9 @@ void TerminalPluginPlug::addTerminal(void)
 	QSettings		plugprefs("KDHedger","TerminalPlugin");
 	QStringList		themenames=QTermWidget::availableColorSchemes();
 	QString			dwss="QDockWidget::title {background: grey;padding-left: 0px;padding-top: 0px;padding-bottom: 0px;}\nQDockWidget {font-size: 10pt;}";
-
-	termDataStruct	ts;
 	QDockWidget		*newdw;
 	QTermWidget		*newconsole;
+	termDataStruct	ts;
 	int				whome;
 
 	themenames.sort();
@@ -52,6 +51,14 @@ void TerminalPluginPlug::addTerminal(void)
 	newdw->setWidget(newconsole);
 
 	this->mainKKEditClass->mainWindow->addDockWidget(Qt::BottomDockWidgetArea,newdw);
+
+	if((this->terminals.size()>0) && (plugprefs.value("usetabs").toBool()==false))
+		{
+			QSize	sz(this->terminals.at(this->terminals.size()-1).dockWidget->size());
+			newconsole->setSize(QSize(sz.width()/8,sz.height()));
+			newdw->resize(sz);
+		}
+
 	newconsole->startShellProgram ();
 	if(newdw->isFloating()==true)
 		{
@@ -92,6 +99,9 @@ void TerminalPluginPlug::addTerminal(void)
 	termmenu->addAction(ts.toggleTerm);
 
 	this->terminalsMenu->addMenu(termmenu);
+
+	if((this->terminals.size()>1) && (plugprefs.value("usetabs").toBool()==true))
+		this->mainKKEditClass->mainWindow->tabifyDockWidget(this->terminals.at(this->terminals.size()-2).dockWidget,this->terminals.at(this->terminals.size()-1).dockWidget);
 }
 
 void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
@@ -116,12 +126,32 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->TerminalPluginMenu->addAction(this->newAct);
 	QObject::connect(this->newAct,&QAction::triggered,[this]() { this->doMenuItem(NEWTERM,-1); });
 
+	this->toggleTabsAct=new QAction("Open in Tabs ...");
+	if(plugprefs.value("usetabs").toBool()==true)
+		this->toggleTabsAct->setText("Opening In Tabs ...");
+	else
+		this->toggleTabsAct->setText("Opening In Window ...");
+
+	this->TerminalPluginMenu->addAction(this->toggleTabsAct);
+	QObject::connect(this->toggleTabsAct,&QAction::triggered,[this]()
+		{
+			QSettings	plugprefs("KDHedger","TerminalPlugin");
+			bool			what=plugprefs.value("usetabs").toBool();
+			plugprefs.setValue("usetabs",!what);
+			if(!what==true)
+				this->toggleTabsAct->setText("Opening In Tabs ...");
+			else
+				this->toggleTabsAct->setText("Opening In Window ...");
+		});
+
 	this->TerminalPluginMenu->addMenu(this->terminalsMenu);
 }
 
 void TerminalPluginPlug::unloadPlug(void)
 {
 	delete this->TerminalPluginMenu;
+	for(int j=0;j<this->terminals.size();j++)
+		delete this->terminals.at(j).dockWidget;
 }
 
 void TerminalPluginPlug::plugAbout(void)
@@ -147,6 +177,8 @@ void TerminalPluginPlug::plugSettings(void)
 	QStringList	themenames;
 	QCheckBox	*openonstart;
 	QCheckBox	*savevis;
+	QCheckBox	*usetabs;
+	QSettings	plugprefs("KDHedger","TerminalPlugin");
 
 	themenames=QTermWidget::availableColorSchemes();
 	themenames.sort();
@@ -173,6 +205,10 @@ void TerminalPluginPlug::plugSettings(void)
 	QObject::connect(savevis,&QCheckBox::stateChanged,[this](bool what) { this->saveCurrentVis=what; });
 	vlayout->addWidget(savevis);
 
+	usetabs=new QCheckBox("Open In Tabs");
+	usetabs->setChecked(plugprefs.value("usetabs").toBool());
+	vlayout->addWidget(usetabs);
+
 	hlayout=new QHBoxLayout();
 	btn=new QPushButton("Apply");
 	QObject::connect(btn,&QPushButton::clicked,[&settings]() { settings.done(1); });
@@ -193,6 +229,11 @@ void TerminalPluginPlug::plugSettings(void)
 			plugprefs.setValue("themenumber",this->cbnum);
 			plugprefs.setValue("openonstart",this->openOnStart);
 			plugprefs.setValue("savevis",this->saveCurrentVis);
+			plugprefs.setValue("usetabs",usetabs->isChecked());
+			if(usetabs->isChecked()==true)
+				this->toggleTabsAct->setText("Opening In Tabs ...");
+			else
+				this->toggleTabsAct->setText("Opening In Window ...");
 		}
 }
 

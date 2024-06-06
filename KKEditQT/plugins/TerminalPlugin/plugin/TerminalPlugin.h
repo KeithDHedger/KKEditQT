@@ -57,6 +57,7 @@ class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 		QAction					*cdToAct;
 		QAction					*toggleViewAct;
 		QAction					*newAct;
+		QAction					*toggleTabsAct;
 
 		QTermWidget				*console;
 		QDockWidget				*dw;
