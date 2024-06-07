@@ -51,6 +51,15 @@ void TerminalPluginPlug::addTerminal(void)
 	newdw->setWidget(newconsole);
 
 	this->mainKKEditClass->mainWindow->addDockWidget(Qt::BottomDockWidgetArea,newdw);
+	whome=this->terminals.size();
+	QObject::connect(newdw,&QDockWidget::visibilityChanged,[this,whome](bool vis)
+		{
+			if(vis==true)
+				{
+					this->terminals.at(whome).console->setFocus();
+					this->currentTerminal=whome;
+				}
+		});
 
 	if((this->terminals.size()>0) && (plugprefs.value("usetabs").toBool()==false))
 		{
@@ -131,6 +140,38 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 		this->toggleTabsAct->setText("Opening In Tabs ...");
 	else
 		this->toggleTabsAct->setText("Opening In Window ...");
+
+	{
+		QIcon	itemicon=QIcon::fromTheme("edit-copy");
+		QAction	*act=new QAction(itemicon,"Copy");
+		act->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_C));
+		QObject::connect(act,&QAction::triggered,[this]()
+			{
+				this->terminals.at(this->currentTerminal).console->copyClipboard();
+			});
+		this->TerminalPluginMenu->addAction(act);
+	}
+
+	{
+		QIcon	itemicon=QIcon::fromTheme("edit-paste");
+		QAction	*act=new QAction(itemicon,"Paste");
+		act->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_V));
+		QObject::connect(act,&QAction::triggered,[this]()
+			{
+				this->terminals.at(this->currentTerminal).console->pasteClipboard();
+			});
+		this->TerminalPluginMenu->addAction(act);
+	}
+
+	{
+		QIcon	itemicon=QIcon::fromTheme("edit-find");
+		QAction	*act=new QAction(itemicon,"Find");
+		QObject::connect(act,&QAction::triggered,[this]()
+			{
+				this->terminals.at(this->currentTerminal).console->toggleShowSearchBar();
+			});
+		this->TerminalPluginMenu->addAction(act);
+	}
 
 	this->TerminalPluginMenu->addAction(this->toggleTabsAct);
 	QObject::connect(this->toggleTabsAct,&QAction::triggered,[this]()
@@ -279,7 +320,10 @@ void TerminalPluginPlug::doMenuItem(int what,int whome)
 				plugprefs.setValue("currentstate",this->terminals.at(0).dockWidget->isVisible());
 				break;
 			case CDTOFOLDER:
+				this->terminals.at(whome).dockWidget->activateWindow();
+				this->terminals.at(whome).dockWidget->raise();
 				this->terminals.at(whome).console->changeDir(this->folderPath);
+				this->terminals.at(whome).console->setFocus();
 				break;
 			case NEWTERM:
 				this->addTerminal();

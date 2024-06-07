@@ -20,6 +20,9 @@
 
 #include "KKEditClass.h"
 
+static const char			*replacementShorts[]={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"};
+static const QStringList		reservedShortcutKeys={"Ctrl+Shift+C","Ctrl+Shift+V"};
+
 KKEditClass::KKEditClass(QApplication *app)
 {
 	this->application=app;
@@ -490,7 +493,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsMsgTimer=this->prefs.value("app/msgtimer",1000).toInt();
 	this->prefsUseSingle=this->prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
 	this->prefsNagScreen=this->prefs.value("app/bekind",QVariant(bool(false))).value<bool>();
-	this->defaultShortCutsList=this->prefs.value("app/shortcuts",QVariant(QStringList({"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+C"}))).toStringList();
+	this->defaultShortCutsList=this->prefs.value("app/shortcuts",QVariant(QStringList({"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"}))).toStringList();
 	this->onExitSaveSession=this->prefs.value("app/onexitsavesession",QVariant(bool(true))).value<bool>();
 	this->disabledPlugins=this->prefs.value("app/disabledplugins").toStringList();
 
@@ -992,8 +995,40 @@ QString KKEditClass::truncateWithElipses(const QString str,int maxlen)
 	return(newlabel);
 }
 
+bool KKEditClass::checkShortCuts(void)
+{
+	bool retval=true;
+
+	for(int k=0;k<defaultShortCutsList.size();k++)
+		{
+			for(int i=0;i<reservedShortcutKeys.size();i++)
+				{
+					if(LFSTK_UtilityClass::LFSTK_strStr(defaultShortCutsList.at(k).toStdString(),reservedShortcutKeys.at(i).toStdString(),true).empty()==false)
+						{
+							if(prefsWindow!=NULL)
+								{
+									QMessageBox msgBox(QMessageBox::Warning,"Reserved Shortcut",QString("Warning! %1 is a reserved shortcut").arg(defaultShortCutsList.at(k)));
+									msgBox.exec();
+								}
+							else
+								{
+									qDebug()<<"Warning"<<defaultShortCutsList.at(k)<<"in use";
+								}
+							this->defaultShortCutsList[k]=replacementShorts[k];
+							retval=false;
+							if(prefsWindow!=NULL)
+								this->resetKeyCombo();
+						}
+				}
+		}
+	return(retval);
+}
+
 void KKEditClass::setAppShortcuts(void)
 {
+	if(this->checkShortCuts()==false)
+		return;
+
 	for(int j=0;j<NOMORESHORTCUT;j++)
 		{
 			if(this->appShortcuts[j]!=NULL)

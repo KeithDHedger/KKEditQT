@@ -1,4 +1,8 @@
 1.0.1
+Reserved some key shortcuts.
+CD'ing to document folder in terminal plugin now activates and sets focus for that terminal.
+Added shortcuts/menus for copy/paste in terminal plugin.
+Changed default 'Force Show Completion' to Ctrl+Shift+F. You MUST change this in prefs if you are using the old default.
 Fixed unloading terminal plug.
 Added opening new terminals in tabs.
 Added multiple terminals.

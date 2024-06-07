@@ -1415,6 +1415,7 @@ void KKEditClass::buildGetKeyShortCut(int index)
 	QString	text=QInputDialog::getText(this->mainWindow,"Keyboard Shortcut","Enter Key Combo",QLineEdit::Normal,this->defaultShortCutsList.at(index),&ok);
 	if ((ok==true) && (!text.isEmpty()))
 		{
+			text=QString(LFSTK_UtilityClass::LFSTK_strReplaceAllChar(text.toStdString()," ","",true).c_str());
 			this->defaultShortCutsList[index]=text;
 			this->resetKeyCombo();
 			qobject_cast<QComboBox*>(prefsOtherWidgets[SHORTCUTSCOMBO])->setCurrentIndex(index);

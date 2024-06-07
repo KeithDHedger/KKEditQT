@@ -191,6 +191,7 @@ class KKEditClass : public QObject
 		QSettings					prefs;
 		int							gotManEditor;
 		int							gotDoxygen;
+
 		QHash<int,DocumentClass*>	pages;
 		int							newPageIndex=1;
 		int							sessionID=-1;
@@ -218,7 +219,7 @@ class KKEditClass : public QObject
 		bool							cancelCheck=false;
 #endif
 		QShortcut					*appShortcuts[NOMORESHORTCUT];
-		QStringList					defaultShortCutsList={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+C"};
+		QStringList					defaultShortCutsList={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"};
 
 		QSplashScreen				*splash;
 //recent files
@@ -249,6 +250,7 @@ class KKEditClass : public QObject
 		bool							checkSelection(QString selection);
 		void							checkDoc(DocumentClass *doc);
 		void							setAppShortcuts(void);
+		bool							checkShortCuts(void);
 
 		void							setToolbarSensitive(void);
 		QString						randomName(int len);
@@ -496,7 +498,7 @@ class KKEditClass : public QObject
 		QWidget						*prefsIntWidgets[MAXPREFSINTWIDGETS];
 		QWidget						*prefsOtherWidgets[MAXPREFSOTHERWIDGETS];
 		QGridLayout					*table;
-		QDialog						*prefsWindow;
+		QDialog						*prefsWindow=NULL;
 		QListWidget					*listWidget;
 		QToolBar						*fromHBox;
 		QAction						*tool[20];
