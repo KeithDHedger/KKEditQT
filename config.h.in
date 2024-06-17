@@ -32,3 +32,6 @@
 
 /* Debug code */
 #undef _DEBUGCODE_
+
+/* Build Qt6 */
+#undef _USEQT6_

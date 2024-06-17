@@ -33,7 +33,7 @@ void TerminalPluginPlug::addTerminal(void)
 	int				whome;
 
 	themenames.sort();
-	newconsole=new QTermWidget(0,NULL);
+	newconsole=new QTermWidget(0,mainKKEditClass->mainWindow);
 	newconsole->setScrollBarPosition(QTermWidget::ScrollBarRight);
 	newconsole->setColorScheme(themenames.at(this->cbnum));
 
@@ -144,7 +144,8 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	{
 		QIcon	itemicon=QIcon::fromTheme("edit-copy");
 		QAction	*act=new QAction(itemicon,"Copy");
-		act->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_C));
+		//act->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_C));
+		act->setShortcut(QKeySequence(Qt::CTRL|Qt::SHIFT|Qt::Key_C));
 		QObject::connect(act,&QAction::triggered,[this]()
 			{
 				this->terminals.at(this->currentTerminal).console->copyClipboard();
@@ -155,7 +156,8 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	{
 		QIcon	itemicon=QIcon::fromTheme("edit-paste");
 		QAction	*act=new QAction(itemicon,"Paste");
-		act->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_V));
+		//act->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_V));
+		act->setShortcut(QKeySequence(Qt::CTRL|Qt::SHIFT|Qt::Key_V));
 		QObject::connect(act,&QAction::triggered,[this]()
 			{
 				this->terminals.at(this->currentTerminal).console->pasteClipboard();

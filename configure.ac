@@ -16,15 +16,50 @@ X11_MODULES="x11 >= 1.0.0"
 PKG_CHECK_MODULES(X11, $X11_MODULES)
 AC_SUBST(X11_LIBS)
 
-QTWIDGETS_MODULES="Qt5Widgets >= 5.15.2"
-PKG_CHECK_MODULES(QTWIDGETS, $QTWIDGETS_MODULES)
+AC_ARG_ENABLE(qt6,AS_HELP_STRING([--enable-qt6],[Build fot Qt6]),
+    [enable_qt6=$enableval],
+    [enable_qt6="yes"])
+
+	if test "$enable_qt6" = "yes"; then
+		QTWIDGETS_MODULES="Qt6Widgets >= 6.6.0"
+		PKG_CHECK_MODULES(QTWIDGETS, $QTWIDGETS_MODULES)
+
+		QTPRINTSUPPORT_MODULES="Qt6PrintSupport >= 6.6.0"
+		PKG_CHECK_MODULES(QTPRINTSUPPORT, $QTPRINTSUPPORT_MODULES)
+		AC_DEFINE([_USEQT6_], [], [Build Qt6])
+
+		QTTERM_MODULES="qtermwidget6 >= 2.0.0"
+		PKG_CHECK_MODULES(QTTERM, $QTTERM_MODULES, [gotterm=yes], [:])
+		if test "$gotterm" = "yes"; then
+			rm -f KKEditQT/plugins/TerminalPlugin/pass
+		else
+			touch KKEditQT/plugins/TerminalPlugin/pass
+			AC_MSG_NOTICE([No QTermWidget, not building TerminalPlugin])
+		fi
+		AC_MSG_NOTICE([Using Qt6])
+	else
+		QTWIDGETS_MODULES="Qt5Widgets >= 5.15.0"
+		PKG_CHECK_MODULES(QTWIDGETS, $QTWIDGETS_MODULES)
+
+		QTPRINTSUPPORT_MODULES="Qt5PrintSupport >= 5.15.2"
+		PKG_CHECK_MODULES(QTPRINTSUPPORT, $QTPRINTSUPPORT_MODULES)
+
+		QTTERM_MODULES="qtermwidget5 >= 1.4.0"
+		PKG_CHECK_MODULES(QTTERM, $QTTERM_MODULES, [gotterm=yes], [:])
+		if test "$gotterm" = "yes"; then
+			rm -f KKEditQT/plugins/TerminalPlugin/pass
+		else
+			touch KKEditQT/plugins/TerminalPlugin/pass
+			AC_MSG_NOTICE([No QTermWidget, not building TerminalPlugin])
+		fi
+		AC_MSG_NOTICE([Using Qt5])
+	fi
+
+AC_SUBST(QTPRINTSUPPORT_CFLAGS)
+AC_SUBST(QTPRINTSUPPORT_LIBS)
+
 AC_SUBST(QTWIDGETS_CFLAGS)
 AC_SUBST(QTWIDGETS_LIBS)
-
-QTX11EXTRA_MODULES="Qt5X11Extras >= 5.15.2"
-PKG_CHECK_MODULES(QTX11EXTRA, $QTX11EXTRA_MODULES)
-AC_SUBST(QTX11EXTRA_CFLAGS)
-AC_SUBST(QTX11EXTRA_LIBS)
 
 AC_MSG_CHECKING(whether to build doc viewer)
 AC_ARG_ENABLE(docviewer,AS_HELP_STRING([--enable-docviewer],[Build the Doc viewer]),
@@ -32,18 +67,19 @@ AC_ARG_ENABLE(docviewer,AS_HELP_STRING([--enable-docviewer],[Build the Doc viewe
     [enable_docviewer="yes"])
 AC_MSG_RESULT($enable_docviewer)
 if test "$enable_docviewer" = "yes"; then
-	WEBENGINEWIDGETS_MODULES="Qt5WebEngineWidgets >= 5.15.0"
+
+	if test "$enable_qt6" = "yes"; then
+		WEBENGINEWIDGETS_MODULES="Qt6WebEngineWidgets >= 6.6.0"
+	else
+		WEBENGINEWIDGETS_MODULES="Qt5WebEngineWidgets >= 5.15.0"
+	fi
+
 	PKG_CHECK_MODULES(WEBENGINEWIDGETS, $WEBENGINEWIDGETS_MODULES)
 	AC_SUBST(WEBENGINEWIDGETS_CFLAGS)
 	AC_SUBST(WEBENGINEWIDGETS_LIBS)
 
 	AC_DEFINE([_BUILDDOCVIEWER_], [], [Build doc viewer])
 fi
-
-QTPRINTSUPPORT_MODULES="Qt5PrintSupport >= 5.15.2"
-PKG_CHECK_MODULES(QTPRINTSUPPORT, $QTPRINTSUPPORT_MODULES)
-AC_SUBST(QTPRINTSUPPORT_CFLAGS)
-AC_SUBST(QTPRINTSUPPORT_LIBS)
 
 AC_MSG_CHECKING(whether to include spell checker (aspell))
 AC_ARG_ENABLE(aspell,AS_HELP_STRING([--enable-aspell],[Include spellchecker]),
@@ -84,16 +120,7 @@ if test "$enable_debugcode" = "yes"; then
 	AC_DEFINE([_DEBUGCODE_], [], [Debug code])
 fi
 
-QT5TERM_MODULES="qtermwidget5 >= 1.4.0"
-PKG_CHECK_MODULES(XQT5TERM, $QT5TERM_MODULES, [gotterm=yes], [:])
-if test "$gotterm" = "yes"; then
-		rm -f KKEditQT/plugins/TerminalPlugin/pass
-	else
-		touch KKEditQT/plugins/TerminalPlugin/pass
-		AC_MSG_NOTICE([No QTermWidget, not building TerminalPlugin])
-fi
-
-AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile)
+AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile KKEditQT/kkeditqtmsg/Makefile)
 AC_OUTPUT
 
 

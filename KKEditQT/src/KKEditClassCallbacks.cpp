@@ -1184,7 +1184,7 @@ void KKEditClass::doTimer(void)
 							case ACTIVATEAPPMSG:
 								this->mainWindow->setWindowState((this->mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
 								this->mainWindow->raise();
-								this->application->setActiveWindow(this->mainWindow);
+								//this->application->setActiveWindow(this->mainWindow);
 								this->mainWindow->activateWindow();
 								break;
 
@@ -1274,9 +1274,10 @@ void KKEditClass::setPreferences(void)
 
 	this->prefsToolBarLayout="";
 	for (int j=0;j<this->listWidget->count();j++)
-		this->prefsToolBarLayout+=this->listWidget->item(j)->type();
+		this->prefsToolBarLayout+=(QChar)this->listWidget->item(j)->type();
 
 	this->setUpToolBar();
+
 //show line numbers
 	this->lineNumbersVisible=this->prefsShowLineNumbers;
 	this->toggleLineNumbersMenuItem->setChecked(this->lineNumbersVisible);
@@ -1296,7 +1297,7 @@ void KKEditClass::setPreferences(void)
 	this->resetAllFilePrefs();
 	this->writeExitData();
 	this->setAppShortcuts();
-	this->application->setStyleSheet(this->prefsMenuStyleString);
+	//this->application->setStyleSheet(this->prefsMenuStyleString);
 
 	switchPage(this->mainNotebook->currentIndex());
 }
@@ -1638,8 +1639,8 @@ bool KKEditClass::docViewLinkTrap(const QUrl url)
 						}
 				}
 		}
-	return(false);
 #endif
+	return(false);
 }
 
 void KKEditClass::fileChangedOnDisk(const QString &path)

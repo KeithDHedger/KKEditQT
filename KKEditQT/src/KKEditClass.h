@@ -183,7 +183,7 @@ class KKEditClass : public QObject
 //app vars
 		QMainWindow					*mainWindow;
 		NoteBookClass				*mainNotebook=NULL;
-		QApplication					*application;
+		QApplication					*application=NULL;
 		QTimer 						*checkMessages=NULL;
 		QString						tmpFolderName;
 		QString						htmlFile;

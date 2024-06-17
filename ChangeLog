@@ -1,3 +1,9 @@
+1.5.0
+Fixed uneeded include of QX11Info in singleinstance class.
+Fixed not uninstalling som png files
+Fixed kkeditqtmsg Makefile to not link against unneeded qt libs.
+Updated to use Qt6 or Qt5
+
 1.0.1
 Reserved some key shortcuts.
 CD'ing to document folder in terminal plugin now activates and sets focus for that terminal.

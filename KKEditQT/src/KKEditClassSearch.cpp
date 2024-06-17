@@ -272,7 +272,10 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 			reslist.clear();
 			reslist=results.split("\n",Qt::SkipEmptyParts);
 			QStringList	list;
-			QRegExp		re(".*href=\"([^\"]*).*");
+			//QRegExp		re(".*href=\"([^\"]*).*");
+			QRegularExpression	re(".*href=\"([^\"]*).*");
+			QRegularExpressionMatch	rem;//=re.match();
+			//QRegularExpressionMatch	re(".*href=\"([^\"]*).*");
 			QString		link;
 			QString		type;
 			QString		data;
@@ -287,8 +290,13 @@ void KKEditClass::searchAPIDocs(const QString txt,int what)
 					subs=reslist.at(j).split(":",Qt::SkipEmptyParts);
 					finf.setFile(subs.at(0));
 
-					re.indexIn(subs.at(1));
-					list=re.capturedTexts();
+					//re.indexIn(subs.at(1));
+rem=re.match(subs.at(1));
+					rem.captured(subs.at(1));
+
+
+					//list=re.capturedTexts();
+					list=rem.capturedTexts();
 					type=QString("grep -i '<li class=\"fn\"><span class=\"name\"><b>.*>%1<' %2|sed 's/<[^>]*//g;s/>//g'").arg(searchfor).arg(subs.at(0));
 					data=runPipeAndCapture(type);
 

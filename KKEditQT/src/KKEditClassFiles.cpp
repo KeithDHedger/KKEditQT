@@ -339,7 +339,7 @@ bool KKEditClass::checkForOpenFile(QString filepath)
 	for(int tabs=0;tabs<this->mainNotebook->count();tabs++)
 		{
 			doc=this->getDocumentForTab(tabs);
-			if((doc->filePath!=NULL) && (doc->filePath.compare(filepath)==0))
+			if((doc->filePath.isEmpty()==false) && (doc->filePath.compare(filepath)==0))
 				{
 					this->setTabVisibilty(tabs,true);
 					return(true);
@@ -375,7 +375,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			type=db.mimeTypeForFile(fileinfo.canonicalFilePath());
 			doc->mimeType=type.name();
 			doc->setPlainText(content);
-			//doc->setFilePrefs();
 			doc->pageIndex=this->newPageIndex;
 			this->pages[this->newPageIndex++]=doc;
 			tabnum=this->mainNotebook->addTab(doc,tabicon,doc->getTabName());

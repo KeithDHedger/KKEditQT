@@ -20,17 +20,18 @@
 
 #include "SingleInstanceClass.h"
 
-SingleInstanceClass::SingleInstanceClass(QApplication *app,int key,bool forcem)
+SingleInstanceClass::SingleInstanceClass(QApplication *app,int key,bool forcem,int argc,char **argv)
 {
 	QSettings	prefs;
+
 	bool			single=prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
-
 	this->app=app;
+	this->display=XOpenDisplay(NULL);
 
-	if(QX11Info::isPlatformX11()==false)
-		this->isOnX11=false;
+	if(this->display!=NULL)
+		this->isOnX11=true;
 
-	if((QX11Info::isPlatformX11()==false) || (single==false) || (forcem==true))
+	if((this->isOnX11==false) || (single==false) || (forcem==true))
 		{
 			srand(time(NULL));
 			this->workspace=(int)random();
@@ -52,6 +53,7 @@ SingleInstanceClass::~SingleInstanceClass()
 			fileMsg.remove();
 			filePID.remove();
 		}
+	XCloseDisplay(this->display);
 }
 
 bool SingleInstanceClass::getRunning(void)
@@ -67,11 +69,9 @@ bool SingleInstanceClass::getRunning(void)
 	QString msgnodisplay;
 
 	msgnodisplay=disp.remove(QRegularExpression("[:.]+"));
-	//msgplusdisplay=disp.replace(QRegularExpression(".*:([0-9]*)"),"\\1").remove(QRegularExpression("[^0-9]*")).toInt()*0x100;
 	msgplusdisplay=disp.remove(QRegularExpression("[:.]+")).toInt()*0x100;
 	if(this->usingMulti==true)
 		return(false);
-
 	commsFolderName=commsDir.tempPath() + "/KKEditQTComms";
 	commsDir.mkpath(commsFolderName);
 	QProcess::execute("chmod",QStringList()<<"777"<<commsFolderName);
@@ -148,15 +148,15 @@ bool SingleInstanceClass::getRunning(void)
 
 void* SingleInstanceClass::getX11Prop(Window w,Atom prop,Atom type,int fmt,unsigned long *rcountp)
 {
-	void			*ptr=NULL;
+	void				*ptr=NULL;
 	unsigned long	count=32;
-	Atom			rtype;
+	Atom				rtype;
 	int				rfmt;
 	unsigned long	rafter;
 
 	for (;;)
 		{
-			if (XGetWindowProperty(QX11Info::display(),w,prop,0L,count,False,type,&rtype,&rfmt,rcountp,&rafter,(unsigned char **)&ptr) != Success)
+			if (XGetWindowProperty(this->display,w,prop,0L,count,False,type,&rtype,&rfmt,rcountp,&rafter,(unsigned char **)&ptr) != Success)
 				return NULL;
 			else if (rtype != type || rfmt != fmt)
 				return NULL;
@@ -169,25 +169,27 @@ void* SingleInstanceClass::getX11Prop(Window w,Atom prop,Atom type,int fmt,unsig
 			else
 				return ptr;
 		}
+return(NULL);
 }
 
 long SingleInstanceClass::getSIWorkSpace(void)
 {
-	Display			*disp=QX11Info::display();
-	unsigned long	rootwin=QX11Info::appRootWindow(-1);
-	unsigned long	n=0;
-	Atom				NET_WM_DESKTOP;
-	long				*deskp;
-
-	NET_WM_DESKTOP=XInternAtom(disp,"_NET_CURRENT_DESKTOP",False);
-	deskp=(long*)getX11Prop(rootwin,NET_WM_DESKTOP,XA_CARDINAL,32,&n);
-	if (n !=0)
+	if(this->display!=NULL)
 		{
-			long retval=*deskp;
-			XFree(deskp);
-			return(retval);
-		}
+			unsigned long	rootwin=DefaultRootWindow(this->display);
+			unsigned long	n=0;
+			Atom				NET_WM_DESKTOP;
+			long				*deskp;
 
+			NET_WM_DESKTOP=XInternAtom(this->display,"_NET_CURRENT_DESKTOP",False);
+			deskp=(long*)getX11Prop(rootwin,NET_WM_DESKTOP,XA_CARDINAL,32,&n);
+			if (n !=0)
+				{
+					long retval=*deskp;
+					XFree(deskp);
+					return(retval);
+				}
+		}
 	return(-1);
 }
 

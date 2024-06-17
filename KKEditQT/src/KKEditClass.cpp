@@ -53,7 +53,9 @@ KKEditClass::~KKEditClass()
 
 	fold.removeRecursively();
 	//qDebug()<<this->tmpFolderName;
+#ifdef _BUILDDOCVIEWER_
 	delete this->webEngView;
+#endif
 }
 
 void KKEditClass::setUpToolBar(void)
@@ -196,10 +198,10 @@ void KKEditClass::setUpToolBar(void)
 						{
 							QHBoxLayout *hbox=new QHBoxLayout;
 							QWidget		*widg=new QWidget;
-    						hbox->addStretch(1);
-    						widg->setLayout(hbox);
-    						this->toolBar->addWidget(widg);
-    					}
+    							hbox->addStretch(1);
+    							widg->setLayout(hbox);
+    							this->toolBar->addWidget(widg);
+    						}
 						break;
 				}
 		}
@@ -331,6 +333,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->toolsFolder=QString("%1/%2/%3").arg(this->homeFolder).arg(KKEDITFOLDER).arg("tools");
 	this->recentFiles=new RecentMenuClass(this);
 	this->theme=new ThemeClass(this);
+
 	QObject::connect(this->fileWatch,&QFileSystemWatcher::fileChanged,[this](const QString &path)
 		{
 			this->fileChangedOnDisk(path);
@@ -368,26 +371,24 @@ void KKEditClass::initApp(int argc,char** argv)
 				}
 		}
 
-
 //qDebug()<<tmpfoldertemplate;
 		this->tmpFolderName=mkdtemp(tmpfoldertemplate);
-		if(this->tmpFolderName==NULL)
+		if(this->tmpFolderName.isEmpty()==true)
 			{
 				qDebug()<<"Can't create temporary folder, quitting ...";
 				exit (100);
 			}
 
 //qDebug()<<this->tmpFolderName;
-
 	this->gotDoxygen=QProcess::execute("sh",QStringList()<<"-c"<<"which doxygen 2>&1 >/dev/null");
 	this->gotManEditor=QProcess::execute("sh",QStringList()<<"-c"<<"which manpageeditor 2>&1 >/dev/null");
+
 
 //	if(getuid()!=0)
 //		styleName="classic";
 //	else
 //		styleName="Root Source";
-	//this->highlightColour="#808080";
-	this->mainWindow=new QMainWindow;
+	this->mainWindow=new QMainWindow();
 
 	for(int j=0;j<NOMORESHORTCUT;j++)
 		this->appShortcuts[j]=new QShortcut(this->mainWindow);
@@ -704,7 +705,7 @@ void KKEditClass::findFile(void)
 	if((selection.isEmpty()==true) || (selection.startsWith('#')==false))
 		return;
 
-	filename=selection.replace(QRegExp("#.*include\\s*[\"<](.*)[\">]"),"\\1").trimmed();
+	filename=selection.replace(QRegularExpression("#.*include\\s*[\"<](.*)[\">]"),"\\1").trimmed();
 
 	if(this->openFile(QString("%1/%2").arg(document->getDirPath()).arg(filename))==true)
 		return;
@@ -827,7 +828,7 @@ void KKEditClass::buildDocs(void)
 
 	this->showBarberPole("Building Docs","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
 
-	fileinfo=QString("%1/html/index.html").arg(doc->getDirPath());
+	fileinfo=QFileInfo(QString("%1/html/index.html").arg(doc->getDirPath()));
 	fp=popen("doxygen Doxyfile","r");
 	while(fgets(line,4095,fp))
 		{
@@ -851,7 +852,7 @@ void KKEditClass::showDocs(void)
 	if(doc==NULL)
 		return;
 
-	QFileInfo		fileinfo=QString("%1/html/index.html").arg(doc->getDirPath());
+	QFileInfo		fileinfo(QString("%1/html/index.html").arg(doc->getDirPath()));
 
 	if(fileinfo.exists()==false)
 		this->buildDocs();
@@ -1219,7 +1220,7 @@ void KKEditClass::runCLICommands(int quid)
 			list=this->parser.positionalArguments();
 			for(int j=0;j<list.count();j++)
 				{
-					if(list.at(j).at(0)!="/")
+					if(list.at(j).at(0)!='/')
 						msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s/%s",pathtopwd,list.at(j).toStdString().c_str());
 					else
 						msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s",list.at(j).toStdString().c_str());
@@ -1350,7 +1351,7 @@ void KKEditClass::loadPlugins(void)
 		return;
 
 //local plugins
-	QDirIterator		lit(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	QDirIterator lit(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (lit.hasNext())
 		{
 			QString s=lit.next();
@@ -1366,7 +1367,7 @@ void KKEditClass::loadPlugins(void)
 
 //global plugins
 	pluginsDir.setPath(QString("%1/plugins/").arg(DATADIR));
-	QDirIterator				git(pluginsDir.canonicalPath() ,QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+	QDirIterator git(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while (git.hasNext())
 		{
 			QString			s=git.next();

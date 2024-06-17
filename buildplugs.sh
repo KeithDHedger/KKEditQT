@@ -2,6 +2,14 @@
 
 #©keithhedger Sat 12 Mar 19:03:19 GMT 2022 kdhedger68713@gmail.com
 
+echo "Building plugins ..."
+
+if [ -e ./toolspath ];then
+	. ./toolspath
+else
+	./setuptools
+fi
+
 BUILDLANGPLUGS=${BUILDLANGPLUGS:-1}
 BUILDPLUGS=${BUILDPLUGS:-1}
 BUILDTOOLKITPLUGS=${BUILDTOOLKITPLUGS:-1}
@@ -12,9 +20,9 @@ INSTALLTO="$2"
 export INSTALLTO
 
 if [[ "$1" = "clean" ]];then
-	find KKEditQT/langplugins -type d -iname "build" -exec rm -rf '{}' \;
-	find KKEditQT/plugins -type d -iname "build" -exec rm -rf '{}' \;
-	find KKEditQT/toolkitplugins -type d -iname "build" -exec rm -rf '{}' \;
+	find KKEditQT/langplugins -type d -iname "build" -exec rm -rf '{}' \; 2>/dev/null
+	find KKEditQT/plugins -type d -iname "build" -exec rm -rf '{}' \; 2>/dev/null
+	find KKEditQT/toolkitplugins -type d -iname "build" -exec rm -rf '{}' \; 2>/dev/null
 	exit 0
 fi
 
@@ -33,6 +41,8 @@ buildPlug ()
 		return
 	fi
 
+	echo "In $PARENTDIR doing $WHAT on $THISDIR ..."
+
 	case $WHAT in
 		"clean")
 			rm -rf build
@@ -40,13 +50,14 @@ buildPlug ()
 		"build")
 			mkdir -vp build
 			cd build
-			qmake ..
-			make
+			$QMAKEPATH ..
+			make||exit 100
 			;;
 		 "install")
 			mkdir -vp build
 			cd build
-		 	make install
+			$QMAKEPATH ..
+		 	make install||exit 100
 			if [ ${LOCAL:-0} -eq 1 ];then
 				mkdir -vp  ~/.KKEditQT/$PARENTDIR/$THISDIR
 				cp -r plugins/* ~/.KKEditQT/$PARENTDIR/$THISDIR

@@ -7,7 +7,6 @@ include ../sources
 kkeditqt_SOURCES = $(COMMONSRC)
 
 KKEditQTProgressBar_SOURCES = ../pole/main.cpp
-kkeditqtmsg_SOURCES = ../kkeditqtmsg/main.cpp
 
 pixfilesdir = $(pkgdatadir)/pixmaps
 pixfiles_DATA = ../resources/pixmaps/*
@@ -24,7 +23,7 @@ docfiles_DATA = ../resources/docs/*
 themesfilesdir = $(pkgdatadir)/themes
 themesfiles_DATA = ../resources/themes/*
 
-bin_PROGRAMS = kkeditqt KKEditQTProgressBar kkeditqtmsg
+bin_PROGRAMS = kkeditqt KKEditQTProgressBar
 
 install-exec-hook:
 	install -D ../resources/pixmaps/KKEditQTPlug.png $(DESTDIR)${prefix}/share/pixmaps/KKEditQTPlug.png

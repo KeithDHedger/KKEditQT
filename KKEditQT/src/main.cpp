@@ -21,29 +21,19 @@
 #include "kkedit-includes.h"
 #include "SingleInstanceClass.h"
 
-KKEditClass	*kkedit;
-
-//unsigned long hashFromKey(const char *key)
-//{
-//	unsigned long hash=0;
-//
-//	for(unsigned i=0;key[i]!=0;i++)
-//		hash=31*hash+key[i];
-//
-//	return(hash);
-//}
+KKEditClass	*kkedit=NULL;
 
 int main (int argc, char **argv)
 {
 	int				status;
 	QDir				commsDir;
-	QApplication		app(argc,argv);
+	QApplication		*napp=new QApplication(argc,argv);
 	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");
 
-	app.setOrganizationName("KDHedger");
-	app.setApplicationName("KKEditQT");
+	napp->setOrganizationName("KDHedger");
+	napp->setApplicationName("KKEditQT");
 
-	kkedit=new KKEditClass(&app);
+	kkedit=new KKEditClass(napp);
     kkedit->splash=new QSplashScreen(pixmap,Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
 	kkedit->parser.addHelpOption();
 
@@ -57,7 +47,8 @@ int main (int argc, char **argv)
 			{{"r","restore-session"},"Open session by name.","SessionName"}
 	});
 
-	kkedit->parser.process(app);
+	kkedit->parser.process(kkedit->application->arguments());
+
 	if(kkedit->parser.isSet("key"))
 		kkedit->sessionID=kkedit->parser.value("key").toInt(nullptr,0);
 
@@ -70,7 +61,7 @@ int main (int argc, char **argv)
 			kkedit->verySafeFlag=true;
 		}
 
-	SingleInstanceClass siapp(&app,kkedit->sessionID,kkedit->parser.isSet("multi"));
+	SingleInstanceClass siapp(kkedit->application,kkedit->sessionID,kkedit->parser.isSet("multi"),argc,argv);
 	if(siapp.getRunning()==true)
 		{
 			kkedit->runCLICommands(siapp.queueID);
@@ -83,9 +74,8 @@ int main (int argc, char **argv)
 	kkedit->currentWorkSpace=siapp.workspace;
 	kkedit->sessionID=siapp.useKey;
 	kkedit->forceDefaultGeom=!siapp.isOnX11;
-
 	kkedit->initApp(argc,argv);
-	app.setStyleSheet(kkedit->prefsMenuStyleString);
+	kkedit->application->setStyleSheet(kkedit->prefsMenuStyleString);
 //QMenu{menu-scrollable: true;padding: 0px;margin: 0px}
 //test plugs
 #if 0
@@ -99,15 +89,14 @@ int main (int argc, char **argv)
 	kkedit->runCLICommands(kkedit->queueID);
 
 	kkedit->setToolbarSensitive();
-
 	if(getuid()!=0)
-		app.setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));
+		kkedit->application->setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));
 	else
-		app.setWindowIcon(QIcon(DATADIR"/pixmaps/KKEditRoot.png"));
+		kkedit->application->setWindowIcon(QIcon(DATADIR"/pixmaps/KKEditRoot.png"));
 
 	kkedit->splash->finish(kkedit->mainWindow);
 
-	status=app.exec();
+	status=kkedit->application->exec();
 
 	delete kkedit;
 	return status;

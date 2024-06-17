@@ -29,3 +29,5 @@ Doxyfile
 */plugins/*/build/
 */plugins/*-NOGIT
 pass
+toolspath
+KKEditQT/kkeditqtmsg/kkeditqtmsg

@@ -939,7 +939,7 @@ void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)
 			return;
 		}
 
-	if((this->toPlainText().at(pos)==" ") || (this->toPlainText().at(pos)=="\t"))
+	if((this->toPlainText().at(pos)==' ') || (this->toPlainText().at(pos)=='\t'))
 		{
 			if(cursor.atBlockStart()==false)
 				{
@@ -1000,6 +1000,7 @@ bool DocumentClass::findStr(int what)
 {
 	QString							doctext;
 	QRegularExpression				pattern;
+	QRegularExpressionMatch				patternmatch;
 	QTextCharFormat					format;
 	QRegularExpressionMatchIterator	it;
 	QRegularExpressionMatch			match;
@@ -1067,7 +1068,8 @@ bool DocumentClass::findStr(int what)
 
 	if(this->mainKKEditClass->searchBack==false)
 		{
-			it=pattern.globalMatch(&doctext,this->searchPos);
+			//it=patternmatch.globalMatch(&doctext,this->searchPos);
+			it=pattern.globalMatch(doctext,(qsizetype)this->searchPos);
 			if(it.hasNext())
 				{
 					match=it.next();
@@ -1088,7 +1090,8 @@ bool DocumentClass::findStr(int what)
 					if((this->mainKKEditClass->wrapSearch==true) && (this->mainKKEditClass->findInAllFiles==false))
 						{
 							this->searchPos=0;
-							it=pattern.globalMatch(&doctext,this->searchPos);
+						//	it=pattern.globalMatch(&doctext,this->searchPos);
+							it=pattern.globalMatch(doctext,this->searchPos);
 							if(it.hasNext())
 								{
 									match=it.next();
@@ -1171,7 +1174,8 @@ void DocumentClass::setHighlightAll(void)
 
 	this->findMatch.clear();
 		
-	it=pattern.globalMatch(&doctext);
+//	it=pattern.globalMatch(&doctext);
+	it=pattern.globalMatch(doctext);
 	while(it.hasNext())
 		{
 			match=it.next();

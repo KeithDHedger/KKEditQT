@@ -96,7 +96,7 @@ bool KKEditClass::goToDefinition(const QString txt)
 			for(int tabs=0;tabs<this->mainNotebook->count();tabs++)
 				{
 					doc=this->getDocumentForTab(tabs);
-					if(doc->filePath!=NULL)
+					if(doc->filePath.isEmpty()==false)
 						sl=this->getNewRecursiveTagList(doc->getFilePath());
 //exact match case sensitive
 					if(sl.isEmpty()==false)
@@ -113,7 +113,6 @@ bool KKEditClass::goToDefinition(const QString txt)
 											this->gotoLine(linenumber);
 											return(retval);
 										}
-
 								}
 						}
 				}
@@ -131,7 +130,7 @@ bool KKEditClass::goToDefinition(const QString txt)
 			for(int loop=start;loop<end;loop++)
 				{
 					doc=this->getDocumentForTab(loop);
-					if(doc->filePath!=NULL)
+					if(doc->filePath.isEmpty()==false)
 						{
 							command=QString("find \"%1\" -maxdepth %2|ctags -L - -x|sed 's@ \\+@ @g'").arg(doc->getDirPath()).arg(this->prefsDepth);
 							results=this->runPipeAndCapture(command);

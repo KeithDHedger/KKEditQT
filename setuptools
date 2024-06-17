@@ -1,0 +1,33 @@
+#!/bin/bash -e
+
+#©keithhedger Sat 15 Jun 13:51:13 BST 2024 kdhedger68713@gmail.com
+
+echo "No toolspath file ..."
+echo "Creating default ..."
+echo "MOCPATH=$(which moc)" > ./toolspath
+echo "QMAKEPATH=$(which qmake)" >> ./toolspath
+if [ $(moc -v|awk '{print $2}'|cut -d . -f 1) -eq 5 ];then
+	echo "QTVERSION=5" >> ./toolspath
+else
+	echo "QTVERSION=6" >> ./toolspath
+fi
+echo "export MOCPATH QMAKEPATH QTVERSION" >> ./toolspath
+echo "If you have both Qt5 and Qt6 installed the default paths may need altering depending on what version of Qt you want to build against."
+echo "So manually set:"
+echo "MOCPATH=/path/to/moc/binary"
+echo "QMAKEPATH=/path/to/qmake/binary"
+echo "Force use of Qt Version ( 5 or 6 )"
+echo "QTVERSION=5"
+echo "Then export them"
+echo "export MOCPATH QMAKEPATH QTVERSION"
+echo "This will vary depending on if you have BOTH qt5 and qt6 installed."
+echo "Possible locations:"
+echo "Qt6: /usr/lib64/qt6/bin/qmake /usr/lib64/qt6/libexec/moc"
+echo "Qt5: /usr/lib64/qt5/bin/qmake /usr/lib64/qt5/bin/moc"
+echo "Different distros put them in different places."
+echo "If you decide to change versions you MUST do a make distclean, as some Qt5 binarys are NOT binary compatable with Qt6"
+. ./toolspath
+echo "Path to moc binary:$MOCPATH"
+echo "Path to qmake binary:$QMAKEPATH"
+echo "Using Qt version $QTVERSION"
+read -p "Press any key to continue, or take this oppurtunity to adjust toolspath file ... "

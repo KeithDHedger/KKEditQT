@@ -251,10 +251,10 @@ PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 QTPRINTSUPPORT_CFLAGS = @QTPRINTSUPPORT_CFLAGS@
 QTPRINTSUPPORT_LIBS = @QTPRINTSUPPORT_LIBS@
+QTTERM_CFLAGS = @QTTERM_CFLAGS@
+QTTERM_LIBS = @QTTERM_LIBS@
 QTWIDGETS_CFLAGS = @QTWIDGETS_CFLAGS@
 QTWIDGETS_LIBS = @QTWIDGETS_LIBS@
-QTX11EXTRA_CFLAGS = @QTX11EXTRA_CFLAGS@
-QTX11EXTRA_LIBS = @QTX11EXTRA_LIBS@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -263,8 +263,6 @@ WEBENGINEWIDGETS_CFLAGS = @WEBENGINEWIDGETS_CFLAGS@
 WEBENGINEWIDGETS_LIBS = @WEBENGINEWIDGETS_LIBS@
 X11_CFLAGS = @X11_CFLAGS@
 X11_LIBS = @X11_LIBS@
-XQT5TERM_CFLAGS = @XQT5TERM_CFLAGS@
-XQT5TERM_LIBS = @XQT5TERM_LIBS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -309,7 +307,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = KKEditQT/app
+SUBDIRS = KKEditQT/app KKEditQT/kkeditqtmsg
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -811,8 +809,8 @@ remake:
 	$(shell ./remakesourcelist)
 
 uninstall-hook:
-	rm -f $(DESTDIR)${prefix}/share/applications/KKEditQT.desktop $(DESTDIR)${prefix}/share/applications/KKEditQTRoot.desktop $(DESTDIR)${prefix}/share/pixmaps/KKEditQT.png $(DESTDIR)${prefix}/share/icons/hicolor/256x256/apps/KKEditQT.png $(DESTDIR)${prefix}/share/icons/hicolor/256x256/apps/KKEditQTRoot.png  $(DESTDIR)${prefix}/share/pixmaps/KKEditQTPlug.png
-	rm -fr $(pkgdatadir)
+	rm -f $(DESTDIR)${prefix}/share/applications/KKEditQT.desktop $(DESTDIR)${prefix}/share/applications/KKEditQTRoot.desktop $(DESTDIR)${prefix}/share/pixmaps/KKEditQT.png $(DESTDIR)${prefix}/share/icons/hicolor/128x128/apps/KKEditQT.png $(DESTDIR)${prefix}/share/icons/hicolor/128x128/apps/KKEditQTRoot.png  $(DESTDIR)${prefix}/share/pixmaps/KKEditQTPlug.png $(DESTDIR)${prefix}/share/pixmaps/KKEditQTProject.png $(DESTDIR)${prefix}/share/pixmaps/KKEditQTPlugMenu.png
+	rm -fr $(DESTDIR)$(pkgdatadir)
 
 distclean-local:
 	rm KKEditQT/src/moc_*

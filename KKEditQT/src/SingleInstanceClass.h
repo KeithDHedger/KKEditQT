@@ -23,14 +23,17 @@
 
 #include "kkedit-includes.h"
 
-#include <QX11Info>
+//#ifndef _USEQT6_
+//#include <QX11Info>
+////#include <QGuiApplication>
+//#endif
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
 class SingleInstanceClass
 {
 	public:
-		SingleInstanceClass(QApplication *app,int key,bool forcem);
+		SingleInstanceClass(QApplication *app,int key,bool forcem,int argc,char **argv);
 		~SingleInstanceClass();
 
 		long				getSIWorkSpace(void);
@@ -39,7 +42,7 @@ class SingleInstanceClass
 
 		QApplication		*app;
 		int				workspace=-1;
-		bool				isOnX11=true;
+		bool				isOnX11=false;
 		int				queueID=-1;
 		int				useKey=-1;
 
@@ -48,6 +51,7 @@ class SingleInstanceClass
 		QFile			fileMsg;
 		QFile			filePID;
 		bool				usingMulti=false;
+		Display			*display;
 };
 
 #endif

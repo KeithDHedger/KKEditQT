@@ -143,7 +143,7 @@ void jslang::runCustomRule(QString text,highLightingRule *hr)
 		{
 			bool		inquote=false;
 			int		cnt=0;
-			QChar	openquote=0;
+			QChar	openquote='\0';
 
 			while(cnt<text.length())
 				{
@@ -153,7 +153,7 @@ void jslang::runCustomRule(QString text,highLightingRule *hr)
 							continue;
 						}
 
-					if(openquote==0)
+					if(openquote=='\0')
 						{
 							if(text.at(cnt)=='"')
 								openquote='"';
@@ -165,7 +165,7 @@ void jslang::runCustomRule(QString text,highLightingRule *hr)
 						{
 							inquote=!inquote;
 							if(inquote==false)
-								openquote=0;
+								openquote='\0';
 							cnt++;
 							continue;
 						}

@@ -738,7 +738,6 @@ void KKEditClass::buildMainGui(void)
 	MenuItemClass	*menuItemSink;
 
 	this->mainNotebook=new NoteBookClass(this);
-
 //this->mainNotebook->setStyleSheet(QString("QTabBar::tab {width: 256;}"));//TODO//
 	this->mainNotebook->setContextMenuPolicy(Qt::CustomContextMenu);
 	QObject::connect(this->mainNotebook,SIGNAL(customContextMenuRequested(const QPoint &)),SLOT(tabContextMenu(const QPoint &)));
@@ -943,7 +942,6 @@ void KKEditClass::buildMainGui(void)
 		toggleToolBarMenuItem=this->makeMenuItemClass(VIEWMENU,"Hide Tool Bar",0,NULL,SHOWTOOLBARMENUNAME,TOGGLETOOLBARMENUITEM);
 	else
 		toggleToolBarMenuItem=this->makeMenuItemClass(VIEWMENU,"Show Tool Bar",0,NULL,SHOWTOOLBARMENUNAME,TOGGLETOOLBARMENUITEM);
-
 //tooloutput
 	if(this->toolWindowVisible)
 		this->toggleToolWindowMenuItem=this->makeMenuItemClass(VIEWMENU,"Hide Tool Output",0,NULL,SHOWTOOLOUTMENUNAME,TOGGLETOOLWINDOWMENUITEM);

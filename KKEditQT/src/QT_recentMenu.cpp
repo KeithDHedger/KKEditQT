@@ -29,7 +29,7 @@ RecentMenuClass::~RecentMenuClass()
 RecentMenuClass::RecentMenuClass(KKEditClass *kk)
 {
 	QIcon	itemicon=QIcon::fromTheme("document-open");
-
+	this->mainKKEditClass=kk;
 	this->recentMenu=new QMenu("Open Recent");
 	QObject::connect(this->recentMenu,SIGNAL(triggered(QAction*)),this,SLOT(menuClicked(QAction*)));
 	this->recentMenu->setIcon(itemicon);

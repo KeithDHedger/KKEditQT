@@ -22,7 +22,13 @@
 #define TerminalPluginPLUG_H
 
 #include "../../../src/kkeditqtPluginInterface.h"
+#include "../../../../config.h"
+
+#ifdef _USEQT6_
+#include <qtermwidget6/qtermwidget.h>
+#else
 #include <qtermwidget5/qtermwidget.h>
+#endif
 #include <QSettings>
 
 struct termDataStruct

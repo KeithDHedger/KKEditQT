@@ -1,16 +1,23 @@
 #!/bin/bash
 
 shopt -s nullglob
+
+if [ -e ./toolspath ];then
+	. ./toolspath
+else
+	./setuptools
+fi
+
 cd "KKEditQT/src"
 
 rm moc_* &>/dev/null||true
 
-moc KKEditClass.h -o moc_KKEditClass.cpp
+$MOCPATH KKEditClass.h -o moc_KKEditClass.cpp
 while read
 	do
 		outfile=${REPLY#./*}
 		outfile=moc_${outfile%*.h}.cpp
-		moc $REPLY -o $outfile
+		$MOCPATH $REPLY -o $outfile
 	done < <(find -name "*QT*.h")
 
 csrclst=$(echo "../src/*.c" "../src/*.cpp")
