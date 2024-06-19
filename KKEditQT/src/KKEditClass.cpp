@@ -19,6 +19,10 @@
  */
 
 #include "KKEditClass.h"
+#ifndef moc_KKEditClass
+#include "moc_KKEditClass.cpp"
+#define moc_KKEditClass
+#endif
 
 static const char			*replacementShorts[]={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"};
 static const QStringList		reservedShortcutKeys={"Ctrl+Shift+C","Ctrl+Shift+V"};

@@ -1,4 +1,6 @@
 1.5.0
+Now includes moc generated files directly instaead of compiling and linking them.
+Fixed KKEditQTProgressBar Makefile to not link against unneeded qt libs.
 Fixed uneeded include of QX11Info in singleinstance class.
 Fixed not uninstalling som png files
 Fixed kkeditqtmsg Makefile to not link against unneeded qt libs.

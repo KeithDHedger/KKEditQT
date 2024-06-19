@@ -18,8 +18,11 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "QT_toolbar.h"
-//#include "QT_notebook.h"
+#include "QT_notebook.h"
+#ifndef moc_QT_notebook
+#include "moc_QT_notebook.cpp"
+#define moc_QT_notebook
+#endif
 
 NoteBookClass::~NoteBookClass()
 {
@@ -105,7 +108,11 @@ NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent
 
 void NoteBookClass::dragMoveEvent(QDragMoveEvent *event)
 {
+#ifdef _USEQT6_
+	int tabIndex=this->tabBar()->tabAt(event->position().toPoint());
+#else
 	int tabIndex=this->tabBar()->tabAt(event->pos());
+#endif
 	this->setCurrentIndex(tabIndex);
 
 	if((event->mimeData()->hasUrls()==true) || (event->mimeData()->hasText()))

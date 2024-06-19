@@ -19,6 +19,10 @@
  */
 
 #include "QT_recentMenu.h"
+#ifndef moc_QT_recentMenu
+#include "moc_QT_recentMenu.cpp"
+#define moc_QT_recentMenu
+#endif
 
 RecentMenuClass::~RecentMenuClass()
 {

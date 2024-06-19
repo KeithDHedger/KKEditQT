@@ -120,7 +120,7 @@ if test "$enable_debugcode" = "yes"; then
 	AC_DEFINE([_DEBUGCODE_], [], [Debug code])
 fi
 
-AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile KKEditQT/kkeditqtmsg/Makefile)
+AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile KKEditQT/kkeditqtmsg/Makefile KKEditQT/pole/Makefile)
 AC_OUTPUT
 
 

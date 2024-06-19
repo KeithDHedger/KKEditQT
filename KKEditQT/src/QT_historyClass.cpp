@@ -19,6 +19,10 @@
  */
  
 #include "QT_historyClass.h"
+#ifndef moc_QT_historyClass
+#include "moc_QT_historyClass.cpp"
+#define moc_QT_historyClass
+#endif
 
 HistoryClass::~HistoryClass()
 {

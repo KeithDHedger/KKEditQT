@@ -47,7 +47,7 @@ static const char *defaultauthors="K.D.Hedger ©2013-2022<br><a href=\"mailto:" 
 class AboutBoxClass : public QObject
 {
     Q_OBJECT
-
+int x=1;
 	public:
 		AboutBoxClass(QWidget* window,QString pixpath);
 		~AboutBoxClass();

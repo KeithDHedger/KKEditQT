@@ -2,7 +2,11 @@
 
 #©keithhedger Sat 12 Mar 19:03:19 GMT 2022 kdhedger68713@gmail.com
 
-echo "Building plugins ..."
+NORMAL="\e[0m"
+RED="\e[1;31m"
+GREEN="\e[1;32m"
+
+echo -e "${RED}Running buildplugs.sh ...${NORMAL}"
 
 if [ -e ./toolspath ];then
 	. ./toolspath
@@ -41,7 +45,7 @@ buildPlug ()
 		return
 	fi
 
-	echo "In $PARENTDIR doing $WHAT on $THISDIR ..."
+	echo -e "${GREEN}In $PARENTDIR doing $WHAT on $THISDIR ...${NORMAL}"
 
 	case $WHAT in
 		"clean")

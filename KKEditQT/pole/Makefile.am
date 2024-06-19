@@ -1,7 +1,7 @@
-CPPROGRAM=kkeditqtmsg
+CPPROGRAM=KKEditQTProgressBar
 
 all:
-	g++ main.cpp -o $(CPPROGRAM)
+	g++ -Wall `pkg-config --cflags --libs Qt6Widgets` -fPIC main.cpp -o $(CPPROGRAM)
 
 install:
 	mkdir -p $(DESTDIR)$(prefix)/bin

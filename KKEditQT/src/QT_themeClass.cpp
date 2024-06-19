@@ -19,6 +19,10 @@
  */
 
 #include "QT_themeClass.h"
+#ifndef moc_QT_themeClass
+#include "moc_QT_themeClass.cpp"
+#define moc_QT_themeClass
+#endif
 
 ThemeClass::ThemeClass(KKEditClass *kk)
 {

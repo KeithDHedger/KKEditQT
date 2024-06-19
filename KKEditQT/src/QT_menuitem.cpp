@@ -19,6 +19,10 @@
  */
 
 #include "QT_menuitem.h"
+#ifndef moc_QT_menuitem
+#include "moc_QT_menuitem.cpp"
+#define moc_QT_menuitem
+#endif
 
 MenuItemClass::~MenuItemClass()
 {

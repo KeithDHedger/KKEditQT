@@ -1,5 +1,5 @@
 
-SUBDIRS = KKEditQT/app KKEditQT/kkeditqtmsg
+SUBDIRS = KKEditQT/app KKEditQT/kkeditqtmsg KKEditQT/pole
 
 all-am: plugs
 

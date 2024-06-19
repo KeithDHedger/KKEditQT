@@ -79,7 +79,6 @@ class HistoryClass;
 class ToolBarClass;
 class kkEditQTPluginInterface;
 
-
 #include "kkedit-includes.h"
 
 #include "ChooserDialog.h"

@@ -88,7 +88,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = kkeditqt$(EXEEXT) KKEditQTProgressBar$(EXEEXT)
+bin_PROGRAMS = kkeditqt$(EXEEXT)
 subdir = KKEditQT/app
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -104,9 +104,6 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(scriptfilesdir)" \
 	"$(DESTDIR)$(pixfilesdir)" "$(DESTDIR)$(themesfilesdir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
-am_KKEditQTProgressBar_OBJECTS = ../pole/main.$(OBJEXT)
-KKEditQTProgressBar_OBJECTS = $(am_KKEditQTProgressBar_OBJECTS)
-KKEditQTProgressBar_LDADD = $(LDADD)
 am__objects_1 = ../src/ChooserDialog.$(OBJEXT) \
 	../src/KKEditClass.$(OBJEXT) \
 	../src/KKEditClassCallbacks.$(OBJEXT) \
@@ -123,17 +120,7 @@ am__objects_1 = ../src/ChooserDialog.$(OBJEXT) \
 	../src/QT_historyClass.$(OBJEXT) ../src/QT_menuitem.$(OBJEXT) \
 	../src/QT_notebook.$(OBJEXT) ../src/QT_recentMenu.$(OBJEXT) \
 	../src/QT_themeClass.$(OBJEXT) ../src/QT_toolbar.$(OBJEXT) \
-	../src/SingleInstanceClass.$(OBJEXT) ../src/main.$(OBJEXT) \
-	../src/moc_KKEditClass.$(OBJEXT) \
-	../src/moc_QT_AboutBox.$(OBJEXT) \
-	../src/moc_QT_document.$(OBJEXT) \
-	../src/moc_QT_highlighter.$(OBJEXT) \
-	../src/moc_QT_historyClass.$(OBJEXT) \
-	../src/moc_QT_menuitem.$(OBJEXT) \
-	../src/moc_QT_notebook.$(OBJEXT) \
-	../src/moc_QT_recentMenu.$(OBJEXT) \
-	../src/moc_QT_themeClass.$(OBJEXT) \
-	../src/moc_QT_toolbar.$(OBJEXT)
+	../src/SingleInstanceClass.$(OBJEXT) ../src/main.$(OBJEXT)
 am_kkeditqt_OBJECTS = $(am__objects_1)
 kkeditqt_OBJECTS = $(am_kkeditqt_OBJECTS)
 kkeditqt_LDADD = $(LDADD)
@@ -180,8 +167,7 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ../pole/$(DEPDIR)/main.Po \
-	../src/$(DEPDIR)/ChooserDialog.Po \
+am__depfiles_remade = ../src/$(DEPDIR)/ChooserDialog.Po \
 	../src/$(DEPDIR)/KKEditClass.Po \
 	../src/$(DEPDIR)/KKEditClassCallbacks.Po \
 	../src/$(DEPDIR)/KKEditClassDocuments.Po \
@@ -202,16 +188,7 @@ am__depfiles_remade = ../pole/$(DEPDIR)/main.Po \
 	../src/$(DEPDIR)/QT_themeClass.Po \
 	../src/$(DEPDIR)/QT_toolbar.Po \
 	../src/$(DEPDIR)/SingleInstanceClass.Po \
-	../src/$(DEPDIR)/main.Po ../src/$(DEPDIR)/moc_KKEditClass.Po \
-	../src/$(DEPDIR)/moc_QT_AboutBox.Po \
-	../src/$(DEPDIR)/moc_QT_document.Po \
-	../src/$(DEPDIR)/moc_QT_highlighter.Po \
-	../src/$(DEPDIR)/moc_QT_historyClass.Po \
-	../src/$(DEPDIR)/moc_QT_menuitem.Po \
-	../src/$(DEPDIR)/moc_QT_notebook.Po \
-	../src/$(DEPDIR)/moc_QT_recentMenu.Po \
-	../src/$(DEPDIR)/moc_QT_themeClass.Po \
-	../src/$(DEPDIR)/moc_QT_toolbar.Po
+	../src/$(DEPDIR)/main.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -226,8 +203,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(KKEditQTProgressBar_SOURCES) $(kkeditqt_SOURCES)
-DIST_SOURCES = $(KKEditQTProgressBar_SOURCES) $(kkeditqt_SOURCES)
+SOURCES = $(kkeditqt_SOURCES)
+DIST_SOURCES = $(kkeditqt_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -382,9 +359,8 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 			-DLIBDIR=\""${libdir}/${PACKAGE}"\" \
 			-fPIC
 
-COMMONSRC = ../src/ChooserDialog.cpp ../src/KKEditClass.cpp ../src/KKEditClassCallbacks.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/LFSTKFindClass.cpp ../src/LFSTKUtilityClass.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_themeClass.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp ../src/main.cpp ../src/moc_KKEditClass.cpp ../src/moc_QT_AboutBox.cpp ../src/moc_QT_document.cpp ../src/moc_QT_highlighter.cpp ../src/moc_QT_historyClass.cpp ../src/moc_QT_menuitem.cpp ../src/moc_QT_notebook.cpp ../src/moc_QT_recentMenu.cpp ../src/moc_QT_themeClass.cpp ../src/moc_QT_toolbar.cpp
+COMMONSRC = ../src/ChooserDialog.cpp ../src/KKEditClass.cpp ../src/KKEditClassCallbacks.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/LFSTKFindClass.cpp ../src/LFSTKUtilityClass.cpp ../src/QT_AboutBox.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_themeClass.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp ../src/main.cpp
 kkeditqt_SOURCES = $(COMMONSRC)
-KKEditQTProgressBar_SOURCES = ../pole/main.cpp
 pixfilesdir = $(pkgdatadir)/pixmaps
 pixfiles_DATA = ../resources/pixmaps/*
 helpfilesdir = $(pkgdatadir)/help
@@ -471,18 +447,6 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-../pole/$(am__dirstamp):
-	@$(MKDIR_P) ../pole
-	@: > ../pole/$(am__dirstamp)
-../pole/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) ../pole/$(DEPDIR)
-	@: > ../pole/$(DEPDIR)/$(am__dirstamp)
-../pole/main.$(OBJEXT): ../pole/$(am__dirstamp) \
-	../pole/$(DEPDIR)/$(am__dirstamp)
-
-KKEditQTProgressBar$(EXEEXT): $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressBar_DEPENDENCIES) $(EXTRA_KKEditQTProgressBar_DEPENDENCIES) 
-	@rm -f KKEditQTProgressBar$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressBar_LDADD) $(LIBS)
 ../src/$(am__dirstamp):
 	@$(MKDIR_P) ../src
 	@: > ../src/$(am__dirstamp)
@@ -533,26 +497,6 @@ KKEditQTProgressBar$(EXEEXT): $(KKEditQTProgressBar_OBJECTS) $(KKEditQTProgressB
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/main.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_KKEditClass.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_QT_AboutBox.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_QT_document.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_QT_highlighter.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_QT_historyClass.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_QT_menuitem.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_QT_notebook.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_QT_recentMenu.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_QT_themeClass.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
-../src/moc_QT_toolbar.$(OBJEXT): ../src/$(am__dirstamp) \
-	../src/$(DEPDIR)/$(am__dirstamp)
 
 kkeditqt$(EXEEXT): $(kkeditqt_OBJECTS) $(kkeditqt_DEPENDENCIES) $(EXTRA_kkeditqt_DEPENDENCIES) 
 	@rm -f kkeditqt$(EXEEXT)
@@ -595,13 +539,11 @@ uninstall-scriptfilesSCRIPTS:
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
-	-rm -f ../pole/*.$(OBJEXT)
 	-rm -f ../src/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@../pole/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/ChooserDialog.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/KKEditClass.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/KKEditClassCallbacks.Po@am__quote@ # am--include-marker
@@ -624,16 +566,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/QT_toolbar.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/SingleInstanceClass.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_KKEditClass.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_AboutBox.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_document.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_highlighter.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_historyClass.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_menuitem.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_notebook.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_recentMenu.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_themeClass.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/moc_QT_toolbar.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -858,8 +790,6 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
-	-rm -f ../pole/$(DEPDIR)/$(am__dirstamp)
-	-rm -f ../pole/$(am__dirstamp)
 	-rm -f ../src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ../src/$(am__dirstamp)
 
@@ -871,8 +801,7 @@ clean: clean-am
 clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ../pole/$(DEPDIR)/main.Po
-	-rm -f ../src/$(DEPDIR)/ChooserDialog.Po
+		-rm -f ../src/$(DEPDIR)/ChooserDialog.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClass.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClassCallbacks.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClassDocuments.Po
@@ -894,16 +823,6 @@ distclean: distclean-am
 	-rm -f ../src/$(DEPDIR)/QT_toolbar.Po
 	-rm -f ../src/$(DEPDIR)/SingleInstanceClass.Po
 	-rm -f ../src/$(DEPDIR)/main.Po
-	-rm -f ../src/$(DEPDIR)/moc_KKEditClass.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_AboutBox.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_document.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_highlighter.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_historyClass.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_menuitem.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_notebook.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_recentMenu.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_themeClass.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_toolbar.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -952,8 +871,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ../pole/$(DEPDIR)/main.Po
-	-rm -f ../src/$(DEPDIR)/ChooserDialog.Po
+		-rm -f ../src/$(DEPDIR)/ChooserDialog.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClass.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClassCallbacks.Po
 	-rm -f ../src/$(DEPDIR)/KKEditClassDocuments.Po
@@ -975,16 +893,6 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ../src/$(DEPDIR)/QT_toolbar.Po
 	-rm -f ../src/$(DEPDIR)/SingleInstanceClass.Po
 	-rm -f ../src/$(DEPDIR)/main.Po
-	-rm -f ../src/$(DEPDIR)/moc_KKEditClass.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_AboutBox.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_document.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_highlighter.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_historyClass.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_menuitem.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_notebook.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_recentMenu.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_themeClass.Po
-	-rm -f ../src/$(DEPDIR)/moc_QT_toolbar.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

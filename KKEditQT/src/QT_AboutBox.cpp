@@ -20,6 +20,10 @@
 
 #include "kkedit-includes.h"
 #include "QT_AboutBox.h"
+#ifndef moc_QT_AboutBox
+#include "moc_QT_AboutBox.cpp"
+#define moc_QT_AboutBox
+#endif
 
 void AboutBoxClass::setAuthors(QString authors)
 {
