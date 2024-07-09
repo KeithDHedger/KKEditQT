@@ -99,6 +99,7 @@ void SymbolsMenuPlug::plugAbout(void)
 					args<<"-c"<<"openindocview";
 					args<<"-d"<<"file:///"+fileinfo.canonicalPath()+"/docs/help.html";
 					QProcess::startDetached("kkeditqtmsg",args);
+					this->mainKKEditClass->pluginPrefsWindow->hide();
 				}
 				break;
 		}

@@ -146,14 +146,31 @@ void DocumentationPlugin::unloadPlug(void)
 void DocumentationPlugin::plugAbout(void)
 {
 	QMessageBox	msgBox;
+	QFileInfo	fileinfo(this->plugPath);
 	QString		txt="Search API Docs Plugin\n\n©K.D.Hedger 2024\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
 
 	msgBox.setText(txt);
 	msgBox.setIconPixmap(QPixmap("/usr/share/KKEditQT/pixmaps/KKEditQTPlug.png"));
 	msgBox.setWindowTitle("Plugin About");
 	msgBox.setTextFormat(Qt::MarkdownText);
-	msgBox.exec();
-}
+	msgBox.setStandardButtons(QMessageBox::Help|QMessageBox::Close);
+	int ret=msgBox.exec();
+	switch(ret)
+		{
+			case QMessageBox::Close:
+				break;
+			case QMessageBox::Help:
+				{
+					QStringList args;
+					args<<"-k";
+					args<<QString("%1").arg(this->mainKKEditClass->sessionID);
+					args<<"-c"<<"openindocview";
+					args<<"-d"<<"file:///"+fileinfo.canonicalPath()+"/docs/help.html";
+					QProcess::startDetached("kkeditqtmsg",args);
+					this->mainKKEditClass->pluginPrefsWindow->hide();
+				}
+				break;
+		}}
 
 void DocumentationPlugin::plugSettings(void)
 {

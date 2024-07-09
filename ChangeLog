@@ -1,4 +1,6 @@
 1.5.1
+Started documeting DocumentationPlugin formats.
+Closed plugin prefs dialog when selecting help from the plugs about menu.
 Fancied up buildplugs script.
 Fixed plugins segfaulting when needing setsensitive after initing.
 Added various searches to  DocumentationPlugin.
