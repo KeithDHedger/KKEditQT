@@ -19,7 +19,7 @@
  */
 
 #include "KKEditClass.h"
-
+//QPainter
 void KKEditClass::makePrefsDial(int widgnum,const QString label,int value,int minvalue,int maxvalue,int posy)
 {
 	QLabel*	widgetlabel;
@@ -71,7 +71,6 @@ static const char *whatIsPrefsOther[MAXPREFSOTHERWIDGETS]={\
 "<html>Enter a command to run a command in a terminal, the command is added to the end of this string.<br><br>Default is '<b>xterm -e</b>'</html>",\
 "<html>QT5 does not play well with CUPS ( nothing to do with me! )<br><br>You can set an external program to print your document, just enter the name or full path here, the full path to the current document will be added to the end as the file to print.<br>E.g. lpr to usr the line printer.<br><br>You can also use a gui application e.g. lprgui available here:<br><b>https://github.com/KeithDHedger/LprGUI</b><br><br>Leave this blank to use the built in QT5 print dialog ( but you may only get the native print to pdf option ).</html>",\
 "<html>Enter a command to run a command as root, the command is added to the end of this string.<br><br>Default is '<b>gtksu -- env QTWEBENGINE_DISABLE_SANDBOX=1 env QT_QPA_PLATFORMTHEME=qt5ct </b>'</html>",\
-"<html>Path to installed QT documentation, default is '<b>/usr/share/doc/qt5</b>'</html>",\
 "<html>Set current font.</html>",\
 "<html>Set bookmark highlight colour.</html>",\
 "<html>Set current line colour.</html>",\
@@ -357,14 +356,6 @@ void KKEditClass::buildPrefsWindow(void)
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[PREFSROOTCOMMAND],posy,1,1,-1,Qt::AlignVCenter);
 
-//qt doc dir
-	posy++;
-    widgetlabel=new QLabel("QT Document Folder:");
-	prefsOtherWidgets[PREFSQTDOCDIR]=new QLineEdit(this->prefsQtDocDir);
-	prefsOtherWidgets[PREFSQTDOCDIR]->setWhatsThis(whatIsPrefsOther[PREFSQTDOCDIR]);
-	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
-	table->addWidget(prefsOtherWidgets[PREFSQTDOCDIR],posy,1,1,-1,Qt::AlignVCenter);
-
 //recent history max
 	posy++;
 	makePrefsDial(MAXRECENTS,"Max Recent Files:",this->recentFiles->maxFiles,0,MAXTEXTWIDTH,posy);
@@ -487,8 +478,6 @@ void KKEditClass::populateDnD(void)
 	this->addIcon("go-previous","B",17,"Go Back");
 	this->addIcon("go-next","W",18,"Go Forward");
 	this->addIcon(DATADIR"/pixmaps/num.png","9",10,"Go To Line");
-	this->addIcon(DATADIR"/pixmaps/api.png","A",11,"Find API In Gtk Docs");
-	this->addIcon(DATADIR"/pixmaps/qtapi.png","Q",16,"Find API In Qt5 Docs");
 	this->addIcon(DATADIR"/pixmaps/finddef.png","D",12,"Search For Define");
 	this->addIcon(DATADIR"/pixmaps/live.png","L",13,"Live Search");
 	this->addIcon(DATADIR"/pixmaps/sep.png","s",14,"Separator");
@@ -581,16 +570,6 @@ void KKEditClass::populateStore(void)
 					case '9':
 						this->addIconToList(DATADIR"/pixmaps/num.png",'9');
 						this->tool[10]->setEnabled(false);
-						break;
-//find api gtk
-					case 'A':
-						this->addIconToList(DATADIR"/pixmaps/api.png",'A');
-						this->tool[11]->setEnabled(false);
-						break;
-//find api qt5
-					case 'Q':
-						this->addIconToList(DATADIR"/pixmaps/qtapi.png",'Q');
-						this->tool[16]->setEnabled(false);
 						break;
 //find def
 					case 'D':
@@ -1004,10 +983,6 @@ void KKEditClass::buildMainGui(void)
 	goToLineDialogMenuItem=this->makeMenuItemClass(NAVMENU,"Go To Line",0,"go-down",GOTOLINEMENUNAME,GOTOLINEMENUITEM);
 //find define
 	menuItemSink=this->makeMenuItemClass(NAVMENU,"Search For Define",0,"edit-find",SEARCHFORDEFMENUNAME,SEARCHFORDEFINEMENUITEM);
-//find gtkdoc
-	menuItemSink=this->makeMenuItemClass(NAVMENU,"Search In Gtk Docs",0,"edit-find",SEARCHGTKMENUNAME,SEARCHGTKDOCS);
-//find qt5
-	menuItemSink=this->makeMenuItemClass(NAVMENU,"Search In Qt5 Docs",0,"edit-find",SEARCHQT5MENUNAME,SEARCHQT5DOCS);
 //goto doxy docs
 	if(gotDoxygen==0)
 		menuItemSink=this->makeMenuItemClass(NAVMENU,"Find In Documentation",0,"edit-find",SEARCHDOXYMENUNAME,SEARCHDOXYDOCS);
@@ -1648,6 +1623,7 @@ void KKEditClass::buildPlugPrefs(void)
 									this->loadPlug(&this->plugins[j],true);
 								}
 						}
+					this->setToolbarSensitive();
 				}
 			this->writeExitData();
 			this->pluginPrefsWindow->hide();

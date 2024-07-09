@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([KKEditQT],[1.0.1],[PROJ],[KKEditQT])
+AC_INIT([KKEditQT],[1.5.1],[PROJ],[KKEditQT])
 
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_CXX
@@ -97,11 +97,11 @@ if test $CTAGS = false; then
 	AC_MSG_ERROR([No ctags program found!])
 fi
 
-AC_CHECK_PROG(GTKSU, gtksu ,true,false)
-if test $GTKSU = false; then
-	AC_MSG_NOTICE([No GtkSu program found!])
+AC_CHECK_PROG(QTSU, qtsu ,true,false)
+if test $QTSU = false; then
+	AC_MSG_NOTICE([No QtSu program found!])
 	AC_MSG_NOTICE([You can download it from here:])
-	AC_MSG_NOTICE([https://github.com/KeithDHedger/GtkSu])
+	AC_MSG_NOTICE([https://github.com/KeithDHedger/QtSu])
 fi
 
 AC_CHECK_PROG(MANPAGEEDITOR, manpageeditor ,true,false)

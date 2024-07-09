@@ -224,7 +224,6 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 ETAGS = @ETAGS@
 EXEEXT = @EXEEXT@
-GTKSU = @GTKSU@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -251,6 +250,7 @@ PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 QTPRINTSUPPORT_CFLAGS = @QTPRINTSUPPORT_CFLAGS@
 QTPRINTSUPPORT_LIBS = @QTPRINTSUPPORT_LIBS@
+QTSU = @QTSU@
 QTTERM_CFLAGS = @QTTERM_CFLAGS@
 QTTERM_LIBS = @QTTERM_LIBS@
 QTWIDGETS_CFLAGS = @QTWIDGETS_CFLAGS@
@@ -794,19 +794,19 @@ uninstall-am:
 all-am: plugs
 
 plugs:
-	./buildplugs.sh build
+	@./buildplugs.sh build
 
 install-plugs: plugs
-	./buildplugs.sh install $(DESTDIR)/${pkgdatadir}
+	@./buildplugs.sh install $(DESTDIR)/${pkgdatadir}
 
 clean-am:
-	./buildplugs.sh clean
+	@./buildplugs.sh clean
 
 install-exec-hook:
-	./buildplugs.sh install $(DESTDIR)/${pkgdatadir}
+	@./buildplugs.sh install $(DESTDIR)/${pkgdatadir}
 
 remake:
-	$(shell ./remakesourcelist)
+	./remakesourcelist
 
 uninstall-hook:
 	rm -f $(DESTDIR)${prefix}/share/applications/KKEditQT.desktop $(DESTDIR)${prefix}/share/applications/KKEditQTRoot.desktop $(DESTDIR)${prefix}/share/pixmaps/KKEditQT.png $(DESTDIR)${prefix}/share/icons/hicolor/128x128/apps/KKEditQT.png $(DESTDIR)${prefix}/share/icons/hicolor/128x128/apps/KKEditQTRoot.png  $(DESTDIR)${prefix}/share/pixmaps/KKEditQTPlug.png $(DESTDIR)${prefix}/share/pixmaps/KKEditQTProject.png $(DESTDIR)${prefix}/share/pixmaps/KKEditQTPlugMenu.png

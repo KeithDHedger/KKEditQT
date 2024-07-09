@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#©keithhedger Sat 6 Jul 13:32:17 BST 2024 kdhedger68713@gmail.com
+
+echo "Results From Gtk-Docs"
+
+while read
+	do
+		basefolder="$(echo $REPLY|awk -F 'href="' '{print $2}'|awk -F '"' '{print "file://'$(dirname $(echo "$REPLY"|awk -F: '{print $1}'))'" $1}')"
+		linkfile="$(echo "$REPLY"|awk -F 'link="' '{print $2}'|awk -F'"' '{print $1}')"
+		LINKFILE="$basefolder/$linkfile"
+		NAME=$(echo "$REPLY"|awk -F 'link="' '{print $2}'|awk -F'"' '{print $1}'|awk -F'#' '{print $2}')
+		if [ ! "X$NAME" = "X" ] && [ ! "X$LINKFILE"  = "X" ];then
+			echo "$LINKFILE"
+			echo "$NAME"
+		fi
+	done < <(find /usr/share/gtk-doc/html -iname "api-index-full.html" -o -iname "*.devhelp2" -exec grep -iHe "$1" '{}' \;)
+

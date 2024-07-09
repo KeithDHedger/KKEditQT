@@ -7,6 +7,7 @@ documentaion :(
 
 improve external tools
 
+this->htmlURI=QString("https://duckduckgo.com/?q=%1&ia=web").arg(searchfor);
 
 
 

@@ -27,7 +27,6 @@ class LineNumberArea;
 class Highlighter;
 
 enum {NORMALTAB=0,CHANGEDONDISKTAB,IGNORECHANGEDONDISKTAB,LOCKEDTAB,DIRTYTAB};
-//enum xvxvx {jjj,lll,lll};
 
 class DocumentClass : public QPlainTextEdit
 {

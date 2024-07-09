@@ -1,4 +1,24 @@
+1.5.1
+Fancied up buildplugs script.
+Fixed plugins segfaulting when needing setsensitive after initing.
+Added various searches to  DocumentationPlugin.
+Removed unneded search code.
+Removed toolbar line entry's for search qt/gtk apis.
+Set doc instance in plugData when when doing setsensitive.
+Set DocumentationPlugin menu in nav menu enabled.
+Jump straight to link if only one result from DocumentationPlugin.
+Sort DocumentationPlugin infos.
+Fixed segfault in DocumentationPlugin if unmatched link/name pairs.
+Bring docviewer to front when showing from view menu.
+Removed qt docs folder pref.
+Removed search for gtk/qt5 apis.
+Replaced search for gtk/qt5 nav menu items with integrated find API menu item.
+Added DocumentationPlugin for searching API's, much more versatile,  currently includes searches for qt5/6, gtk2/3, all gtk-doc. ( Need to do documentaion :( ).
+
 1.5.0
+Fixed annoying warning from automake.
+Set QtSu as default gui su ( can be changed in prefs ).
+Tweaked pole makefile.am.
 Now includes moc generated files directly instaead of compiling and linking them.
 Fixed KKEditQTProgressBar Makefile to not link against unneeded qt libs.
 Fixed uneeded include of QX11Info in singleinstance class.

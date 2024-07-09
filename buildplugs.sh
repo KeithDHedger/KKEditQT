@@ -2,9 +2,11 @@
 
 #©keithhedger Sat 12 Mar 19:03:19 GMT 2022 kdhedger68713@gmail.com
 
-NORMAL="\e[0m"
-RED="\e[1;31m"
-GREEN="\e[1;32m"
+NORMAL='\e[0m'
+RED='\e[1;31m'
+GREEN='\e[1;32m'
+YELLOW='\e[1;33m'
+HILITE='\e[1;37;41m'
 
 echo -e "${RED}Running buildplugs.sh ...${NORMAL}"
 
@@ -13,6 +15,22 @@ if [ -e ./toolspath ];then
 else
 	./setuptools
 fi
+
+if  [[ $(ps --no-headers ${PPID}|awk '{print $NF}') = "bash" ]];then
+	MAKE=colourmake
+else
+	MAKE=make
+fi
+
+colourmake ()
+{
+	make -j3 $@ \
+	|GREP_COLORS='mt=1;37;41' grep -P --line-buffered --color=always  '^[^ ]*|$' \
+	|GREP_COLORS='mt=1;33' grep -P --line-buffered --color=always '([[:alnum:]_/\.]+?(\.c+|\..p+|\.h)\b)' \
+	|GREP_COLORS='mt=1;32' grep -P --line-buffered --color=always  '\s\-D([[:alnum:]_\./\-\+="\\]*\s)|$' \
+	|GREP_COLORS='mt=1;36' grep -P --line-buffered --color=always  '\s-(I|L|l)([[:alnum:]\./\-\+]*\s)|$' \
+	|sed G
+}
 
 BUILDLANGPLUGS=${BUILDLANGPLUGS:-1}
 BUILDPLUGS=${BUILDPLUGS:-1}
@@ -45,23 +63,22 @@ buildPlug ()
 		return
 	fi
 
-	echo -e "${GREEN}In $PARENTDIR doing $WHAT on $THISDIR ...${NORMAL}"
-
+	echo -e "${NORMAL}${GREEN}In ${GREEN}$PARENTDIR doing $WHAT on $THISDIR ...${NORMAL}"
 	case $WHAT in
 		"clean")
 			rm -rf build
 			;;
 		"build")
-			mkdir -vp build
-			cd build
-			$QMAKEPATH ..
-			make||exit 100
+			mkdir -p build &>/dev/null
+			cd build &>/dev/null
+			$QMAKEPATH .. &>/dev/null
+			$MAKE||exit 100
 			;;
 		 "install")
-			mkdir -vp build
-			cd build
-			$QMAKEPATH ..
-		 	make install||exit 100
+			mkdir -p build &>/dev/null
+			cd build &>/dev/null
+			$QMAKEPATH .. &>/dev/null
+		 	$MAKE install||exit 100
 			if [ ${LOCAL:-0} -eq 1 ];then
 				mkdir -vp  ~/.KKEditQT/$PARENTDIR/$THISDIR
 				cp -r plugins/* ~/.KKEditQT/$PARENTDIR/$THISDIR
@@ -74,36 +91,54 @@ buildPlug ()
 }
 
 if [ $BUILDLANGPLUGS -eq 1 ];then
-	pushd KKEditQT/langplugins
-		while read
-			do
-				pushd $(dirname $REPLY)
-					buildPlug "$1" "$2"
-				popd
-			done < <(find -maxdepth 2 -iname "*.pro")
+	pushd KKEditQT/langplugins &>/dev/null
+		if [ "X$1" = "Xsingle" ];then
+			pushd "$2" &>/dev/null
+				LOCAL=1 buildPlug "install"
+			popd &>/dev/null
+		else
+			while read
+				do
+					pushd $(dirname $REPLY) &>/dev/null
+						buildPlug "$1" "$2"
+					popd &>/dev/null
+				done < <(find -maxdepth 2 -iname "*.pro")
+		fi
 	popd
 fi
 
 if [ $BUILDPLUGS -eq 1 ];then
-	pushd KKEditQT/plugins
+	pushd KKEditQT/plugins &>/dev/null
+		if [ "X$1" = "Xsingle" ];then
+			pushd "$2" &>/dev/null
+				LOCAL=1 buildPlug "install"
+			popd &>/dev/null
+		else
 			while read
 				do
-					pushd $(dirname $REPLY)
+					pushd $(dirname $REPLY) &>/dev/null
 						buildPlug "$1" "$2"
-					popd
+					popd &>/dev/null
 
 				done < <(find -maxdepth 2 -iname "*.pro")
+		fi
 	popd
 fi
 
 if [ $BUILDTOOLKITPLUGS -eq 1 ];then
-	pushd KKEditQT/toolkitplugins
-		while read
-			do
-				pushd $(dirname $REPLY)
-					buildPlug "$1" "$2"
-				popd
-			done < <(find -maxdepth 2 -iname "*.pro")
+	pushd KKEditQT/toolkitplugins &>/dev/null
+		if [ "X$1" = "Xsingle" ];then
+			pushd "$2" &>/dev/null
+				LOCAL=1 buildPlug "install"
+			popd &>/dev/null
+		else
+			while read
+				do
+					pushd $(dirname $REPLY) &>/dev/null
+						buildPlug "$1" "$2"
+					popd &>/dev/null
+				done < <(find -maxdepth 2 -iname "*.pro")
+		fi
 	popd
 fi
 

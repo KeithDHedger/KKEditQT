@@ -538,12 +538,6 @@ void KKEditClass::doNavMenuItems()
 			case SEARCHFORDEFINEMENUITEM:
 				this->functionSearchDialog();
 				break;
-			case SEARCHGTKDOCS:
-				this->searchAPIDocs("",0);
-				break;
-			case SEARCHQT5DOCS:
-				this->searchAPIDocs("",1);
-				break;
 			case SEARCHDOXYDOCS:
 				this->searchDoxyDocs("");
 				break;
@@ -605,6 +599,7 @@ void KKEditClass::doViewMenuItems()
 					{
 						this->toggleDocViewMenuItem->setText("Hide Docviewer");
 						this->docView->show();
+						this->docView->activateWindow();
 					}
 				else
 					{
@@ -1267,8 +1262,6 @@ void KKEditClass::setPreferences(void)
 	this->prefsTerminalCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSTERMCOMMAND])->text();
 //root command
 	this->prefsRootCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSROOTCOMMAND])->text();
-//qt doc dir
-	this->prefsQtDocDir=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSQTDOCDIR])->text();
 
 	this->prefsWindow->hide();
 
@@ -1545,12 +1538,6 @@ void KKEditClass::doOddButtons(void)
 				break;
 			case DOAPISEARCH:
 				this->goToDefinition(this->findDefWidget->text());
-				break;
-			case DOQT5SEARCH:
-				this->searchAPIDocs(this->findQtApiWidget->text(),1);
-				break; 
-			case DOGTKSEARCH:
-				this->searchAPIDocs(this->findGtkApiWidget->text(),0);
 				break;
 			case DOCVIEWERGOHOME:
 				this->showWebPage("",this->htmlURI);

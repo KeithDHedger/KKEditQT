@@ -35,7 +35,7 @@
 #define GTKSUPAGE GLOBALWEBSITE "/pages/gtksu/gtksu.html"
 #define KKFILEMANAGER "https://github.com/KeithDHedger/KKFileManager"
 
-#define COPYRITE "Copyright © 2013-2023 K.D.Hedger"
+#define COPYRITE "Copyright © 2013-2024 K.D.Hedger"
 
 #ifndef _USEQT5_
 extern const char	*moreapps[];

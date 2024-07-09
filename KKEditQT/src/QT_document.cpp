@@ -628,13 +628,14 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	menu.addAction(menuactions.at(SELECTALLMENUITEM-UNDOMENUITEM));
 	menu.addSeparator();
 
-	menuactions=qobject_cast<QMenu*>(this->mainKKEditClass->navMenu)->actions();
-
-	menu.addAction(menuactions.at(SEARCHGTKDOCS-GOTODEFINEMENUITEM));
-	menu.addAction(menuactions.at(SEARCHQT5DOCS-GOTODEFINEMENUITEM));
-	menu.addAction(menuactions.at(SEARCHDOXYDOCS-GOTODEFINEMENUITEM));
-	menu.addAction(menuactions.at(GOTODEFINEMENUITEM-GOTODEFINEMENUITEM));
-	menu.addSeparator();
+//find api
+	if(this->textCursor().hasSelection()==true)
+		{
+			menuactions=qobject_cast<QMenu*>(this->mainKKEditClass->navMenu)->actions();
+			menu.addAction(menuactions.at(SEARCHDOXYDOCS-GOTODEFINEMENUITEM));
+			menu.addAction(menuactions.at(GOTODEFINEMENUITEM-GOTODEFINEMENUITEM));
+			menu.addSeparator();
+		}
 
 //tools
 	menuactions=qobject_cast<QMenu*>(this->mainKKEditClass->toolsMenu)->actions();

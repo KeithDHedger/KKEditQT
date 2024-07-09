@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#©keithhedger Sat 6 Jul 13:32:17 BST 2024 kdhedger68713@gmail.com
+
+echo "Results From Gtk3 API's"
+
+while read
+	do
+		echo $REPLY|awk -F 'href="' '{print $2}'|awk -F '"' '{print "file:///usr/share/gtk-doc/html/gtk3/" $1}'
+		NAME=$(echo "$REPLY"|awk -F '>' '{print $2}'|awk -F '<' '{print $1}')
+		echo "$NAME"
+	done < <(cat /usr/share/gtk-doc/html/gtk3/api-index-full.html|grep -i "$1")

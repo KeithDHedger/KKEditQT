@@ -1,7 +1,9 @@
 CPPROGRAM=KKEditQTProgressBar
 
+# expand pkg-config command before displaying
 all:
-	g++ -Wall `pkg-config --cflags --libs Qt6Widgets` -fPIC main.cpp -o $(CPPROGRAM)
+	@echo "g++ -Wall `pkg-config --cflags --libs Qt6Widgets` -fPIC main.cpp -o $(CPPROGRAM)"
+	@g++ -Wall `pkg-config --cflags --libs Qt6Widgets` -fPIC main.cpp -o $(CPPROGRAM)
 
 install:
 	mkdir -p $(DESTDIR)$(prefix)/bin

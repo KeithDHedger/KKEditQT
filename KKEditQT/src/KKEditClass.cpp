@@ -153,27 +153,6 @@ void KKEditClass::setUpToolBar(void)
 
 						this->toolBar->addWidget(this->lineNumberWidget);
 						break;
-//find in gtkdoc
-					case 'A':
-						if(this->findGtkApiWidget!=NULL)
-							delete this->findGtkApiWidget;
-						this->findGtkApiWidget=new QLineEdit;
-						this->findGtkApiWidget->setObjectName(QString("%1").arg(DOGTKSEARCH));
-						this->findGtkApiWidget->setToolTip("Find API In Gtk Docs");
-						QObject::connect(this->findGtkApiWidget,SIGNAL(returnPressed()),this,SLOT(doOddButtons()));
-						this->toolBar->addWidget(this->findGtkApiWidget);
-						break;
-
-//find in qt5doc
-					case 'Q':
-						if(this->findQtApiWidget!=NULL)
-							delete this->findQtApiWidget;
-						this->findQtApiWidget=new QLineEdit;
-						this->findQtApiWidget->setObjectName(QString("%1").arg(DOQT5SEARCH));
-						this->findQtApiWidget->setToolTip("Find API In Qt5 Docs");
-						QObject::connect(this->findQtApiWidget,SIGNAL(returnPressed()),this,SLOT(doOddButtons()));
-						this->toolBar->addWidget(this->findQtApiWidget);
-						break;
 
 //find in function def
 					case 'D':
@@ -470,7 +449,6 @@ void KKEditClass::readConfigs(void)
 	this->prefsMaxMenuChars=this->prefs.value("editor/maxfuncchars",64).toInt();
 	this->prefsTerminalCommand=this->prefs.value("editor/terminalcommand","xterm -e").toString();
 	this->prefsRootCommand=this->prefs.value("editor/rootcommand","gtksu -- env QTWEBENGINE_DISABLE_SANDBOX=1 env QT_QPA_PLATFORMTHEME=qt5ct ").toString();
-	this->prefsQtDocDir=this->prefs.value("editor/qtdocdir","/usr/share/doc/qt5").toString();
 	this->prefsNoOpenduplicate=this->prefs.value("editor/noopendup",QVariant(bool(true))).value<bool>();
 	this->prefsNoWarnings=this->prefs.value("editor/nowarnings",QVariant(bool(false))).value<bool>();
 	this->recentFiles->maxFiles=this->prefs.value("editor/maxrecents",10).toInt();
@@ -634,7 +612,6 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("editor/terminalcommand",this->prefsTerminalCommand);
 	this->prefs.setValue("editor/rootcommand",this->prefsRootCommand);
 	this->prefs.setValue("editor/toolbarlayout",this->prefsToolBarLayout);
-	this->prefs.setValue("editor/qtdocdir",this->prefsQtDocDir);
 	this->prefs.setValue("editor/noopendup",this->prefsNoOpenduplicate);
 	this->prefs.setValue("editor/nowarnings",this->prefsNoWarnings);
 	this->prefs.setValue("editor/maxrecents",this->recentFiles->maxFiles);
@@ -1168,15 +1145,6 @@ void KKEditClass::setToolbarSensitive(void)
 						this->lineNumberWidget->setEnabled(gotdoc);
 						this->goToLineDialogMenuItem->setEnabled(gotdoc);
 						break;
-//find in gtkdoc
-					case 'A':
-						this->findGtkApiWidget->setEnabled(true);
-						break;
-
-//find in qt5doc
-					case 'Q':
-						this->findQtApiWidget->setEnabled(true);
-						break;
 //find in function def
 					case 'D':
 						this->findDefWidget->setEnabled(true);
@@ -1190,6 +1158,7 @@ void KKEditClass::setToolbarSensitive(void)
 //plugins
 	pd.tabNumber=this->mainNotebook->currentIndex();
 	pd.what=DOSETSENSITVE;
+	pd.doc=doc;
 	this->runAllPlugs(pd);
 }
 
