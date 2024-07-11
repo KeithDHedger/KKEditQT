@@ -106,7 +106,10 @@ void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)
 	QString		results;
 	QStringList	reslist;
 	QString		command;
+	QSettings	plugprefs("KDHedger","DocumentationPlugin");
 	bool			breakit=false;
+
+	this->customCommand=plugprefs.value("customcommand").toString();
 
 	this->mainKKEditClass=kk;
 	this->plugPath=pathtoplug;
@@ -134,6 +137,32 @@ void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)
 			QObject::connect(menuitem,&QAction::triggered,[this,j,reslist]()
 				{
 					this->runSearch(reslist.at(j+1));
+				});
+		}
+
+	if(this->customCommand.isEmpty()==false)
+		{
+			this->customCommandMenu=new QAction("Custom Command");
+			this->apiMenu->addAction(this->customCommandMenu);
+			QObject::connect(this->customCommandMenu,&QAction::triggered,[this]()
+				{
+					QTextCursor	tc;
+					QString		com;
+
+					if(this->doc!=NULL)
+						{
+							tc=this->doc->textCursor();
+							if(tc.hasSelection()==true)
+								{
+									QStringList sl;
+									QStringList args;
+
+									sl=customCommand.split(" ",Qt::SkipEmptyParts);
+									args=sl.replaceInStrings("%p",tc.selectedText().trimmed());
+									args.erase(args.begin());
+									QProcess::startDetached(sl.at(0),args);
+								}
+						}
 				});
 		}
 }
@@ -174,7 +203,35 @@ void DocumentationPlugin::plugAbout(void)
 
 void DocumentationPlugin::plugSettings(void)
 {
-	qDebug()<<"void DocumentationPlugin::plugSettings(void)";
+	QDialog		settings(this->mainKKEditClass->pluginPrefsWindow);
+	QVBoxLayout	*vlayout;
+	QHBoxLayout	*hlayout;
+	QSettings	plugprefs("KDHedger","DocumentationPlugin");
+	QLineEdit	customcommand(this->customCommand);
+	QPushButton	*btn;
+	QLabel		label("Custom Command %p will be replaced with selected text:");
+
+	settings.setWindowTitle("DocumentationPlugin Settings");
+	vlayout=new QVBoxLayout(&settings);
+	vlayout->addWidget(&label);
+	vlayout->addWidget(&customcommand);
+
+	hlayout=new QHBoxLayout();
+	btn=new QPushButton("Apply");
+	QObject::connect(btn,&QPushButton::clicked,[&settings]() { settings.done(1); });
+	hlayout->addWidget(btn);
+
+	btn=new QPushButton("Cancel");
+	QObject::connect(btn,&QPushButton::clicked,[&settings]() { settings.done(0); });
+	hlayout->addWidget(btn);
+	vlayout->addLayout(hlayout);
+
+	settings.exec();
+	if(settings.result()==1)
+		{
+			QSettings	plugprefs("KDHedger","DocumentationPlugin");
+			plugprefs.setValue("customcommand",customcommand.displayText());
+		}
 }
 
 void DocumentationPlugin::plugRun(plugData *data)
@@ -190,8 +247,11 @@ void DocumentationPlugin::plugRun(plugData *data)
 					if(data->doc!=NULL)
 						hasselection=data->doc->textCursor().hasSelection();
 					this->apiMenu->setEnabled(hasselection);
+					if(hasselection==true)
+						this->customCommandMenu->setText(QString("%1").arg(QString(this->customCommand).replace("%p",data->doc->textCursor().selectedText().trimmed())));
 				}
 				break;
+
 			case DOSWITCHPAGE:
 				{
 					this->data=data;
@@ -220,5 +280,5 @@ void DocumentationPlugin::plugRun(plugData *data)
 
 unsigned int DocumentationPlugin::plugWants(void)
 {
-	return(DOCONTEXTMENU|DOABOUT|DOSWITCHPAGE|DOSETSENSITVE);
+	return(DOCONTEXTMENU|DOSETTINGS|DOABOUT|DOSWITCHPAGE|DOSETSENSITVE);
 }

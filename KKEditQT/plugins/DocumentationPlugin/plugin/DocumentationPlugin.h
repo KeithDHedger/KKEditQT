@@ -43,6 +43,8 @@ class DocumentationPlugin : public QObject, kkEditQTPluginInterface
 		plugData			*data=NULL;
 		DocumentClass	*doc=NULL;
 		QMenu			*apiMenu=NULL;
+		QString			customCommand="";
+		QAction			*customCommandMenu=NULL;
 
 		QString			runPipeAndCapture(QString command);
 		void				runSearch(QString command);

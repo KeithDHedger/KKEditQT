@@ -1,4 +1,6 @@
 1.5.1
+Custom command menu text now shows command to run.
+Added custom command to DocumentationPlugin API menu.
 Started documeting DocumentationPlugin formats.
 Closed plugin prefs dialog when selecting help from the plugs about menu.
 Fancied up buildplugs script.

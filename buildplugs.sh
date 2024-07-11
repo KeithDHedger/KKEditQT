@@ -16,7 +16,8 @@ else
 	./setuptools
 fi
 
-if  [[ $(ps --no-headers ${PPID}|awk '{print $NF}') = "bash" ]];then
+FROM=$(ps --no-headers ${PPID}|awk '{print $NF}')
+if  [[ $(basename "$FROM") = "bash" ]];then
 	MAKE=colourmake
 else
 	MAKE=make
