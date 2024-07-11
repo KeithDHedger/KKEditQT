@@ -936,6 +936,8 @@ void KKEditClass::buildMainGui(void)
 #ifdef _BUILDDOCVIEWER_
 //toggle docviewer
 	this->toggleDocViewMenuItem=this->makeMenuItemClass(VIEWMENU,"Show Docviewer",0,NULL,SHOWDOCVIEWERMENUNAME,TOGGLEDOCVIEWMENUITEM);
+//docviewer to front
+	menuItemSink=this->makeMenuItemClass(VIEWMENU,"Raise Docviewer",0,NULL,RAISEDOCVIEWERMENUNAME,RAISEDOCVIEWMENUITEM);
 #endif
 
 	this->viewMenu->addSeparator();

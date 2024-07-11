@@ -608,6 +608,16 @@ void KKEditClass::doViewMenuItems()
 					}
 #endif
 				break;
+
+			case RAISEDOCVIEWMENUITEM:
+#ifdef _BUILDDOCVIEWER_
+				this->docviewerVisible=true;
+				this->toggleDocViewMenuItem->setText("Hide Docviewer");
+				this->docView->show();
+				this->docView->activateWindow();
+#endif
+				break;
+
 			case TOGGLELINENUMBERSMENUITEM:
 				this->lineNumbersVisible=!this->lineNumbersVisible;
 				this->resetAllFilePrefs();
