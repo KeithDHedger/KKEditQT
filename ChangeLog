@@ -1,4 +1,5 @@
 1.5.1
+Fixed building pole with wrong version of QT.
 Added "Raise docviewer" menuitem to "View" menu.
 Custom command menu text now shows command to run.
 Added custom command to DocumentationPlugin API menu.

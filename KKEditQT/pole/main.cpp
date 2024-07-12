@@ -18,6 +18,7 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QtGui>
 #include <QApplication>
 #include <QProgressDialog>
 #include <QFile>
