@@ -26,11 +26,12 @@ fi
 colourmake ()
 {
 	make -j3 $@ \
-	|GREP_COLORS='mt=1;37;41' grep -P --line-buffered --color=always  '^[^ ]*|$' \
-	|GREP_COLORS='mt=1;33' grep -P --line-buffered --color=always '([[:alnum:]_/\.]+?(\.c+|\..p+|\.h)\b)' \
-	|GREP_COLORS='mt=1;32' grep -P --line-buffered --color=always  '\s\-D([[:alnum:]_\./\-\+="\\]*\s)|$' \
-	|GREP_COLORS='mt=1;36' grep -P --line-buffered --color=always  '\s-(I|L|l)([[:alnum:]\./\-\+]*\s)|$' \
-	|sed G
+|GREP_COLORS='mt=1;37;41' grep -P --line-buffered --color=always  '^[^ ]*|$' \
+|GREP_COLORS='mt=1;37;44' grep -P --line-buffered --color=always  '\-o\s([[:alnum:]\./\-\+_]*)|$' \
+|GREP_COLORS='mt=1;33' grep -P --line-buffered --color=always '([[:alnum:]_/\.]+?(\.c+|\..p+|\.h)\b)|$' \
+|GREP_COLORS='mt=1;32' grep -P --line-buffered --color=always  '\s\-D([[:alnum:]_\./\-\+="\\]*\s)|$' \
+|GREP_COLORS='mt=1;36' grep -P --line-buffered --color=always  '\s-(I|L|l)([[:alnum:]\./\-\+]*(\s|$))|$' \
+|sed G
 }
 
 BUILDLANGPLUGS=${BUILDLANGPLUGS:-1}
