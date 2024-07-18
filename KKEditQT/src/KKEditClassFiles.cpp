@@ -427,14 +427,20 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	return(retval);
 }
 
-QStringList KKEditClass::getNewRecursiveTagList(QString filepath)
+QStringList KKEditClass::getNewRecursiveTagList(QString filepath,int sorttype)
 {
 	QString		sort;
 	QString		command;
 	QStringList	retval;
 	QString		results;
+	int			sorthow;
 
-	switch (this->prefsFunctionMenuLayout)
+	if(sorttype==-1)
+		sorthow=this->prefsFunctionMenuLayout;
+	else
+		sorthow=sorttype;
+	
+	switch(sorthow)
 		{
 			case 0:
 				sort="sort -k 2rb,2rb -k 1b,1b";

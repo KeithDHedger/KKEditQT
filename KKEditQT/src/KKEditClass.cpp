@@ -729,6 +729,139 @@ void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString c
 	QProcess::startDetached("sh",arguments);
 }
 
+void KKEditClass::buildDocset(void)
+{
+	DocumentClass	*doc=this->getDocumentForTab(-1);
+	struct stat		sb;
+	FILE				*fp;
+	char				line[4096];
+	QString			pipecom;
+	QFileInfo		fileinfo;
+	QDir				currentdir;
+
+	if(doc==NULL)
+		return;
+
+	QDialog		*diag=new QDialog();
+	QVBoxLayout	*docvlayout=new QVBoxLayout;
+	QLineEdit	*projectname;
+	QLineEdit	*versionbox;
+	QLineEdit	*iconbox;
+	QLineEdit	*destdir;
+	QWidget		*hbox;
+	QHBoxLayout	*hlayout;
+	QPushButton	*cancelbutton=new QPushButton("&Cancel");
+	QPushButton	*okbutton=new QPushButton("&Apply");
+	QSettings	buildDocsetPrefs("KDHedger","DocsetPrefs");
+	QString		makedocsfolder=QString("%1/docs/").arg(DATADIR);
+
+	QObject::connect(cancelbutton,&QPushButton::clicked,[this,diag]()
+		{
+			diag->reject();
+		});
+	QObject::connect(okbutton,&QPushButton::clicked,[this,diag]()
+		{
+			diag->accept();
+		});
+
+	projectname=new QLineEdit(buildDocsetPrefs.value("projectname","MyProject").toString());
+	versionbox=new QLineEdit(buildDocsetPrefs.value("projectversion","0.0.1").toString());
+	destdir=new QLineEdit(buildDocsetPrefs.value("projectoutput",QString("%1/.local/share/Zeal/Zeal/docsets").arg(QDir::homePath())).toString());
+	iconbox=new QLineEdit(buildDocsetPrefs.value("projecticon",QString("%1/LFSTux.png").arg(makedocsfolder)).toString());
+
+	hbox=new QWidget;
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	hbox->setLayout(hlayout);
+	hlayout->addWidget(new QLabel("Project Name\t"),Qt::AlignLeft);
+	hlayout->addWidget(projectname,Qt::AlignRight);
+	docvlayout->addWidget(hbox);
+
+	hbox=new QWidget;
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	hbox->setLayout(hlayout);
+	hlayout->addWidget(new QLabel("Project Version\t"),Qt::AlignLeft);
+	hlayout->addWidget(versionbox,Qt::AlignRight);
+	docvlayout->addWidget(hbox);
+
+	hbox=new QWidget;
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	hbox->setLayout(hlayout);
+	hlayout->addWidget(new QLabel("Icon Path      \t"),Qt::AlignLeft);
+	hlayout->addWidget(iconbox,Qt::AlignRight);
+	docvlayout->addWidget(hbox);
+
+	hbox=new QWidget;
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	hbox->setLayout(hlayout);
+	hlayout->addWidget(new QLabel("Destination Folder\t"),Qt::AlignLeft);
+	hlayout->addWidget(destdir,Qt::AlignRight);
+	docvlayout->addWidget(hbox);
+
+	hbox=new QWidget;
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	hbox->setLayout(hlayout);
+	hlayout->addWidget(cancelbutton);
+	hlayout->addStretch(0);
+	hlayout->addWidget(okbutton);
+
+	docvlayout->addWidget(hbox);
+
+	diag->setLayout(docvlayout);
+
+	int res=diag->exec();
+	if(res==1)
+		{
+			buildDocsetPrefs.setValue("projectname",projectname->text());
+			buildDocsetPrefs.setValue("projectversion",versionbox->text());
+			buildDocsetPrefs.setValue("projectoutput",destdir->text());
+			buildDocsetPrefs.setValue("projecticon",iconbox->text());
+			QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<this->tmpFolderName);
+			runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/;s@^OUTPUT_DIRECTORY.*=.*$@OUTPUT_DIRECTORY=%3@;s/^GENERATE_DOCSET.*=.*$/GENERATE_DOCSET=YES/;s/^SEARCHENGINE.*=.*$/SEARCHENGINE=NO/;s/^DOT_IMAGE_FORMAT.*=.*$/DOT_IMAGE_FORMAT=png/' '%3/Doxyfile'").arg(projectname->text()).arg(versionbox->text()).arg(this->tmpFolderName));
+
+			this->showBarberPole("Building Docs","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
+
+			fp=popen(QString("pushd '%1'&>/dev/null;doxygen '%2/Doxyfile';popd &>/dev/null").arg(doc->getDirPath()).arg(this->tmpFolderName).toStdString().c_str(),"r");
+			if(fp!=NULL)
+				{
+					while(fgets(line,4095,fp))
+						{
+							line[strlen(line)-1]=0;
+							this->runNoOutput(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
+						}
+					pclose(fp);
+				}
+			else
+				{
+					this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
+					return;
+				}
+
+			fp=popen(QString("pushd '%1'&>/dev/null;ICONPATH='%4' SOURCEHTML=html DOCSET_NAME=%2 DESTDIR='%3' '%5/makedocset';popd &>/dev/null").arg(this->tmpFolderName).arg(projectname->text()).arg(destdir->text()).arg(iconbox->text()).arg(makedocsfolder).toStdString().c_str(),"r");
+			if(fp!=NULL)
+				{
+					while(fgets(line,4095,fp))
+						{
+							line[strlen(line)-1]=0;
+							this->runNoOutput(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
+						}
+					pclose(fp);
+				}
+
+			this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
+			delete diag;
+		}
+	else
+		{
+			delete diag;
+			return;
+		}
+}
+
 void KKEditClass::buildDocs(void)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
@@ -799,28 +932,34 @@ void KKEditClass::buildDocs(void)
 			if(res==1)
 				{
 					QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<".");
-					runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/' '%3'").arg(projectname->text()).arg(versionbox->text()).arg("Doxyfile"));
+					runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/;s/^GENERATE_DOCSET.*=.*$/GENERATE_DOCSET=YES/' '%3'").arg(projectname->text()).arg(versionbox->text()).arg("Doxyfile"));
+					delete diag;
 				}
 			else
 				{
+					delete diag;
 					return;
 				}
 		}
 
 	this->showBarberPole("Building Docs","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
-
-	fileinfo=QFileInfo(QString("%1/html/index.html").arg(doc->getDirPath()));
-	fp=popen("doxygen Doxyfile","r");
-	while(fgets(line,4095,fp))
+	fp=popen("( cat Doxyfile ; echo -e \"SERVER_BASED_SEARCH=NO\nGENERATE_DOCSET=YES\" ) | doxygen -","r");
+	if(fp!=NULL)
 		{
-			line[strlen(line)-1]=0;
-			this->runNoOutput(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
+			while(fgets(line,4095,fp))
+				{
+					line[strlen(line)-1]=0;
+					this->runNoOutput(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
+				}
+			pclose(fp);
 		}
-	pclose(fp);
+	else
+		{
+			this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
+			return;
+		}		
 
-	QString com=QString("/bin/echo '<meta http-equiv=\"refresh\" content=\"0; URL='file://%1'\" />' > %2").arg(fileinfo.absoluteFilePath()).arg(this->htmlFile);
-	QProcess::execute("/bin/sh",QStringList()<<"-c"<<com);
-
+	this->htmlFile=QString("%1/html/index.html").arg(doc->getDirPath());
 	this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
 	this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
 	QDir::setCurrent(currentdir.canonicalPath());
@@ -1187,6 +1326,7 @@ void KKEditClass::runCLICommands(int quid)
  					msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s",opensessionname.toStdString().c_str());
 					message.mType=RESTORESESSIONMSG;
 					msgsnd(quid,&message,msglen,0);
+				//qDebug()<<"session"<<opensessionname<<quid<<message.mText;
 				}
 
 			pathtopwd=get_current_dir_name();

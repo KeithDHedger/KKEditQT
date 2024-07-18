@@ -135,88 +135,128 @@ void KKEditClass::searchDoxyDocs(const QString txt)
 {
 	struct docResultStruct
 		{
-			QString	mainSearchResult;
-			QString	str2;
+			QString tagName;
+			QString tagPath;
+			QString tagType;
 		};
 
-	int							cnt=0;
-	FILE							*findfile;
-	char							line[1024];
-	QString						searchfor;
-	QFile						html(this->htmlFile);
 	DocumentClass				*doc=this->getDocumentForTab(-1);
+
+	if(doc==NULL)
+		return;
+
+	int							cnt=0;
+	QFile						file(QString("%1/html/Tokens.xml").arg(doc->getDirPath()));
+	QXmlStreamReader				reader(&file);
+	QFile						html(this->htmlFile);
+	QString						searchfor;
+	QString						tagname;
+	QString						tagtype; 
+	QString						tagpath;
+	QString						taganchor;
 	QMap<int,docResultStruct>	resultmap;
-	QString						finddata;
 
-
-	if((txt.isEmpty()==true) && (doc==NULL))
-		return;
-
-	if((txt.isEmpty()==true) && (doc->textCursor().hasSelection()==false))
-		return;
-	else
+	if(!file.open(QFile::ReadOnly | QFile::Text))
 		{
-			if(txt.isEmpty()==true)
-				searchfor=doc->textCursor().selectedText().trimmed();
-			else
-				searchfor=txt.trimmed();
+			qDebug() << "Cannot read file" << file.errorString();
+			return;
+		}
 
-			if(searchfor.isEmpty()==false)
+	if(txt.isEmpty()==true)
+		searchfor=doc->textCursor().selectedText().trimmed();
+	else
+		searchfor=txt.trimmed();
+
+	if(searchfor.isEmpty()==true)
+		return;
+
+	if (reader.readNextStartElement())
+		{
+			if (reader.name() == "Tokens")
 				{
-					finddata=QString("cat %1/searchdata.xml|grep 'name=\"name\".*%2.*field'|sed 's/^[ \\t]*<field name=\"name\">//;s/<\\/field>//'").arg(doc->getDirPath()).arg(searchfor);
-					findfile=popen(finddata.toStdString().c_str(),"r");
-					if(findfile!=NULL)
+					tagname="";
+					tagtype="";
+					tagpath="";
+					taganchor="";
+					while(reader.readNextStartElement())
 						{
-							while(fgets(line,1024,findfile))
+							if(reader.name() == "Token")
 								{
-									resultmap[cnt]={line,""};
-									cnt++;
-								}
-							pclose(findfile);
-						}
+									while(reader.readNextStartElement())
+										{
+											if(reader.name() == "TokenIdentifier")
+												{
+													while(reader.readNextStartElement())
+														{
+															if(reader.name() == "Name")
+																{
+																	tagname=reader.readElementText();
+																	continue;
+																}
+															if(reader.name() == "Type")
+																{
+																	tagtype=reader.readElementText();
+																	continue;
+																}
+															reader.skipCurrentElement();
+														}
+													continue;
+												}
+											if(reader.name() == "Path")
+												{
+													tagpath=reader.readElementText();
+													continue;
+												}
+											if(reader.name() == "Anchor")
+												{
+													taganchor=reader.readElementText();
+													continue;
+												}
 
-					cnt=0;
-					finddata=QString("cat %1/searchdata.xml|grep -C 2 'name=\"name\".*%2.*field'|grep -i url|sed 's/^[ \\t]*<field name=\"url\">//;s/<\\/field>//'").arg(doc->getDirPath()).arg(searchfor);
-					findfile=popen(finddata.toStdString().c_str(),"r");
-					if(findfile!=NULL)
-						{
-							while(fgets(line,1024,findfile))
+											reader.skipCurrentElement();
+										}
+								}
+							else
+								reader.skipCurrentElement();
+							if(tagname.contains(searchfor,Qt::CaseInsensitive)==true)
 								{
-									resultmap[cnt].str2=QString("%1/html/%2").arg(doc->getDirPath()).arg(line);
-									cnt++;
-								}
-							pclose(findfile);
-						}
-
-					if(cnt>1)
-						{
-							if(html.open(QFile::WriteOnly|QFile::Truncate))
-								{
-		    		 					QTextStream out(&html);
-									out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">" << Qt::endl;
-									out << "<html>" << Qt::endl;
-									out << "<head>" << Qt::endl;
-									out << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" << Qt::endl;
-									out << "</head>" << Qt::endl;
-									out << "<body>" << Qt::endl;
-
-									for(int loop=0;loop<cnt;loop++)
-										out <<QString("<a href=\"%1\">%2</a><br>\n").arg(resultmap[loop].str2).arg(resultmap[loop].mainSearchResult) << Qt::endl;
-
-									out << "</body>" << Qt::endl;
-									out << "</html>" << Qt::endl;
-									html.close();
-									this->htmlURI="file://"+this->htmlFile;
+									resultmap[cnt++]={tagname,doc->getDirPath()+"/html/"+tagpath+"#"+taganchor,tagtype};
 								}
 						}
-					else
-						{
-							this->htmlURI=QString("file://%1").arg(resultmap[0].str2);
-						}
-
-					this->showWebPage("Results for: " + searchfor,this->htmlURI);
 				}
-		}	
+			else
+				reader.raiseError(QObject::tr("Incorrect file"));
+		}
+
+	if(cnt>1)
+		{
+			if(html.open(QFile::WriteOnly|QFile::Truncate))
+				{
+		 			QTextStream out(&html);
+					out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">" << Qt::endl;
+					out << "<html>" << Qt::endl;
+					out << "<head>" << Qt::endl;
+					out << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" << Qt::endl;
+					out << "</head>" << Qt::endl;
+					out << "<style>" << Qt::endl;
+					out << "tab0  {position:absolute;left:80px;}" << Qt::endl;
+					out << "</style>" << Qt::endl;
+					out << "<body>" << Qt::endl;
+
+					for(int loop=0;loop<cnt;loop++)
+						out <<QString("<div align=\"left\">%3<tab0><a href=\"%1\">%2</a></div>\n").arg(resultmap[loop].tagPath).arg(resultmap[loop].tagName).arg(resultmap[loop].tagType) << Qt::endl;
+
+					out << "</body>" << Qt::endl;
+					out << "</html>" << Qt::endl;
+					html.close();
+					this->htmlURI="file://"+this->htmlFile;
+				}
+			}
+		else
+			{
+				this->htmlURI=QString("file://%1").arg(resultmap[0].tagPath);
+			}
+	this->showWebPage("Results for: " + searchfor,this->htmlURI);
 }
 
 void KKEditClass::setSearchPrefs(void)
@@ -277,7 +317,7 @@ void KKEditClass::functionSearchDialog(void)
 	QString	text=QInputDialog::getText(this->mainWindow,"Find Definition","Enter Definition",QLineEdit::Normal,defaulttxt,&ok);
 
 	if ((ok==true) && (!text.isEmpty()))
-		this->goToDefinition(text);
+		this->goToDefinition(text.trimmed());
 }
 
 void KKEditClass::doLiveSearch(const QString text)

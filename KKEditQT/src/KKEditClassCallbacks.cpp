@@ -527,6 +527,7 @@ void KKEditClass::doNavMenuItems()
 				this->history->goForward();
 				break;
 			case GOTODEFINEMENUITEM:
+				qDebug()<<"here from edit";
 				this->goToDefinition("");
 				break;
 			case OPENINCLUDEMENUITEM:
@@ -536,6 +537,7 @@ void KKEditClass::doNavMenuItems()
 				this->showLineEntry();
 				break;
 			case SEARCHFORDEFINEMENUITEM:
+			qDebug()<<"here";
 				this->functionSearchDialog();
 				break;
 			case SEARCHDOXYDOCS:
@@ -766,6 +768,9 @@ void KKEditClass::doFileMenuItems()
 				break;
 			case BUILDDOCSMENUITEM:
 				this->buildDocs();
+				break;
+			case BUILDDOCSETMENUITEM:
+				this->buildDocset();
 				break;
 			case SAVEMENUITEM:
 				this->saveFile(-1,false);
@@ -1197,6 +1202,11 @@ void KKEditClass::doTimer(void)
 								emit this->saveCurrentSessionMenuItem->triggered();
 								break;
 							case RESTORESESSIONMSG:
+								if(QString(buffer.mText).compare("autosave",Qt::CaseInsensitive)==0)
+									{
+										emit this->restoreDefaultSessionMenuItem->triggered();
+										break;
+									}
 								for(int j=0;j<this->restoreSessionMenuItemsList.count();j++)
 									{
 										if(QString(buffer.mText).compare(this->restoreSessionMenuItemsList.at(j)->text())==0)
@@ -1547,6 +1557,7 @@ void KKEditClass::doOddButtons(void)
 				this->doLiveSearch(this->liveSearchWidget->text());
 				break;
 			case DOAPISEARCH:
+				this->findDefWidget->setText(this->findDefWidget->text().trimmed());
 				this->goToDefinition(this->findDefWidget->text());
 				break;
 			case DOCVIEWERGOHOME:

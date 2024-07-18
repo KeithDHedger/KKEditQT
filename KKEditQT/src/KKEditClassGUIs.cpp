@@ -755,8 +755,10 @@ void KKEditClass::buildMainGui(void)
 
 //doxy
 	if(gotDoxygen==0)
-		menuItemSink=this->makeMenuItemClass(FILEMENU,"Build Documentation",0,"edit-copy",DOXYBUILDMENUNAME,BUILDDOCSMENUITEM);
-
+		{
+			menuItemSink=this->makeMenuItemClass(FILEMENU,"Build Documentation",0,"edit-copy",DOXYBUILDMENUNAME,BUILDDOCSMENUITEM);
+			menuItemSink=this->makeMenuItemClass(FILEMENU,"Build Docset",0,"edit-copy",DOCSETBUILDMENUNAME,BUILDDOCSETMENUITEM);
+		}
 	this->fileMenu->addSeparator();
 
 //save

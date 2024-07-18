@@ -35,5 +35,6 @@ install-exec-hook:
 	mkdir -vp $(DESTDIR)$(pkgdatadir)/plugins
 	mkdir -vp "$(DESTDIR)$(pkgdatadir)/Example External Tools"
 	cp -r "../resources/Example External Tools" "$(DESTDIR)$(pkgdatadir)"
+	chmod +x $(DESTDIR)$(pkgdatadir)/docs/makedocset
 
 

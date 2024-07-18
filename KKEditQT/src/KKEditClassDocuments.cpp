@@ -44,13 +44,8 @@ void KKEditClass::resetAllFilePrefs(void)
 
 bool KKEditClass::goToDefinition(const QString txt)
 {
-	DocumentClass	*doc=this->getDocumentForTab(-1);
-	DocumentClass	*dochold=this->getDocumentForTab(-1);
-	QString			searchfor;
-	int				linenumber;
-	QString			label="";
-	QStringList		sl;
-	bool				retval=true;
+	DocumentClass				*doc=this->getDocumentForTab(-1);
+	QString						searchfor;
 
 	if((txt.isEmpty()==true) && (doc==NULL))
 		return(retval);
@@ -60,101 +55,111 @@ bool KKEditClass::goToDefinition(const QString txt)
 	else
 		{
 			if(txt.isEmpty()==true)
-				searchfor=doc->textCursor().selectedText();
+				searchfor=doc->textCursor().selectedText().trimmed();
 			else
-				searchfor=txt;
+				searchfor=txt.trimmed();
 		}
 
-	Qt::CaseSensitivity casesens=Qt::CaseSensitive;
-	for(int sens=0;sens<2;sens++)
+	return(this->findDefInFolders(searchfor));
+}
+
+bool KKEditClass::findDefInFolders(QString searchtxt)
+{
+	struct docResultStruct
 		{
-//optimized for speed
-//exact match case sensitive this file
-			doc=this->getDocumentForTab(-1);
-			if(doc!=NULL)
-				{
-					sl=this->getNewRecursiveTagList(doc->getFilePath());
-					if(sl.isEmpty()==false)
-						{
-							for(int loop=0;loop<sl.count();loop++)
-								{
-									label=sl.at(loop).section(" ",0,0);
-									if( ((sens<2) && (label.compare(searchfor,casesens)==0)) || ((sens==2) && (label.contains(searchfor,casesens)==true)))
-										{
-											linenumber=sl.at(loop).section(" ",2,2).toInt();
-											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
-											this->gotoLine(linenumber);
-											return(retval);
-										}
-								}
-						}
-				}
-	
-//check open files
-//exact match case sensitive
-			sl.clear();
-			for(int tabs=0;tabs<this->mainNotebook->count();tabs++)
-				{
-					doc=this->getDocumentForTab(tabs);
-					if(doc->filePath.isEmpty()==false)
-						sl=this->getNewRecursiveTagList(doc->getFilePath());
-//exact match case sensitive
-					if(sl.isEmpty()==false)
-						{
-							for(int loop=0;loop<sl.count();loop++)
-								{
-									label=sl.at(loop).section(" ",0,0);
-									if( ((sens<2) && (label.compare(searchfor,casesens)==0)) || ((sens==2) && (label.contains(searchfor,casesens)==true)))
-										{
-											linenumber=sl.at(loop).section(" ",2,2).toInt();
-											label=sl.at(loop).section(" ",3,3);
-											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
-											this->setTabVisibilty(tabs,true);
-											this->gotoLine(linenumber);
-											return(retval);
-										}
-								}
-						}
-				}
-			casesens=Qt::CaseInsensitive;
-		}
-//check in folder of current tab
-	QString		command;
-	QStringList	list;
-	QString		results;
-	int			start=this->mainNotebook->currentIndex();
-	int			end=start+1;
+			QString tagName;
+			QString tagType;
+			int lineNumber;
+			QString tagPath;
+		};
 
-	for(int k=0;k<2;k++)
+	QString						command;
+	QStringList					list;
+	QString						comresults;
+	QString						label="";
+	QMap<int,docResultStruct>	resultmap;
+	int							cnt=0;
+	DocumentClass				*doc=this->getDocumentForTab(-1);
+	DocumentClass				*dochold=this->getDocumentForTab(-1);
+	int							linenumber;
+	bool							retval=true;
+	QStringList					folders;
+	QString						f;
+	QString						s;
+
+	for(int j=0;j<this->mainNotebook->count();j++)
+		folders<<"'"+this->getDocumentForTab(j)->getDirPath()+"'";
+
+	folders.removeDuplicates();
+	f=folders.join(" ");
+	command=QString("find %1 -maxdepth 1 -mindepth 1 -type f -iname '[^.][^moc]*[^.o]' |ctags -L - -x").arg(f);
+	comresults=this->runPipeAndCapture(command);
+	list=comresults.split("\n",Qt::SkipEmptyParts);
+
+	for(int j=0;j<list.count();j++)
 		{
-			for(int loop=start;loop<end;loop++)
+			s=list.at(j).simplified();
+			label=s.section(" ",0,0);
+			if(label.contains(searchtxt,Qt::CaseInsensitive)==true)
 				{
-					doc=this->getDocumentForTab(loop);
-					if(doc->filePath.isEmpty()==false)
-						{
-							command=QString("find \"%1\" -maxdepth %2|ctags -L - -x|sed 's@ \\+@ @g'").arg(doc->getDirPath()).arg(this->prefsDepth);
-							results=this->runPipeAndCapture(command);
-							list=results.split("\n",Qt::SkipEmptyParts);
-
-							for(int j=0;j<list.count();j++)
-								{
-									label=list.at(j).section(" ",0,0);
-									if(label.compare(searchfor,Qt::CaseInsensitive)==0)
-										{
-											this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
-											linenumber=list.at(j).section(" ",2,2).toInt();
-											this->openFile(list.at(j).section(" ",3,3),linenumber);
-											return(retval);
-										}
-								}
-						}
+					resultmap[cnt++]={s.section(" ",0,0),s.section(" ",1,1),s.section(" ",2,2).toInt(),s.section(" ",3,3)};
 				}
-//last try check in folders of all tabs ... slow//TODO//
-			start=0;
-			end=this->mainNotebook->count();
 		}
-	this->statusBar->showMessage(QString("Couldn't find definition for %1").arg(searchfor),STATUSBARTIMEOUT);
-	return(false);
+
+	if(resultmap.size()>1)
+		{
+			QVBoxLayout	*vlayout=new QVBoxLayout;
+			QWidget		*hbox;
+			QHBoxLayout	*hlayout;
+			QPushButton	*button;
+			QDialog		*searchdialog;
+			QComboBox	*searchcombobox;
+
+			searchdialog=new QDialog(this->mainWindow);
+			searchdialog->setWindowTitle("Select Definition");
+			searchcombobox=new QComboBox;
+			connect(searchcombobox, QOverload<int>::of(&QComboBox::currentIndexChanged),[=](int index)
+				{
+					this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
+					this->openFile(resultmap[index].tagPath,resultmap[index].lineNumber,false,false);
+				});
+			for(int h=0;h<resultmap.size();h++)
+				searchcombobox->addItem(resultmap[h].tagType+": "+resultmap[h].tagName+" > "+QFileInfo(resultmap[h].tagPath).fileName());
+			vlayout->addWidget(searchcombobox);
+
+			hlayout=new QHBoxLayout;
+			button=new QPushButton("OK");
+			
+			QObject::connect(button,&QPushButton::clicked,[=]()
+				{
+					searchdialog->done(0);
+				});
+			hlayout->addStretch(1);
+			hlayout->addWidget(button);
+			hlayout->addStretch(1);
+			vlayout->addLayout(hlayout);
+
+			searchdialog	->setLayout(vlayout);
+			this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
+			this->openFile(resultmap[0].tagPath,resultmap[0].lineNumber,false,false);
+			button->setFocus();
+			searchdialog->exec();
+		}
+	else
+		{
+			if(resultmap[0].tagPath.isEmpty()==false)
+				{
+					this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
+					this->openFile(resultmap[0].tagPath,resultmap[0].lineNumber,false,false);
+				}
+			else
+				retval=false;
+		}
+
+	if(retval==false)
+		this->statusBar->showMessage(QString("Couldn't find definition for %1").arg(searchtxt),STATUSBARTIMEOUT);
+
+	return(retval);
 }
 
 void KKEditClass::gotoLine(int linenumber)

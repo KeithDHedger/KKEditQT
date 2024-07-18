@@ -98,6 +98,7 @@ enum msgActions {ACTIVATEAPPMSG=100,OPENFILEMSG,NEWFILEMSG,SAVEFILEMSG,SAVEFILEA
 #define NEWEDITORMENUNAME "neweditormenu"
 #define MANEDITORMENUNAME "maneditormenu"
 #define DOXYBUILDMENUNAME "doxybuildmenu"
+#define DOCSETBUILDMENUNAME "dosetbuildmenu"
 #define RECENTMENUNAME "recentmenu"
 #define SAVEMENUNAME "savemenu"
 #define SAVEASMENUNAME "saveasmenu"

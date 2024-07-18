@@ -26,7 +26,7 @@
 enum {FILEMENU=0x4000,EDITMENU,VIEWMENU,NAVMENU,FUNCTIONSMENU,BOOKMARKSMENU,TOOLSMENU,PLUGINSMENU,HELPMENU,SAVESESSIONSMENU,RESTORESESSIONSMENU,CURRENTSESSION,NOMENU};
 
 //file
-enum {NEWMENUITEM=0x8000,OPENMENUITEM,HEXDUMPMENUITEM,NEWADMINEDMENUITEM,NEWEDMENUITEM,MANPAGEEDMENUITEM,BUILDDOCSMENUITEM,SAVEMENUITEM,SAVEASMENUITEM,SAVEALLMENUITEM,SAVESESSIONMENUITEM,RESTORESESSIONMENUITEM,PRINTMENUITEM,CLOSEMENUITEM,CLOSEALLMENUITEM,REVERTMENUITEM,QUITMENUITEM};
+enum {NEWMENUITEM=0x8000,OPENMENUITEM,HEXDUMPMENUITEM,NEWADMINEDMENUITEM,NEWEDMENUITEM,MANPAGEEDMENUITEM,BUILDDOCSMENUITEM,BUILDDOCSETMENUITEM,SAVEMENUITEM,SAVEASMENUITEM,SAVEALLMENUITEM,SAVESESSIONMENUITEM,RESTORESESSIONMENUITEM,PRINTMENUITEM,CLOSEMENUITEM,CLOSEALLMENUITEM,REVERTMENUITEM,QUITMENUITEM};
 //edit
 enum {UNDOMENUITEM=0x9000,REDOMENUITEM,UNDOALLMENUITEM,REDOALLMENUITEM,EDSEP1,CUTMENUITEM,COPYMENUITEM,PASTEMENUITEM,DELETEMENUITEM,EDSEP2,SELECTALLMENUITEM,EDSEP3,FINDMENUITEM,FINDNEXTMENUITEM,EDSEP4,SORTTABSMENUITEM,SHOWALLTABSMENUITEM,SELECTTABMENUITEM,EDSEP5,PREFSMENUITEM,PLUGPREFSMENUITEM};
 //view
@@ -241,6 +241,7 @@ class KKEditClass : public QObject
 		void							buildTools(void);
 		void							showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile);
 		void							buildDocs(void);
+		void							buildDocset(void);
 		void							showDocs(void);
 		void							shutDownApp(void);
 		void							setMouseState(bool mouseon);
@@ -440,7 +441,7 @@ class KKEditClass : public QObject
 		bool							saveAllFiles(bool ask=false);
 		bool							saveFileAs(int tabnum,QString filepath="");
 		int							askSaveDialog(const QString filename);
-		QStringList					getNewRecursiveTagList(QString filepath);
+		QStringList					getNewRecursiveTagList(QString filepath,int sorttype=-1);
 
 //document vars
 		QStringList					completionWords;
@@ -452,6 +453,7 @@ class KKEditClass : public QObject
 		DocumentClass				*getDocumentForTab(int tabnum);
 		void							resetAllFilePrefs(void);
 		bool							goToDefinition(const QString txt);
+		bool							findDefInFolders(QString searchtxt);
 		void							showLineEntry(void);
 		void							gotoLine(int linenumber);
 		void							reloadDocument(void);

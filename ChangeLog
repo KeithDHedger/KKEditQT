@@ -1,4 +1,13 @@
 1.5.1
+Fixed restoring autosave session from cli ( use:kkeditqt -r "autosave" ).
+Improvments to search for define toolbar box.
+Removed need for two pass build.
+Forced use docset options when building docs ( needed for Tokens.xml file ).
+Redone search in documentation.
+Added MakeDocSet to resources.
+Added build docset to file menu.
+Use two passes for doxygen for extra data for offline search.
+Updated doxygen config for docsets.
 Fixed building pole with wrong version of QT.
 Added "Raise docviewer" menuitem to "View" menu.
 Custom command menu text now shows command to run.

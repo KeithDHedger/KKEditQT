@@ -1,0 +1,94 @@
+#!/bin/bash
+
+#©keithhedger Sun 14 Jul 13:17:49 BST 2024 kdhedger68713@gmail.com
+
+findTag ()
+{
+	SKIP=1
+	while [[ $SKIP -eq 1 ]]
+	do
+		read
+		if $(echo $REPLY|grep -q '</Token>') ;then
+			echo "NOTAG"
+			return
+		fi
+
+		if $(echo $REPLY|grep -q "$1") ;then
+			SKIP=0
+			echo $REPLY
+		fi
+	done	
+}
+
+ICONPATH=${ICONPATH:-"./LFSTux.png"}
+SOURCEHTML=${SOURCEHTML:-"./mydocset/html"};
+DOCSET_NAME=${DOCSET_NAME:-"mydocset"}
+
+DOCSET_NAME="${DOCSET_NAME}.docset"
+DOCSET_CONTENTS=${DOCSET_NAME}/Contents
+DOCSET_RESOURCES=${DOCSET_CONTENTS}/Resources
+DOCSET_DOCUMENTS=${DOCSET_RESOURCES}/Documents
+DESTDIR=${DESTDIR:-~/.local/share/Zeal/Zeal/docsets}
+
+mkdir -p ${DESTDIR}/${DOCSET_DOCUMENTS}
+cp ${SOURCEHTML}/Tokens.xml ${DESTDIR}/${DOCSET_RESOURCES}
+cp ${SOURCEHTML}/Info.plist ${DESTDIR}/${DOCSET_CONTENTS}
+
+if [[ -f "$ICONPATH" ]];then
+	convert "$ICONPATH" -resize 16x16 ${DESTDIR}/${DOCSET_NAME}/icon.png
+	convert "$ICONPATH" -resize 32x32 ${DESTDIR}/${DOCSET_NAME}/icon@2x.png
+fi
+
+pushd ${SOURCEHTML} &>/dev/null
+	echo "Copying files ..."
+	tar --exclude ${DOCSET_NAME} --exclude Nodes.xml --exclude Tokens.xml --exclude Info.plist --exclude Makefile -c -f - . | (cd ${DESTDIR}/${DOCSET_DOCUMENTS}; tar xf -)
+popd &>/dev/null
+
+pushd ${DESTDIR}/${DOCSET_RESOURCES} &>/dev/null
+	rm docSet.dsidx||true
+	sqlite3 docSet.dsidx <<'END_SQL'
+CREATE TABLE searchIndex(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT);
+CREATE UNIQUE INDEX anchor ON searchIndex (name, type, path);
+END_SQL
+
+	echo "Building DB ..."
+	while read
+		do
+			if $(echo $REPLY|grep -q '<Token>') ;then
+				unset NAME TYPE FILEPATH
+
+				x=$(findTag "<Name>")
+				if [[ $NAME = "NOTAG" ]];then
+					x=$(findTag "</Token>")
+					continue
+				fi
+				NAME=$(echo ${x}|sed -n 's@.*>\(.*\)<.*@\1@p')
+
+				x=$(findTag "<Type>")
+				if [[ $NAME = "NOTAG" ]];then
+					x=$(findTag "</Token>")
+					continue
+				fi
+				TYPE=$(echo ${x}|sed -n 's@.*>\(.*\)<.*@\1@p')
+
+				x=$(findTag "<Path>")
+				if [[ $NAME = "NOTAG" ]];then
+					x=$(findTag "</Token>")
+					continue
+				fi
+				FILEPATH=$(echo ${x}|sed -n 's@.*>\(.*\)<.*@\1@p')
+
+				x=$(findTag "<Anchor>")
+				if [[ ! "$x" = "NOTAG" ]];then
+					ANCHOR=$(echo ${x}|sed -n 's@.*>\(.*\)<.*@\1@p')
+					FILEPATH="${FILEPATH}#${ANCHOR}"
+				fi
+
+				echo "Adding $NAME ..."
+				sqlite3 docSet.dsidx  "insert into searchindex (name,type,path) values ('$NAME','$TYPE','$FILEPATH');"
+				#echo "INSERT INTO searchIndex (name,type,path) VALUES ('"$NAME"','"$TYPE"','"$FILEPATH"');" >> /tmp/herefile
+				x=$(findTag "</Token>")
+			fi
+		done<Tokens.xml
+	rm Tokens.xml
+popd &>/dev/null

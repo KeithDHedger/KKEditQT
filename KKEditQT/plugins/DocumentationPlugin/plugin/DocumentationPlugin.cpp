@@ -24,6 +24,7 @@
 //cairo_save
 //gtk_main
 //gtk_window_get_title
+//geometryStruct
 QString DocumentationPlugin::runPipeAndCapture(QString command)
 {
 	QString	dump("");
