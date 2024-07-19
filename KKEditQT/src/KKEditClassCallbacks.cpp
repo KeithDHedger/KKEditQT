@@ -527,7 +527,6 @@ void KKEditClass::doNavMenuItems()
 				this->history->goForward();
 				break;
 			case GOTODEFINEMENUITEM:
-				qDebug()<<"here from edit";
 				this->goToDefinition("");
 				break;
 			case OPENINCLUDEMENUITEM:
@@ -537,7 +536,6 @@ void KKEditClass::doNavMenuItems()
 				this->showLineEntry();
 				break;
 			case SEARCHFORDEFINEMENUITEM:
-			qDebug()<<"here";
 				this->functionSearchDialog();
 				break;
 			case SEARCHDOXYDOCS:

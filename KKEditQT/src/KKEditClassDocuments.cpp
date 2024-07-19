@@ -81,7 +81,6 @@ bool KKEditClass::findDefInFolders(QString searchtxt)
 	QMap<int,docResultStruct>	resultmap;
 	int							cnt=0;
 	DocumentClass				*doc=this->getDocumentForTab(-1);
-	DocumentClass				*dochold=this->getDocumentForTab(-1);
 	int							linenumber;
 	bool							retval=true;
 	QStringList					folders;
@@ -118,12 +117,14 @@ bool KKEditClass::findDefInFolders(QString searchtxt)
 
 			searchdialog=new QDialog(this->mainWindow);
 			searchdialog->setWindowTitle("Select Definition");
+			searchdialog->setAttribute(Qt::WA_DeleteOnClose,true);
 			searchcombobox=new QComboBox;
-			connect(searchcombobox, QOverload<int>::of(&QComboBox::currentIndexChanged),[=](int index)
+			connect(searchcombobox,QOverload<int>::of(&QComboBox::activated),[=](int index)
 				{
-					this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
+					this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
 					this->openFile(resultmap[index].tagPath,resultmap[index].lineNumber,false,false);
 				});
+
 			for(int h=0;h<resultmap.size();h++)
 				searchcombobox->addItem(resultmap[h].tagType+": "+resultmap[h].tagName+" > "+QFileInfo(resultmap[h].tagPath).fileName());
 			vlayout->addWidget(searchcombobox);
@@ -141,16 +142,14 @@ bool KKEditClass::findDefInFolders(QString searchtxt)
 			vlayout->addLayout(hlayout);
 
 			searchdialog	->setLayout(vlayout);
-			this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
-			this->openFile(resultmap[0].tagPath,resultmap[0].lineNumber,false,false);
 			button->setFocus();
-			searchdialog->exec();
+			searchdialog->show();
 		}
 	else
 		{
 			if(resultmap[0].tagPath.isEmpty()==false)
 				{
-					this->history->pushToBackList(dochold->getCurrentLineNumber(),dochold->getFilePath());
+					this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
 					this->openFile(resultmap[0].tagPath,resultmap[0].lineNumber,false,false);
 				}
 			else

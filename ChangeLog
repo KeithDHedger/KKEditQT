@@ -1,4 +1,8 @@
 1.5.1
+Fixed setting back history when seleecting from combobox in Select Definition dialog.
+Don't auto select 1st item from combobox in Select Definition dialog.
+Made Select Definition dialog non modal.
+Set OK button focus on Select Definition dialog
 Fixed restoring autosave session from cli ( use:kkeditqt -r "autosave" ).
 Improvments to search for define toolbar box.
 Removed need for two pass build.
