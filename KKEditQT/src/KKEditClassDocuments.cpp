@@ -83,16 +83,23 @@ bool KKEditClass::findDefInFolders(QString searchtxt)
 	DocumentClass				*doc=this->getDocumentForTab(-1);
 	int							linenumber;
 	bool							retval=true;
-	QStringList					folders;
 	QString						f;
 	QString						s;
+	QStringList					files;
 
 	for(int j=0;j<this->mainNotebook->count();j++)
-		folders<<"'"+this->getDocumentForTab(j)->getDirPath()+"'";
-
-	folders.removeDuplicates();
-	f=folders.join(" ");
-	command=QString("find %1 -maxdepth 1 -mindepth 1 -type f -iname '[^.][^moc]*[^.o]' |ctags -L - -x").arg(f);
+		{
+			QDirIterator it(this->getDocumentForTab(j)->getDirPath(),{"*.*[^.o]"},QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
+			while(it.hasNext())
+				{
+					it.next();
+					if(it.fileName().startsWith("moc_",Qt::CaseInsensitive)==false)
+						files<<it.filePath();
+				}	
+		}
+	files.removeDuplicates();
+	f=files.join(" ");
+	command=QString("ctags -x %1").arg(f);
 	comresults=this->runPipeAndCapture(command);
 	list=comresults.split("\n",Qt::SkipEmptyParts);
 

@@ -1,4 +1,5 @@
 1.5.1
+Speed updates to function definition search.
 Fixed setting back history when seleecting from combobox in Select Definition dialog.
 Don't auto select 1st item from combobox in Select Definition dialog.
 Made Select Definition dialog non modal.
