@@ -816,10 +816,22 @@ void KKEditClass::buildDocset(void)
 	int res=diag->exec();
 	if(res==1)
 		{
+			if(projectname->text().isEmpty()==true)
+				projectname->setText("MyProject");
 			buildDocsetPrefs.setValue("projectname",projectname->text());
+
+			if(versionbox->text().isEmpty()==true)
+				versionbox->setText("0.0.1");
 			buildDocsetPrefs.setValue("projectversion",versionbox->text());
+
+			if(destdir->text().isEmpty()==true)
+				destdir->setText(QString("%1/.local/share/Zeal/Zeal/docsets").arg(QDir::homePath()));
 			buildDocsetPrefs.setValue("projectoutput",destdir->text());
+
+			if(iconbox->text().isEmpty()==true)
+				iconbox->setText(QString("%1/LFSTux.png").arg(makedocsfolder));
 			buildDocsetPrefs.setValue("projecticon",iconbox->text());
+
 			QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<this->tmpFolderName);
 			runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/;s@^OUTPUT_DIRECTORY.*=.*$@OUTPUT_DIRECTORY=%3@;s/^GENERATE_DOCSET.*=.*$/GENERATE_DOCSET=YES/;s/^SEARCHENGINE.*=.*$/SEARCHENGINE=NO/;s/^DOT_IMAGE_FORMAT.*=.*$/DOT_IMAGE_FORMAT=png/' '%3/Doxyfile'").arg(projectname->text()).arg(versionbox->text()).arg(this->tmpFolderName));
 
