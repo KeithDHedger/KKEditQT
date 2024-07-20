@@ -971,7 +971,6 @@ void KKEditClass::buildDocs(void)
 			return;
 		}		
 
-	this->htmlFile=QString("%1/html/index.html").arg(doc->getDirPath());
 	this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
 	this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
 	QDir::setCurrent(currentdir.canonicalPath());
@@ -990,9 +989,10 @@ void KKEditClass::showDocs(void)
 		this->buildDocs();
 	else
 		{
-			QString com=QString("/bin/echo '<meta http-equiv=\"refresh\" content=\"0; URL='file://%1'\" />' > %2").arg(fileinfo.absoluteFilePath()).arg(this->htmlFile);
-			QProcess::execute("/bin/sh",QStringList()<<"-c"<<com);
-			this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
+			//QString com=QString("/bin/echo '<meta http-equiv=\"refresh\" content=\"0; URL='file://%1'\" />' > %2").arg(fileinfo.absoluteFilePath()).arg(this->htmlFile);
+			//QProcess::execute("/bin/sh",QStringList()<<"-c"<<com);
+			//this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
+			this->showWebPage("Doxygen Documentation",QString("file://%1/html/index.html").arg(doc->getDirPath()));
 		}
 }
 

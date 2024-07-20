@@ -86,6 +86,9 @@ bool KKEditClass::findDefInFolders(QString searchtxt)
 	QString						f;
 	QString						s;
 	QStringList					files;
+	QRegularExpression			r(searchtxt);
+
+	r.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
 
 	for(int j=0;j<this->mainNotebook->count();j++)
 		{
@@ -107,7 +110,7 @@ bool KKEditClass::findDefInFolders(QString searchtxt)
 		{
 			s=list.at(j).simplified();
 			label=s.section(" ",0,0);
-			if(label.contains(searchtxt,Qt::CaseInsensitive)==true)
+			if(label.contains(r)==true)
 				{
 					resultmap[cnt++]={s.section(" ",0,0),s.section(" ",1,1),s.section(" ",2,2).toInt(),s.section(" ",3,3)};
 				}

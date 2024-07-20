@@ -1084,7 +1084,6 @@ bool DocumentClass::findStr(int what)
 
 	if(this->mainKKEditClass->searchBack==false)
 		{
-			//it=patternmatch.globalMatch(&doctext,this->searchPos);
 			it=pattern.globalMatch(doctext,(qsizetype)this->searchPos);
 			if(it.hasNext())
 				{
@@ -1106,7 +1105,6 @@ bool DocumentClass::findStr(int what)
 					if((this->mainKKEditClass->wrapSearch==true) && (this->mainKKEditClass->findInAllFiles==false))
 						{
 							this->searchPos=0;
-						//	it=pattern.globalMatch(&doctext,this->searchPos);
 							it=pattern.globalMatch(doctext,this->searchPos);
 							if(it.hasNext())
 								{
@@ -1190,7 +1188,6 @@ void DocumentClass::setHighlightAll(void)
 
 	this->findMatch.clear();
 		
-//	it=pattern.globalMatch(&doctext);
 	it=pattern.globalMatch(doctext);
 	while(it.hasNext())
 		{

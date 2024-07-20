@@ -1569,7 +1569,12 @@ void KKEditClass::doOddButtons(void)
 bool KKEditClass::docViewLinkTrap(const QUrl url)
 {
 #ifdef _BUILDDOCVIEWER_
+
 	Qt::KeyboardModifiers key=QGuiApplication::keyboardModifiers();
+#ifdef _USEQT6_
+	qDebug()<<"link trap doesn't work on qt6, todo ...";
+	return(false);
+#endif
 	if(key!=Qt::ControlModifier)
 		{
 			return(false);
@@ -1580,7 +1585,6 @@ bool KKEditClass::docViewLinkTrap(const QUrl url)
 			QString	finalstring;
 			int		linenum=0;
 			int		stringcnt=0;
-
 			str.remove(QRegularExpression("file:\\/\\/"));
 			str.remove("_source.html");
 			str.remove(QRegularExpression("\\/html"));
@@ -1622,7 +1626,6 @@ bool KKEditClass::docViewLinkTrap(const QUrl url)
 				}
 			else
 				{
-					//QString datafile=QRegularExpression("file://(.*\\.html)#.*$").match(url.toString()).captured(1);
 					QString datafile=QRegularExpression("file://(.*\\.html)#.*$").match(url.toString()).captured(1);
 					QString lnk=QRegularExpression("file://(.*)\\.html#(.*)$").match(url.toString()).captured(2);
 					if(datafile.isEmpty()==false)

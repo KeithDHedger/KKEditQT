@@ -172,7 +172,7 @@ void KKEditClass::searchDoxyDocs(const QString txt)
 
 	if (reader.readNextStartElement())
 		{
-			if (reader.name() == "Tokens")
+			if (reader.name().compare(QString("Tokens")) == 0)
 				{
 					tagname="";
 					tagtype="";
@@ -180,20 +180,22 @@ void KKEditClass::searchDoxyDocs(const QString txt)
 					taganchor="";
 					while(reader.readNextStartElement())
 						{
-							if(reader.name() == "Token")
+							if (reader.name().compare(QString("Token")) == 0)
 								{
 									while(reader.readNextStartElement())
 										{
-											if(reader.name() == "TokenIdentifier")
+											if (reader.name().compare(QString("TokenIdentifier")) == 0)
 												{
 													while(reader.readNextStartElement())
 														{
-															if(reader.name() == "Name")
+															//if(reader.name() == "Name")
+															if (reader.name().compare(QString("Name")) == 0)
 																{
 																	tagname=reader.readElementText();
 																	continue;
 																}
-															if(reader.name() == "Type")
+															//if(reader.name() == "Type")
+															if (reader.name().compare(QString("Type")) == 0)
 																{
 																	tagtype=reader.readElementText();
 																	continue;
@@ -202,12 +204,12 @@ void KKEditClass::searchDoxyDocs(const QString txt)
 														}
 													continue;
 												}
-											if(reader.name() == "Path")
+											if (reader.name().compare(QString("Path")) == 0)
 												{
 													tagpath=reader.readElementText();
 													continue;
 												}
-											if(reader.name() == "Anchor")
+											if (reader.name().compare(QString("Anchor")) == 0)
 												{
 													taganchor=reader.readElementText();
 													continue;

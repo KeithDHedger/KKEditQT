@@ -1399,7 +1399,7 @@ void KKEditClass::buildGetKeyShortCut(int index)
 			this->setAppShortcuts();
 		}
 }
-
+#include <QWebEngineSettings>
 void KKEditClass::buildDocViewer(void)
 {
 #ifdef _BUILDDOCVIEWER_
@@ -1420,6 +1420,13 @@ void KKEditClass::buildDocViewer(void)
 	this->docView->setCentralWidget(widget);
 
 	this->webEngView=new QWebEngineView(widget);
+
+	//QWebEngineSettings *qws=this->webEngView->settings() ;
+	//qws->setAttribute(QWebEngineSettings::ReadingFromCanvasEnabled,false);
+	//qDebug()<<qws->testAttribute(QWebEngineSettings::ReadingFromCanvasEnabled);
+//https://forum.qt.io/topic/100805/c-qwebengineview-how-to-obtain-the-link-clicked-by-right-click-open-in-new-tab/2
+//https://stackoverflow.com/questions/27604858/how-to-get-link-url-on-onclick-in-a-qwebview
+//https://stackoverflow.com/questions/40170180/link-clicked-signal-qwebengineview
 	this->webEngView->setUrl(QUrl("file://" DATADIR "/help/index.html"));
 	QObject::connect(this->webEngView,&QWebEngineView::urlChanged,[this](const QUrl url)
 		{
