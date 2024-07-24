@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#©keithhedger Sat 6 Jul 13:32:17 BST 2024 kdhedger68713@gmail.com
+
+DOCSFOLDER="/usr/share/doc/qt6"
+
+echo "Results From QT6 API's"
+
+while read
+	do
+		FOLD="$(dirname "$(echo "${REPLY}"|awk -F" " '{print $1}')")"
+		FILE="$(echo "${REPLY}"|awk -F":" '{print $1}')"
+		LINE="$(echo $REPLY|awk -F: '{print $2}')"
+		read
+		testvar="$(echo "$REPLY"|sed 's@^.*\(<anchorfile>.*</anchorfile>\)@\1@')"
+		testvar="${testvar#"${REPLY%%[![:space:]]*}"}"
+		if [[ ! "${testvar:0:12}" = "<anchorfile>" ]];then
+			read
+		else
+			ANCHORFILE="$(echo "$REPLY"|sed 's@^.*<anchorfile>\(.*\)</anchorfile>@\1@')"
+			read
+			ANCHOR="$(echo "$REPLY"|sed 's@^.*<anchor>\(.*\)</anchor>@\1@')"
+			LINK="file://${FOLD}/${ANCHORFILE}#${ANCHOR}"
+			FROM=$(sed -n 's/.*<title>\(.*\)|.*/\1/p' ${FOLD}/${ANCHORFILE}) # >/dev/pts/1
+			TYPE="$(sed -n "$(($LINE - 2))p" "$FILE")"
+			TYPE=$(echo $TYPE|sed 's/<member kind="\([^"]*\).*/\1/')
+			echo "${LINK}"
+			test=$(sed -n "$((${LINE} -1))p" "$FILE")
+			test="${test#"${test%%[![:space:]]*}"}"
+			if [[ ${test:0:7} = "<member" ]];then
+				TYPE="$(sed -n "$(($LINE - 1))p" "$FILE")"
+				TYPE=$(echo $TYPE|sed 's/<member kind="\([^"]*\).*/\1/')
+			else
+				TYPE="$(sed -n "$(($LINE - 2))p" "$FILE")"
+				TYPE=$(echo $TYPE|sed 's/<member kind="\([^"]*\).*/\1/')
+			fi
+			echo "${TYPE} from ${FROM}"
+		fi
+	done< <(find "$DOCSFOLDER" -iname "*.tags" -print0|xargs -0  grep -Hn -A 2 --no-group-separator -i "<name>$1</name>")
+
+exit 0

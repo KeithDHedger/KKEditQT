@@ -487,6 +487,7 @@ class KKEditClass : public QObject
 		QWebEngineView				*webEngView=NULL;
 		bool							docviewerVisible=false;
 		MenuItemClass				*toggleDocViewMenuItem;
+		QAction						*openInNewTab=NULL;
 //docviewer functions
 #endif
 		void							buildDocViewer(void);

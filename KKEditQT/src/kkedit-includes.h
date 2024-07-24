@@ -50,8 +50,16 @@
 #include <QCompleter>
 #include <QObject>
 #include <QtPlugin>
+#include <QWebEngineSettings>
 
 #include "config.h"
+
+#ifdef _USEQT6_
+#include <QWebEngineContextMenuRequest>
+#else
+#include <QWebEngineContextMenuData>
+#endif
+
 
 #ifdef _ASPELL_
 #include <aspell.h>

@@ -19,7 +19,7 @@
  */
 
 #include "KKEditClass.h"
-//QPainter
+
 void KKEditClass::makePrefsDial(int widgnum,const QString label,int value,int minvalue,int maxvalue,int posy)
 {
 	QLabel*	widgetlabel;
@@ -1399,7 +1399,7 @@ void KKEditClass::buildGetKeyShortCut(int index)
 			this->setAppShortcuts();
 		}
 }
-#include <QWebEngineSettings>
+
 void KKEditClass::buildDocViewer(void)
 {
 #ifdef _BUILDDOCVIEWER_
@@ -1409,6 +1409,7 @@ void KKEditClass::buildDocViewer(void)
 	QLineEdit	*findbox;
 	QPushButton	*button;
 	QRect		r;
+	QAction		*dump;
 
 	this->docView=new QMainWindow(mainWindow);
 
@@ -1421,23 +1422,51 @@ void KKEditClass::buildDocViewer(void)
 
 	this->webEngView=new QWebEngineView(widget);
 
-	//QWebEngineSettings *qws=this->webEngView->settings() ;
-	//qws->setAttribute(QWebEngineSettings::ReadingFromCanvasEnabled,false);
-	//qDebug()<<qws->testAttribute(QWebEngineSettings::ReadingFromCanvasEnabled);
-//https://forum.qt.io/topic/100805/c-qwebengineview-how-to-obtain-the-link-clicked-by-right-click-open-in-new-tab/2
-//https://stackoverflow.com/questions/27604858/how-to-get-link-url-on-onclick-in-a-qwebview
-//https://stackoverflow.com/questions/40170180/link-clicked-signal-qwebengineview
-	this->webEngView->setUrl(QUrl("file://" DATADIR "/help/index.html"));
-	QObject::connect(this->webEngView,&QWebEngineView::urlChanged,[this](const QUrl url)
+	this->openInNewTab=this->webEngView->pageAction(QWebEnginePage::OpenLinkInNewTab);
+	this->openInNewTab->setText("Show In Source File");
+
+//don't want these menu items.
+	dump=this->webEngView->pageAction(QWebEnginePage::OpenLinkInNewWindow);
+	dump->setVisible(false);
+	dump=this->webEngView->pageAction(QWebEnginePage::SavePage);
+	dump->setVisible(false);
+	dump=this->webEngView->pageAction(QWebEnginePage::DownloadLinkToDisk);
+	dump->setVisible(false);
+
+	QObject::connect(this->openInNewTab,&QAction::triggered,[this]()
 		{
-			this->currentURL=url.toString();
-			bool ret=this->docViewLinkTrap(url);//TODO//needs improving
-			if(ret==true)
+
+#ifdef _USEQT6_
+			const auto & contextMenuData= this->webEngView->lastContextMenuRequest();
+#else
+			const auto & contextMenuData = this->webEngView->page()->contextMenuData();
+#endif
+
+#ifdef _USEQT6_
+			if(contextMenuData->linkUrl().isValid())
 				{
-					this->mainWindow->activateWindow();
-					this->mainWindow->raise();
+					//qDebug()<<contextMenuData->linkUrl();
+					this->currentURL=contextMenuData->linkUrl().toString();
+					bool ret=this->docViewLinkTrap(contextMenuData->linkUrl());//TODO//needs improving
+
+#else
+			if(contextMenuData.isValid() && contextMenuData.linkUrl().isValid())
+				{
+					//qDebug()<<contextMenuData.linkUrl();
+					this->currentURL=contextMenuData.linkUrl().toString();
+					bool ret=this->docViewLinkTrap(contextMenuData.linkUrl());//TODO//needs improving
+#endif
+					if(ret==true)
+						{
+							this->mainWindow->show();
+							this->mainWindow->activateWindow();
+							this->mainWindow->show();
+							this->mainWindow->raise();
+						}
 				}
 		});
+
+	this->webEngView->setUrl(QUrl("file://" DATADIR "/help/index.html"));
 
 	docvlayout->addWidget(this->webEngView);
 
@@ -1637,7 +1666,7 @@ void KKEditClass::buildPlugPrefs(void)
 					this->setToolbarSensitive();
 				}
 			this->writeExitData();
-			this->pluginPrefsWindow->hide();
+			//this->pluginPrefsWindow->hide();
 		});
 	dochlayout->addWidget(btn);
 
@@ -1648,9 +1677,6 @@ void KKEditClass::buildPlugPrefs(void)
 		});
 	dochlayout->addWidget(btn);
 	QLabel	*widgetlabel;
-//	widgetlabel=new QLabel;
-//	widgetlabel->setFrameStyle(QFrame::Sunken | QFrame::HLine);
-//	docvlayout->addWidget(widgetlabel);
 
 	widgetlabel=new QLabel;
 	widgetlabel->setText("Local Plugins");

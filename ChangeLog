@@ -1,4 +1,8 @@
 1.5.1
+Tidied up DocumentationPlugin menu.
+Added run all searches menuitem to DocumentationPlugin ( WARNING run all on a common term like 'contains' can be time consuming ).
+Plugin Prefs dialog now doesn't close on 'Apply'.
+Updates to DocumentationPlugin actions.
 'Search For Define' now uses ( caseless ) regex.
 Speed updates to function definition search.
 Fixed setting back history when seleecting from combobox in Select Definition dialog.

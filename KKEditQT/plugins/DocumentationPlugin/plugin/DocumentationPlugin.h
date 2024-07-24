@@ -45,9 +45,12 @@ class DocumentationPlugin : public QObject, kkEditQTPluginInterface
 		QMenu			*apiMenu=NULL;
 		QString			customCommand="";
 		QAction			*customCommandMenu=NULL;
+		bool				noStatusInfo=true;
+		QStringList		resList;
 
 		QString			runPipeAndCapture(QString command);
 		void				runSearch(QString command);
+		void				runAllSearchs(void);
 };
 
 #endif

@@ -2,6 +2,8 @@
 
 #©keithhedger Sat 6 Jul 13:32:17 BST 2024 kdhedger68713@gmail.com
 
+DOCSFOLDER="/usr/share/gtk-doc/html/"
+
 echo "Results From Gtk-Docs"
 
 while read
@@ -14,5 +16,5 @@ while read
 			echo "$LINKFILE"
 			echo "$NAME"
 		fi
-	done < <(find /usr/share/gtk-doc/html -iname "api-index-full.html" -o -iname "*.devhelp2" -exec grep -iHe "$1" '{}' \;)
+	done < <(find "$DOCSFOLDER" -iname "api-index-full.html" -o -iname "*.devhelp2" -exec grep -iHe "$1" '{}' \;)
 

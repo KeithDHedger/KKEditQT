@@ -19,26 +19,90 @@
 */
 
 #include "DocumentationPlugin.h"
-//QPainter
-//gtk_window
-//cairo_save
-//gtk_main
-//gtk_window_get_title
-//geometryStruct
+
 QString DocumentationPlugin::runPipeAndCapture(QString command)
 {
 	QString	dump("");
 	FILE		*fp=NULL;
 	char		line[1024];
+	bool		flip=false;
 
 	fp=popen(command.toStdString().c_str(), "r");
 	if(fp!=NULL)
 		{
 			while(fgets(line,1024,fp))
-				dump+=line;
+				{
+					flip=!flip;
+					if((flip==true) && (this->noStatusInfo==false))
+						{
+							QString text=QString("Adding %1").arg(QString(line).simplified());
+//					qDebug()<<">>>"<<text<<"<<<<";
+							this->mainKKEditClass->statusBar->showMessage(text,STATUSBARTIMEOUT);
+							this->mainKKEditClass->statusBar->repaint();
+						}
+					dump+=line;
+				}
 			pclose(fp);
 		}
 	return(dump);
+}
+
+void DocumentationPlugin::runAllSearchs(void)
+{
+	QTextCursor			tc;
+	QString				comm;
+	QVector<QStringList>	links;
+	QFile				html(this->mainKKEditClass->htmlFile);
+
+	if(this->doc==NULL)
+		return;
+
+	links.clear();
+	this->noStatusInfo=false;			
+	tc=this->doc->textCursor();
+	if(tc.hasSelection()==true)
+		{
+			for(int j=0;j<this->resList.size();j+=2)
+				{
+					comm=QString("pushd %1/actions &>/dev/null;%2 %3 %4;popd &>/dev/null").arg(QFileInfo(this->plugPath).absolutePath()).arg(this->resList.at(j+1)).arg(tc.selectedText().trimmed()).arg(this->mainKKEditClass->htmlFile);
+					QStringList	reslist;
+					QString		results=this->runPipeAndCapture(comm);
+					if(results.compare("Just Open\n")!=0)
+						{
+							reslist=results.split("\n",Qt::SkipEmptyParts);
+							if(reslist.isEmpty()==false)
+								links.push_back(reslist);
+						}
+				}
+
+			if(html.open(QFile::WriteOnly|QFile::Truncate))
+				{
+					QTextStream out(&html);
+
+					out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">" << Qt::endl;
+					out << "<html>" << Qt::endl;
+					out << "<head>" << Qt::endl;
+					out << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" << Qt::endl;
+					out << "</head>" << Qt::endl;
+					out << "<body>" << Qt::endl;
+					for(int outerlooop=0;outerlooop<links.size();outerlooop++)
+						{
+							out << "<span style=\"font-weight: bold;\">"<<links[outerlooop].at(0)<<"</span></font><br>" << Qt::endl;
+							for(int loop=1;loop<links[outerlooop].size();loop+=2)
+								{
+									if(links[outerlooop].size()>loop+1)
+										out << "<a href=\"" << links[outerlooop].at(loop) << "\">" << links[outerlooop].at(loop+1) << "</a><br>" << Qt::endl;
+								}
+							out <<"<br>"<< Qt::endl;
+						}
+					out << "</body>" << Qt::endl;
+					out << "</html>" << Qt::endl;
+					html.close();
+					this->mainKKEditClass->htmlURI="file://"+this->mainKKEditClass->htmlFile;
+					comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(this->mainKKEditClass->htmlFile);
+					system(comm.toStdString().c_str());
+				}
+		}
 }
 
 void DocumentationPlugin::runSearch(QString command)
@@ -47,6 +111,8 @@ void DocumentationPlugin::runSearch(QString command)
 
 	if(this->doc==NULL)
 		return;
+
+	this->noStatusInfo=false;
 
 	tc=this->doc->textCursor();
 
@@ -105,11 +171,11 @@ void DocumentationPlugin::runSearch(QString command)
 void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)
 {
 	QString		results;
-	QStringList	reslist;
 	QString		command;
 	QSettings	plugprefs("KDHedger","DocumentationPlugin");
 	bool			breakit=false;
 
+	this->noStatusInfo=true;
 	this->customCommand=plugprefs.value("customcommand").toString();
 
 	this->mainKKEditClass=kk;
@@ -129,20 +195,29 @@ void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)
 		}
 	command=QString("cat $(find '%1/actions' -iname '*.info'|sort -V)").arg(QFileInfo(this->plugPath).absolutePath());
 	results=this->runPipeAndCapture(command);
-	reslist=results.split("\n",Qt::SkipEmptyParts);
+	this->resList=results.split("\n",Qt::SkipEmptyParts);
 
-	for(int j=0;j<reslist.size();j+=2)
+	for(int j=0;j<this->resList.size();j+=2)
 		{
-			QAction	*menuitem=new QAction(reslist.at(j));
+			QAction	*menuitem=new QAction(this->resList.at(j));
 			this->apiMenu->addAction(menuitem);
-			QObject::connect(menuitem,&QAction::triggered,[this,j,reslist]()
+			QObject::connect(menuitem,&QAction::triggered,[this,j]()
 				{
-					this->runSearch(reslist.at(j+1));
+					this->runSearch(this->resList.at(j+1));
 				});
 		}
 
+	this->apiMenu->addSeparator();
+	QAction	*menuitem=new QAction("Run All Searches");
+	this->apiMenu->addAction(menuitem);
+	QObject::connect(menuitem,&QAction::triggered,[this]()
+		{
+			this->runAllSearchs();
+		});
+
 	if(this->customCommand.isEmpty()==false)
 		{
+			this->apiMenu->addSeparator();
 			this->customCommandMenu=new QAction("Custom Command");
 			this->apiMenu->addAction(this->customCommandMenu);
 			QObject::connect(this->customCommandMenu,&QAction::triggered,[this]()

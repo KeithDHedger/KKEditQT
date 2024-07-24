@@ -2,11 +2,13 @@
 
 #©keithhedger Sat 6 Jul 13:32:17 BST 2024 kdhedger68713@gmail.com
 
-echo "Results From QT5 API's"
+DOCSFOLDER="/usr/share/doc/qt5"
+
+echo "Results From QT5 Classes"
 
 while read
 	do
 		echo "$REPLY"
 		basename "$REPLY" .html
-	done < <(/usr/sbin/find /usr/share/doc/qt5 -iname "$1*.html"|/usr/sbin/sort)
+	done < <(/usr/sbin/find "$DOCSFOLDER" -iname "$1.html"|/usr/sbin/sort)
 

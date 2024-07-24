@@ -1570,16 +1570,16 @@ bool KKEditClass::docViewLinkTrap(const QUrl url)
 {
 #ifdef _BUILDDOCVIEWER_
 
-	Qt::KeyboardModifiers key=QGuiApplication::keyboardModifiers();
+//	Qt::KeyboardModifiers key=QGuiApplication::keyboardModifiers();
 #ifdef _USEQT6_
-	qDebug()<<"link trap doesn't work on qt6, todo ...";
-	return(false);
+//	qDebug()<<"link trap doesn't work on qt6, todo ...";
+//	return(false);
 #endif
-	if(key!=Qt::ControlModifier)
-		{
-			return(false);
-		}
-	else
+//	if(key!=Qt::ControlModifier)
+//		{
+//			return(false);
+//		}
+//	else
 		{
 			QString	str=url.toString();
 			QString	finalstring;
