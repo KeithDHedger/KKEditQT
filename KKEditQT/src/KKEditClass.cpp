@@ -721,9 +721,9 @@ void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString c
 	QStringList	arguments;
 
 #ifdef _DEBUGCODE_
-	QString		app="KKEditQT/app/KKEditQTProgressBar";
+	QString		app="KKEditQT/app/kkeditqtprogressbar";
 #else
-	QString		app="KKEditQTProgressBar";
+	QString		app="kkeditqtprogressbar";
 #endif
 	arguments<<"-c"<<QString("\"%6\" \"%1\" \"%2\" \"%3\" \"%4\" \"%5\"").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(maxitems).arg(controlfile).arg(app);
 	QProcess::startDetached("sh",arguments);
@@ -835,7 +835,7 @@ void KKEditClass::buildDocset(void)
 			QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<this->tmpFolderName);
 			runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/;s@^OUTPUT_DIRECTORY.*=.*$@OUTPUT_DIRECTORY=%3@;s/^GENERATE_DOCSET.*=.*$/GENERATE_DOCSET=YES/;s/^SEARCHENGINE.*=.*$/SEARCHENGINE=NO/;s/^DOT_IMAGE_FORMAT.*=.*$/DOT_IMAGE_FORMAT=png/' '%3/Doxyfile'").arg(projectname->text()).arg(versionbox->text()).arg(this->tmpFolderName));
 
-			this->showBarberPole("Building Docs","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
+			this->showBarberPole("Building Docset","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
 
 			fp=popen(QString("pushd '%1'&>/dev/null;doxygen '%2/Doxyfile';popd &>/dev/null").arg(doc->getDirPath()).arg(this->tmpFolderName).toStdString().c_str(),"r");
 			if(fp!=NULL)

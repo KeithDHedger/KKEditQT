@@ -248,6 +248,8 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+QTCORE_CFLAGS = @QTCORE_CFLAGS@
+QTCORE_LIBS = @QTCORE_LIBS@
 QTPRINTSUPPORT_CFLAGS = @QTPRINTSUPPORT_CFLAGS@
 QTPRINTSUPPORT_LIBS = @QTPRINTSUPPORT_LIBS@
 QTSU = @QTSU@
@@ -307,7 +309,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = KKEditQT/app KKEditQT/kkeditqtmsg KKEditQT/pole
+SUBDIRS = KKEditQT/app KKEditQT/helpers
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -804,6 +806,8 @@ clean-am:
 
 install-exec-hook:
 	@./buildplugs.sh install $(DESTDIR)/${pkgdatadir}
+	chmod +x $(DESTDIR)$(pkgdatadir)/docs/makedocset
+	strip --strip-all $(DESTDIR)${prefix}/bin/kkeditqt
 
 remake:
 	./remakesourcelist

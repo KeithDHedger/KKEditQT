@@ -86,7 +86,6 @@ END_SQL
 
 				echo "Adding $NAME ..."
 				sqlite3 docSet.dsidx  "insert into searchindex (name,type,path) values ('$NAME','$TYPE','$FILEPATH');"
-				#echo "INSERT INTO searchIndex (name,type,path) VALUES ('"$NAME"','"$TYPE"','"$FILEPATH"');" >> /tmp/herefile
 				x=$(findTag "</Token>")
 			fi
 		done<Tokens.xml

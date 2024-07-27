@@ -1,3 +1,10 @@
+1.5.2
+Cleaned up folders.
+Added strip to install.
+Renamed KKEditQTProgressBar to kkeditqtprogressbar.
+Fixed makefile minor install errors.
+Added tagreader helper.
+
 1.5.1
 Tidied up DocumentationPlugin menu.
 Added run all searches menuitem to DocumentationPlugin ( WARNING run all on a common term like 'contains' can be time consuming ).

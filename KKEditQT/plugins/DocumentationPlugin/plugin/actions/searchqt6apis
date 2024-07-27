@@ -1,6 +1,22 @@
 #!/bin/bash
-
-#©keithhedger Sat 6 Jul 13:32:17 BST 2024 kdhedger68713@gmail.com
+#
+#©K. D. Hedger. Sat 27 Jul 16:17:02 BST 2024 keithdhedger@gmail.com
+#
+#This file (searchqt6apis) is part of KKEditQT.
+#
+#KKEditQT is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#(at your option) any later version.
+#
+#KKEditQT is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
+#
 
 DOCSFOLDER="/usr/share/doc/qt6"
 
@@ -10,32 +26,13 @@ while read
 	do
 		FOLD="$(dirname "$(echo "${REPLY}"|awk -F" " '{print $1}')")"
 		FILE="$(echo "${REPLY}"|awk -F":" '{print $1}')"
-		LINE="$(echo $REPLY|awk -F: '{print $2}')"
-		read
-		testvar="$(echo "$REPLY"|sed 's@^.*\(<anchorfile>.*</anchorfile>\)@\1@')"
-		testvar="${testvar#"${REPLY%%[![:space:]]*}"}"
-		if [[ ! "${testvar:0:12}" = "<anchorfile>" ]];then
-			read
-		else
-			ANCHORFILE="$(echo "$REPLY"|sed 's@^.*<anchorfile>\(.*\)</anchorfile>@\1@')"
-			read
-			ANCHOR="$(echo "$REPLY"|sed 's@^.*<anchor>\(.*\)</anchor>@\1@')"
-			LINK="file://${FOLD}/${ANCHORFILE}#${ANCHOR}"
-			FROM=$(sed -n 's/.*<title>\(.*\)|.*/\1/p' ${FOLD}/${ANCHORFILE}) # >/dev/pts/1
-			TYPE="$(sed -n "$(($LINE - 2))p" "$FILE")"
-			TYPE=$(echo $TYPE|sed 's/<member kind="\([^"]*\).*/\1/')
-			echo "${LINK}"
-			test=$(sed -n "$((${LINE} -1))p" "$FILE")
-			test="${test#"${test%%[![:space:]]*}"}"
-			if [[ ${test:0:7} = "<member" ]];then
-				TYPE="$(sed -n "$(($LINE - 1))p" "$FILE")"
-				TYPE=$(echo $TYPE|sed 's/<member kind="\([^"]*\).*/\1/')
-			else
-				TYPE="$(sed -n "$(($LINE - 2))p" "$FILE")"
-				TYPE=$(echo $TYPE|sed 's/<member kind="\([^"]*\).*/\1/')
-			fi
-			echo "${TYPE} from ${FROM}"
-		fi
-	done< <(find "$DOCSFOLDER" -iname "*.tags" -print0|xargs -0  grep -Hn -A 2 --no-group-separator -i "<name>$1</name>")
-
+		while read ans
+			do
+				eval "$ans" 2>/dev/null
+				echo "file://${FOLD}/${anchorfile}#${anchor}"
+				FROM=$(sed -n 's/.*<title>\(.*\)|.*/\1/p' ${FOLD}/${anchorfile})
+				echo "$name from $FROM" 
+			done< <(kkeditqttagreader "$REPLY" "member" "name"  "anchorfile"  "anchor"|grep -i "${1}")
+	done< <(find "$DOCSFOLDER" -iname "*.tags")
 exit 0
+

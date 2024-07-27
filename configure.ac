@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([KKEditQT],[1.5.1],[PROJ],[KKEditQT])
+AC_INIT([KKEditQT],[1.5.2],[PROJ],[KKEditQT])
 
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_CXX
@@ -24,6 +24,9 @@ AC_ARG_ENABLE(qt6,AS_HELP_STRING([--enable-qt6],[Build fot Qt6]),
 		QTWIDGETS_MODULES="Qt6Widgets >= 6.6.0"
 		PKG_CHECK_MODULES(QTWIDGETS, $QTWIDGETS_MODULES)
 
+		QTCORE_MODULES="Qt6Core >= 6.6.0"
+		PKG_CHECK_MODULES(QTCORE,$QTCORE_MODULES)
+
 		QTPRINTSUPPORT_MODULES="Qt6PrintSupport >= 6.6.0"
 		PKG_CHECK_MODULES(QTPRINTSUPPORT, $QTPRINTSUPPORT_MODULES)
 		AC_DEFINE([_USEQT6_], [], [Build Qt6])
@@ -39,7 +42,10 @@ AC_ARG_ENABLE(qt6,AS_HELP_STRING([--enable-qt6],[Build fot Qt6]),
 		AC_MSG_NOTICE([Using Qt6])
 	else
 		QTWIDGETS_MODULES="Qt5Widgets >= 5.15.0"
-		PKG_CHECK_MODULES(QTWIDGETS, $QTWIDGETS_MODULES)
+		PKG_CHECK_MODULES(QTWIDGETS,$QTWIDGETS_MODULES)
+
+		QTCORE_MODULES="Qt5Core >= 5.15.0"
+		PKG_CHECK_MODULES(QTCORE,$QTCORE_MODULES)
 
 		QTPRINTSUPPORT_MODULES="Qt5PrintSupport >= 5.15.2"
 		PKG_CHECK_MODULES(QTPRINTSUPPORT, $QTPRINTSUPPORT_MODULES)
@@ -60,6 +66,8 @@ AC_SUBST(QTPRINTSUPPORT_LIBS)
 
 AC_SUBST(QTWIDGETS_CFLAGS)
 AC_SUBST(QTWIDGETS_LIBS)
+AC_SUBST(QTCORE_CFLAGS)
+AC_SUBST(QTCORE_LIBS)
 
 AC_MSG_CHECKING(whether to build doc viewer)
 AC_ARG_ENABLE(docviewer,AS_HELP_STRING([--enable-docviewer],[Build the Doc viewer]),
@@ -120,7 +128,8 @@ if test "$enable_debugcode" = "yes"; then
 	AC_DEFINE([_DEBUGCODE_], [], [Debug code])
 fi
 
-AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile KKEditQT/kkeditqtmsg/Makefile KKEditQT/pole/Makefile)
+#AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile KKEditQT/kkeditqtmsg/Makefile KKEditQT/pole/Makefile)
+AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile KKEditQT/helpers/Makefile)
 AC_OUTPUT
 
 

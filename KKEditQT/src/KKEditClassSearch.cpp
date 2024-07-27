@@ -188,13 +188,11 @@ void KKEditClass::searchDoxyDocs(const QString txt)
 												{
 													while(reader.readNextStartElement())
 														{
-															//if(reader.name() == "Name")
 															if (reader.name().compare(QString("Name")) == 0)
 																{
 																	tagname=reader.readElementText();
 																	continue;
 																}
-															//if(reader.name() == "Type")
 															if (reader.name().compare(QString("Type")) == 0)
 																{
 																	tagtype=reader.readElementText();
