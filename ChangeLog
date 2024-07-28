@@ -1,4 +1,7 @@
 1.5.2
+Fixed annoying warnings from json language plugin.
+Removed menu style option from prefs.
+Added QT_ProxyStyle class.
 Fixed storing current url of docviewer ( necessary for favourites plugin etc ).
 Fixed scrollable menu inline css for qt6.
 Cleaned up folders.

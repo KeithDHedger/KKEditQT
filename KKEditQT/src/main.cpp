@@ -75,8 +75,7 @@ int main (int argc, char **argv)
 	kkedit->sessionID=siapp.useKey;
 	kkedit->forceDefaultGeom=!siapp.isOnX11;
 	kkedit->initApp(argc,argv);
-	kkedit->application->setStyleSheet(kkedit->prefsMenuStyleString);
-//QMenu{menu-scrollable: true;padding: 0px;margin: 0px}
+
 //test plugs
 #if 0
 #ifdef _DEBUGCODE_

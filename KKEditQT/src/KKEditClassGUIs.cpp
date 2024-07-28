@@ -74,8 +74,7 @@ static const char *whatIsPrefsOther[MAXPREFSOTHERWIDGETS]={\
 "<html>Set current font.</html>",\
 "<html>Set bookmark highlight colour.</html>",\
 "<html>Set current line colour.</html>",\
-"<html>Set keyboard shortcuts.</html>",\
-"<html>Custom menu style, I prefer scrolling menus rather than the defaut QT menus, default is '<b>QMenu{menu-scrollable: 1;padding: 0px;margin: 0px}</b>'.</html>"};
+"<html>Set keyboard shortcuts.</html>"};
 
 //prefs int widgets
 static const char *whatIsPrefsInt[MAXPREFSINTWIDGETS]={\
@@ -135,10 +134,6 @@ void KKEditClass::buildPrefsWindow(void)
 	posy=0;
 	makePrefsCheck(AUTOINDENT,"Auto Indent Lines",this->prefsIndent,0,posy);
 	prefsWidgets[AUTOINDENT]->setWhatsThis(whatIsPrefsBool[AUTOINDENT]);
-/*
-<img src="/media/LinuxData/Development64/Projects/KKEditQT/docs/addtoolbutton.gif" height="409" width="956">
-*/
-
 //linenumbers
 	posy++;
 	makePrefsCheck(SHOWNUMS,"Show Line Numbers",this->prefsShowLineNumbers,0,posy);
@@ -183,16 +178,8 @@ void KKEditClass::buildPrefsWindow(void)
 	table=new QGridLayout;
 	tab=new QWidget();
 
-//menu style
-	posy=1;
-    widgetlabel=new QLabel("Menu Style:");
-	prefsOtherWidgets[PREFSMENUSTYLE]=new QLineEdit(this->prefsMenuStyleString);
-	prefsOtherWidgets[PREFSMENUSTYLE]->setWhatsThis(whatIsPrefsOther[PREFSMENUSTYLE]);
-	table->addWidget(widgetlabel,posy,0);
-	table->addWidget(prefsOtherWidgets[PREFSMENUSTYLE],posy,1,1,-1);
-
 //tabwidth
-	posy++;
+	posy=1;
 	makePrefsDial(TABWIDTH,"Tab width:",this->prefsTabWidth,2,64,posy);
 	prefsIntWidgets[TABWIDTH]->setWhatsThis(whatIsPrefsInt[TABWIDTH]);
 
@@ -860,7 +847,6 @@ void KKEditClass::buildMainGui(void)
 	this->showAllTabsMenuItem=this->makeMenuItemClass(EDITMENU,"Show All Tabs",0,"list-add",SHOWALLTABSMENUNAME,SHOWALLTABSMENUITEM);
 //select tab
 	this->selectTabMenu=new QMenu("Select Tab");
-//	this->selectTabMenu->setStyleSheet("QMenu{menu-scrollable: true;padding: 0px;margin: 0px}");
 	this->editMenu->addMenu(this->selectTabMenu);
 
 	this->editMenu->addSeparator();
@@ -1004,7 +990,6 @@ void KKEditClass::buildMainGui(void)
 //newbookmarks
 	this->bookMarkMenu=new QMenu("&Bookmarks");
 	this->menuBar->addMenu(this->bookMarkMenu);
-	//this->bookMarkMenu->setStyleSheet("QMenu{menu-scrollable: true;padding: 0px;margin: 0px}");
 	this->rebuildBookMarkMenu();
 
 //external tools	
@@ -1261,6 +1246,7 @@ void KKEditClass::rebuildTabsMenu(void)
 		return;
 
 	this->selectTabMenu->clear();
+
 	for(int j=0;j<bar->count();j++)
 		{
 			doc=this->getDocumentForTab(j);
@@ -1782,7 +1768,6 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 												{
 													menus[entrytype]=new QMenu(entrytype);
 													this->funcMenu->addMenu(menus.value(entrytype));
-													//menus.value(entrytype)->setStyleSheet("QMenu { menu-scrollable: true ;padding: 0px;margin: 0px;}");
 												}
 											menus.value(entrytype)->addAction(menuitem);
 										}

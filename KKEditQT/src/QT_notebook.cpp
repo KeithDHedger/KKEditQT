@@ -74,7 +74,7 @@ NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent
 	this->scrollRight->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 	this->scrollRight->setToolButtonStyle(Qt::ToolButtonIconOnly);
 	layout->addWidget(this->scrollRight);
-	this-> setCornerWidget(container, Qt::TopRightCorner);
+	this->setCornerWidget(container, Qt::TopRightCorner);
 
 //scroll left
 	container=new QWidget(this);
@@ -86,7 +86,7 @@ NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent
 	this->scrollLeft->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 	this->scrollLeft->setToolButtonStyle(Qt::ToolButtonIconOnly);
 	layout->addWidget(this->scrollLeft);
-	this-> setCornerWidget(container, Qt::TopLeftCorner);
+	this->setCornerWidget(container, Qt::TopLeftCorner);
 
 	this->scrollLeft->setAutoRepeat(true);
 	this->scrollRight->setAutoRepeat(true);

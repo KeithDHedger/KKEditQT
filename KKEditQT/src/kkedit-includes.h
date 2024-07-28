@@ -51,6 +51,7 @@
 #include <QObject>
 #include <QtPlugin>
 #include <QWebEngineSettings>
+#include <QProxyStyle>
 
 #include "config.h"
 

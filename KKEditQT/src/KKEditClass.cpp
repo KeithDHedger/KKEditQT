@@ -366,11 +366,17 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->gotDoxygen=QProcess::execute("sh",QStringList()<<"-c"<<"which doxygen 2>&1 >/dev/null");
 	this->gotManEditor=QProcess::execute("sh",QStringList()<<"-c"<<"which manpageeditor 2>&1 >/dev/null");
 
+	this->mainThemeProxy=new ProxyStyle();
+// take ownership to avoid memleak
+	this->mainThemeProxy->setParent(this->application);
+	this->application->setStyle(this->mainThemeProxy);
 
 //	if(getuid()!=0)
 //		styleName="classic";
 //	else
 //		styleName="Root Source";
+
+
 	this->mainWindow=new QMainWindow();
 
 	for(int j=0;j<NOMORESHORTCUT;j++)
@@ -474,7 +480,6 @@ void KKEditClass::readConfigs(void)
 	this->prefsBookmarkHiLiteColor=this->prefs.value("theme/bmhilitecol",QVariant(QColor(0,0,0,0x40))).value<QColor>();
 
 //application
-	this->prefsMenuStyleString=this->prefs.value("app/prefsmenustylestring","QMenu{menu-scrollable: 1;padding: 0px;margin: 0px}").toString();
 	this->prefsMsgTimer=this->prefs.value("app/msgtimer",1000).toInt();
 	this->prefsUseSingle=this->prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
 	this->prefsNagScreen=this->prefs.value("app/bekind",QVariant(bool(false))).value<bool>();
@@ -636,7 +641,6 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("theme/bmhilitecol",this->prefsBookmarkHiLiteColor);
 
 //application
-	this->prefs.setValue("app/prefsmenustylestring",this->prefsMenuStyleString);
 	this->prefs.setValue("app/msgtimer",this->prefsMsgTimer);
 	this->prefs.setValue("app/usesingle",this->prefsUseSingle);
 	this->prefs.setValue("app/bekind",this->prefsNagScreen);

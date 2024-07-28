@@ -32,14 +32,17 @@ class jsonlang : public QObject, SyntaxHighlitePluginInterface
 	public:
 		void							initPlug(QString pathtoplug) override;
 		void							unloadPlug(void) override;
-//theme
-		void							setTheme(QMap<QString,partsStruct> newtheme) override;
 //new rules format
 		void							setLanguageRules(QVector<highLightingRule> *rules) override;
+//theme
+		void							setTheme(QMap<QString,partsStruct> newtheme) override;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 //multi line rules
 		void							setMultLineRules(QVector<highLightingRule> *rules) override {};
 //custom code for edge cases etc
 		void							runCustomRule(QString text,highLightingRule *hr) override {};
+#pragma GCC diagnostic pop
 	
 	private:
 		QString						plugPath;

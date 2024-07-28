@@ -1272,8 +1272,6 @@ void KKEditClass::setPreferences(void)
 
 	this->onExitSaveSession=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSAVE])->checkState();
 
-//menu style
-	this->prefsMenuStyleString=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSMENUSTYLE])->text();
 //print command
 	this->prefsPrintCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSPRINTCOMMAND])->text();
 //term command
@@ -1308,7 +1306,6 @@ void KKEditClass::setPreferences(void)
 	this->resetAllFilePrefs();
 	this->writeExitData();
 	this->setAppShortcuts();
-	//this->application->setStyleSheet(this->prefsMenuStyleString);
 
 	switchPage(this->mainNotebook->currentIndex());
 }
