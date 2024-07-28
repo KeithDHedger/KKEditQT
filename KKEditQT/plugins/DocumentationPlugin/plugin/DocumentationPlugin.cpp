@@ -36,7 +36,6 @@ QString DocumentationPlugin::runPipeAndCapture(QString command)
 					if((flip==true) && (this->noStatusInfo==false))
 						{
 							QString text=QString("Adding %1").arg(QString(line).simplified());
-//					qDebug()<<">>>"<<text<<"<<<<";
 							this->mainKKEditClass->statusBar->showMessage(text,STATUSBARTIMEOUT);
 							this->mainKKEditClass->statusBar->repaint();
 						}

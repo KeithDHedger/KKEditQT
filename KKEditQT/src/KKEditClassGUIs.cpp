@@ -75,7 +75,7 @@ static const char *whatIsPrefsOther[MAXPREFSOTHERWIDGETS]={\
 "<html>Set bookmark highlight colour.</html>",\
 "<html>Set current line colour.</html>",\
 "<html>Set keyboard shortcuts.</html>",\
-"<html>Custom menu style, I prefer scrolling menus rather than the defaut QT menus, default is '<b>QMenu{menu-scrollable: true;padding: 0px;margin: 0px}</b>'.</html>"};
+"<html>Custom menu style, I prefer scrolling menus rather than the defaut QT menus, default is '<b>QMenu{menu-scrollable: 1;padding: 0px;margin: 0px}</b>'.</html>"};
 
 //prefs int widgets
 static const char *whatIsPrefsInt[MAXPREFSINTWIDGETS]={\
@@ -860,7 +860,7 @@ void KKEditClass::buildMainGui(void)
 	this->showAllTabsMenuItem=this->makeMenuItemClass(EDITMENU,"Show All Tabs",0,"list-add",SHOWALLTABSMENUNAME,SHOWALLTABSMENUITEM);
 //select tab
 	this->selectTabMenu=new QMenu("Select Tab");
-	this->selectTabMenu->setStyleSheet("QMenu{menu-scrollable: true;padding: 0px;margin: 0px}");
+//	this->selectTabMenu->setStyleSheet("QMenu{menu-scrollable: true;padding: 0px;margin: 0px}");
 	this->editMenu->addMenu(this->selectTabMenu);
 
 	this->editMenu->addSeparator();
@@ -1464,6 +1464,11 @@ void KKEditClass::buildDocViewer(void)
 							this->mainWindow->raise();
 						}
 				}
+		});
+
+	QObject::connect(this->webEngView,&QWebEngineView::urlChanged,[this](const QUrl url)
+		{
+			this->currentURL=url.toString();
 		});
 
 	this->webEngView->setUrl(QUrl("file://" DATADIR "/help/index.html"));

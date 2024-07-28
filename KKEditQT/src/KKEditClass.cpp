@@ -466,13 +466,15 @@ void KKEditClass::readConfigs(void)
 	this->autoShowMinChars=this->prefs.value("document/autoshowminchars",6).toInt();
 
 //theme
+//SH_UnderlineShortcut
+//SH_Menu_Scrollable
 	this->prefStyleName=this->prefs.value("theme/style","default").toString();
 	this->prefStyleNameHold=this->prefStyleName;
 	this->prefsHiLiteLineColor=this->prefs.value("theme/hilitelinecol",QVariant(QColor(0xff,0xff,0xff,0x40))).value<QColor>();
 	this->prefsBookmarkHiLiteColor=this->prefs.value("theme/bmhilitecol",QVariant(QColor(0,0,0,0x40))).value<QColor>();
 
 //application
-	this->prefsMenuStyleString=this->prefs.value("app/prefsmenustylestring","QMenu{menu-scrollable: true;padding: 0px;margin: 0px}").toString();
+	this->prefsMenuStyleString=this->prefs.value("app/prefsmenustylestring","QMenu{menu-scrollable: 1;padding: 0px;margin: 0px}").toString();
 	this->prefsMsgTimer=this->prefs.value("app/msgtimer",1000).toInt();
 	this->prefsUseSingle=this->prefs.value("app/usesingle",QVariant(bool(true))).value<bool>();
 	this->prefsNagScreen=this->prefs.value("app/bekind",QVariant(bool(false))).value<bool>();

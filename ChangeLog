@@ -1,4 +1,6 @@
 1.5.2
+Fixed storing current url of docviewer ( necessary for favourites plugin etc ).
+Fixed scrollable menu inline css for qt6.
 Cleaned up folders.
 Added strip to install.
 Renamed KKEditQTProgressBar to kkeditqtprogressbar.
