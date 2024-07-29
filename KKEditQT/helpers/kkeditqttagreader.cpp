@@ -37,6 +37,8 @@ int main(int argc, char **argv)
 	if(file.exists()==false)
 		{
 			qDebug() << "Cannot read file" << file.errorString();
+			qDebug()<<"Usage:";
+			qDebug()<<"kkeditqttagreader /path/to/file.xml taggroup tagname1 ... [tagname2...tagnameN]";
 			exit(0);
 		}
 

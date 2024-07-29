@@ -472,8 +472,6 @@ void KKEditClass::readConfigs(void)
 	this->autoShowMinChars=this->prefs.value("document/autoshowminchars",6).toInt();
 
 //theme
-//SH_UnderlineShortcut
-//SH_Menu_Scrollable
 	this->prefStyleName=this->prefs.value("theme/style","default").toString();
 	this->prefStyleNameHold=this->prefStyleName;
 	this->prefsHiLiteLineColor=this->prefs.value("theme/hilitelinecol",QVariant(QColor(0xff,0xff,0xff,0x40))).value<QColor>();

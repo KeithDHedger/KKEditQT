@@ -1,4 +1,5 @@
 1.5.2
+Speed improvements for building docset.
 Fixed annoying warnings from json language plugin.
 Removed menu style option from prefs.
 Added QT_ProxyStyle class.

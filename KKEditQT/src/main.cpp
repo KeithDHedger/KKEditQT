@@ -28,15 +28,14 @@ int main (int argc, char **argv)
 	int				status;
 	QDir				commsDir;
 	QApplication		*napp=new QApplication(argc,argv);
-	QPixmap			pixmap(DATADIR "/pixmaps/KKEditQT.png");
 
 	napp->setOrganizationName("KDHedger");
 	napp->setApplicationName("KKEditQT");
 
 	kkedit=new KKEditClass(napp);
-    kkedit->splash=new QSplashScreen(pixmap,Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
-	kkedit->parser.addHelpOption();
+    kkedit->splash=new QSplashScreen(QString(DATADIR)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
 
+	kkedit->parser.addHelpOption();
 	kkedit->parser.addOptions(
 		{
 			{{"k","key"},"Force key ID.","KeyID"},

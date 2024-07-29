@@ -21,9 +21,6 @@
 #ifndef _QT_PROXYSTYLE_
 #define _QT_PROXYSTYLE_
 
-#include <QApplication>
-#include <QProxyStyle>
-
 #include "KKEditClass.h"
 
 class ProxyStyle : public QProxyStyle
