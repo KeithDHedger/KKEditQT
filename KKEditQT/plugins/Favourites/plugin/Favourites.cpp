@@ -64,7 +64,14 @@ void FavouritesPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 					this->favouritesMenu->addAction(addfile);
 					QObject::connect(addfile,&QAction::triggered,[this,addfile]()
 						{
-							this->doAction(addfile->text());
+							if(QGuiApplication::queryKeyboardModifiers()==Qt::ControlModifier)
+								{
+									QString com=QString("sed -i 's|%1||;/^$/d' '%2/favs'").arg(addfile->text()).arg(this->mainKKEditClass->homeDataFolder);
+									system(com.toStdString().c_str());
+									addfile->setVisible(false);
+								}
+							else	
+								this->doAction(addfile->text());
 						});
 				}
 		});
@@ -84,10 +91,17 @@ void FavouritesPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 					this->favouritesMenu->addAction(addurl);
 					QObject::connect(addurl,&QAction::triggered,[this,addurl]()
 						{
-							this->doAction(addurl->text());
+							if(QGuiApplication::queryKeyboardModifiers()==Qt::ControlModifier)
+								{
+									QString com=QString("sed -i 's|%1||;/^$/d' '%2/favs'").arg(addurl->text()).arg(this->mainKKEditClass->homeDataFolder);
+									system(com.toStdString().c_str());
+									addurl->setVisible(false);
+								}
+							else	
+								this->doAction(addurl->text());
 						});
 				}
-		});			
+		});
 
 	this->favouritesMenu->addSeparator();
 
@@ -105,9 +119,17 @@ void FavouritesPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 						{
 							addurl=new QAction(line);
 							this->favouritesMenu->addAction(addurl);
-							QObject::connect(addurl,&QAction::triggered,[this,line]()
+							QObject::connect(addurl,&QAction::triggered,[this,line,addurl]()
 								{
-									this->doAction(line);
+									//qDebug()<<QGuiApplication::queryKeyboardModifiers();
+									if(QGuiApplication::queryKeyboardModifiers()==Qt::ControlModifier)
+										{
+											QString com=QString("sed -i 's|%1||;/^$/d' '%2/favs'").arg(line).arg(this->mainKKEditClass->homeDataFolder);
+											system(com.toStdString().c_str());
+											addurl->setVisible(false);
+										}
+									else
+										this->doAction(line);
 								});
 						}
 				}

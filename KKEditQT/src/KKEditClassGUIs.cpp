@@ -1411,6 +1411,9 @@ void KKEditClass::buildDocViewer(void)
 	this->openInNewTab=this->webEngView->pageAction(QWebEnginePage::OpenLinkInNewTab);
 	this->openInNewTab->setText("Show In Source File");
 
+//QWebEngineSettings *st=this->webEngViewsettings();
+//st->setAttribute();
+
 //don't want these menu items.
 	dump=this->webEngView->pageAction(QWebEnginePage::OpenLinkInNewWindow);
 	dump->setVisible(false);
