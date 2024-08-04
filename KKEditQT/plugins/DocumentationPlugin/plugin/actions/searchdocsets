@@ -22,6 +22,9 @@ echo "dd {grid-column-start: 2;}">>"$HTMLFILE"
 echo "</style>">>"$HTMLFILE"
 echo "<body>">>"$HTMLFILE"
 
+foundcnt=0
+holdpath=""
+
 while read
 	do
 		dspath="${REPLY//"${DOCSETS}/"/}"
@@ -35,6 +38,7 @@ while read
 				returns="$ans"		
 				if [[ ! "X$returns" = "X" ]];then
 					flag=1;
+					((foundcnt++))
 
 					funcname="$(echo "$returns"|awk -F"|" '{print $1}')"
 					functype="$(echo "$returns"|awk -F"|" '{print $2}')"
@@ -52,6 +56,7 @@ while read
 					esac
 
 					echo "<dt>${functype}</dt><dd><a href=\"file://${foldname}/Documents/$funcpath\">${funcname}</a></dd>" >>"$HTMLFILE"
+					holdpath="file://${foldname}/Documents/$funcpath"
 					echo "$funcname"
 				fi
 			done< <(sqlite3 "$REPLY" "select name,type,path from searchIndex where name REGEXP '"$1"';")
@@ -63,5 +68,14 @@ while read
 			fi
 	done< <(find "$DOCSETS"  -mindepth 4 -maxdepth 4 -iname docSet.dsidx)
 
-	echo "</body>">>"$HTMLFILE"
-	echo "</html>">>"$HTMLFILE"
+echo "</body>">>"$HTMLFILE"
+echo "</html>">>"$HTMLFILE"
+
+if [[ ${foundcnt} -eq 1 ]];then
+	echo '<!DOCTYPE html>' >"$HTMLFILE"
+	echo '<html>' >>"$HTMLFILE"
+	echo '<head>'>>"$HTMLFILE"
+	echo '<meta http-equiv="refresh" content="0; url='"$holdpath"'" />' >>"$HTMLFILE"
+	echo '</head>' >>"$HTMLFILE"
+	echo '</html>' >>"$HTMLFILE"
+fi
