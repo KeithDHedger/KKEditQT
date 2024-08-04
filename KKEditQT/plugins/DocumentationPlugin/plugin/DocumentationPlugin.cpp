@@ -61,8 +61,11 @@ void DocumentationPlugin::runAllSearchs(void)
 	tc=this->doc->textCursor();
 	if(tc.hasSelection()==true)
 		{
-			for(int j=0;j<this->resList.size();j+=2)
+			for(int j=0;j<this->resList.size();j+=SETTINGSCNT)
 				{
+					if((this->resList.at(j+SEARCHALL).compare("inall")!=0) || (this->resList.at(j+SHOWITEM).compare("show")!=0))
+						continue;
+					
 					comm=QString("pushd %1/actions &>/dev/null;%2 %3 %4;popd &>/dev/null").arg(QFileInfo(this->plugPath).absolutePath()).arg(this->resList.at(j+1)).arg(tc.selectedText().trimmed()).arg(this->mainKKEditClass->htmlFile);
 					QStringList	reslist;
 					QString		results=this->runPipeAndCapture(comm);
@@ -122,7 +125,7 @@ void DocumentationPlugin::runSearch(QString command)
 			QStringList	reslist;
 			QString		results=this->runPipeAndCapture(comm);
 
-			if(results.compare("Just Open\n")==0)
+			if(results.startsWith("Just Open\n")==true)
 				{
 					comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(this->mainKKEditClass->htmlFile);
 					system(comm.toStdString().c_str());
@@ -132,6 +135,13 @@ void DocumentationPlugin::runSearch(QString command)
 			reslist=results.split("\n",Qt::SkipEmptyParts);
 			if(reslist.isEmpty()==false)
 				{
+					if(QString(reslist.at(0)).startsWith("Just Open\n")==true)
+						{
+							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(this->mainKKEditClass->htmlFile);
+							system(comm.toStdString().c_str());
+							return;
+						}
+
 					if(reslist.size()==3)
 						{
 							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(reslist.at(1));
@@ -196,14 +206,17 @@ void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)
 	results=this->runPipeAndCapture(command);
 	this->resList=results.split("\n",Qt::SkipEmptyParts);
 
-	for(int j=0;j<this->resList.size();j+=2)
+	for(int j=0;j<this->resList.size();j+=SETTINGSCNT)
 		{
-			QAction	*menuitem=new QAction(this->resList.at(j));
-			this->apiMenu->addAction(menuitem);
-			QObject::connect(menuitem,&QAction::triggered,[this,j]()
+			if(this->resList.at(j+SHOWITEM).compare("show")==0)
 				{
-					this->runSearch(this->resList.at(j+1));
-				});
+					QAction	*menuitem=new QAction(this->resList.at(j+MENUNAME));
+					this->apiMenu->addAction(menuitem);
+					QObject::connect(menuitem,&QAction::triggered,[this,j]()
+						{
+							this->runSearch(this->resList.at(j+COMMAND));
+						});
+				}
 		}
 
 	this->apiMenu->addSeparator();

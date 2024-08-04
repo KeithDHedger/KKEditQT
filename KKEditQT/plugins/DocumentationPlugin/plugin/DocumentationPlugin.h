@@ -21,6 +21,8 @@
 #ifndef DOCUMENTATIONPLUG_H
 #define DOCUMENTATIONPLUG_H
 
+enum {MENUNAME=0,COMMAND,SHOWITEM,SEARCHALL,SETTINGSCNT};
+
 #include "../../../src/kkeditqtPluginInterface.h"
 
 class DocumentationPlugin : public QObject, kkEditQTPluginInterface

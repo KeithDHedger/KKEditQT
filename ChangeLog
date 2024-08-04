@@ -1,4 +1,6 @@
 1.5.2
+Changed document plugin .info files to either show/not show in 'Find API' menu,
+Changed document plugin .info files to either include/not include in all searches in 'Find API' menu,
 Now holding 'CNTL' while selecting an item in the FavouritesPlugin menu will remove it from the menu.
 Speed improvements for building docset.
 Fixed annoying warnings from json language plugin.
