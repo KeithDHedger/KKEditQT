@@ -59,7 +59,8 @@ while read
 					holdpath="file://${foldname}/Documents/$funcpath"
 					echo "$funcname"
 				fi
-			done< <(sqlite3 "$REPLY" "select name,type,path from searchIndex where name REGEXP '"$1"';")
+			#done< <(sqlite3 "$REPLY" "select name,type,path from searchIndex where name REGEXP '.*"$1".*';") #TODO add too prefs?
+			done< <(sqlite3 "$REPLY" "select name,type,path from searchIndex where name like '%"$1"%';")
 
 			if [[ $flag -eq 1 ]];then
 				echo "</dl><br>">>"$HTMLFILE"
