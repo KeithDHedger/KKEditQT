@@ -1,4 +1,5 @@
 1.5.2
+Added 'Reload' to plugin prefs dialog.
 Docview now automatically goes to page when 'Search In Docsets' only has one result.
 Changed document plugin .info files to either show/not show in 'Find API' menu,
 Changed document plugin .info files to either include/not include in all searches in 'Find API' menu,

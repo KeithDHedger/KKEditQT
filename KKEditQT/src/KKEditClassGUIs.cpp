@@ -1660,7 +1660,21 @@ void KKEditClass::buildPlugPrefs(void)
 					this->setToolbarSensitive();
 				}
 			this->writeExitData();
-			//this->pluginPrefsWindow->hide();
+		});
+	dochlayout->addWidget(btn);
+
+	btn=new QPushButton("Reload");
+	QObject::connect(btn,&QPushButton::clicked,[this]()
+		{
+			for(int j=0;j<this->plugins.count();j++)
+				{
+					bool hold=this->plugins[j].loaded;
+					if(hold==true)
+						{
+							this->unloadPlug(&this->plugins[j]);
+							this->loadPlug(&this->plugins[j],true);
+						}
+				}
 		});
 	dochlayout->addWidget(btn);
 
