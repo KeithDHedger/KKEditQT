@@ -14,7 +14,6 @@ clean-am:
 
 install-exec-hook:
 	@./buildplugs.sh install $(DESTDIR)/${pkgdatadir}
-	chmod +x $(DESTDIR)$(pkgdatadir)/docs/makedocset
 	strip --strip-all $(DESTDIR)${prefix}/bin/kkeditqt
 
 

@@ -16,24 +16,6 @@ else
 	./setuptools
 fi
 
-FROM=$(ps --no-headers ${PPID}|awk '{print $NF}')
-if  [[ $(basename "$FROM") = "bash" ]];then
-	MAKE=colourmake
-else
-	MAKE=make
-fi
-
-colourmake ()
-{
-	make -j3 $@ \
-|GREP_COLORS='mt=1;37;41' grep -P --line-buffered --color=always  '^[^ ]*|$' \
-|GREP_COLORS='mt=1;37;44' grep -P --line-buffered --color=always  '\-o\s([[:alnum:]\./\-\+_]*)|$' \
-|GREP_COLORS='mt=1;33' grep -P --line-buffered --color=always '([[:alnum:]_/\.]+?(\.c+|\..p+|\.h)\b)|$' \
-|GREP_COLORS='mt=1;32' grep -P --line-buffered --color=always  '\s\-D([[:alnum:]_\./\-\+="\\]*\s)|$' \
-|GREP_COLORS='mt=1;36' grep -P --line-buffered --color=always  '\s-(I|L|l)([[:alnum:]\./\-\+]*(\s|$))|$' \
-|sed G
-}
-
 BUILDLANGPLUGS=${BUILDLANGPLUGS:-1}
 BUILDPLUGS=${BUILDPLUGS:-1}
 BUILDTOOLKITPLUGS=${BUILDTOOLKITPLUGS:-1}
@@ -74,13 +56,13 @@ buildPlug ()
 			mkdir -p build &>/dev/null
 			cd build &>/dev/null
 			$QMAKEPATH .. &>/dev/null
-			$MAKE||exit 100
+			make||exit 100
 			;;
 		 "install")
 			mkdir -p build &>/dev/null
 			cd build &>/dev/null
 			$QMAKEPATH .. &>/dev/null
-		 	$MAKE install||exit 100
+		 	make install||exit 100
 			if [ ${LOCAL:-0} -eq 1 ];then
 				mkdir -vp  ~/.KKEditQT/$PARENTDIR/$THISDIR
 				cp -r plugins/* ~/.KKEditQT/$PARENTDIR/$THISDIR

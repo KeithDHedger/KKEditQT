@@ -733,6 +733,65 @@ void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString c
 	QProcess::startDetached("sh",arguments);
 }
 
+miniPrefsReturnStruct KKEditClass::miniPrefsDialog(QString prefsname,QStringList items,bool liveupdate)
+{
+	miniPrefsReturnStruct	prefs;
+	QSettings				miniprefsname("KDHedger",prefsname);
+	QWidget					*hbox;
+	QVBoxLayout				*docvlayout=new QVBoxLayout;
+	QHBoxLayout				*hlayout;
+	QPushButton				*cancelbutton=new QPushButton("&Cancel");
+	QPushButton				*okbutton=new QPushButton("&Apply");
+	std::string				prefsentry;
+
+	prefs.theDialog=new QDialog();
+
+	QObject::connect(cancelbutton,&QPushButton::clicked,[this,prefs]()
+		{
+			prefs.theDialog->reject();
+		});
+	QObject::connect(okbutton,&QPushButton::clicked,[this,prefs]()
+		{
+			prefs.theDialog->accept();
+		});
+
+	for(int j=0;j<items.size();j++)
+		{
+			hbox=new QWidget;
+			hlayout=new QHBoxLayout;
+			hlayout->setContentsMargins(0,0,0,0);
+			hbox->setLayout(hlayout);
+			hlayout->addWidget(new QLabel(items.at(j)),0,Qt::AlignLeft);
+			prefsentry=LFSTK_UtilityClass::LFSTK_strStrip(items.at(j).toStdString());
+			prefsentry=LFSTK_UtilityClass::LFSTK_strReplaceAllChar(prefsentry," ","",true);
+			prefs.boxes[j]=new QLineEdit(miniprefsname.value(prefsentry.c_str(),"").toString().simplified());	
+			if(liveupdate==true)
+				{
+					QObject::connect(prefs.boxes[j],&QLineEdit::textEdited,[j,items,prefsname,prefs](const QString)
+						{
+							QSettings	miniprefsname("KDHedger",prefsname);
+							std::string	prefsentry=LFSTK_UtilityClass::LFSTK_strStrip(items.at(j).toStdString());
+							prefsentry=LFSTK_UtilityClass::LFSTK_strReplaceAllChar(prefsentry," ","",true);
+							miniprefsname.setValue(prefsentry.c_str(),prefs.boxes[j]->text());
+						});
+				}
+			hlayout->addWidget(prefs.boxes[j],1,Qt::AlignRight);
+			docvlayout->addWidget(hbox);
+		}
+	hbox=new QWidget;
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	hbox->setLayout(hlayout);
+	hlayout->addWidget(cancelbutton);
+	hlayout->addStretch(0);
+	hlayout->addWidget(okbutton);
+
+	docvlayout->addWidget(hbox);
+
+	prefs.theDialog->setLayout(docvlayout);
+	return(prefs);
+}
+
 void KKEditClass::buildDocset(void)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
@@ -743,14 +802,6 @@ void KKEditClass::buildDocset(void)
 	if(doc==NULL)
 		return;
 
-	QDialog		*diag=new QDialog();
-	QVBoxLayout	*docvlayout=new QVBoxLayout;
-	QLineEdit	*projectname;
-	QLineEdit	*versionbox;
-	QLineEdit	*iconbox;
-	QLineEdit	*destdir;
-	QWidget		*hbox;
-	QHBoxLayout	*hlayout;
 	QSettings	buildDocsetPrefs("KDHedger","DocsetPrefs");
 	QString		makedocsfolder=QString("%1/docs/").arg(DATADIR);
 	bool			gotdoxyfile;
@@ -763,17 +814,12 @@ void KKEditClass::buildDocset(void)
 	char			*messaggeError=NULL; 
 	int			exit=0;
 	QDir			d;
-	QPushButton	*cancelbutton=new QPushButton("&Cancel");
-	QPushButton	*okbutton=new QPushButton("&Apply");
+	miniPrefsReturnStruct myprefs;
 
-	QObject::connect(cancelbutton,&QPushButton::clicked,[this,diag]()
-		{
-			diag->reject();
-		});
-	QObject::connect(okbutton,&QPushButton::clicked,[this,diag]()
-		{
-			diag->accept();
-		});
+	QString		projectname;
+	QString		versionbox;
+	QString		iconbox;
+	QString		destdir;
 
 	if(QFile::exists(doc->getDirPath()+"/Doxyfile"))
 		{
@@ -788,82 +834,27 @@ void KKEditClass::buildDocset(void)
 
 	if(gotdoxyfile==false)
 		{
-			projectname=new QLineEdit(buildDocsetPrefs.value("projectname","MyProject").toString().simplified());
-			versionbox=new QLineEdit(buildDocsetPrefs.value("projectversion","0.0.1").toString().simplified());
+			projectname=buildDocsetPrefs.value("ProjectName","MyProject").toString().simplified();
+			versionbox=buildDocsetPrefs.value("ProjectVersion","0.0.1").toString().simplified();
 		}
-		else
-			{
-				projectname=new QLineEdit(runPipeAndCapture(QString("sed -n 's/PROJECT_NAME=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified());
-				versionbox=new QLineEdit(runPipeAndCapture(QString("sed -n 's/PROJECT_NUMBER=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified());	
-			}
-	
-	destdir=new QLineEdit(buildDocsetPrefs.value("projectoutput",QString("%1/.local/share/Zeal/Zeal/docsets").arg(QDir::homePath())).toString());
-	iconbox=new QLineEdit(buildDocsetPrefs.value("projecticon",QString("%1/LFSTux.png").arg(makedocsfolder)).toString());
+	else
+		{
+			projectname=runPipeAndCapture(QString("sed -n 's/PROJECT_NAME=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified();
+			versionbox=runPipeAndCapture(QString("sed -n 's/PROJECT_NUMBER=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified();	
+		}
+	destdir=buildDocsetPrefs.value("DestinationFolder",QString("%1/.local/share/Zeal/Zeal/docsets").arg(QDir::homePath())).toString();
+	iconbox=buildDocsetPrefs.value("IconPath",QString("%1/LFSTux.png").arg(makedocsfolder)).toString();
 
-	hbox=new QWidget;
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	hbox->setLayout(hlayout);
-	hlayout->addWidget(new QLabel("Project Name\t"),Qt::AlignLeft);
-	hlayout->addWidget(projectname,Qt::AlignRight);
-	docvlayout->addWidget(hbox);
+	myprefs=this->miniPrefsDialog("DocsetPrefs",QStringList()<<"Project Name"<<"Project Version"<<"Icon Path"<<"Destination Folder");
+	myprefs.boxes[0]->setText(projectname);
+	myprefs.boxes[1]->setText(versionbox);
+	myprefs.boxes[2]->setText(iconbox);
+	myprefs.boxes[3]->setText(destdir);
+	int res=myprefs.theDialog->exec();
 
-	hbox=new QWidget;
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	hbox->setLayout(hlayout);
-	hlayout->addWidget(new QLabel("Project Version\t"),Qt::AlignLeft);
-	hlayout->addWidget(versionbox,Qt::AlignRight);
-	docvlayout->addWidget(hbox);
-
-	hbox=new QWidget;
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	hbox->setLayout(hlayout);
-	hlayout->addWidget(new QLabel("Icon Path      \t"),Qt::AlignLeft);
-	hlayout->addWidget(iconbox,Qt::AlignRight);
-	docvlayout->addWidget(hbox);
-
-	hbox=new QWidget;
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	hbox->setLayout(hlayout);
-	hlayout->addWidget(new QLabel("Destination Folder\t"),Qt::AlignLeft);
-	hlayout->addWidget(destdir,Qt::AlignRight);
-	docvlayout->addWidget(hbox);
-
-	hbox=new QWidget;
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	hbox->setLayout(hlayout);
-	hlayout->addWidget(cancelbutton);
-	hlayout->addStretch(0);
-	hlayout->addWidget(okbutton);
-
-	docvlayout->addWidget(hbox);
-
-	diag->setLayout(docvlayout);
-
-	int res=diag->exec();
 	if(res==1)
 		{
-			if(projectname->text().isEmpty()==true)
-				projectname->setText("MyProject");
-			buildDocsetPrefs.setValue("projectname",projectname->text());
-
-			if(versionbox->text().isEmpty()==true)
-				versionbox->setText("0.0.1");
-			buildDocsetPrefs.setValue("projectversion",versionbox->text());
-
-			if(destdir->text().isEmpty()==true)
-				destdir->setText(QString("%1/.local/share/Zeal/Zeal/docsets").arg(QDir::homePath()));
-			buildDocsetPrefs.setValue("projectoutput",destdir->text());
-
-			if(iconbox->text().isEmpty()==true)
-				iconbox->setText(QString("%1/LFSTux.png").arg(makedocsfolder));
-			buildDocsetPrefs.setValue("projecticon",iconbox->text());
-
-			runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/;s@^OUTPUT_DIRECTORY.*=.*$@OUTPUT_DIRECTORY=%3@;s/^GENERATE_DOCSET.*=.*$/GENERATE_DOCSET=YES/;s/^SEARCHENGINE.*=.*$/SEARCHENGINE=NO/;s/^DOT_IMAGE_FORMAT.*=.*$/DOT_IMAGE_FORMAT=png/' '%3/Doxyfile'").arg(projectname->text()).arg(versionbox->text()).arg(this->tmpFolderName));
+			runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/;s@^OUTPUT_DIRECTORY.*=.*$@OUTPUT_DIRECTORY=%3@;s/^GENERATE_DOCSET.*=.*$/GENERATE_DOCSET=YES/;s/^SEARCHENGINE.*=.*$/SEARCHENGINE=NO/;s/^DOT_IMAGE_FORMAT.*=.*$/DOT_IMAGE_FORMAT=png/' '%3/Doxyfile'").arg(myprefs.boxes[0]->text()).arg(myprefs.boxes[1]->text()).arg(this->tmpFolderName));
 
 			this->showBarberPole("Building Docset","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
 			fp=popen(QString("pushd '%1'&>/dev/null;doxygen '%2/Doxyfile';popd &>/dev/null").arg(doc->getDirPath()).arg(this->tmpFolderName).toStdString().c_str(),"r");
@@ -885,8 +876,8 @@ void KKEditClass::buildDocset(void)
 			currentdir=QDir::current();
 			QDir::setCurrent(this->tmpFolderName+"/html");
 
-			d.mkpath(destdir->text()+"/"+projectname->text()+".docset/Contents/Resources");
-			exit=sqlite3_open(QString("%1/%2.docset/%3").arg(destdir->text()).arg(projectname->text()).arg("Contents/Resources/docSet.dsidx").toStdString().c_str(),&DB);
+			d.mkpath(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset/Contents/Resources");
+			exit=sqlite3_open(QString("%1/%2.docset/%3").arg(myprefs.boxes[3]->text()).arg(myprefs.boxes[0]->text()).arg("Contents/Resources/docSet.dsidx").toStdString().c_str(),&DB);
 			if(exit!=SQLITE_OK)
 				{ 
 					std::cerr << "Error open DB " << sqlite3_errmsg(DB) << std::endl; 
@@ -903,10 +894,10 @@ void KKEditClass::buildDocset(void)
 				} 
  
 			sqlite3_exec(DB,"BEGIN TRANSACTION",NULL,NULL,&messaggeError);
-			this->runNoOutput(QString("cp -rvp %1 %2").arg(this->tmpFolderName+"/html/").arg(destdir->text()+"/"+projectname->text()+".docset/Contents/Resources/Documents"));
-			this->runNoOutput(QString("cp %1/html/Info.plist %2").arg(this->tmpFolderName).arg(destdir->text()+"/"+projectname->text()+".docset/Contents/"));
-			this->runNoOutput(QString("convert %1 -resize 16x16 %2/icon.png").arg(iconbox->text()).arg(destdir->text()+"/"+projectname->text()+".docset"));
-			this->runNoOutput(QString("convert %1 -resize 32x32 %2/icon@2x.png").arg(iconbox->text()).arg(destdir->text()+"/"+projectname->text()+".docset"));
+			this->runNoOutput(QString("cp -rp %1 %2").arg(this->tmpFolderName+"/html/").arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset/Contents/Resources/Documents"));
+			this->runNoOutput(QString("cp %1/html/Info.plist %2").arg(this->tmpFolderName).arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset/Contents/"));
+			this->runNoOutput(QString("convert %1 -resize 16x16 %2/icon.png").arg(myprefs.boxes[2]->text()).arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset"));
+			this->runNoOutput(QString("convert %1 -resize 32x32 %2/icon@2x.png").arg(myprefs.boxes[2]->text()).arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset"));
 			fp=popen("kkeditqttagreader Tokens.xml Token Name Type Path Anchor","r");
 			if(fp!=NULL)
 				{
@@ -943,19 +934,20 @@ void KKEditClass::buildDocset(void)
 
 			this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
 		}
-	delete diag;
+	delete myprefs.theDialog;
 }
 
 void KKEditClass::buildDocs(void)
 {
-	DocumentClass	*doc=this->getDocumentForTab(-1);
-	FILE				*fp;
-	char				line[4096];
-	QString			pipecom;
-	QFileInfo		fileinfo;
-	QDir				currentdir;
-	bool				gotdoxyfile;
-	QSettings		buildDocsPrefs("KDHedger","DocsPrefs");
+	DocumentClass			*doc=this->getDocumentForTab(-1);
+	FILE						*fp;
+	char						line[4096];
+	QDir						currentdir;
+	bool						gotdoxyfile;
+	QSettings				buildDocsPrefs("KDHedger","DocsPrefs");
+	miniPrefsReturnStruct	myprefs;
+	QString					projectname;
+	QString					versionbox;
 
 	if(doc==NULL)
 		return;
@@ -973,79 +965,33 @@ void KKEditClass::buildDocs(void)
 			gotdoxyfile=false;
 		}
 
-	QDialog		*diag=new QDialog();
-	QVBoxLayout	*docvlayout=new QVBoxLayout;
-	QWidget		*hbox;
-	QHBoxLayout	*hlayout;
-	QPushButton	*cancelbutton=new QPushButton("&Cancel");
-	QPushButton	*okbutton=new QPushButton("&Apply");
-	QLineEdit	*projectname;
-	QLineEdit	*versionbox;
-
-	QObject::connect(cancelbutton,&QPushButton::clicked,[this,diag]()
-		{
-			diag->reject();
-		});
-	QObject::connect(okbutton,&QPushButton::clicked,[this,diag]()
-		{
-			diag->accept();
-		});
 
 	if(gotdoxyfile==false)
 		{
-			projectname=new QLineEdit(buildDocsPrefs.value("projectname","MyProject").toString().simplified());
-			versionbox=new QLineEdit(buildDocsPrefs.value("projectversion","0.0.1").toString().simplified());
+			projectname=buildDocsPrefs.value("ProjectName","MyProject").toString().simplified();
+			versionbox=buildDocsPrefs.value("ProjectVersion","0.0.1").toString().simplified();
 		}
 	else
 		{
-			projectname=new QLineEdit(runPipeAndCapture(QString("sed -n 's|PROJECT_NAME=\\(.*\\)|\\1|p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified());
-			versionbox=new QLineEdit(runPipeAndCapture(QString("sed -n 's|PROJECT_NUMBER=\\(.*\\)|\\1|p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified());	
+			projectname=runPipeAndCapture(QString("sed -n 's/PROJECT_NAME=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified();
+			versionbox=runPipeAndCapture(QString("sed -n 's/PROJECT_NUMBER=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified();	
 		}
-	
-	hbox=new QWidget;
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	hbox->setLayout(hlayout);
-	hlayout->addWidget(new QLabel("Project Name\t"),Qt::AlignLeft);
-	hlayout->addWidget(projectname,Qt::AlignRight);
-	docvlayout->addWidget(hbox);
 
-	hbox=new QWidget;
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	hbox->setLayout(hlayout);
-	hlayout->addWidget(new QLabel("Project Version\t"),Qt::AlignLeft);
-	hlayout->addWidget(versionbox,Qt::AlignRight);
-	docvlayout->addWidget(hbox);
 
-	hbox=new QWidget;
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	hbox->setLayout(hlayout);
-	hlayout->addWidget(cancelbutton);
-	hlayout->addStretch(0);
-	hlayout->addWidget(okbutton);
+	myprefs=this->miniPrefsDialog("DocsPrefs",QStringList()<<"Project Name"<<"Project Version");
+	myprefs.boxes[0]->setText(projectname);
+	myprefs.boxes[1]->setText(versionbox);
 
-	docvlayout->addWidget(hbox);
-
-	diag->setLayout(docvlayout);
-
-	int res=diag->exec();
+	int res=myprefs.theDialog->exec();	
 	if(res==1)
 		{
-			if(projectname->text().isEmpty()==false)
-				buildDocsPrefs.setValue("projectname",projectname->text());
-
-			if(versionbox->text().isEmpty()==false)
-				buildDocsPrefs.setValue("projectversion",versionbox->text());
-
-			QString com=QString("sed -i 's|^PROJECT_NAME=.*$|PROJECT_NAME=%1|;s|^PROJECT_NUMBER=.*$|PROJECT_NUMBER=%2|;s|^GENERATE_DOCSET=.*$|GENERATE_DOCSET=YES|;s|^SERVER_BASED_SEARCH=.*$|SERVER_BASED_SEARCH=NO|' '%3'").arg(projectname->text()).arg(versionbox->text()).arg("Doxyfile");
+			QString com=QString("sed -i 's|^PROJECT_NAME=.*$|PROJECT_NAME=%1|;s|^PROJECT_NUMBER=.*$|PROJECT_NUMBER=%2|;s|^GENERATE_DOCSET=.*$|GENERATE_DOCSET=YES|;s|^SERVER_BASED_SEARCH=.*$|SERVER_BASED_SEARCH=NO|' '%3'").arg(myprefs.boxes[0]->text()).arg(myprefs.boxes[1]->text()).arg("Doxyfile");
 			runPipeAndCapture(com);
-			delete diag;
+			delete myprefs.theDialog;
 		}
 	else
 		{
-			delete diag;
+			delete myprefs.theDialog;
 			return;
 		}
 

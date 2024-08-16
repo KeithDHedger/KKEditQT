@@ -173,6 +173,12 @@ struct pluginStruct
 #endif
 };
 
+struct miniPrefsReturnStruct
+{
+	QDialog					*theDialog;
+	QHash<int,QLineEdit*>	boxes;
+};
+
 class KKEditClass : public QObject
 {
 	Q_OBJECT
@@ -261,6 +267,7 @@ class KKEditClass : public QObject
 
 		void							writeExitData(void);
 		int							yesNoDialog(QString txt,QString info);
+		miniPrefsReturnStruct		miniPrefsDialog(QString prefsname,QStringList items,bool liveupdate=true);
 
 //webpage
 		void							showWebPage(QString windowtitle,QString url);

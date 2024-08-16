@@ -709,7 +709,6 @@ void KKEditClass::buildMainGui(void)
 	QObject::connect(this->mainNotebook,SIGNAL(customContextMenuRequested(const QPoint &)),SLOT(tabContextMenu(const QPoint &)));
 
 	QObject::connect(this->mainNotebook,SIGNAL(currentChanged(int)),this,SLOT(switchPage(int)));
-	//QObject::connect(this->mainNotebook,SIGNAL(tabBarClicked(int)),this,SLOT(switchPage(int)));
 	QObject::connect(this->mainNotebook,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));
 
 	this->menuBar=new QMenuBar;

@@ -1,3 +1,9 @@
+1.6.0
+Fixed main Makefile.am.
+Code clean.
+Cleaned buildplugs script.
+Removed redundant makedocset script.
+
 1.5.2
 Speed improvements for bulddocset.
 Fixed segfault when restoring session when a file has a bookmakrk entry but cant be found.
