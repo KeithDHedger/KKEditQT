@@ -454,7 +454,7 @@ class KKEditClass : public QObject
 		bool							goToDefinition(const QString txt);
 		bool							findDefInFolders(QString searchtxt);
 		void							showLineEntry(void);
-		void							gotoLine(int linenumber);
+		bool							gotoLine(int linenumber);
 		void							reloadDocument(void);
 		void							setCompWordList(void);
 		void							insertCompletion(const QString &completion);

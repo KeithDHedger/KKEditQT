@@ -172,7 +172,7 @@ bool KKEditClass::findDefInFolders(QString searchtxt)
 	return(retval);
 }
 
-void KKEditClass::gotoLine(int linenumber)
+bool KKEditClass::gotoLine(int linenumber)
 {
 	DocumentClass	*doc=NULL;
 	QTextBlock		block;
@@ -184,7 +184,7 @@ void KKEditClass::gotoLine(int linenumber)
 
 	doc=this->getDocumentForTab(-1);
 	if(doc==NULL)
-		return;
+		return(false);
 	block=doc->document()->findBlockByNumber(theline-1);
 
 	if(block.isValid()==false)
@@ -192,6 +192,7 @@ void KKEditClass::gotoLine(int linenumber)
 	cursor=doc->textCursor();
 	cursor.setPosition(block.position());
 	doc->setTextCursor(cursor);
+	return(true);
 }
 
 void KKEditClass::reloadDocument(void)

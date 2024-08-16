@@ -41,6 +41,8 @@
 #include <vector>
 #include <map>
 
+#include <sqlite3.h>
+
 #include <QApplication>
 #include <QtWidgets>
 #include <QSettings>

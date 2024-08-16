@@ -4,6 +4,7 @@ AM_CPPFLAGS =	-I$(top_srcdir) \
 			$(QTPRINTSUPPORT_CFLAGS) \
 			$(QTCORE_CFLAGS) \
 			$(WEBENGINEWIDGETS_CFLAGS) \
+			$(SQLITE_CFLAGS) \
 			-DPREFIX=\""${prefix}\"" \
 			-DLOCALEDIR=\""${localedir}"\" \
 			-DDATADIR=\""${pkgdatadir}"\" \
@@ -16,5 +17,7 @@ LIBS =		$(X11_LIBS) \
 			$(QTCORE_LIBS) \
 			$(QTPRINTSUPPORT_LIBS) \
 			$(WEBENGINEWIDGETS_LIBS) \
-			$(ASPELL_LIBS)
+			$(ASPELL_LIBS) \
+			$(SQLITE_LIBS)
+			
 

@@ -1,4 +1,10 @@
 1.5.2
+Speed improvements for bulddocset.
+Fixed segfault when restoring session when a file has a bookmakrk entry but cant be found.
+Added sqlite3 as dependency.
+Fixed not showing documentaion after building.
+Fixed default names/versions in dialogs for building docs/docset.
+Fixed delay before showing progress bar when building docs.
 Added 'Reload' to plugin prefs dialog.
 Docview now automatically goes to page when 'Search In Docsets' only has one result.
 Changed document plugin .info files to either show/not show in 'Find API' menu,

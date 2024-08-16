@@ -736,11 +736,8 @@ void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString c
 void KKEditClass::buildDocset(void)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
-	struct stat		sb;
 	FILE				*fp;
 	char				line[4096];
-	QString			pipecom;
-	QFileInfo		fileinfo;
 	QDir				currentdir;
 
 	if(doc==NULL)
@@ -754,10 +751,20 @@ void KKEditClass::buildDocset(void)
 	QLineEdit	*destdir;
 	QWidget		*hbox;
 	QHBoxLayout	*hlayout;
-	QPushButton	*cancelbutton=new QPushButton("&Cancel");
-	QPushButton	*okbutton=new QPushButton("&Apply");
 	QSettings	buildDocsetPrefs("KDHedger","DocsetPrefs");
 	QString		makedocsfolder=QString("%1/docs/").arg(DATADIR);
+	bool			gotdoxyfile;
+	QString		thename;
+	QString		thetype;
+	QString		thepath;
+	QString		theanchor;
+	sqlite3		*DB;
+	QString		sql;
+	char			*messaggeError=NULL; 
+	int			exit=0;
+	QDir			d;
+	QPushButton	*cancelbutton=new QPushButton("&Cancel");
+	QPushButton	*okbutton=new QPushButton("&Apply");
 
 	QObject::connect(cancelbutton,&QPushButton::clicked,[this,diag]()
 		{
@@ -768,8 +775,28 @@ void KKEditClass::buildDocset(void)
 			diag->accept();
 		});
 
-	projectname=new QLineEdit(buildDocsetPrefs.value("projectname","MyProject").toString());
-	versionbox=new QLineEdit(buildDocsetPrefs.value("projectversion","0.0.1").toString());
+	if(QFile::exists(doc->getDirPath()+"/Doxyfile"))
+		{
+			gotdoxyfile=true;
+			QProcess::execute("cp",QStringList()<<doc->getDirPath()+"/Doxyfile"<<this->tmpFolderName);
+		}
+	else
+		{
+			QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<this->tmpFolderName);
+			gotdoxyfile=false;
+		}
+
+	if(gotdoxyfile==false)
+		{
+			projectname=new QLineEdit(buildDocsetPrefs.value("projectname","MyProject").toString().simplified());
+			versionbox=new QLineEdit(buildDocsetPrefs.value("projectversion","0.0.1").toString().simplified());
+		}
+		else
+			{
+				projectname=new QLineEdit(runPipeAndCapture(QString("sed -n 's/PROJECT_NAME=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified());
+				versionbox=new QLineEdit(runPipeAndCapture(QString("sed -n 's/PROJECT_NUMBER=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified());	
+			}
+	
 	destdir=new QLineEdit(buildDocsetPrefs.value("projectoutput",QString("%1/.local/share/Zeal/Zeal/docsets").arg(QDir::homePath())).toString());
 	iconbox=new QLineEdit(buildDocsetPrefs.value("projecticon",QString("%1/LFSTux.png").arg(makedocsfolder)).toString());
 
@@ -836,11 +863,9 @@ void KKEditClass::buildDocset(void)
 				iconbox->setText(QString("%1/LFSTux.png").arg(makedocsfolder));
 			buildDocsetPrefs.setValue("projecticon",iconbox->text());
 
-			QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<this->tmpFolderName);
 			runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/;s@^OUTPUT_DIRECTORY.*=.*$@OUTPUT_DIRECTORY=%3@;s/^GENERATE_DOCSET.*=.*$/GENERATE_DOCSET=YES/;s/^SEARCHENGINE.*=.*$/SEARCHENGINE=NO/;s/^DOT_IMAGE_FORMAT.*=.*$/DOT_IMAGE_FORMAT=png/' '%3/Doxyfile'").arg(projectname->text()).arg(versionbox->text()).arg(this->tmpFolderName));
 
 			this->showBarberPole("Building Docset","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
-
 			fp=popen(QString("pushd '%1'&>/dev/null;doxygen '%2/Doxyfile';popd &>/dev/null").arg(doc->getDirPath()).arg(this->tmpFolderName).toStdString().c_str(),"r");
 			if(fp!=NULL)
 				{
@@ -857,18 +882,165 @@ void KKEditClass::buildDocset(void)
 					return;
 				}
 
-			fp=popen(QString("pushd '%1'&>/dev/null;ICONPATH='%4' SOURCEHTML=html DOCSET_NAME=%2 DESTDIR='%3' '%5/makedocset';popd &>/dev/null").arg(this->tmpFolderName).arg(projectname->text()).arg(destdir->text()).arg(iconbox->text()).arg(makedocsfolder).toStdString().c_str(),"r");
+			currentdir=QDir::current();
+			QDir::setCurrent(this->tmpFolderName+"/html");
+
+			d.mkpath(destdir->text()+"/"+projectname->text()+".docset/Contents/Resources");
+			exit=sqlite3_open(QString("%1/%2.docset/%3").arg(destdir->text()).arg(projectname->text()).arg("Contents/Resources/docSet.dsidx").toStdString().c_str(),&DB);
+			if(exit!=SQLITE_OK)
+				{ 
+					std::cerr << "Error open DB " << sqlite3_errmsg(DB) << std::endl; 
+					return; 
+				}
+
+			sql="CREATE TABLE searchIndex(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT);CREATE UNIQUE INDEX anchor ON searchIndex (name, type, path);";
+			exit=sqlite3_exec(DB,sql.toStdString().c_str(),NULL,0,&messaggeError); 
+
+			if(exit != SQLITE_OK)
+				{ 
+					std::cerr << "Error Creating Table" << messaggeError << std::endl; 
+					sqlite3_free(messaggeError); 
+				} 
+ 
+			sqlite3_exec(DB,"BEGIN TRANSACTION",NULL,NULL,&messaggeError);
+			this->runNoOutput(QString("cp -rvp %1 %2").arg(this->tmpFolderName+"/html/").arg(destdir->text()+"/"+projectname->text()+".docset/Contents/Resources/Documents"));
+			this->runNoOutput(QString("cp %1/html/Info.plist %2").arg(this->tmpFolderName).arg(destdir->text()+"/"+projectname->text()+".docset/Contents/"));
+			this->runNoOutput(QString("convert %1 -resize 16x16 %2/icon.png").arg(iconbox->text()).arg(destdir->text()+"/"+projectname->text()+".docset"));
+			this->runNoOutput(QString("convert %1 -resize 32x32 %2/icon@2x.png").arg(iconbox->text()).arg(destdir->text()+"/"+projectname->text()+".docset"));
+			fp=popen("kkeditqttagreader Tokens.xml Token Name Type Path Anchor","r");
 			if(fp!=NULL)
 				{
 					while(fgets(line,4095,fp))
 						{
 							line[strlen(line)-1]=0;
-							this->runNoOutput(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
+							thename=QString(line).section(' ',0,0).section('=',1,1);
+							thetype=QString(line).section(' ',1,1).section('=',1,1);
+							thepath=QString(line).section(' ',2,2).section('=',1,1);
+							theanchor=QString(line).section(' ',3,3).section('=',1,1);
+							if((thename.isEmpty()==true) || (thepath.isEmpty()==true))
+								continue;
+							if(thename.length()<NAME_MAX)
+								{
+									this->runNoOutput(QString("echo -n \"%1 %3 ...\n0\" >\"%2/progress\"").arg("Adding").arg(this->tmpFolderName).arg(thename));
+									if(theanchor.isEmpty()==false)
+										thepath=thepath+"#"+theanchor;
+									sql="insert into searchindex (name,type,path) values ('"+thename+"','"+thetype+"','"+thepath+"');";
+									exit=sqlite3_exec(DB,sql.toStdString().c_str(),NULL,0,&messaggeError);
+									if(exit != SQLITE_OK)
+										{ 
+											std::cerr << "Error Insert: " << messaggeError<<std::endl; 
+											sqlite3_free(messaggeError); 
+										}
+								}
 						}
 					pclose(fp);
 				}
 
+			sqlite3_exec(DB,"END TRANSACTION",NULL,NULL,&messaggeError);
+			sqlite3_close(DB); 
+
+			QDir::setCurrent(currentdir.canonicalPath());
+
 			this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
+		}
+	delete diag;
+}
+
+void KKEditClass::buildDocs(void)
+{
+	DocumentClass	*doc=this->getDocumentForTab(-1);
+	FILE				*fp;
+	char				line[4096];
+	QString			pipecom;
+	QFileInfo		fileinfo;
+	QDir				currentdir;
+	bool				gotdoxyfile;
+	QSettings		buildDocsPrefs("KDHedger","DocsPrefs");
+
+	if(doc==NULL)
+		return;
+
+	currentdir=QDir::current();
+	QDir::setCurrent(doc->getDirPath());
+
+	if(QFile::exists(doc->getDirPath()+"/Doxyfile"))
+		{
+			gotdoxyfile=true;
+		}
+	else
+		{
+			QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<doc->getDirPath());
+			gotdoxyfile=false;
+		}
+
+	QDialog		*diag=new QDialog();
+	QVBoxLayout	*docvlayout=new QVBoxLayout;
+	QWidget		*hbox;
+	QHBoxLayout	*hlayout;
+	QPushButton	*cancelbutton=new QPushButton("&Cancel");
+	QPushButton	*okbutton=new QPushButton("&Apply");
+	QLineEdit	*projectname;
+	QLineEdit	*versionbox;
+
+	QObject::connect(cancelbutton,&QPushButton::clicked,[this,diag]()
+		{
+			diag->reject();
+		});
+	QObject::connect(okbutton,&QPushButton::clicked,[this,diag]()
+		{
+			diag->accept();
+		});
+
+	if(gotdoxyfile==false)
+		{
+			projectname=new QLineEdit(buildDocsPrefs.value("projectname","MyProject").toString().simplified());
+			versionbox=new QLineEdit(buildDocsPrefs.value("projectversion","0.0.1").toString().simplified());
+		}
+	else
+		{
+			projectname=new QLineEdit(runPipeAndCapture(QString("sed -n 's|PROJECT_NAME=\\(.*\\)|\\1|p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified());
+			versionbox=new QLineEdit(runPipeAndCapture(QString("sed -n 's|PROJECT_NUMBER=\\(.*\\)|\\1|p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified());	
+		}
+	
+	hbox=new QWidget;
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	hbox->setLayout(hlayout);
+	hlayout->addWidget(new QLabel("Project Name\t"),Qt::AlignLeft);
+	hlayout->addWidget(projectname,Qt::AlignRight);
+	docvlayout->addWidget(hbox);
+
+	hbox=new QWidget;
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	hbox->setLayout(hlayout);
+	hlayout->addWidget(new QLabel("Project Version\t"),Qt::AlignLeft);
+	hlayout->addWidget(versionbox,Qt::AlignRight);
+	docvlayout->addWidget(hbox);
+
+	hbox=new QWidget;
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	hbox->setLayout(hlayout);
+	hlayout->addWidget(cancelbutton);
+	hlayout->addStretch(0);
+	hlayout->addWidget(okbutton);
+
+	docvlayout->addWidget(hbox);
+
+	diag->setLayout(docvlayout);
+
+	int res=diag->exec();
+	if(res==1)
+		{
+			if(projectname->text().isEmpty()==false)
+				buildDocsPrefs.setValue("projectname",projectname->text());
+
+			if(versionbox->text().isEmpty()==false)
+				buildDocsPrefs.setValue("projectversion",versionbox->text());
+
+			QString com=QString("sed -i 's|^PROJECT_NAME=.*$|PROJECT_NAME=%1|;s|^PROJECT_NUMBER=.*$|PROJECT_NUMBER=%2|;s|^GENERATE_DOCSET=.*$|GENERATE_DOCSET=YES|;s|^SERVER_BASED_SEARCH=.*$|SERVER_BASED_SEARCH=NO|' '%3'").arg(projectname->text()).arg(versionbox->text()).arg("Doxyfile");
+			runPipeAndCapture(com);
 			delete diag;
 		}
 	else
@@ -876,90 +1048,10 @@ void KKEditClass::buildDocset(void)
 			delete diag;
 			return;
 		}
-}
-
-void KKEditClass::buildDocs(void)
-{
-	DocumentClass	*doc=this->getDocumentForTab(-1);
-	struct stat		sb;
-	FILE				*fp;
-	char				line[4096];
-	QString			pipecom;
-	QFileInfo		fileinfo;
-	QDir				currentdir;
-
-	if(doc==NULL)
-		return;
-
-	currentdir=QDir::current();
-	QDir::setCurrent(doc->getDirPath());
-	stat("Doxyfile",&sb);
-	if(!S_ISREG(sb.st_mode))
-		{			
-			QDialog		*diag=new QDialog();
-			QVBoxLayout	*docvlayout=new QVBoxLayout;
-			QLineEdit	*projectname;
-			QLineEdit	*versionbox;
-			QWidget		*hbox;
-			QHBoxLayout	*hlayout;
-			QPushButton	*cancelbutton=new QPushButton("&Cancel");
-			QPushButton	*okbutton=new QPushButton("&Apply");
-
-			QObject::connect(cancelbutton,&QPushButton::clicked,[this,diag]()
-				{
-					diag->reject();
-				});
-			QObject::connect(okbutton,&QPushButton::clicked,[this,diag]()
-				{
-					diag->accept();
-				});
-			projectname=new QLineEdit;
-			versionbox=new QLineEdit;
-
-			hbox=new QWidget;
-			hlayout=new QHBoxLayout;
-			hlayout->setContentsMargins(0,0,0,0);
-			hbox->setLayout(hlayout);
-			hlayout->addWidget(new QLabel("Project Name\t"),Qt::AlignLeft);
-			hlayout->addWidget(projectname,Qt::AlignRight);
-			docvlayout->addWidget(hbox);
-
-			hbox=new QWidget;
-			hlayout=new QHBoxLayout;
-			hlayout->setContentsMargins(0,0,0,0);
-			hbox->setLayout(hlayout);
-			hlayout->addWidget(new QLabel("Project Version\t"),Qt::AlignLeft);
-			hlayout->addWidget(versionbox,Qt::AlignRight);
-			docvlayout->addWidget(hbox);
-
-			hbox=new QWidget;
-			hlayout=new QHBoxLayout;
-			hlayout->setContentsMargins(0,0,0,0);
-			hbox->setLayout(hlayout);
-			hlayout->addWidget(cancelbutton);
-			hlayout->addStretch(0);
-			hlayout->addWidget(okbutton);
-
-			docvlayout->addWidget(hbox);
-
-			diag->setLayout(docvlayout);
-
-			int res=diag->exec();
-			if(res==1)
-				{
-					QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<".");
-					runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/;s/^GENERATE_DOCSET.*=.*$/GENERATE_DOCSET=YES/' '%3'").arg(projectname->text()).arg(versionbox->text()).arg("Doxyfile"));
-					delete diag;
-				}
-			else
-				{
-					delete diag;
-					return;
-				}
-		}
 
 	this->showBarberPole("Building Docs","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
-	fp=popen("( cat Doxyfile ; echo -e \"SERVER_BASED_SEARCH=NO\nGENERATE_DOCSET=YES\" ) | doxygen -","r");
+	this->runNoOutput(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg("Building Docs, Please Wait...").arg(this->tmpFolderName));
+	fp=popen("doxygen Doxyfile","r");
 	if(fp!=NULL)
 		{
 			while(fgets(line,4095,fp))
@@ -975,9 +1067,9 @@ void KKEditClass::buildDocs(void)
 			return;
 		}		
 
-	this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
 	this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
 	QDir::setCurrent(currentdir.canonicalPath());
+	this->showDocs();
 }
 
 void KKEditClass::showDocs(void)
@@ -993,9 +1085,6 @@ void KKEditClass::showDocs(void)
 		this->buildDocs();
 	else
 		{
-			//QString com=QString("/bin/echo '<meta http-equiv=\"refresh\" content=\"0; URL='file://%1'\" />' > %2").arg(fileinfo.absoluteFilePath()).arg(this->htmlFile);
-			//QProcess::execute("/bin/sh",QStringList()<<"-c"<<com);
-			//this->showWebPage("Doxygen Documentation","file://" + this->htmlFile);
 			this->showWebPage("Doxygen Documentation",QString("file://%1/html/index.html").arg(doc->getDirPath()));
 		}
 }
@@ -1388,13 +1477,12 @@ void KKEditClass::showWebPage(QString windowtitle,QString url)
 		this->docView->setWindowTitle(windowtitle);
 
 	this->webEngView->load(QUrl::fromUserInput(url));
+	this->docView->setWindowState(Qt::WindowNoState);//TODO//doesnt work
+	this->setDocMenu();
 	this->docView->show();
 	this->docView->activateWindow();
 	this->docView->raise();
 
-	this->docView->setWindowState(Qt::WindowNoState);//TODO//doesnt work
-
-	this->setDocMenu();
 #else
 	QDesktopServices::openUrl(QUrl(url));
 #endif

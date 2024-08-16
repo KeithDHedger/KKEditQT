@@ -119,6 +119,11 @@ if test $MANPAGEEDITOR = false; then
 	AC_MSG_NOTICE([https://github.com/KeithDHedger/ManPageEditor])
 fi
 
+SQLITE_MODULES="sqlite3 >= 3.45.0"
+PKG_CHECK_MODULES(SQLITE, $SQLITE_MODULES)
+AC_SUBST(SQLITE_CFLAGS)
+AC_SUBST(SQLITE_LIBS)
+
 AC_MSG_CHECKING(whether to enable debug code)
 AC_ARG_ENABLE(debugcode,AS_HELP_STRING([--enable-debugcode],[Debug code]),
     [enable_debugcode=$enableval],

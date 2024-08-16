@@ -160,6 +160,8 @@ void KKEditClass::doSessionsMenuItems(void)
 					QString sessionname;
 					QString filename;
 					QString bookmark;
+					bool gotafile=false;
+
 					sessionname=in.readLine();//sessionname
 					int		x,y,w,h;//geometry
 					QString unused;//reserved
@@ -179,16 +181,20 @@ void KKEditClass::doSessionsMenuItems(void)
 							filename=in.readLine().trimmed();
 							linenumber=-1;
 							this->runNoOutput(QString("echo -e \"Opening %1 ...\n%3\">\"%2/session\" &").arg(filename.trimmed()).arg(this->tmpFolderName).arg(cntfiles++));
-							this->openFile(filename,0,false,false);
+							gotafile=this->openFile(filename,0,false,false);
 							do
 								{
 									in >> linenumber;
 									bookmark=in.readLine().trimmed();
+									if(gotafile==false)
+										continue;
 									if(linenumber>0)
 										{
-											this->gotoLine(linenumber);
-											QTextCursor tc;
-											this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM,tc);
+											if(this->gotoLine(linenumber)==true)
+												{
+													QTextCursor tc;
+													this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM,tc);
+												}
 										}
 								}
 							while(linenumber!=-1);
