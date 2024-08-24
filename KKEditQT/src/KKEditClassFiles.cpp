@@ -352,8 +352,8 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 {
 	DocumentClass	*doc=new DocumentClass(this);
 	bool				retval=false;
-	QFile			file(filepath);
-	QFileInfo		fileinfo(file);
+
+	int				correctedln=linenumber;
 	int				tabnum;
 	QMimeDatabase	db;
 	QMimeType		type;
@@ -361,10 +361,25 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	plugData			pd;
 	QIcon			tabicon(QString("%1/pixmaps/empty.png").arg(DATADIR));
 
+	QString			corrected=LFSTK_UtilityClass::LFSTK_strStr(filepath.toStdString(),"@").c_str();
+	if(corrected.isEmpty()==false)
+		{
+			QString line=corrected;
+			corrected=LFSTK_UtilityClass::LFSTK_strReplaceAllStr(filepath.toStdString(),corrected.toStdString(),"",true).c_str();
+			correctedln=QString(LFSTK_UtilityClass::LFSTK_strReplaceAllChar(line.toStdString(),"@","",true).c_str()).toInt();
+		}
+	else
+		{
+			corrected=filepath;
+		}
+		
+	QFile			file(corrected);
+	QFileInfo		fileinfo(file);
+
 	if((this->prefsNoOpenduplicate==true) && (this->checkForOpenFile(fileinfo.canonicalFilePath())==true))
 		{
-			if(linenumber>0)
-				this->gotoLine(linenumber);
+			if(correctedln>0)
+				this->gotoLine(correctedln);
 			return(true);
 		}
 
@@ -384,8 +399,8 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
 			this->mainNotebook->setTabToolTip(tabnum,doc->getFilePath());
 			this->mainNotebook->setCurrentIndex(tabnum);
-			if(linenumber>0)
-				this->gotoLine(linenumber);
+			if(correctedln>0)
+				this->gotoLine(correctedln);
 			doc->setHiliteLanguage();
 			doc->highlighter->rehighlight();
 			doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);

@@ -1,4 +1,5 @@
 1.6.0
+Adding  @NNN after filename will open file at line NNN eg:kkeditqt /etc/fstab@5, if file is already open just select tab and jump to line.
 Fixed main Makefile.am.
 Code clean.
 Cleaned buildplugs script.
