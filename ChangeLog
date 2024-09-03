@@ -1,4 +1,5 @@
 1.6.0
+Added global search for define to toolbar.
 Searching in current document now includes local defines.
 Added line nunmber of define in dropdown box when finding definition.
 Go to definition button in toolbar now only searches in the current document.
