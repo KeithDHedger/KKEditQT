@@ -71,6 +71,7 @@ MenuItemClass* KKEditClass::makeMenuItemClass(int mainmenu,const QString name,co
 				break;
 
 			case NOMENU:
+				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doOddMenuItems()));
 				break;
 		}
 

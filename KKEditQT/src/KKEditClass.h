@@ -32,7 +32,7 @@ enum {UNDOMENUITEM=0x9000,REDOMENUITEM,UNDOALLMENUITEM,REDOALLMENUITEM,EDSEP1,CU
 //view
 enum {DOCSMENUITEM=0xa000,TOGGLETOOLBARMENUITEM,TOGGLETOOLWINDOWMENUITEM,TOGGLESTATUSBARMENUITEM,TOGGLEDOCVIEWMENUITEM,RAISEDOCVIEWMENUITEM,TOGGLELINENUMBERSMENUITEM,TOGGLELINEWRAPMENUITEM,TOGGLEHILITELINEMENUITEM,TOGGLEWHITESPACEMENUITEM,TOGGLESYNTAXHILITINGMENUITEM,TOGGLECOMPLETIONSMENUITEM};
 //nav
-enum {GOTODEFINEMENUITEM=0xb000,OPENINCLUDEMENUITEM,GOTOLINEMENUITEM,SEARCHFORDEFINEMENUITEM,SEARCHDOXYDOCS,GOBACKMENUITEM,GOFORWARDMENUITEM};
+enum {GOTODEFINEMENUITEM=0xb000,OPENINCLUDEMENUITEM,GOTOLINEMENUITEM,SEARCHFORDEFINEMENUITEM,SEARCHDOXYDOCS,GOBACKMENUITEM,GOFORWARDMENUITEM,GOTODEFINEMENUSINGLEITEM};
 //func
 //bms
 enum {REMOVEALLBOOKMARKSMENUITEM=0xc000,TOGGLEBOOKMARKMENUITEM,REMOVEBOOKMARKSFROMPAGE};
@@ -407,6 +407,7 @@ class KKEditClass : public QObject
 //nav menu
 		QMenu						*navMenu;
 		MenuItemClass				*goToDefineMenuItem;
+		MenuItemClass				*goToDefineMenuSingleItem;
 		MenuItemClass				*goBackMenu;
 		MenuItemClass				*goFowardMenu;
 		MenuItemClass				*goToLineDialogMenuItem;
@@ -458,8 +459,8 @@ class KKEditClass : public QObject
 //document functions
 		DocumentClass				*getDocumentForTab(int tabnum);
 		void							resetAllFilePrefs(void);
-		bool							goToDefinition(const QString txt);
-		bool							findDefInFolders(QString searchtxt);
+		bool							goToDefinition(const QString txt,bool singlepage=false);
+		bool							findDefInFolders(QString searchtxt,bool singlepage=false);
 		void							showLineEntry(void);
 		bool							gotoLine(int linenumber);
 		void							reloadDocument(void);

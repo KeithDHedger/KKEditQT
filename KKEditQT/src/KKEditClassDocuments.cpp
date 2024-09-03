@@ -42,7 +42,7 @@ void KKEditClass::resetAllFilePrefs(void)
 		}
 }
 
-bool KKEditClass::goToDefinition(const QString txt)
+bool KKEditClass::goToDefinition(const QString txt,bool singlepage)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 	QString			searchfor;
@@ -61,10 +61,10 @@ bool KKEditClass::goToDefinition(const QString txt)
 				searchfor=txt.trimmed();
 		}
 
-	return(this->findDefInFolders(searchfor));
+	return(this->findDefInFolders(searchfor,singlepage));
 }
 
-bool KKEditClass::findDefInFolders(QString searchtxt)
+bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 {
 	struct docResultStruct
 		{
@@ -90,6 +90,8 @@ bool KKEditClass::findDefInFolders(QString searchtxt)
 
 	r.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
 
+	if(singlepage==false)
+	{
 	for(int j=0;j<this->mainNotebook->count();j++)
 		{
 			QDirIterator it(this->getDocumentForTab(j)->getDirPath(),{"*.*[^.o]"},QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
@@ -100,9 +102,18 @@ bool KKEditClass::findDefInFolders(QString searchtxt)
 						files<<it.filePath();
 				}	
 		}
+	}
+	else
+	{
+		files<<doc->getFilePath();
+	}
+	
 	files.removeDuplicates();
 	f=files.join(" ");
-	command=QString("ctags -x %1").arg(f);
+	if(singlepage==true)
+		command=QString("ctags --kinds-all='*' -x %1").arg(f);
+	else
+		command=QString("ctags -x %1").arg(f);
 	comresults=this->runPipeAndCapture(command);
 	list=comresults.split("\n",Qt::SkipEmptyParts);
 
@@ -136,7 +147,8 @@ bool KKEditClass::findDefInFolders(QString searchtxt)
 				});
 
 			for(int h=0;h<resultmap.size();h++)
-				searchcombobox->addItem(resultmap[h].tagType+": "+resultmap[h].tagName+" > "+QFileInfo(resultmap[h].tagPath).fileName());
+				searchcombobox->addItem(resultmap[h].tagType+": "+resultmap[h].tagName+" > "+QFileInfo(resultmap[h].tagPath).fileName()+QString(":%1").arg(resultmap[h].lineNumber));
+
 			vlayout->addWidget(searchcombobox);
 
 			hlayout=new QHBoxLayout;

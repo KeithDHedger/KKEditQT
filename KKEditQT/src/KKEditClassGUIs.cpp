@@ -966,8 +966,10 @@ void KKEditClass::buildMainGui(void)
 
 //goto define
 	goToDefineMenuItem=this->makeMenuItemClass(NAVMENU,"Go To Definition",0,"dialog-question",GOTODEFMENUNAME,GOTODEFINEMENUITEM);
+	goToDefineMenuSingleItem=this->makeMenuItemClass(NOMENU,"Go To Definition In This Page",0,"dialog-question",GOTODEFMENUSINGLENAME,GOTODEFINEMENUSINGLEITEM);
+	
 //open include
-	menuItemSink=this->makeMenuItemClass(NAVMENU,"Open Include File",QKeySequence::fromString("Ctrl+I"),"document-open",GOTODEFMENUNAME,OPENINCLUDEMENUITEM);
+	menuItemSink=this->makeMenuItemClass(NAVMENU,"Open Include File",QKeySequence::fromString("Ctrl+I"),"document-open",OPENINCLUDEMENUNAME,OPENINCLUDEMENUITEM);
 //goto line number
 	goToLineDialogMenuItem=this->makeMenuItemClass(NAVMENU,"Go To Line",0,"go-down",GOTOLINEMENUNAME,GOTOLINEMENUITEM);
 //find define

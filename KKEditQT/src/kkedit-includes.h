@@ -148,6 +148,7 @@ enum msgActions {ACTIVATEAPPMSG=100,OPENFILEMSG,NEWFILEMSG,SAVEFILEMSG,SAVEFILEA
 #define SHOWDOCVIEWERMENUNAME "showdocviewer"
 #define RAISEDOCVIEWERMENUNAME "raisedocviewer"
 #define GOTODEFMENUNAME "gotodefinemenu"
+#define GOTODEFMENUSINGLENAME "gotodefinemenusingle"
 #define OPENINCLUDEMENUNAME "openincludemenu"
 #define GOTOLINEMENUNAME "gotolinemenu"
 #define SEARCHFORDEFMENUNAME "searchfordefmenu"

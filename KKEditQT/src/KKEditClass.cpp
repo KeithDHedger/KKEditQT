@@ -123,7 +123,7 @@ void KKEditClass::setUpToolBar(void)
 						break;
 //navigation
 					case 'G':
-						this->toolBar->addAction(qobject_cast<QAction*>(this->goToDefineMenuItem));
+						this->toolBar->addAction(qobject_cast<QAction*>(this->goToDefineMenuSingleItem));
 						break;
 //go back
 					case 'B':

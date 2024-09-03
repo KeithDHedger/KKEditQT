@@ -1408,6 +1408,7 @@ void KKEditClass::doTabBarContextMenu(void)
 void KKEditClass::doOddMenuItems(void)
 {
 	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+
 #ifdef _ASPELL_
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 #endif
@@ -1423,6 +1424,11 @@ void KKEditClass::doOddMenuItems(void)
 						}
 #endif
 					break;
+
+				case GOTODEFINEMENUSINGLEITEM:
+					this->goToDefinition("",true);
+				break;
+
 			}
 }
 
