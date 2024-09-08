@@ -802,6 +802,75 @@ void KKEditClass::doFileMenuItems()
 			case QUITMENUITEM:
 				this->shutDownApp();//TODO.//
 				break;
+			case EXPORTTOPDFMENUITEM:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+
+					if(doc==NULL)
+						return;
+
+					chooserDialogClass	chooser(chooserDialogType::saveDialog,QString("%1.pdf").arg(doc->getFileName()));
+
+					chooser.setMultipleSelect(false);
+					chooser.gFind.LFSTK_sortByTypeAndName();
+					chooser.gFind.LFSTK_setIgnoreBroken(true);
+					chooser.setShowImagesInList(false);
+					chooser.addFileTypes(".pdf");
+					chooser.addFileTypes("All Files");
+					chooser.dialogWindow.exec();
+					if(chooser.valid==true)
+						{
+							QPrinter printer;
+							printer.setPageSize(QPageSize((QPageSize::PageSizeId)this->prefsPageSize));
+							printer.setFullPage(true);
+							printer.setOutputFormat(QPrinter::PdfFormat);
+							printer.setOutputFileName(chooser.selectedFilePath);
+							doc->print(&printer);
+							if(this->gotPDFCrop==0)
+								{
+									this->showBarberPole("Running external tool pdfcrop ...","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
+									this->runNoOutput(QString("echo -n Croping, please wait ... >\"%1/progress\"").arg(this->tmpFolderName));
+
+									QString command=QString("pdfcrop --margins \"10 10 10 10\" '%1' '%2'").arg(chooser.selectedFilePath).arg(chooser.selectedFilePath);
+									this->runPipeAndCapture(command);
+									this->runNoOutput(QString("echo -e quit>\"%1/progress\"").arg(this->tmpFolderName));
+								}
+
+//QTextDocument document1;
+//document1.setHtml(doc->document()->toHtml());
+//QPrinter printer1(QPrinter::PrinterResolution);
+//printer1.setOutputFormat(QPrinter::PdfFormat);
+//printer1.setPaperSize(QPrinter::A4);
+//printer1.setOutputFileName("/tmp/test.pdf");
+//printer1.setPageMargins(QMarginsF(1, 1, 1, 1));
+//document1.setPageSize(printer1.pageRect().size());
+//document1.print(&printer1);
+						}
+				}
+				break;
+			case IMPORTFROMPDFMENUITEM:
+				{
+					chooserDialogClass	chooser(chooserDialogType::loadDialog);
+
+					chooser.setMultipleSelect(false);
+					chooser.gFind.LFSTK_sortByTypeAndName();
+					chooser.gFind.LFSTK_setIgnoreBroken(true);
+					chooser.setShowImagesInList(false);
+					chooser.addFileTypes(".pdf");
+					chooser.addFileTypes("All Files");
+					chooser.dialogWindow.exec();
+					if(chooser.valid==true)
+						{
+							QString fn;
+							if(chooser.selectedFileName.endsWith(".pdf"))
+								fn=chooser.selectedFileName.left(chooser.selectedFileName.length()-4);
+							else
+								fn=chooser.selectedFileName;
+							QString command=QString("pdftotext -nopgbrk -q -layout -nodiag -eol unix '%1' -|sed 'N;/\\n.*[0-9][0-9]*/d;P;D'|sed '$d'| unexpand --tabs=%4 >'/%2/%3'").arg(chooser.selectedFilePath).arg(this->tmpFolderName).arg(fn).arg(this->prefsTabWidth);
+							this->runPipeAndCapture(command);
+							this->openFile(QString("/%1/%2").arg(this->tmpFolderName).arg(fn));										
+						}
+				}
 		}
 }
 
@@ -1280,6 +1349,9 @@ void KKEditClass::setPreferences(void)
 
 //print command
 	this->prefsPrintCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSPRINTCOMMAND])->text();
+//pagesize
+	this->prefsPageSize=qobject_cast<QComboBox*>(prefsOtherWidgets[PREFSPAGESIZE])->currentIndex();
+
 //term command
 	this->prefsTerminalCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSTERMCOMMAND])->text();
 //root command

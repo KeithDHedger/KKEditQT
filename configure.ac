@@ -100,9 +100,46 @@ if test "$enable_aspell" = "yes"; then
 	AC_DEFINE([_ASPELL_], [], [Include spellchecker])
 fi
 
-AC_CHECK_PROG(CTAGS, ctags ,true,false)
-if test $CTAGS = false; then
+SQLITE_MODULES="sqlite3 >= 3.45.0"
+PKG_CHECK_MODULES(SQLITE, $SQLITE_MODULES)
+AC_SUBST(SQLITE_CFLAGS)
+AC_SUBST(SQLITE_LIBS)
+
+AC_MSG_CHECKING(whether to enable debug code)
+AC_ARG_ENABLE(debugcode,AS_HELP_STRING([--enable-debugcode],[Debug code]),
+    [enable_debugcode=$enableval],
+    [enable_debugcode="no"])
+AC_MSG_RESULT($enable_debugcode)
+if test "$enable_debugcode" = "yes"; then
+	AC_DEFINE([_DEBUGCODE_], [], [Debug code])
+fi
+
+AC_MSG_NOTICE(Checking for external programs ...)
+
+AC_CHECK_PROG(CTAGSS, ctags ,true,false)
+if test $CTAGSS = false; then
 	AC_MSG_ERROR([No ctags program found!])
+fi
+
+AC_CHECK_PROG(PDFTOTEXT, pdftotext,true,false)
+if test $PDFTOTEXT = false; then
+	AC_MSG_NOTICE([No pdftotext program found!])
+	AC_MSG_NOTICE([You wont be able to import pdf's until you install it ( part of the poppler pkg )])
+	AC_MSG_NOTICE([You don't need to recompile after installing pdftotext )])
+fi
+
+AC_CHECK_PROG(PDFCROP, pdfcrop ,true,false)
+if test $PDFCROP = false; then
+	AC_MSG_NOTICE([No pdfcrop program found!])
+	AC_MSG_NOTICE([PDF's wont set margins properly until you install it ( part of the texlive pkg )])
+	AC_MSG_NOTICE([You don't need to recompile after installing pdfcrop )])
+fi
+
+AC_CHECK_PROG(DOXYGEN, doxygen ,true,false)
+if test $DOXYGEN = false; then
+	AC_MSG_NOTICE([No doxygen program found!])
+	AC_MSG_NOTICE([Wont be able to build documentaion or docsets until you install it])
+	AC_MSG_NOTICE([You don't need to recompile after installing doxygen )])
 fi
 
 AC_CHECK_PROG(QTSU, qtsu ,true,false)
@@ -119,21 +156,6 @@ if test $MANPAGEEDITOR = false; then
 	AC_MSG_NOTICE([https://github.com/KeithDHedger/ManPageEditor])
 fi
 
-SQLITE_MODULES="sqlite3 >= 3.45.0"
-PKG_CHECK_MODULES(SQLITE, $SQLITE_MODULES)
-AC_SUBST(SQLITE_CFLAGS)
-AC_SUBST(SQLITE_LIBS)
-
-AC_MSG_CHECKING(whether to enable debug code)
-AC_ARG_ENABLE(debugcode,AS_HELP_STRING([--enable-debugcode],[Debug code]),
-    [enable_debugcode=$enableval],
-    [enable_debugcode="no"])
-AC_MSG_RESULT($enable_debugcode)
-if test "$enable_debugcode" = "yes"; then
-	AC_DEFINE([_DEBUGCODE_], [], [Debug code])
-fi
-
-#AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile KKEditQT/kkeditqtmsg/Makefile KKEditQT/pole/Makefile)
 AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile KKEditQT/helpers/Makefile)
 AC_OUTPUT
 

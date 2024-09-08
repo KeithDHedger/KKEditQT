@@ -113,6 +113,7 @@ class DocumentClass : public QPlainTextEdit
 		void								mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 		void								mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 		
+		
 		void								paintEvent(QPaintEvent* event);
 //dand
 		void								dragEnterEvent(QDragEnterEvent* event);

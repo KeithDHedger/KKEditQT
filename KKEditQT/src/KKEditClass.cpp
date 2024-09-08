@@ -366,6 +366,8 @@ void KKEditClass::initApp(int argc,char** argv)
 //qDebug()<<this->tmpFolderName;
 	this->gotDoxygen=QProcess::execute("sh",QStringList()<<"-c"<<"which doxygen 2>&1 >/dev/null");
 	this->gotManEditor=QProcess::execute("sh",QStringList()<<"-c"<<"which manpageeditor 2>&1 >/dev/null");
+	this->gotPDFToText=QProcess::execute("sh",QStringList()<<"-c"<<"which pdftotext 2>&1 >/dev/null");
+	this->gotPDFCrop=QProcess::execute("sh",QStringList()<<"-c"<<"which pdfcrop 2>&1 >/dev/null");
 
 	this->mainThemeProxy=new ProxyStyle();
 // take ownership to avoid memleak
@@ -460,6 +462,7 @@ void KKEditClass::readConfigs(void)
 	this->prefsNoWarnings=this->prefs.value("editor/nowarnings",QVariant(bool(false))).value<bool>();
 	this->recentFiles->maxFiles=this->prefs.value("editor/maxrecents",10).toInt();
 	this->prefsPrintCommand=this->prefs.value("editor/printcommand","").toString();
+	this->prefsPageSize=this->prefs.value("editor/prefspagesize","").toInt();
 
 //document
 	this->prefsHighLightline=this->prefs.value("document/highlightline",QVariant(bool(true))).value<bool>();
@@ -622,6 +625,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("editor/nowarnings",this->prefsNoWarnings);
 	this->prefs.setValue("editor/maxrecents",this->recentFiles->maxFiles);
 	this->prefs.setValue("editor/printcommand",this->prefsPrintCommand);
+	this->prefs.setValue("editor/prefspagesize",this->prefsPageSize);
 	
 //document
 	this->prefs.setValue("document/indent",this->prefsIndent);

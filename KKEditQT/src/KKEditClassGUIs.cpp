@@ -335,6 +335,28 @@ void KKEditClass::buildPrefsWindow(void)
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[PREFSPRINTCOMMAND],posy,1,1,-1,Qt::AlignVCenter);
 
+//page size;
+	posy++;
+	prefsOtherWidgets[PREFSPAGESIZE]=new QComboBox;
+	QPageSize ps;
+	for(int j=0;j<QPageSize::LastPageSize;j++)
+		{
+			ps=QPageSize((QPageSize::PageSizeId)j);
+			if(ps.name().isEmpty()==true)
+				qobject_cast<QComboBox*>(prefsOtherWidgets[PREFSPAGESIZE])->addItem("Custom");
+			else
+				qobject_cast<QComboBox*>(prefsOtherWidgets[PREFSPAGESIZE])->addItem(ps.name());
+		}
+	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE]),QOverload<int>::of(&QComboBox::activated),[this](int index)
+		{
+			this->prefsPageSize=qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE])->currentIndex();
+		});
+	qobject_cast<QComboBox*>(prefsOtherWidgets[PREFSPAGESIZE])->setCurrentIndex(this->prefsPageSize);
+
+	widgetlabel=new QLabel("PDF Page Size:");
+	table->addWidget(widgetlabel,posy,0);
+	table->addWidget(prefsOtherWidgets[PREFSPAGESIZE],posy,1,1,-1);
+
 //root command
 	posy++;
     widgetlabel=new QLabel("Run As Root Command:");
@@ -782,6 +804,11 @@ void KKEditClass::buildMainGui(void)
 
 //printfile
 	this->printMenuItem=this->makeMenuItemClass(FILEMENU,"Print",QKeySequence::Print,"document-print",PRINTMENUNAME,PRINTMENUITEM);
+//export/import
+	if(this->gotPDFCrop==0)
+		menuItemSink=this->makeMenuItemClass(FILEMENU,"Export To PDF",0,"stock_export",EXPORTTOPDFMENUNAME,EXPORTTOPDFMENUITEM);
+	if(this->gotPDFToText==0)
+		menuItemSink=this->makeMenuItemClass(FILEMENU,"Import From PDF",0,"stock_export",IMPORTFROMPDFMENUNAME,IMPORTFROMPDFMENUITEM);
 
 	this->fileMenu->addSeparator();
 

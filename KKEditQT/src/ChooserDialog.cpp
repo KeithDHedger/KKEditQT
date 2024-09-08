@@ -754,8 +754,8 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 		geom=QSize(800,600);
 	this->dialogWindow.resize(geom);
 
-	command=QString("pushd %1/;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd").arg(this->recentFilesPath).arg(this->maxRecents);
+	command=QString("pushd %1/ >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd >/dev/null").arg(this->recentFilesPath).arg(this->maxRecents);
 	system(command.toStdString().c_str());
-	command=QString("pushd %1;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd").arg(this->recentFoldersPath).arg(this->maxRecents);
+	command=QString("pushd %1 >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd >/dev/null").arg(this->recentFoldersPath).arg(this->maxRecents);
 	system(command.toStdString().c_str());
 }

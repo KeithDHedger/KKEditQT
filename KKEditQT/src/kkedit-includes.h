@@ -120,6 +120,8 @@ enum msgActions {ACTIVATEAPPMSG=100,OPENFILEMSG,NEWFILEMSG,SAVEFILEMSG,SAVEFILEA
 #define RESTOREDEFAULTSESSIONMENUNAME "restoredefaultsessionmenu"
 
 #define PRINTMENUNAME "printmenu"
+#define EXPORTTOPDFMENUNAME "printtopdf"
+#define IMPORTFROMPDFMENUNAME "printfrompdf"
 #define CLOSEMENUNAME "closemenu"
 #define CLOSEALLMENUNAME "closeallmenu"
 #define SORTTABSMENUNAME "sorttabsmenu"
