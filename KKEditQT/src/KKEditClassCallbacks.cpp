@@ -108,7 +108,15 @@ void KKEditClass::doSessionsMenuItems(void)
 						}
 
 					QTextStream(&file) << sessionname << Qt::endl;
-					QTextStream(&file) << this->mainWindow->geometry().x() << " " << this->mainWindow->geometry().y() << " " <<this->mainWindow->geometry().width() << " " << this->mainWindow->geometry().height() << Qt::endl;
+					QRect rg;
+					QRect rf;
+					rg=this->mainWindow->geometry();
+					rf=this->mainWindow->frameGeometry();
+					rf.setHeight(rf.height()-(rf.height()-rg.height()));
+					rf.setWidth(rf.width()-(rf.width()-rg.width()));
+
+					//QTextStream(&file) << this->mainWindow->geometry().x() << " " << this->mainWindow->geometry().y() << " " <<this->mainWindow->geometry().width() << " " << this->mainWindow->geometry().height() << Qt::endl;
+					QTextStream(&file) << rf.x() << " " << rf.y() << " " <<rf.width() << " " << rf.height() << Qt::endl;
 					QTextStream(&file) << "#RESERVED" << Qt::endl;
 					QTextStream(&file) << "#RESERVED" << Qt::endl;
 					QTextStream(&file) << "#RESERVED" << Qt::endl;
@@ -174,6 +182,17 @@ void KKEditClass::doSessionsMenuItems(void)
 					unused=in.readLine().trimmed();
 					unused=in.readLine().trimmed();
 
+					if(in.atEnd()==true)
+						{
+							this->currentSessionNumber=sessionnumber;
+							file.close();
+							this->mainWindow->setGeometry(x,y,w,h);
+							this->rebuildTabsMenu();
+							this->setToolbarSensitive();
+							this->mainWindow->repaint();
+							return;
+						}
+
 					while(in.atEnd()==false)
 						{
 							in >> mainline;
@@ -201,6 +220,7 @@ void KKEditClass::doSessionsMenuItems(void)
 							this->setTabVisibilty(this->mainNotebook->currentIndex(),visible);
 							this->gotoLine(mainline);
 						}
+
 					this->runNoOutput(QString("echo -ne \"Finishing ...\n%1\">\"%2/session\"").arg(retdata).arg(this->tmpFolderName));
 					sleep(1);
 					this->runNoOutput(QString("echo -e quit>\"%1/session\"").arg(this->tmpFolderName));
@@ -222,7 +242,7 @@ void KKEditClass::doSessionsMenuItems(void)
 					doc->dirty=false;
 					doc->visible=this->mainNotebook->isTabVisible(j);
 				}
-		}
+		
 
 	this->sessionBusy=false;
 	this->setCompWordList();
@@ -234,8 +254,10 @@ void KKEditClass::doSessionsMenuItems(void)
 					break;
 				}
 		}
+		}
 	this->rebuildTabsMenu();
 	this->setToolbarSensitive();
+	this->mainWindow->repaint();
 }
 
 void KKEditClass::doBookmarkMenuItems()

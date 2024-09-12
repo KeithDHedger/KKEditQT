@@ -29,21 +29,6 @@ int main (int argc, char **argv)
 	QDir				commsDir;
 	QApplication		*napp=new QApplication(argc,argv);
 
-
-
-//QPrinter p;
-//QPageSize ps;
-//for(int j=0;j<QPageSize::LastPageSize;j++)
-//{
-//	ps=QPageSize((QPageSize::PageSizeId)j);
-//	if(ps.name().isEmpty()==true)
-//		qDebug()<<"Custom";
-//	else
-//		qDebug()<<ps.name();
-//}
-//
-//return 1;
-
 	napp->setOrganizationName("KDHedger");
 	napp->setApplicationName("KKEditQT");
 

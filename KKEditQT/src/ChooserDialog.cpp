@@ -460,6 +460,7 @@ void chooserDialogClass::buildMainGui(void)
 	QVBoxLayout	*infovlayout=new QVBoxLayout;
 	QVBoxLayout	*controlsvlayout=new QVBoxLayout;
 	QHBoxLayout	*hlayout=new QHBoxLayout;
+	//QFrame		*line=new QFrame();
 
 	this->dialogWindow.setWindowTitle("Select File");
 
@@ -471,6 +472,9 @@ void chooserDialogClass::buildMainGui(void)
 			this->selectItem(index);
 		});
 
+	//this->fileList.setStyleSheet(QString("QFrame {border-width: 1px;border-color: palette(dark); border-style: solid;border-right-color: palette(Midlight);border-bottom-color: palette(Midlight)}"));
+	this->fileList.setStyleSheet(QString("QFrame {border-width: 1px;border-color: palette(dark); border-style: solid;}"));
+	//;border-right-color: palette(Midlight);border-bottom-color: palette(Midlight)}"));
 	QObject::connect(&this->fileList,&QListView::doubleClicked,[this](const QModelIndex &index)
 		{
 			QString t;
@@ -554,6 +558,7 @@ void chooserDialogClass::buildMainGui(void)
 	this->fileList.setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	sidevlayout->addWidget(&this->sideList);
+
 	QPushButton *deletefav=new QPushButton("Remove Fav");
 	deletefav->setIcon(QIcon::fromTheme("stock_cancel"));
 	QObject::connect(deletefav,&QPushButton::clicked,[this]()
@@ -571,7 +576,17 @@ void chooserDialogClass::buildMainGui(void)
 	this->previewIcon.setAlignment(Qt::AlignCenter);
 
 	hlayout->addLayout(sidevlayout,1);
+//	line->setFrameShape(QFrame::VLine);//TODO//
+//	line->setStyleSheet(QString("QFrame {border-width: 600px; border-style: solid}"));
+//	hlayout->addWidget(line);
+
 	hlayout->addLayout(filevlayout,3);
+//	line=new QFrame();
+//	line->setStyleSheet(QString("QFrame {border-width: 10px; border-style: solid}"));
+//	line->setFrameShape(QFrame::VLine);
+//	line->setLineWidth(0);
+//	hlayout->addWidget(line);
+
 	hlayout->addLayout(infovlayout);
 	
 	this->previewMimeType.setWordWrap(true);

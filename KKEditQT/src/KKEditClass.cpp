@@ -431,8 +431,9 @@ void KKEditClass::initApp(int argc,char** argv)
 
 	if(this->forceDefaultGeom==false)
 		r=this->prefs.value("app/geometry",QVariant(QRect(50,50,1024,768))).value<QRect>();
-	this->mainWindow->setGeometry(r);
 
+	this->mainWindow->setGeometry(r);
+ 
 //this->onExitSaveSession //TODO//
 	this->setToolbarSensitive();
 	this->mainWindow->show();
@@ -603,14 +604,27 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 
 void KKEditClass::writeExitData(void)
 {
+	QRect rg;
+	QRect rf;
+
 	if(this->verySafeFlag==true)
 		return;
 //editor
 	if(this->forceDefaultGeom==false)
-		this->prefs.setValue("app/geometry",this->mainWindow->geometry());
+		{
+			rg=this->mainWindow->geometry();
+			rf=this->mainWindow->frameGeometry();
+			rf.setHeight(rf.height()-(rf.height()-rg.height()));
+			rf.setWidth(rf.width()-(rf.width()-rg.width()));
+			this->prefs.setValue("app/geometry",rf);
+		}
 
 #ifdef _BUILDDOCVIEWER_
-	this->prefs.setValue("app/viewergeometry",this->docView->geometry());
+	rg=this->docView->geometry();//TODO//
+	rf=this->docView->frameGeometry();//TODO//
+	rf.setHeight(rf.height()-(rf.height()-rg.height()));
+	rf.setWidth(rf.width()-(rf.width()-rg.width()));
+	this->prefs.setValue("app/viewergeometry",rf);
 #endif
 
 	this->prefs.setValue("editor/funcsort",this->prefsFunctionMenuLayout);
@@ -1471,6 +1485,9 @@ void KKEditClass::setCompWordList(void)
 	QString				paths;
 	DocumentClass		*doc;
 	QAbstractItemModel	*model;
+
+	if(this->mainNotebook->count()==0)
+		return;
 
 	for(int j=0;j<this->mainNotebook->count();j++)
 		{

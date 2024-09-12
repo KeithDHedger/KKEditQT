@@ -1,4 +1,7 @@
 1.6.0
+Fixed freeze on restoring empty sesion.
+Better save restore of main/doc viewer windows.
+GUI tweak to file dialog.
 Tided configure output.
 Added export to PDF ( page size is in prefs ).
 Added import from PDF ( will only import text from pdf ).
