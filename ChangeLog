@@ -1,4 +1,7 @@
 1.6.0
+Fixed saving dialog geometry.
+Fixed saving file including suffix to recentfiles.
+Fixed entering path in filedialog.
 Fixed freeze on restoring empty sesion.
 Better save restore of main/doc viewer windows.
 GUI tweak to file dialog.

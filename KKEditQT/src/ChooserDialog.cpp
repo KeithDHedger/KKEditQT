@@ -412,9 +412,33 @@ void chooserDialogClass::setFileData(void)
 	list=model->selectedIndexes();
 	this->multiFileList.clear();
 
-	for(int j=0;j<list.count();j++)
+	if(list.count()>0)
 		{
-			filepath=QFileInfo(this->localWD+"/"+list.at(j).data(Qt::UserRole).toString()).absoluteFilePath();
+			for(int j=0;j<list.count();j++)
+				{
+					filepath=QFileInfo(this->localWD+"/"+list.at(j).data(Qt::UserRole).toString()).absoluteFilePath();
+					if(QFileInfo(filepath).isDir()==false)
+						{
+							if(this->recentFilesPath.compare(this->localWD)==0)
+								{
+									this->multiFileList.push_back(QFileInfo(QString("%1").arg(filepath)).canonicalFilePath());
+								}
+							else
+								{
+									this->multiFileList.push_back(filepath);
+								}
+							QFile f(filepath);
+							recentfiles=QString("%1/%2").arg(this->recentFilesPath).arg(list.at(j).data(Qt::UserRole).toString());
+							f.link(recentfiles);
+							f.setFileName(this->realFolderPath);
+							recentfiles=QString("%1/%2").arg(this->recentFoldersPath).arg(QFileInfo(this->realFolderPath).fileName());
+							f.link(recentfiles);
+						}
+				}
+		}
+	else
+		{
+			filepath=this->realFilePath;
 			if(QFileInfo(filepath).isDir()==false)
 				{
 					if(this->recentFilesPath.compare(this->localWD)==0)
@@ -426,14 +450,22 @@ void chooserDialogClass::setFileData(void)
 							this->multiFileList.push_back(filepath);
 						}
 					QFile f(filepath);
-					recentfiles=QString("%1/%2").arg(this->recentFilesPath).arg(list.at(j).data(Qt::UserRole).toString());
+					recentfiles=QString("%1/%2").arg(this->recentFilesPath).arg(QFileInfo(filepath).fileName());
 					f.link(recentfiles);
 					f.setFileName(this->realFolderPath);
 					recentfiles=QString("%1/%2").arg(this->recentFoldersPath).arg(QFileInfo(this->realFolderPath).fileName());
 					f.link(recentfiles);
 				}
 		}
-	prefs.setValue("size",this->dialogWindow.size());
+//	prefs.setValue("size",this->dialogWindow.size());
+	QRect rg;
+	QRect rf;
+	rg=this->dialogWindow.geometry();
+	rf=this->dialogWindow.frameGeometry();
+	rf.setHeight(rf.height()-(rf.height()-rg.height()));
+	rf.setWidth(rf.width()-(rf.width()-rg.width()));
+	prefs.setValue("size",rf);
+
 	if(this->saveDialog==true)
 		prefs.setValue("lastsavefolder",this->localWD);
 	else
@@ -460,7 +492,6 @@ void chooserDialogClass::buildMainGui(void)
 	QVBoxLayout	*infovlayout=new QVBoxLayout;
 	QVBoxLayout	*controlsvlayout=new QVBoxLayout;
 	QHBoxLayout	*hlayout=new QHBoxLayout;
-	//QFrame		*line=new QFrame();
 
 	this->dialogWindow.setWindowTitle("Select File");
 
@@ -472,9 +503,7 @@ void chooserDialogClass::buildMainGui(void)
 			this->selectItem(index);
 		});
 
-	//this->fileList.setStyleSheet(QString("QFrame {border-width: 1px;border-color: palette(dark); border-style: solid;border-right-color: palette(Midlight);border-bottom-color: palette(Midlight)}"));
 	this->fileList.setStyleSheet(QString("QFrame {border-width: 1px;border-color: palette(dark); border-style: solid;}"));
-	//;border-right-color: palette(Midlight);border-bottom-color: palette(Midlight)}"));
 	QObject::connect(&this->fileList,&QListView::doubleClicked,[this](const QModelIndex &index)
 		{
 			QString t;
@@ -576,17 +605,7 @@ void chooserDialogClass::buildMainGui(void)
 	this->previewIcon.setAlignment(Qt::AlignCenter);
 
 	hlayout->addLayout(sidevlayout,1);
-//	line->setFrameShape(QFrame::VLine);//TODO//
-//	line->setStyleSheet(QString("QFrame {border-width: 600px; border-style: solid}"));
-//	hlayout->addWidget(line);
-
 	hlayout->addLayout(filevlayout,3);
-//	line=new QFrame();
-//	line->setStyleSheet(QString("QFrame {border-width: 10px; border-style: solid}"));
-//	line->setFrameShape(QFrame::VLine);
-//	line->setLineWidth(0);
-//	hlayout->addWidget(line);
-
 	hlayout->addLayout(infovlayout);
 	
 	this->previewMimeType.setWordWrap(true);
@@ -677,9 +696,19 @@ void chooserDialogClass::buildMainGui(void)
 				}
 			else
 				{
+					QString tp;
 					if(this->filepathEdit.text().isEmpty()==true)
 						return;
-					QString tp=QString("%1/%2").arg(this->localWD).arg(this->filepathEdit.text());
+					if(this->filepathEdit.text().at(0)=='/')
+						{
+							tp=this->filepathEdit.text();
+							this->localWD=QFileInfo(tp).dir().canonicalPath();
+						}
+					else		
+						{
+							tp=QString("%1/%2").arg(this->localWD).arg(this->filepathEdit.text());
+						}
+
 					if((QFileInfo(tp).exists()==true) && (this->overwriteWarning==true) && (this->saveDialog==true))
 						{
 							QMessageBox::StandardButton reply=QMessageBox::question(&this->dialogWindow,"File exists","File exists! Overwrite?",QMessageBox::Yes|QMessageBox::No);
@@ -726,9 +755,9 @@ void chooserDialogClass::setMaxRecents(int maxrecents)
 chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QString startfolder)
 {
 	QSettings	prefs("KDHedger","ChooserDialog");
-	QSize		geom(800,600);
 	QDir			folders("/");
 	QString		command;
+	QRect		r;
 
 	this->recentFoldersPath=QString("%1/.config/KDHedger/recentfolders").arg(QDir::homePath());
 	this->recentFilesPath=QString("%1/.config/KDHedger/recentfiles").arg(QDir::homePath());
@@ -764,10 +793,9 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 		this->localWD="/";
 
 	this->buildMainGui();
-	geom=prefs.value("size").toSize();
-	if(geom.isEmpty()==true)
-		geom=QSize(800,600);
-	this->dialogWindow.resize(geom);
+
+	r=prefs.value("size",QVariant(QRect(50,50,800,600))).value<QRect>();
+	this->dialogWindow.setGeometry(r);
 
 	command=QString("pushd %1/ >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd >/dev/null").arg(this->recentFilesPath).arg(this->maxRecents);
 	system(command.toStdString().c_str());
