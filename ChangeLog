@@ -1,4 +1,5 @@
 1.6.0
+Set main window title.
 Fixed saving dialog geometry.
 Fixed saving file including suffix to recentfiles.
 Fixed entering path in filedialog.

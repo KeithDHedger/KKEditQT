@@ -205,6 +205,7 @@ void KKEditClass::switchPage(int index)
 	if(doc==NULL)
 		return;
 
+	this->mainWindow->setWindowTitle("KKEditQT - "+doc->getFileName());
 	doc->setStatusBarText();
 	doc->clearHilites();
 	if(doc->state==CHANGEDONDISKTAB)
