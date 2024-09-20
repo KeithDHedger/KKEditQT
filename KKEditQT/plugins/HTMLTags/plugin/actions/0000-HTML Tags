@@ -1,0 +1,5 @@
+#Format
+#$1 = path to document
+#$2 = text to edit
+#all output replace selected text or is inderted at cursor.
+#stderr should be directed to /dev/null

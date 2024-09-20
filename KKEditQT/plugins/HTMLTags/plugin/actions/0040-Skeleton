@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DOCUMENT="$1"
+shift
+echo '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">'
+echo '<html>'
+echo '	<head>'
+echo "		<title>$DOCUMENT</title>"
+echo '	</head>'
+echo '	<body>'
+echo '	</body>'
+echo '</html>'

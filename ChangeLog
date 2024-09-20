@@ -1,4 +1,5 @@
 1.6.0
+Added HTML tag plugin.
 Set main window title.
 Fixed saving dialog geometry.
 Fixed saving file including suffix to recentfiles.

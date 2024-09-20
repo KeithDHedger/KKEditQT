@@ -1,0 +1,26 @@
+#!/bin/bash
+
+COLOUR=""
+
+DOCUMENT="$1"
+shift
+
+GOTYADQT=$(which yadqt 2>/dev/null)
+if [[ $? -eq 0 ]];then
+	RESULT=$($GOTYADQT --type=colour)
+	if [[ $? -eq 1 ]];then
+		exit
+	fi
+	COLOUR=$(echo "$RESULT"|awk -F, '{print $1}')
+else
+	GOTYADQT=$(which yad 2>/dev/null)
+	if [[ $? -eq 0 ]];then
+		RESULT=$($GOTYADQT --color)
+		if [[ $? -eq 1 ]];then
+			exit
+		fi
+		COLOUR=$(echo "$RESULT"|awk -F, '{print $1}')
+	fi
+fi
+
+echo -n "<div style=\"color:${COLOUR};\">${@}</div>"

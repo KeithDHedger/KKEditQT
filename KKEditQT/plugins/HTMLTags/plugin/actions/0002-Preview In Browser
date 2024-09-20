@@ -1,0 +1,5 @@
+#!/bin/bash
+
+DOCUMENT="$1"
+shift
+xdg-open "$DOCUMENT" &>/dev/null &
