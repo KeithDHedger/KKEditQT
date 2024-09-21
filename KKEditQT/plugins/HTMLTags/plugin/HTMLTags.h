@@ -31,7 +31,7 @@ class HTMLTags : public QObject, kkEditQTPluginInterface
 
 	public:
 		void				initPlug(KKEditClass *kk,QString pathtoplug) override;
-		void				unloadPlug(void) override {};
+		void				unloadPlug(void) override;
 		void				plugAbout(void) override;
 		void				plugSettings(void) override {};
 		void				plugRun(plugData *data) override;
@@ -40,7 +40,7 @@ class HTMLTags : public QObject, kkEditQTPluginInterface
 	private:
 		QMenu			*htmlContextMenu=NULL;
 		QString			runPipeAndCapture(QString command);
-
+		QString			rootMenuName;
 		DocumentClass 	*document;
 		QString			selection;
 		QTextCursor		tc;

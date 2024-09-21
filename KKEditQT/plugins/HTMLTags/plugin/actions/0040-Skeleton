@@ -2,7 +2,7 @@
 
 DOCUMENT="$1"
 shift
-echo '<!DOCTYPE html>>'
+echo '<!DOCTYPE html>'
 echo '<html>'
 echo '	<head>'
 echo "		<title>$DOCUMENT</title>"

@@ -1,4 +1,6 @@
 1.6.0
+Added submenus to HTML tag plugin.
+Fixed a number of outdated tags.
 Added HTML tag plugin.
 Set main window title.
 Fixed saving dialog geometry.

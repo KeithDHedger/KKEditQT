@@ -25,4 +25,4 @@ else
 		SIZE=$(echo "$RESULT"|awk -F\| '{print $3}')
 	fi
 fi
-echo -n "<div style=\"font-family:${FONTNAME};font-size:${SIZE}px;\">${@}</div>"
+echo -n "<span style=\"font-family:${FONTNAME};font-size:${SIZE}px;\">${@}</span>"

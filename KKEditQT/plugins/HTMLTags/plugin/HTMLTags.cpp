@@ -38,12 +38,19 @@ QString HTMLTags::runPipeAndCapture(QString command)
 	return(dump);
 }
 
+void HTMLTags::unloadPlug(void)
+{
+	delete this->htmlContextMenu;
+}
+
 void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 {
 	QAction		*tagaction;
 	QString		results;
 	QStringList	taglist;
 	QString		command;
+	QMenu		*submenu=NULL;
+	QMenu		*usingmenu=NULL;
 
 	this->mainKKEditClass=kk;
 	this->plugPath=pathtoplug;
@@ -55,6 +62,8 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 	QString str=taglist.at(0);
 	str.remove(0,5);
 	this->htmlContextMenu=new QMenu(str);
+	usingmenu=this->htmlContextMenu;
+	this->rootMenuName=str;
 	this->htmlContextMenu->addSeparator();
 
 	for(int j=1;j<taglist.size()-1;j++)
@@ -63,11 +72,25 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 			str.remove(0,5);
 			if(str.compare("line")==0)
 				{
-					this->htmlContextMenu->addSeparator();
+					usingmenu->addSeparator();
 					continue;
 				}
+			if(str.startsWith("menu-")==true)
+				{
+					str.remove(0,5);
+					submenu=new QMenu(str);
+					usingmenu->addMenu(submenu);
+					usingmenu=submenu;
+					continue;
+				}
+			if(str.startsWith("close-menu")==true)
+				{
+					usingmenu=this->htmlContextMenu;
+					continue;
+				}
+			
 			tagaction=new  QAction(str);
-			this->htmlContextMenu->addAction(tagaction);
+			usingmenu->addAction(tagaction);
 			QObject::connect(tagaction,&QAction::triggered,[this,taglist,j]()
 				{
 					QProcess		script;
@@ -121,7 +144,7 @@ void HTMLTags::plugAbout(void)
 {
 	QMessageBox msgBox;
 
-	QString txt="HTML Tag Plugin\n\n©K.D.Hedger 2022\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
+	QString txt=QString("%3\n\n©K.D.Hedger 2022\n\n<a href=\"%1\">Homepage</a>\n\n<a href=\"mailto:%2\">Email Me</a>").arg(GLOBALWEBSITE).arg(MYEMAIL).arg(this->rootMenuName);
 	msgBox.setText(txt);
 	msgBox.setIconPixmap(QPixmap("/usr/share/KKEditQT/pixmaps/KKEditQTPlug.png"));
 	msgBox.setWindowTitle("Plugin About");

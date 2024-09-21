@@ -2,4 +2,4 @@
 
 DOCUMENT="$1"
 shift
-echo -n "<div style=\"font-size:128px;\">${@}</div>"
+echo -n "<span style=\"font-size:128px;\">${@}</span>"
