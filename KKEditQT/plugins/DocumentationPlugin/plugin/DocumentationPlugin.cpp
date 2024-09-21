@@ -287,7 +287,8 @@ void DocumentationPlugin::plugAbout(void)
 					this->mainKKEditClass->pluginPrefsWindow->hide();
 				}
 				break;
-		}}
+		}
+}
 
 void DocumentationPlugin::plugSettings(void)
 {

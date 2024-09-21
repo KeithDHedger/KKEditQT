@@ -142,14 +142,32 @@ void HTMLTags::plugRun(plugData *data)
 
 void HTMLTags::plugAbout(void)
 {
-	QMessageBox msgBox;
+	QMessageBox	msgBox;
+	QFileInfo	fileinfo(this->plugPath);
+	QString		txt=QString("%3\n\n©K.D.Hedger 2022\n\n<a href=\"%1\">Homepage</a>\n\n<a href=\"mailto:%2\">Email Me</a>").arg(GLOBALWEBSITE).arg(MYEMAIL).arg(this->rootMenuName);
 
-	QString txt=QString("%3\n\n©K.D.Hedger 2022\n\n<a href=\"%1\">Homepage</a>\n\n<a href=\"mailto:%2\">Email Me</a>").arg(GLOBALWEBSITE).arg(MYEMAIL).arg(this->rootMenuName);
 	msgBox.setText(txt);
 	msgBox.setIconPixmap(QPixmap("/usr/share/KKEditQT/pixmaps/KKEditQTPlug.png"));
 	msgBox.setWindowTitle("Plugin About");
 	msgBox.setTextFormat(Qt::MarkdownText);
-	msgBox.exec();
+	msgBox.setStandardButtons(QMessageBox::Help|QMessageBox::Close);
+	int ret=msgBox.exec();
+	switch(ret)
+		{
+			case QMessageBox::Close:
+				break;
+			case QMessageBox::Help:
+				{
+					QStringList args;
+					args<<"-k";
+					args<<QString("%1").arg(this->mainKKEditClass->sessionID);
+					args<<"-c"<<"openindocview";
+					args<<"-d"<<"file:///"+fileinfo.canonicalPath()+"/docs/help.html";
+					QProcess::startDetached("kkeditqtmsg",args);
+					this->mainKKEditClass->pluginPrefsWindow->hide();
+				}
+				break;
+		}
 }
 
 unsigned int HTMLTags::plugWants(void)
