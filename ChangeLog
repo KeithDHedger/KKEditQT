@@ -1,4 +1,5 @@
 1.6.0
+Fixed enabling about/settings buttons in plug prefs dialoag when enabling/disabling plugin.
 Added help docs to HTML tag plugin.
 Added submenus to HTML tag plugin.
 Fixed a number of outdated tags.

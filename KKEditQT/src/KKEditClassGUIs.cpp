@@ -1610,13 +1610,16 @@ void KKEditClass::buildToolOutputWindow(void)
 
 void KKEditClass::buildPlugPrefs(void)
 {
-	QVBoxLayout	*docvlayoutlocal=new QVBoxLayout;
-	QVBoxLayout	*docvlayoutsystem=new QVBoxLayout;
-	QVBoxLayout	*docvlayout=new QVBoxLayout;
-	QHBoxLayout	*dochlayout;
-	QPushButton	*btn;
-	QCheckBox	*cb;
-
+	QVBoxLayout				*docvlayoutlocal=new QVBoxLayout;
+	QVBoxLayout				*docvlayoutsystem=new QVBoxLayout;
+	QVBoxLayout				*docvlayout=new QVBoxLayout;
+	QHBoxLayout				*dochlayout;
+	QPushButton				*btn;
+	QCheckBox				*cb;
+	QVector<QPushButton*>	settingsbutton;
+	QVector<QPushButton*>	aboutbutton;
+	
+		
 	this->pluginPrefsWindow=new QDialog(mainWindow);
 	this->pluginPrefsWindow->setWindowTitle("Plugin Prefs");
 
@@ -1641,6 +1644,7 @@ void KKEditClass::buildPlugPrefs(void)
 			dochlayout->addStretch(128);
 
 			btn=new QPushButton("Settings");
+			settingsbutton.push_back(btn);
 			dochlayout->addWidget(btn);
 			if(((this->plugins[j].wants & DOSETTINGS)!=DOSETTINGS) || (this->plugins[j].loaded==false))
 				btn->setEnabled(false);
@@ -1650,6 +1654,7 @@ void KKEditClass::buildPlugPrefs(void)
 				});
 			
 			btn=new QPushButton("About");
+			aboutbutton.push_back(btn);
 			if(((this->plugins[j].wants & DOABOUT)!=DOABOUT) || (this->plugins[j].loaded==false))
 				btn->setEnabled(false);
 			QObject::connect(btn,&QPushButton::clicked,[this,j]()
@@ -1666,7 +1671,7 @@ void KKEditClass::buildPlugPrefs(void)
 	dochlayout=new QHBoxLayout;
 
 	btn=new QPushButton("Apply");
-	QObject::connect(btn,&QPushButton::clicked,[this]()
+	QObject::connect(btn,&QPushButton::clicked,[this,settingsbutton,aboutbutton]()
 		{
 			for(int j=0;j<this->plugins.count();j++)
 				{
@@ -1684,6 +1689,8 @@ void KKEditClass::buildPlugPrefs(void)
 										this->disabledPlugins.replaceInStrings(this->plugins[j].plugPath,"");
 									this->loadPlug(&this->plugins[j],true);
 								}
+							aboutbutton.at(j)->setEnabled((bool)(this->plugins[j].wants & DOABOUT) && (this->plugins[j].loaded));
+							settingsbutton.at(j)->setEnabled((bool)(this->plugins[j].wants & DOSETTINGS) && (this->plugins[j].loaded));
 						}
 					this->setToolbarSensitive();
 				}
@@ -1692,7 +1699,7 @@ void KKEditClass::buildPlugPrefs(void)
 	dochlayout->addWidget(btn);
 
 	btn=new QPushButton("Reload");
-	QObject::connect(btn,&QPushButton::clicked,[this]()
+	QObject::connect(btn,&QPushButton::clicked,[this,settingsbutton,aboutbutton]()
 		{
 			for(int j=0;j<this->plugins.count();j++)
 				{
@@ -1702,6 +1709,8 @@ void KKEditClass::buildPlugPrefs(void)
 							this->unloadPlug(&this->plugins[j]);
 							this->loadPlug(&this->plugins[j],true);
 						}
+					aboutbutton.at(j)->setEnabled((bool)(this->plugins[j].wants & DOABOUT) && (this->plugins[j].loaded));
+					settingsbutton.at(j)->setEnabled((bool)(this->plugins[j].wants & DOSETTINGS) && (this->plugins[j].loaded));
 				}
 		});
 	dochlayout->addWidget(btn);
