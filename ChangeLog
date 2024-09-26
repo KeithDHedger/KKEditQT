@@ -1,4 +1,6 @@
 1.6.0
+Added menu icon to htmltags plugin.
+Html tags plug is now also in main plugin menu.
 Fixed enabling about/settings buttons in plug prefs dialog when enabling/disabling plugin.
 Added help docs to HTML tag plugin.
 Added submenus to HTML tag plugin.

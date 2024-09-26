@@ -41,11 +41,13 @@ class HTMLTags : public QObject, kkEditQTPluginInterface
 		QMenu			*htmlContextMenu=NULL;
 		QString			runPipeAndCapture(QString command);
 		QString			rootMenuName;
-		DocumentClass 	*document;
+		DocumentClass 	*document=NULL;
 		QString			selection;
 		QTextCursor		tc;
-		KKEditClass		*mainKKEditClass;
+		KKEditClass		*mainKKEditClass=NULL;
 		QString			plugPath;
+		plugData			*data=NULL;
+
 };
 
 #endif

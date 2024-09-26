@@ -62,6 +62,7 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 	QString str=taglist.at(0);
 	str.remove(0,5);
 	this->htmlContextMenu=new QMenu(str);
+	this->htmlContextMenu->setIcon(QIcon(QString("%1/HTMLTags.png").arg(QFileInfo(pathtoplug).absolutePath())));
 	usingmenu=this->htmlContextMenu;
 	this->rootMenuName=str;
 	this->htmlContextMenu->addSeparator();
@@ -93,6 +94,14 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 			usingmenu->addAction(tagaction);
 			QObject::connect(tagaction,&QAction::triggered,[this,taglist,j]()
 				{
+					if(this->mainKKEditClass->mainNotebook->currentWidget()==NULL)
+						return;
+					if(this->document!=NULL)
+						{	
+							this->tc=this->document->textCursor();
+							this->selection=this->tc.selectedText();
+						}
+
 					QProcess		script;
 					QString		res;
 					script.start(QString("%1/actions/%2").arg(QFileInfo(this->plugPath).absolutePath()).arg(taglist.at(j)),QStringList() << this->document->filePath<<this->selection);
@@ -108,6 +117,7 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 						}
 				});
 			//qDebug()<<j<<taglist.at(j);
+			this->mainKKEditClass->pluginMenu->addMenu(htmlContextMenu);
 		}
 }
 
@@ -115,27 +125,44 @@ void HTMLTags::plugRun(plugData *data)
 {
 	bool breakit=false;
 
-	this->document=data->doc;
-	this->tc=data->doc->textCursor();
-	this->selection=this->tc.selectedText();
-
-	foreach(QAction *action,data->menu->actions())
+	this->data=data;
+	if(data->doc!=NULL)
 		{
-			if(breakit==true)
+			this->document=data->doc;
+			this->tc=data->doc->textCursor();
+			this->selection=this->tc.selectedText();
+		}
+
+	switch(data->what)
+		{
+			case DOSWITCHPAGE:
 				{
-					data->menu->insertSeparator(action);
-					data->menu->insertMenu(action,this->htmlContextMenu);
+					this->data=data;
+					this->document=data->doc;
 					break;
 				}
-			if(((this->tc.hasSelection()==true) && (action->text().compare("Go To Definition")==0)) )
+
+			case DOCONTEXTMENU:
 				{
-					breakit=true;
-					continue;
-				}
-			if(((this->tc.hasSelection()==false) && (action->text().compare("Select All")==0)) )
-				{
-					breakit=true;
-					continue;
+					foreach(QAction *action,data->menu->actions())
+						{
+							if(breakit==true)
+								{
+									data->menu->insertSeparator(action);
+									data->menu->insertMenu(action,this->htmlContextMenu);
+									break;
+								}
+							if(((this->tc.hasSelection()==true) && (action->text().compare("Go To Definition")==0)) )
+								{
+									breakit=true;
+									continue;
+								}
+						if(((this->tc.hasSelection()==false) && (action->text().compare("Select All")==0)) )
+							{
+								breakit=true;
+								continue;
+							}
+						}
 				}
 		}
 }
@@ -172,5 +199,5 @@ void HTMLTags::plugAbout(void)
 
 unsigned int HTMLTags::plugWants(void)
 {
-	return(DOCONTEXTMENU|DOABOUT);
+	return(DOCONTEXTMENU|DOABOUT|DOSWITCHPAGE|DOSETSENSITVE);
 }

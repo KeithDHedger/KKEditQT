@@ -8,6 +8,7 @@ DESTDIR         = plugins
 
 documentation.files = docs/*
 actions.files = actions/*
+image.files = HTMLTags.png
 
 target.path = ../build/plugins
 data.path = $${target.path}
