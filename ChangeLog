@@ -1,4 +1,7 @@
 1.6.0
+Added more html tags.
+Fixed unicode pargraph endings when passing selection to html tags.
+Now uses multi threads when building plugins.
 Added menu icon to htmltags plugin.
 Html tags plug is now also in main plugin menu.
 Fixed enabling about/settings buttons in plug prefs dialog when enabling/disabling plugin.

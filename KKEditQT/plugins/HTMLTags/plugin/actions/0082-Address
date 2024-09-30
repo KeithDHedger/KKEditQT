@@ -1,0 +1,6 @@
+#!/bin/bash
+
+DOCUMENT="$1"
+shift
+echo -n "<address>${@}</address>"
+

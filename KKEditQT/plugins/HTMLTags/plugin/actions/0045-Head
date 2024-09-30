@@ -1,0 +1,7 @@
+#!/bin/bash
+
+DOCUMENT="$1"
+shift
+echo -ne "<head>\n\
+${@}\n\
+</head>\n"

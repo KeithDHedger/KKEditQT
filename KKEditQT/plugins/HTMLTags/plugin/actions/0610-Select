@@ -1,0 +1,14 @@
+#!/bin/bash
+
+DOCUMENT="$1"
+shift
+
+IFS=$'\n'
+x=( ${@} )
+
+echo -e "<select name=\"${x[0]}\" id=\"${x[0]}\"  onclick=\"alert(value)\">"
+for ((j=1;j<${#x[@]};j++))
+	do
+		echo "<option value=\"${x[$j]}\">"${x[$j]}"</option>"
+	done
+echo -e "</select>"

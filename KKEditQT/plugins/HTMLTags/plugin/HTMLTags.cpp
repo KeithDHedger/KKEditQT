@@ -99,7 +99,7 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 					if(this->document!=NULL)
 						{	
 							this->tc=this->document->textCursor();
-							this->selection=this->tc.selectedText();
+							this->selection=this->tc.selectedText().replace(QChar(0x2029),'\n');
 						}
 
 					QProcess		script;
@@ -130,7 +130,7 @@ void HTMLTags::plugRun(plugData *data)
 		{
 			this->document=data->doc;
 			this->tc=data->doc->textCursor();
-			this->selection=this->tc.selectedText();
+			this->selection=this->tc.selectedText().replace(QChar(0x2029),'\n');
 		}
 
 	switch(data->what)

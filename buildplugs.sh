@@ -84,7 +84,7 @@ if [ $BUILDLANGPLUGS -eq 1 ];then
 			while read
 				do
 					pushd $(dirname $REPLY) &>/dev/null
-						buildPlug "$1" "$2"
+						( buildPlug "$1" "$2" ) &
 					popd &>/dev/null
 				done < <(find -maxdepth 2 -iname "*.pro")
 		fi
@@ -101,7 +101,7 @@ if [ $BUILDPLUGS -eq 1 ];then
 			while read
 				do
 					pushd $(dirname $REPLY) &>/dev/null
-						buildPlug "$1" "$2"
+						( buildPlug "$1" "$2" ) &
 					popd &>/dev/null
 
 				done < <(find -maxdepth 2 -iname "*.pro")
@@ -119,7 +119,7 @@ if [ $BUILDTOOLKITPLUGS -eq 1 ];then
 			while read
 				do
 					pushd $(dirname $REPLY) &>/dev/null
-						buildPlug "$1" "$2"
+						( buildPlug "$1" "$2" ) &
 					popd &>/dev/null
 				done < <(find -maxdepth 2 -iname "*.pro")
 		fi

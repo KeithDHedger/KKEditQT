@@ -1,0 +1,8 @@
+#!/bin/bash
+
+DOCUMENT="$1"
+shift
+echo -n "<audio controls> \
+<source src=\"${@}\">\
+</audio>"
+
