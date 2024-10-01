@@ -3,22 +3,10 @@
 DOCUMENT="$1"
 shift
 
-GOTYADQT=$(which yadqt 2>/dev/null)
-if [[ $? -eq 0 ]];then
-		RESULT=$($GOTYADQT --type=getitem -b "Select type" -t "Input Type" -d 'text|button|checkbox|color|date|datetime-local|email|file|hidden|image|month|number|password|radio|range|reset|search|submit|tel|time|url|week')
-	if [[ $? -eq 1 ]];then
-		exit
-	fi
-else
-	GOTYADQT=$(which yad 2>/dev/null)
-	if [[ $? -eq 0 ]];then
-		RESULT=$($GOTYADQT --form --field="ComboBox:CB" 'text\!button\!checkbox\!color\!date\!datetime-local\!email\!file\!hidden\!image\!month\!number\!password\!radio\!range\!reset\!search\!submit\!tel\!time\!url\!week')
-		if [[ $? -eq 1 ]];then
-			exit
-		fi
-		RESULT=${RESULT:0:((${#RESULT} -1))}
-	fi
+. "$(dirname ${0})/9999-globalFunctions"
+
+if RESULT=$(getItem "text@button@checkbox@color@date@datetime-local@email@file@hidden@image@month@number@password@radio@range@reset@search@submit@tel@time@url@week");then
+	echo "<input type=\"$RESULT\" id=\"$(echo ${@}|sed 's/\s//g')\" value=\"${@}\">"
 fi
-echo "<input type=\"$RESULT\" id=\"$(echo ${@}|sed 's/\s//g')\" value=\"${@}\">"
  
 

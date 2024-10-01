@@ -6,23 +6,11 @@ SIZE=""
 DOCUMENT="$1"
 shift
 
-GOTYADQT=$(which yadqt 2>/dev/null)
-if [[ $? -eq 0 ]];then
-	RESULT=$($GOTYADQT --type=font)
-	if [[ $? -eq 1 ]];then
-		exit
-	fi
-	FONTNAME=$(echo "$RESULT"|awk -F, '{print $1}')
-	SIZE=$(echo "$RESULT"|awk -F, '{print $2}')
-else
-	GOTYADQT=$(which yad 2>/dev/null)
-	if [[ $? -eq 0 ]];then
-		RESULT=$($GOTYADQT --font --separate-output)
-		if [[ $? -eq 1 ]];then
-			exit
-		fi
-		FONTNAME=$(echo "$RESULT"|awk -F\| '{print $1}')
-		SIZE=$(echo "$RESULT"|awk -F\| '{print $3}')
-	fi
+. "$(dirname ${0})/9999-globalFunctions"
+
+if RESULT=$(getFont);then
+	FONTNAME=$(echo "$RESULT"|awk -F\| '{print $1}')
+	SIZE=$(echo "$RESULT"|awk -F\| '{print $2}')
+
+	echo -n "<span style=\"font-family:${FONTNAME};font-size:${SIZE}px;\">${@}</span>"
 fi
-echo -n "<span style=\"font-family:${FONTNAME};font-size:${SIZE}px;\">${@}</span>"

@@ -1,0 +1,121 @@
+#!/bin/bash
+
+getItem ()
+{
+	local selection="$1"
+	local result=echo $selection|awk -F@ '{print $1}'
+	local inputs
+	local result
+echo "---------------->>>>>" >/dev/pts/2
+
+	GOTYADQT=$(which yadqt 2>/dev/null)
+	if [[ $? -eq 0 ]];then
+		inputs=${1//@/|}
+		result=$($GOTYADQT --type=getitem -b "Select type" -t "Input Type" -d "$inputs")
+		if [[ $? -eq 1 ]];then
+			exit 1
+		fi
+	else
+		GOTYADQT=$(which yad 2>/dev/null)
+		if [[ $? -eq 0 ]];then
+			inputs=${1//@/\!}
+			result=$($GOTYADQT --form --field="ComboBox:CB" "$inputs")
+			if [[ $? -eq 1 ]];then
+				exit 1
+			fi
+			result=${result:0:((${#result} -1))}
+		fi
+	fi
+	echo "$result"
+}
+
+getImageForm()
+{
+	local result
+
+	GOTYADQT=$(which yadqt 2>/dev/null)
+	if [[ $? -eq 0 ]];then
+		result=$($GOTYADQT --type=form -t "Image Properties" -b "Title|Width|Height" --default="$RESULT" --width=300 --height=0)
+		if [[ $? -eq 1 ]];then
+			exit 1
+		fi
+	else
+		GOTYADQT=$(which yad 2>/dev/null)
+		if [[ $? -eq 0 ]];then
+			result=$($GOTYADQT  --form "$TITLE" --field=Title "$WIDTH" --field=Width "$HEIGHT" --field=Height)
+			if [[ $? -eq 1 ]];then
+				exit 1
+			fi
+		fi
+	fi
+	echo "$result"
+}
+
+getFont ()
+{
+	local result
+
+	GOTYADQT=$(which yadqt 2>/dev/null)
+	if [[ $? -eq 0 ]];then
+		result=$($GOTYADQT --type=font)
+		if [[ $? -eq 1 ]];then
+			exit 1
+		fi
+		result=${result//,/|}
+	else
+		GOTYADQT=$(which yad 2>/dev/null)
+		if [[ $? -eq 0 ]];then
+			result=$($GOTYADQT --font --separate-output)
+			if [[ $? -eq 1 ]];then
+				exit 1
+			fi
+			result=$(echo $result|awk -F\| '{print $1 "|" $NF}')
+		fi
+	fi
+	echo "$result"
+}
+
+getColour ()
+{
+	local result
+
+	GOTYADQT=$(which yadqt 2>/dev/null)
+	if [[ $? -eq 0 ]];then
+		result=$($GOTYADQT --type=colour  -d "#ffffff")
+		if [[ $? -eq 1 ]];then
+			exit 1
+		fi
+	else
+		GOTYADQT=$(which yad 2>/dev/null)
+		if [[ $? -eq 0 ]];then
+			result=$($GOTYADQT --color)
+			if [[ $? -eq 1 ]];then
+				exit 1
+			fi
+		fi
+	fi
+	echo "$result"
+}
+
+getHeading ()
+{
+	local result
+
+	GOTYADQT=$(which yadqt 2>/dev/null)
+	if [[ $? -eq 0 ]];then
+		result=$($GOTYADQT --type=getitem -b "Select type" -t "Input Type" -d 'h1|h2|h3|h4|h5|h6')
+		if [[ $? -eq 1 ]];then
+			exit 1
+		fi
+	else
+		GOTYADQT=$(which yad 2>/dev/null)
+		if [[ $? -eq 0 ]];then
+			result=$($GOTYADQT --form --field="ComboBox:CB" 'h1\!h2\!h3\!h4\!h5\!h6')
+			if [[ $? -eq 1 ]];then
+				exit 1
+			fi
+			result=${result:0:((${#result} -1))}
+		fi
+	fi
+	echo "$result"
+}

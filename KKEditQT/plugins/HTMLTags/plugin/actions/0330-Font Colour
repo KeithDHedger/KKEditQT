@@ -1,27 +1,12 @@
 #!/bin/bash
 
-COLOUR=""
-
 DOCUMENT="$1"
 shift
 
-GOTYADQT=$(which yadqt 2>/dev/null)
-if [[ $? -eq 0 ]];then
-	RESULT=$($GOTYADQT --type=colour  -d "#ffffff")
-	if [[ $? -eq 1 ]];then
-		exit
-	fi
-	COLOUR=$(echo "$RESULT"|awk -F, '{print $1}')
-else
-	GOTYADQT=$(which yad 2>/dev/null)
-	if [[ $? -eq 0 ]];then
-		RESULT=$($GOTYADQT --color)
-		if [[ $? -eq 1 ]];then
-			exit
-		fi
-		COLOUR=$(echo "$RESULT"|awk -F, '{print $1}')
-	fi
-fi
+. "$(dirname "${0}")/9999-globalFunctions"
 
-echo -n "<span style=\"color:${COLOUR};\">${@}</span>"
+if RESULT=$(getColour);then
+	COLOUR=$(echo "$RESULT"|awk -F, '{print $1}')
+	echo -n "<span style=\"color:${COLOUR};\">${@}</span>"
+fi
 

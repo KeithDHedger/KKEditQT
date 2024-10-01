@@ -70,6 +70,9 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 	for(int j=1;j<taglist.size()-1;j++)
 		{
 			QString str=taglist.at(j);
+			if(str.startsWith("9999-")==true)
+				continue;
+
 			str.remove(0,5);
 			if(str.compare("line")==0)
 				{

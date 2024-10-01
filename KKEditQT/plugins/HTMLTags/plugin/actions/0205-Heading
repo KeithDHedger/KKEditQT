@@ -1,5 +1,22 @@
 #!/bin/bash
 
+
+
+
+FONTNAME=""
+SIZE=""
+
+. "$(dirname "${0}")/9999-globalFunctions"
+DOCUMENT="$1"
+shift
+
+if RESULT=$(getHeading);then
+	echo -n "<$RESULT>${@}</$RESULT>"
+fi
+
+exit 0
+
+
 DOCUMENT="$1"
 shift
 GOTYADQT=$(which yadqt 2>/dev/null)
