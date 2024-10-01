@@ -1,0 +1,8 @@
+#!/bin/bash
+
+DOCUMENT="$1"
+shift
+
+echo "<label for=\"$(echo ${@}|sed 's/\s//g')\">${@}</label>"
+ 
+
