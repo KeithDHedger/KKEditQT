@@ -91,29 +91,31 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 	r.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
 
 	if(singlepage==false)
-	{
-	for(int j=0;j<this->mainNotebook->count();j++)
 		{
-			QDirIterator it(this->getDocumentForTab(j)->getDirPath(),{"*.*[^.o]"},QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
-			while(it.hasNext())
+			for(int j=0;j<this->mainNotebook->count();j++)
 				{
-					it.next();
-					if(it.fileName().startsWith("moc_",Qt::CaseInsensitive)==false)
-						files<<it.filePath();
-				}	
+					//QDirIterator it(this->getDocumentForTab(j)->getDirPath(),{"*.*[^.o]"},QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
+					QDirIterator it(this->getDocumentForTab(j)->getDirPath(),{"*[^.o]"},QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
+					while(it.hasNext())
+						{
+							it.next();
+							if(it.fileName().startsWith("moc_",Qt::CaseInsensitive)==false)
+								files<<QString("'%1'").arg(it.filePath());
+						}	
+				}
 		}
-	}
 	else
-	{
-		files<<doc->getFilePath();
-	}
-	
+		{
+			files<<QString("'%1'").arg(doc->getFilePath());
+		}
+
 	files.removeDuplicates();
 	f=files.join(" ");
 	if(singlepage==true)
-		command=QString("ctags --kinds-all='*' -x %1").arg(f);
+		command=QString("ctags --kinds-all='*' -Gx %1").arg(f);
 	else
-		command=QString("ctags -x %1").arg(f);
+		command=QString("ctags -Gx %1").arg(f);
+
 	comresults=this->runPipeAndCapture(command);
 	list=comresults.split("\n",Qt::SkipEmptyParts);
 

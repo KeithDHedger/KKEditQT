@@ -1,11 +1,5 @@
 #!/bin/bash
 
-
-
-
-FONTNAME=""
-SIZE=""
-
 . "$(dirname "${0}")/9999-globalFunctions"
 DOCUMENT="$1"
 shift
@@ -14,25 +8,3 @@ if RESULT=$(getHeading);then
 	echo -n "<$RESULT>${@}</$RESULT>"
 fi
 
-exit 0
-
-
-DOCUMENT="$1"
-shift
-GOTYADQT=$(which yadqt 2>/dev/null)
-if [[ $? -eq 0 ]];then
-		RESULT=$($GOTYADQT --type=getitem -b "Select type" -t "Input Type" -d 'h1|h2|h3|h4|h5|h6')
-	if [[ $? -eq 1 ]];then
-		exit
-	fi
-else
-	GOTYADQT=$(which yad 2>/dev/null)
-	if [[ $? -eq 0 ]];then
-		RESULT=$($GOTYADQT --form --field="ComboBox:CB" 'h1\!h2\!h3\!h4\!h5\!h6')
-		if [[ $? -eq 1 ]];then
-			exit
-		fi
-		RESULT=${RESULT:0:((${#RESULT} -1))}
-	fi
-fi
-echo -n "<$RESULT>${@}</$RESULT>"
