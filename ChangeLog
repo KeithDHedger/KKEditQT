@@ -1,5 +1,5 @@
 1.6.0
-Better file type quess for functions.
+Better file type guess for functions.
 Fixed finding definition on files with spaces in the path.
 Updated html tags help.
 More html tags.
