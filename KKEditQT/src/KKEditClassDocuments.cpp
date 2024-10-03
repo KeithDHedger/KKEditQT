@@ -116,8 +116,12 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 	else
 		command=QString("ctags -Gx %1").arg(f);
 
+//qDebug()<<command;
+
 	comresults=this->runPipeAndCapture(command);
 	list=comresults.split("\n",Qt::SkipEmptyParts);
+
+//qDebug()<<list;
 
 	for(int j=0;j<list.count();j++)
 		{

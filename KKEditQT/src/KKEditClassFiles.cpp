@@ -444,11 +444,22 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 
 QStringList KKEditClass::getNewRecursiveTagList(QString filepath,int sorttype)
 {
-	QString		sort;
-	QString		command;
-	QStringList	retval;
-	QString		results;
-	int			sorthow;
+	QString					sort;
+	QString					command;
+	QString					results;
+	int						sorthow;
+	QStringList				retlines;
+	QString					tagstring;
+	QStringList				lines;
+	QString					typestring;
+	QString					linestring;
+	QString					defstring;
+	QString					wholetag;
+	QStringList				list;
+	QString					rep;
+	QRegularExpressionMatch	match;
+	QRegularExpression		re(" [0-9]+ ");
+	QString					filestring=filepath.trimmed();;
 
 	if(sorttype==-1)
 		sorthow=this->prefsFunctionMenuLayout;
@@ -474,12 +485,33 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath,int sorttype)
 				break;
 		}
 
-	command=QString("find \"%1\" -maxdepth %2|ctags -L - -Gx|%3|sed 's@ \\+@ @g'").arg(filepath).arg(this->prefsDepth).arg(sort);
+	command=QString("ctags -Gx '%1'|%2|sed 's@ \\+@ @g'").arg(filepath).arg(sort);
 	results=this->runPipeAndCapture(command);
-	retval=results.split("\n",Qt::SkipEmptyParts);
-	return(retval);
+	lines=results.split("\n",Qt::SkipEmptyParts);
+
+	for(int j=0;j<lines.count();j++)
+		{
+			int fln;
+			rep=QString(lines.at(j)).replace("'","\\'");
+			rep=QString(rep).replace("(","\\(");
+			rep=QString(rep).replace(")","\\)");
+
+			fln=rep.indexOf(re);
+			wholetag=rep.left(fln).trimmed();
+			list=wholetag.split(" ");
+			typestring=list.last();
+			list.removeLast();
+
+			tagstring=QString(list.join(" "));
+
+			match=re.match(rep); 
+			if (match.hasMatch())
+				linestring=match.captured(0).trimmed();
+
+			defstring=rep.right(rep.length()-(rep.indexOf(filestring)+filestring.length())).replace("\\(","(").replace("\\)",")").replace("\\'","'").trimmed();
+
+			retlines<<QString(tagstring+"|"+typestring+"|"+linestring+"|"+filestring+"|"+defstring);
+		}
+
+	return(retlines);
 }
-
-
-
-

@@ -1787,9 +1787,12 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 		{
 			for(int j=0;j<sl.count();j++)
 				{
-					linenumber=sl.at(j).section(" ",2,2).toInt();
-					label=sl.at(j).section(" ",4);
-					entrytype=sl.at(j).section(" ",1,1);
+					//linenumber=sl.at(j).section(" ",2,2).toInt();
+					linenumber=sl.at(j).section("|",2,2).toInt();
+					//label=sl.at(j).section(" ",4);
+					label=sl.at(j).section("|",4);
+					//entrytype=sl.at(j).section(" ",1,1);
+					entrytype=sl.at(j).section("|",1,1);
 
 					if(entrytype.isEmpty()==false)
 						{

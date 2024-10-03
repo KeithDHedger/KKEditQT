@@ -1,4 +1,5 @@
 1.6.0
+Better function etc recognition especially for html.
 Better file type guess for functions.
 Fixed finding definition on files with spaces in the path.
 Updated html tags help.

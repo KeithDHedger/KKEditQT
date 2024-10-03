@@ -28,7 +28,7 @@ getItem ()
 	echo "$result"
 }
 
-getImageForm()
+getImageForm ()
 {
 	local result
 
