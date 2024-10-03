@@ -158,11 +158,15 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 			vlayout->addWidget(searchcombobox);
 
 			hlayout=new QHBoxLayout;
-			button=new QPushButton("OK");
+			button=new QPushButton("Goto");
 			
 			QObject::connect(button,&QPushButton::clicked,[=]()
 				{
+					int get=searchcombobox->currentIndex();
+					this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
+					this->openFile(resultmap[get].tagPath,resultmap[get].lineNumber,false,false);
 					searchdialog->done(0);
+					delete searchdialog;
 				});
 			hlayout->addStretch(1);
 			hlayout->addWidget(button);
@@ -171,7 +175,7 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 
 			searchdialog	->setLayout(vlayout);
 			button->setFocus();
-			searchdialog->show();
+			searchdialog->exec();
 		}
 	else
 		{

@@ -492,24 +492,19 @@ QStringList KKEditClass::getNewRecursiveTagList(QString filepath,int sorttype)
 	for(int j=0;j<lines.count();j++)
 		{
 			int fln;
-			rep=QString(lines.at(j)).replace("'","\\'");
-			rep=QString(rep).replace("(","\\(");
-			rep=QString(rep).replace(")","\\)");
-
+			rep=QString(lines.at(j));
 			fln=rep.indexOf(re);
 			wholetag=rep.left(fln).trimmed();
 			list=wholetag.split(" ");
 			typestring=list.last();
 			list.removeLast();
-
 			tagstring=QString(list.join(" "));
 
 			match=re.match(rep); 
 			if (match.hasMatch())
 				linestring=match.captured(0).trimmed();
 
-			defstring=rep.right(rep.length()-(rep.indexOf(filestring)+filestring.length())).replace("\\(","(").replace("\\)",")").replace("\\'","'").trimmed();
-
+			defstring=rep.right(rep.length()-(rep.indexOf(filestring)+filestring.length())).trimmed();
 			retlines<<QString(tagstring+"|"+typestring+"|"+linestring+"|"+filestring+"|"+defstring);
 		}
 
