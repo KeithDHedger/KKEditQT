@@ -82,6 +82,7 @@ class kkEditQTPluginInterface;
 
 #include "kkedit-includes.h"
 
+#include "tagClass.h"
 #include "QT_ProxyStyle.h"
 #include "ChooserDialog.h"
 #include "QT_themeClass.h"
@@ -451,7 +452,6 @@ class KKEditClass : public QObject
 		bool							saveAllFiles(bool ask=false);
 		bool							saveFileAs(int tabnum,QString filepath="");
 		int							askSaveDialog(const QString filename);
-		QStringList					getNewRecursiveTagList(QString filepath,int sorttype=-1);
 
 //document vars
 		QStringList					completionWords;

@@ -120,7 +120,8 @@ am__objects_1 = ../src/ChooserDialog.$(OBJEXT) \
 	../src/QT_historyClass.$(OBJEXT) ../src/QT_menuitem.$(OBJEXT) \
 	../src/QT_notebook.$(OBJEXT) ../src/QT_recentMenu.$(OBJEXT) \
 	../src/QT_themeClass.$(OBJEXT) ../src/QT_toolbar.$(OBJEXT) \
-	../src/SingleInstanceClass.$(OBJEXT) ../src/main.$(OBJEXT)
+	../src/SingleInstanceClass.$(OBJEXT) ../src/main.$(OBJEXT) \
+	../src/tagClass.$(OBJEXT)
 am_kkeditqt_OBJECTS = $(am__objects_1)
 kkeditqt_OBJECTS = $(am_kkeditqt_OBJECTS)
 kkeditqt_LDADD = $(LDADD)
@@ -189,7 +190,7 @@ am__depfiles_remade = ../src/$(DEPDIR)/ChooserDialog.Po \
 	../src/$(DEPDIR)/QT_themeClass.Po \
 	../src/$(DEPDIR)/QT_toolbar.Po \
 	../src/$(DEPDIR)/SingleInstanceClass.Po \
-	../src/$(DEPDIR)/main.Po
+	../src/$(DEPDIR)/main.Po ../src/$(DEPDIR)/tagClass.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -370,7 +371,7 @@ AM_CPPFLAGS = -I$(top_srcdir) \
 			-DLIBDIR=\""${libdir}/${PACKAGE}"\" \
 			-fPIC
 
-COMMONSRC = ../src/ChooserDialog.cpp ../src/KKEditClass.cpp ../src/KKEditClassCallbacks.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/LFSTKFindClass.cpp ../src/LFSTKUtilityClass.cpp ../src/QT_AboutBox.cpp ../src/QT_ProxyStyle.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_themeClass.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp ../src/main.cpp
+COMMONSRC = ../src/ChooserDialog.cpp ../src/KKEditClass.cpp ../src/KKEditClassCallbacks.cpp ../src/KKEditClassDocuments.cpp ../src/KKEditClassFiles.cpp ../src/KKEditClassGUIs.cpp ../src/KKEditClassMenus.cpp ../src/KKEditClassSearch.cpp ../src/KKEditClassTools.cpp ../src/LFSTKFindClass.cpp ../src/LFSTKUtilityClass.cpp ../src/QT_AboutBox.cpp ../src/QT_ProxyStyle.cpp ../src/QT_document.cpp ../src/QT_highlighter.cpp ../src/QT_historyClass.cpp ../src/QT_menuitem.cpp ../src/QT_notebook.cpp ../src/QT_recentMenu.cpp ../src/QT_themeClass.cpp ../src/QT_toolbar.cpp ../src/SingleInstanceClass.cpp ../src/main.cpp ../src/tagClass.cpp
 kkeditqt_SOURCES = $(COMMONSRC)
 pixfilesdir = $(pkgdatadir)/pixmaps
 pixfiles_DATA = ../resources/pixmaps/*
@@ -510,6 +511,8 @@ clean-binPROGRAMS:
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/main.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
+../src/tagClass.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
 
 kkeditqt$(EXEEXT): $(kkeditqt_OBJECTS) $(kkeditqt_DEPENDENCIES) $(EXTRA_kkeditqt_DEPENDENCIES) 
 	@rm -f kkeditqt$(EXEEXT)
@@ -580,6 +583,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/QT_toolbar.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/SingleInstanceClass.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/tagClass.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -838,6 +842,7 @@ distclean: distclean-am
 	-rm -f ../src/$(DEPDIR)/QT_toolbar.Po
 	-rm -f ../src/$(DEPDIR)/SingleInstanceClass.Po
 	-rm -f ../src/$(DEPDIR)/main.Po
+	-rm -f ../src/$(DEPDIR)/tagClass.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -909,6 +914,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ../src/$(DEPDIR)/QT_toolbar.Po
 	-rm -f ../src/$(DEPDIR)/SingleInstanceClass.Po
 	-rm -f ../src/$(DEPDIR)/main.Po
+	-rm -f ../src/$(DEPDIR)/tagClass.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

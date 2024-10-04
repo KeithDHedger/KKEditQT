@@ -66,27 +66,12 @@ bool KKEditClass::goToDefinition(const QString txt,bool singlepage)
 
 bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 {
-	struct docResultStruct
-		{
-			QString tagName;
-			QString tagType;
-			int lineNumber;
-			QString tagPath;
-		};
-
-	QString						command;
-	QStringList					list;
-	QString						comresults;
-	QString						label="";
-	QMap<int,docResultStruct>	resultmap;
-	int							cnt=0;
-	DocumentClass				*doc=this->getDocumentForTab(-1);
-	int							linenumber;
-	bool							retval=true;
-	QString						f;
-	QString						s;
-	QStringList					files;
-	QRegularExpression			r(searchtxt);
+	DocumentClass		*doc=this->getDocumentForTab(-1);
+	bool					retval=true;
+	QStringList			files;
+	QRegularExpression	r(searchtxt);
+	tagClass				tc(this);
+	QVector<tagsStruct>	gottaglist;
 
 	r.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
 
@@ -94,98 +79,93 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 		{
 			for(int j=0;j<this->mainNotebook->count();j++)
 				{
-					//QDirIterator it(this->getDocumentForTab(j)->getDirPath(),{"*.*[^.o]"},QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
 					QDirIterator it(this->getDocumentForTab(j)->getDirPath(),{"*[^.o]"},QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
 					while(it.hasNext())
 						{
 							it.next();
 							if(it.fileName().startsWith("moc_",Qt::CaseInsensitive)==false)
-								files<<QString("'%1'").arg(it.filePath());
+								files<<QString("%1").arg(it.filePath());
 						}	
 				}
 		}
 	else
 		{
-			files<<QString("'%1'").arg(doc->getFilePath());
+			files<<QString("%1").arg(doc->getFilePath());
 		}
 
 	files.removeDuplicates();
-	f=files.join(" ");
-	if(singlepage==true)
-		command=QString("ctags --kinds-all='*' -Gx %1").arg(f);
-	else
-		command=QString("ctags -Gx %1").arg(f);
-
-//qDebug()<<command;
-
-	comresults=this->runPipeAndCapture(command);
-	list=comresults.split("\n",Qt::SkipEmptyParts);
-
-//qDebug()<<list;
-
-	for(int j=0;j<list.count();j++)
+	
+	tc.getTagList(files);
+	for(int h=0;h<tc.tagList.count();h++)
 		{
-			s=list.at(j).simplified();
-			label=s.section(" ",0,0);
-			if(label.contains(r)==true)
-				{
-					resultmap[cnt++]={s.section(" ",0,0),s.section(" ",1,1),s.section(" ",2,2).toInt(),s.section(" ",3,3)};
-				}
+			if(tc.tagList.at(h).tagName.contains(r)==true)
+				gottaglist.push_back(tc.tagList.at(h));
 		}
 
-	if(resultmap.size()>1)
-		{
-			QVBoxLayout	*vlayout=new QVBoxLayout;
-			QWidget		*hbox;
-			QHBoxLayout	*hlayout;
-			QPushButton	*button;
-			QDialog		*searchdialog;
-			QComboBox	*searchcombobox;
-
-			searchdialog=new QDialog(this->mainWindow);
-			searchdialog->setWindowTitle("Select Definition");
-			searchdialog->setAttribute(Qt::WA_DeleteOnClose,true);
-			searchcombobox=new QComboBox;
-			connect(searchcombobox,QOverload<int>::of(&QComboBox::activated),[=](int index)
-				{
-					this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
-					this->openFile(resultmap[index].tagPath,resultmap[index].lineNumber,false,false);
-				});
-
-			for(int h=0;h<resultmap.size();h++)
-				searchcombobox->addItem(resultmap[h].tagType+": "+resultmap[h].tagName+" > "+QFileInfo(resultmap[h].tagPath).fileName()+QString(":%1").arg(resultmap[h].lineNumber));
-
-			vlayout->addWidget(searchcombobox);
-
-			hlayout=new QHBoxLayout;
-			button=new QPushButton("Goto");
-			
-			QObject::connect(button,&QPushButton::clicked,[=]()
-				{
-					int get=searchcombobox->currentIndex();
-					this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
-					this->openFile(resultmap[get].tagPath,resultmap[get].lineNumber,false,false);
-					searchdialog->done(0);
-					delete searchdialog;
-				});
-			hlayout->addStretch(1);
-			hlayout->addWidget(button);
-			hlayout->addStretch(1);
-			vlayout->addLayout(hlayout);
-
-			searchdialog	->setLayout(vlayout);
-			button->setFocus();
-			searchdialog->exec();
-		}
+	if(gottaglist.count()==0)
+		retval=false;
 	else
 		{
-			if(resultmap[0].tagPath.isEmpty()==false)
+			if(gottaglist.count()>1)
 				{
-					this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
-					this->openFile(resultmap[0].tagPath,resultmap[0].lineNumber,false,false);
+					QVBoxLayout	*vlayout=new QVBoxLayout;
+					QWidget		*hbox;
+					QHBoxLayout	*hlayout;
+					QPushButton	*button;
+					QPushButton	*button1;
+					QDialog		*searchdialog;
+					QComboBox	*searchcombobox;
+
+					searchdialog=new QDialog(this->mainWindow);
+					searchdialog->setWindowTitle("Select Definition");
+					searchdialog->setAttribute(Qt::WA_DeleteOnClose,true);
+					searchcombobox=new QComboBox;
+					connect(searchcombobox,QOverload<int>::of(&QComboBox::activated),[=](int index)
+						{
+							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
+							this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
+						});
+
+					for(int h=0;h<gottaglist.count();h++)
+						searchcombobox->addItem(gottaglist.at(h).tagType+": "+gottaglist.at(h).tagName+" > "+QFileInfo(gottaglist.at(h).tagFilepath).fileName()+QString(":%1").arg(gottaglist.at(h).lineNumber));
+
+					vlayout->addWidget(searchcombobox);
+
+					hlayout=new QHBoxLayout;
+					button1=new QPushButton("Goto");
+					QObject::connect(button1,&QPushButton::clicked,[=]()
+						{
+							int get=searchcombobox->currentIndex();
+							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
+							this->openFile(gottaglist.at(get).tagFilepath,gottaglist.at(get).lineNumber,false,false);
+						});
+					hlayout->addStretch(1);
+					hlayout->addWidget(button1);
+					hlayout->addStretch(1);
+					button=new QPushButton("Done");
+					hlayout->addWidget(button);
+					hlayout->addStretch(1);
+					QObject::connect(button,&QPushButton::clicked,[=]()
+						{
+							searchdialog->done(0);
+							delete searchdialog;
+						});
+				
+					vlayout->addLayout(hlayout);
+					searchdialog	->setLayout(vlayout);
+					button1->setFocus();
+					searchdialog->exec();
 				}
 			else
-				retval=false;
+				{
+					if(gottaglist.at(0).tagFilepath.isEmpty()==false)
+						{
+							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
+							this->openFile(gottaglist.at(0).tagFilepath,gottaglist.at(0).lineNumber,false,false);
+						}
+					else
+						retval=false;
+				}
 		}
 
 	if(retval==false)

@@ -1760,8 +1760,8 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 	int						linenumber;
 	QString					label="";
 	QString					entrytype="";
-	QStringList				sl;
 	QHash<QString,QMenu*>	menus;
+	tagClass					tc(this);
 
 	if(this->sessionBusy==true)
 		return;
@@ -1778,21 +1778,18 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 	if(doc==NULL)
 		return;
 
-	sl=this->getNewRecursiveTagList(doc->getFilePath());
-	if(sl.isEmpty()==true)
+	tc.getTagList(QStringList()<<doc->getFilePath());
+	if(tc.tagList.count()==0)
 		{
 			this->funcMenu->setEnabled(false);
 		}
 	else
 		{
-			for(int j=0;j<sl.count();j++)
+			for(int j=0;j<tc.tagList.count();j++)
 				{
-					//linenumber=sl.at(j).section(" ",2,2).toInt();
-					linenumber=sl.at(j).section("|",2,2).toInt();
-					//label=sl.at(j).section(" ",4);
-					label=sl.at(j).section("|",4);
-					//entrytype=sl.at(j).section(" ",1,1);
-					entrytype=sl.at(j).section("|",1,1);
+					linenumber=tc.tagList.at(j).lineNumber;
+					label=tc.tagList.at(j).tagDefine;
+					entrytype=tc.tagList.at(j).tagType;
 
 					if(entrytype.isEmpty()==false)
 						{

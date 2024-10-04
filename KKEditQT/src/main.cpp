@@ -29,12 +29,22 @@ int main (int argc, char **argv)
 	QDir				commsDir;
 	QApplication		*napp=new QApplication(argc,argv);
 
+
+
+
 	napp->setOrganizationName("KDHedger");
 	napp->setApplicationName("KKEditQT");
 
 	kkedit=new KKEditClass(napp);
     kkedit->splash=new QSplashScreen(QString(DATADIR)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
 
+//tagClass tc(kkedit);
+//tc.getTagList(QStringList()<<"/home/keithhedger/Documents/test it.html"<<"/home/keithhedger/Documents/test.html");
+//
+//for (int j=0;j<tc.tagList.count();j++)
+//{
+//	qDebug()<<tc.tagList.at(j).tagName<<tc.tagList.at(j).tagType<<tc.tagList.at(j).lineNumberString<<tc.tagList.at(j).tagDefine<<tc.tagList.at(j).tagFilepath<<tc.tagList.at(j).lineNumber;
+//}
 	kkedit->parser.addHelpOption();
 	kkedit->parser.addOptions(
 		{

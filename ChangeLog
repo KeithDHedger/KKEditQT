@@ -1,4 +1,5 @@
 1.6.0
+Minor gui tweaks.
 Removed some redundant code.
 Better function etc recognition especially for html.
 Better file type guess for functions.
