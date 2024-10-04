@@ -87,8 +87,7 @@ void tagClass::getTagList(QStringList filepaths,int sorttype)
 					if(lines.at(j).contains(filepaths.at(k)))
 						{
 							filestring=filepaths.at(k);
-							k=999999;
-							continue;
+							break;
 						}
 				}
 
