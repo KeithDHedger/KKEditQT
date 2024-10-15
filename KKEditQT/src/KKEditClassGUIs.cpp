@@ -1618,11 +1618,40 @@ void KKEditClass::buildPlugPrefs(void)
 	QCheckBox				*cb;
 	QVector<QPushButton*>	settingsbutton;
 	QVector<QPushButton*>	aboutbutton;
-	
+	pluginStruct				p1;
+	pluginStruct				p2;
+	bool						flag=false;
+	int						cnt=0;
+	int						maxcnt=this->plugins.count()-2;	
 		
 	this->pluginPrefsWindow=new QDialog(mainWindow);
 	this->pluginPrefsWindow->setWindowTitle("Plugin Prefs");
 
+	do
+		{
+			flag=false;
+			if(cnt>maxcnt)
+				{
+					flag=false;
+					continue;
+				}
+			else
+				flag=true;
+
+			p1=this->plugins.value(cnt);
+			p2=this->plugins.value(cnt+1);
+			if(p1.plugName.compare(p2.plugName)>0)
+				{
+					flag=true;
+					this->plugins[cnt+1]=p1;
+					this->plugins[cnt]=p2;
+					cnt=0;
+					continue;
+				}
+			cnt++;
+		}
+	while(flag==true);
+	
 	for(int j=0;j<this->plugins.count();j++)
 		{
 			dochlayout=new QHBoxLayout;
