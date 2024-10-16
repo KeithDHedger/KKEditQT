@@ -40,6 +40,8 @@ void TerminalPluginPlug::addTerminal(void)
 	newdw=new QDockWidget(this->mainKKEditClass->mainWindow);
 	newdw->setStyleSheet(dwss);
 	newdw->setFloating(false);
+	newdw->setContextMenuPolicy(Qt::CustomContextMenu);
+	
 	if((this->openOnStart==true) && (this->saveCurrentVis==true))
 		{
 			newdw->setVisible(plugprefs.value("currentstate").toBool());
@@ -58,6 +60,48 @@ void TerminalPluginPlug::addTerminal(void)
 				{
 					this->terminals.at(whome).console->setFocus();
 					this->currentTerminal=whome;
+				}
+		});
+
+	QObject::connect(newdw,&QDockWidget::customContextMenuRequested,[this,newdw,whome](const QPoint pos)
+		{
+			QPoint	globalpos=newdw->mapToGlobal(pos);
+			QMenu	cmenu;
+			QAction	copyitem(QIcon::fromTheme("edit-copy"),"Copy");
+			QAction	pasteitem(QIcon::fromTheme("edit-paste"),"Paste");
+			QAction	pasteinitem(QIcon::fromTheme("edit-paste"),"Paste In Quotes");
+			QAction	cdtofolderitem("CD To DocFolder");
+
+			copyitem.setData(QVariant(101));
+			cmenu.addAction(&copyitem);
+			pasteitem.setData(QVariant(102));
+			cmenu.addAction(&pasteitem);
+			pasteinitem.setData(QVariant(103));
+			cmenu.addAction(&pasteinitem);
+			cdtofolderitem.setData(QVariant(104));
+			cmenu.addAction(&cdtofolderitem);
+
+			QAction	*selecteditem=cmenu.exec(globalpos);
+			if(selecteditem!=NULL)
+				{
+					switch(selecteditem->data().toInt())
+						{
+							case 101:
+							this->terminals.at(whome).console->copyClipboard();
+							break;
+							case 102:
+								this->terminals.at(whome).console->pasteClipboard();
+								break;
+							case 103:
+								this->terminals.at(whome).console->sendText(QString("'%1'").arg(QGuiApplication::clipboard()->text(QClipboard::Clipboard)));
+								break;
+							case 104:
+								this->terminals.at(whome).dockWidget->activateWindow();
+								this->terminals.at(whome).dockWidget->raise();
+								this->terminals.at(whome).console->changeDir(this->folderPath);
+								this->terminals.at(whome).console->setFocus();
+								break;
+						}
 				}
 		});
 

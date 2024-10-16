@@ -1,4 +1,5 @@
 1.6.0
+Added right click context menu to terminal plugin for copying pasting etc.
 Sorted plugins in prefs dialog.
 Minor gui tweaks.
 Removed some redundant code.
