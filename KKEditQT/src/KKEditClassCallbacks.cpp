@@ -923,7 +923,8 @@ void KKEditClass::doTimer(void)
 {
 	int			retcode=0;
 	msgStruct	buffer;
-	
+	bool			wait=false;
+
 #ifdef _BUILDDOCVIEWER_
 	this->setDocMenu();
 #endif
@@ -1288,9 +1289,8 @@ void KKEditClass::doTimer(void)
 								break;
 							case ACTIVATEAPPMSG:
 								this->mainWindow->setWindowState((this->mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
-								this->mainWindow->raise();
-								//this->application->setActiveWindow(this->mainWindow);
 								this->mainWindow->activateWindow();
+								this->mainWindow->raise();
 								break;
 
 							case SAVECURRENTSESSIONMSG:
@@ -1319,6 +1319,7 @@ void KKEditClass::doTimer(void)
 							buffer.mText[0]=0;
 							buffer.mType=CONTINUEMSG;
 							msgsnd(this->queueID,&buffer,0,0);
+							qDebug()<<"here>>>>>";
 						}
 				}
 		}
