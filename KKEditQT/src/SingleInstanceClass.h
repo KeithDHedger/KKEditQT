@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Wed 23 Oct 10:47:24 BST 2024 keithdhedger@gmail.com
+ * ©K. D. Hedger. Fri 25 Oct 13:33:08 BST 2024 keithdhedger@gmail.com
 
  * This file (SingleInstanceClass.h) is part of KKEditQT.
 
