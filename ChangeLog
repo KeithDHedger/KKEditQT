@@ -1,3 +1,13 @@
+1.6.1
+Clean up msg queues on exit with multi instance.
+Delete shared mem and msg queue on exit.
+Moved from QSharedMemory to normal linux shared memory ( qt screws with the key ).
+Fixed major exit error.
+Added '-r/--raise' option to kkeditqtmsg.
+Trapped SIGUSR1 to force checking of message queue.
+Trapped SIGINT/SIGTERM for cleanup.
+Moved to shared memory from lock files for single instance.
+
 1.6.0
 Added right click context menu to terminal plugin for copying pasting etc.
 Sorted plugins in prefs dialog.

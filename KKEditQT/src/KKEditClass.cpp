@@ -40,6 +40,11 @@ KKEditClass::~KKEditClass()
 	plugData		pd;
 	QDir			fold(this->tmpFolderName);
 
+	if(this->tmpFolderName.isEmpty()==true)
+		{
+			return;
+		}
+
 	delete this->fileWatch;
 
 	for(int j=0;j<NOMORESHORTCUT;j++)
@@ -55,11 +60,27 @@ KKEditClass::~KKEditClass()
 				}
 		}
 
-	fold.removeRecursively();
-	//qDebug()<<this->tmpFolderName;
+	system(QString("rm %1/* 2>/dev/null").arg(this->tmpFolderName).toStdString().c_str());/**/
+	system(QString("rmdir %1 2>/dev/null").arg(this->tmpFolderName).toStdString().c_str());
 #ifdef _BUILDDOCVIEWER_
 	delete this->webEngView;
 #endif
+}
+
+void KKEditClass::handleSignal(int signum)
+{
+	switch(signum)
+		{
+			case SIGUSR1:
+				this->doTimer();
+				break;
+			case SIGTERM:
+			case SIGINT:
+				this->shutDownApp();
+				break;
+			default:
+				break;
+		}
 }
 
 void KKEditClass::setUpToolBar(void)
@@ -1157,8 +1178,6 @@ bool KKEditClass::closeTab(int index)
 
 void KKEditClass::shutDownApp()
 {
-//	if(this->forcedMultInst==false)//TODO//
-
 	this->writeExitData();
 
 	if(this->onExitSaveSession==true)

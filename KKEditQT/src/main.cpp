@@ -23,28 +23,27 @@
 
 KKEditClass	*kkedit=NULL;
 
+void signalHandler(int signalNum)
+{
+	kkedit->handleSignal(signalNum);
+}
+
 int main (int argc, char **argv)
 {
 	int				status;
 	QDir				commsDir;
 	QApplication		*napp=new QApplication(argc,argv);
 
-
-
-
+	signal(SIGUSR1,signalHandler);
+	signal(SIGTERM,signalHandler);
+	signal(SIGINT,signalHandler);
+	
 	napp->setOrganizationName("KDHedger");
 	napp->setApplicationName("KKEditQT");
 
 	kkedit=new KKEditClass(napp);
     kkedit->splash=new QSplashScreen(QString(DATADIR)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
 
-//tagClass tc(kkedit);
-//tc.getTagList(QStringList()<<"/home/keithhedger/Documents/test it.html"<<"/home/keithhedger/Documents/test.html");
-//
-//for (int j=0;j<tc.tagList.count();j++)
-//{
-//	qDebug()<<tc.tagList.at(j).tagName<<tc.tagList.at(j).tagType<<tc.tagList.at(j).lineNumberString<<tc.tagList.at(j).tagDefine<<tc.tagList.at(j).tagFilepath<<tc.tagList.at(j).lineNumber;
-//}
 	kkedit->parser.addHelpOption();
 	kkedit->parser.addOptions(
 		{
@@ -70,19 +69,59 @@ int main (int argc, char **argv)
 			kkedit->verySafeFlag=true;
 		}
 
-	SingleInstanceClass siapp(kkedit->application,kkedit->sessionID,kkedit->parser.isSet("multi"),argc,argv);
-	if(siapp.getRunning()==true)
+	if(kkedit->parser.isSet("multi"))
 		{
-			kkedit->runCLICommands(siapp.queueID);
+			srandom(time(NULL));
+			kkedit->sessionID=random();
+		}
+
+	SingleInstanceClass *siapp=new SingleInstanceClass("KKEditQT",kkedit->sessionID);
+	if(kkedit->parser.isSet("multi"))
+		{
+			kkedit->queueID=siapp->queueID;
+			kkedit->sessionID=siapp->key;
+			kkedit->forceDefaultGeom=!siapp->isOnX11;
+
+			kkedit->initApp(argc,argv);
+			kkedit->runCLICommands(siapp->queueID);
+			kill(getpid(),SIGUSR1);
+			kkedit->application->setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));
+			shmdt(siapp->queueAddr);
+			shmctl(siapp->shmQueueID,IPC_RMID,NULL);
+			status=kkedit->application->exec();
+			msgctl(siapp->queueID,IPC_RMID,NULL);
+			delete kkedit;
+			delete siapp;
+			return status;
+		}
+
+
+	if(siapp->running==true)
+		{
+			msgStruct	message;
+			int			msglen;
+			msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","ACTIVATEAPPMSG");
+			message.mType=ACTIVATEAPPMSG;
+			msgsnd(siapp->queueID,&message,msglen,0);
+			kkedit->runCLICommands(siapp->queueID);
+			kill(atoi(siapp->queueAddr),SIGUSR1);
+			delete kkedit;
+			delete siapp;
 			return(0);
+			return(0);
+		}
+	else
+		{
+			kkedit->queueID=siapp->queueID;
+			kkedit->sessionID=siapp->key;
 		}
 
 	kkedit->splash->show();
-	kkedit->queueID=siapp.queueID;
+	kkedit->queueID=siapp->queueID;
 	kkedit->forcedMultInst=kkedit->parser.isSet("multi");
-	kkedit->currentWorkSpace=siapp.workspace;
-	kkedit->sessionID=siapp.useKey;
-	kkedit->forceDefaultGeom=!siapp.isOnX11;
+	kkedit->sessionID=siapp->key;;
+	kkedit->forceDefaultGeom=!siapp->isOnX11;
+
 	kkedit->initApp(argc,argv);
 
 //test plugs
@@ -105,9 +144,9 @@ int main (int argc, char **argv)
 	kkedit->splash->finish(kkedit->mainWindow);
 
 	status=kkedit->application->exec();
-
 	delete kkedit;
+	shmctl(siapp->shmQueueID,IPC_RMID,NULL);
+	msgctl(siapp->queueID,IPC_RMID,NULL);
+	delete siapp;
 	return status;
 }
-
-

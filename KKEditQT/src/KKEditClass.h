@@ -208,7 +208,6 @@ class KKEditClass : public QObject
 		int							queueID=-1;
 		bool							safeFlag=false;
 		bool							verySafeFlag=false;
-		int							currentWorkSpace=-1;
 		bool							forcedMultInst=false;
 		bool							forceDefaultGeom=false;
 		bool							sessionBusy=false;
@@ -244,6 +243,7 @@ class KKEditClass : public QObject
 		QString						toolsFolder;
 
 //app functions
+		void							handleSignal(int signum);
 		void							initApp(int argc,char** argv);
 		void							buildMainGui(void);
 		void							readConfigs(void);

@@ -1,13 +1,13 @@
 /*
  *
- * ©K. D. Hedger. Thu 23 Dec 20:38:05 GMT 2021 keithdhedger@gmail.com
+ * ©K. D. Hedger. Wed 23 Oct 10:47:24 BST 2024 keithdhedger@gmail.com
 
  * This file (SingleInstanceClass.h) is part of KKEditQT.
 
  * KKEditQT is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
+ * (at your option) any later version.
 
  * KKEditQT is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,42 +16,36 @@
 
  * You should have received a copy of the GNU General Public License
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
 #ifndef _SINGLEINSTANCECLASS_
 #define _SINGLEINSTANCECLASS_
 
-#include "kkedit-includes.h"
-
-//#ifndef _USEQT6_
-//#include <QX11Info>
-////#include <QGuiApplication>
-//#endif
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
+
+#define SHAREDMEMSIZE 64
 
 class SingleInstanceClass
 {
 	public:
-		SingleInstanceClass(QApplication *app,int key,bool forcem,int argc,char **argv);
+		SingleInstanceClass(QString name,int suppliedkey=-1);
 		~SingleInstanceClass();
 
-		long				getSIWorkSpace(void);
-		void*			getX11Prop(Window w,Atom prop,Atom type,int fmt,unsigned long *rcountp);
-		bool				getRunning(void);
+		long				getSIWorkSpace(Display *display);
+		void				*getX11Prop(Display	*display,Window w,Atom prop,Atom type,int fmt,unsigned long *rcountp);
+		unsigned long	hashFromKey(QString key);
 
-		QApplication		*app;
-		int				workspace=-1;
 		bool				isOnX11=false;
+		int				key;
 		int				queueID=-1;
-		int				useKey=-1;
+		int				shmQueueID=-1;
+		unsigned long	shmKey=0;
+		char				*queueAddr=NULL;
+		bool				running=false;
 
 	private:
-		bool				deleteComfiles=false;
-		QFile			fileMsg;
-		QFile			filePID;
-		bool				usingMulti=false;
-		Display			*display;
+		QString			appName;
 };
 
 #endif

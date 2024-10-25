@@ -47,8 +47,8 @@ enum msgActions {ACTIVATEAPPMSG=100,NEWFILEMSG,SAVEFILEMSG,SAVEFILEASMSG,QUITAPP
 #define UNKNOWNARG 1
 #define NOMAKEQUEUE 2
 #define WAITFORMSG 0
-
 #define GETMSG 0x1000
+#define RAISEMSG 0x4000
 
 struct option long_options[] =
 {
@@ -90,6 +90,7 @@ void printHelp()
 	       " -k, --key	Use key [INTEGER] instead of generated one\n"
 	       " -i, --info	Send information request and wait for reply to arrive, then print to stdout (blocking)\n"
 	       " -a, --autowait	Wait for command to complete (blocking, no output)\n"
+	       " -r, --raise	Raise/Activate KKEdit\n"
 	       " -h, -?, --help	print this help\n\n"
 	       "Report bugs to keithdhedger@gmail.com\n"
 	       ,APPNAME,MSGVERSION);
@@ -187,7 +188,7 @@ int main(int argc, char **argv)
 	while (1)
 		{
 			int option_index = 0;
-			c = getopt_long (argc, argv, "?hfai:d:k:c:",long_options, &option_index);
+			c = getopt_long (argc, argv, "?hfari:d:k:c:",long_options, &option_index);
 			if (c == -1)
 				break;
 
@@ -212,6 +213,10 @@ int main(int argc, char **argv)
 
 					case 'a':
 						waitContinue=true;
+						break;
+
+					case 'r':
+						buffer.mType|=RAISEMSG;
 						break;
 
 					case 'k':

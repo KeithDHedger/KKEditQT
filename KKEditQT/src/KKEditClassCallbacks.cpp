@@ -1315,11 +1315,17 @@ void KKEditClass::doTimer(void)
 						}
 
 					if((buffer.mType & CONTINUEMSG)==CONTINUEMSG)
-						{
+						{			
 							buffer.mText[0]=0;
 							buffer.mType=CONTINUEMSG;
 							msgsnd(this->queueID,&buffer,0,0);
-							qDebug()<<"here>>>>>";
+						}
+
+					if((buffer.mType&RAISEMSG)==RAISEMSG)
+						{
+							this->mainWindow->setWindowState((this->mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+							this->mainWindow->activateWindow();
+							this->mainWindow->raise();
 						}
 				}
 		}
