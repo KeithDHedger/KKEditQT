@@ -95,9 +95,10 @@ int main (int argc, char **argv)
 			return status;
 		}
 
-
 	if(siapp->running==true)
 		{
+			kkedit->queueID=siapp->queueID;
+			kkedit->sessionID=siapp->key;
 			msgStruct	message;
 			int			msglen;
 			msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","ACTIVATEAPPMSG");
