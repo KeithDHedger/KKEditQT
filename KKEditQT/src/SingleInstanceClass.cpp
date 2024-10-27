@@ -85,7 +85,7 @@ SingleInstanceClass::SingleInstanceClass(QString name,int suppliedkey)
 	int		workspace=-1;
 	int		screen;
 	QString	displaystr;
-	QString	keystr;
+	//QString	keystr;
 
 	this->appName=name;
 
@@ -99,13 +99,13 @@ SingleInstanceClass::SingleInstanceClass(QString name,int suppliedkey)
 
 	if(suppliedkey==-1)
 		{
-			keystr=QString("%1%2%3%4").arg(this->appName).arg(workspace).arg(screen).arg(displaystr);
+			this->keystr=QString("%1%2%3%4").arg(this->appName).arg(workspace).arg(screen).arg(displaystr);
 			this->key=hashFromKey(keystr);
 		}
 	else
 		{
 			this->key=suppliedkey;
-			keystr=QString("%1%2").arg(this->appName).arg(this->key);
+			this->keystr=QString("%1%2").arg(this->appName).arg(this->key);
 		}
 
 	this->queueID=msgget(this->key,IPC_CREAT|0660);
@@ -114,18 +114,29 @@ SingleInstanceClass::SingleInstanceClass(QString name,int suppliedkey)
 
 	if(this->shmQueueID==-1)
 		{
+			this->semid=sem_open(this->keystr.toStdString().c_str(),O_CREAT,0600,0);
 			this->shmQueueID=shmget(this->shmKey,SHAREDMEMSIZE,IPC_CREAT|0600);
 			this->queueAddr=(char*)shmat(this->shmQueueID,NULL,SHM_W);
 			sprintf(this->queueAddr,"%i\n",getpid());
+			sem_post(this->semid);
 		}
 	else
 		{
 			this->running=true;
 			this->queueAddr=(char*)shmat(this->shmQueueID,NULL,SHM_W);
+			this->semid=sem_open(this->keystr.toStdString().c_str(),0);
 		}
 	XCloseDisplay(display);
 }
 
 SingleInstanceClass::~SingleInstanceClass()
 {
+	if((this->isMulti==true) || (this->running==false))
+		{
+			shmdt(this->queueAddr);
+			shmctl(this->shmQueueID,IPC_RMID,NULL);
+			msgctl(this->queueID,IPC_RMID,NULL);
+			sem_close(this->semid);
+			sem_unlink(this->keystr.toStdString().c_str());
+		}
 }

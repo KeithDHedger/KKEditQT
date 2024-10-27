@@ -86,10 +86,9 @@ int main (int argc, char **argv)
 			kkedit->runCLICommands(siapp->queueID);
 			kill(getpid(),SIGUSR1);
 			kkedit->application->setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));
-			shmdt(siapp->queueAddr);
-			shmctl(siapp->shmQueueID,IPC_RMID,NULL);
+			siapp->isMulti=true;
+			fprintf(stderr,"queueAddr=0x%x shmQueueID=0x%x\n",siapp->queueAddr,siapp->shmQueueID);
 			status=kkedit->application->exec();
-			msgctl(siapp->queueID,IPC_RMID,NULL);
 			delete kkedit;
 			delete siapp;
 			return status;
@@ -105,10 +104,12 @@ int main (int argc, char **argv)
 			message.mType=ACTIVATEAPPMSG;
 			msgsnd(siapp->queueID,&message,msglen,0);
 			kkedit->runCLICommands(siapp->queueID);
-			kill(atoi(siapp->queueAddr),SIGUSR1);
+			sem_wait(siapp->semid);
+				kill(atoi(siapp->queueAddr),SIGUSR1);
+			sem_post(siapp->semid);
+
 			delete kkedit;
 			delete siapp;
-			return(0);
 			return(0);
 		}
 	else
@@ -146,8 +147,6 @@ int main (int argc, char **argv)
 
 	status=kkedit->application->exec();
 	delete kkedit;
-	shmctl(siapp->shmQueueID,IPC_RMID,NULL);
-	msgctl(siapp->queueID,IPC_RMID,NULL);
 	delete siapp;
 	return status;
 }

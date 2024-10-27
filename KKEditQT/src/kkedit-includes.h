@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <linux/limits.h>
+
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <fcntl.h>
@@ -35,6 +36,8 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include <sys/shm.h>
+#include <semaphore.h>
+
 #include <libgen.h>
 #include <time.h>
 

@@ -1,4 +1,5 @@
 1.6.1
+Added semaphores to single instance app ( not really need yet ).
 Clean up msg queues on exit with multi instance.
 Delete shared mem and msg queue on exit.
 Moved from QSharedMemory to normal linux shared memory ( qt screws with the key ).
