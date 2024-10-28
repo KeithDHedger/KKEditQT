@@ -24,7 +24,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-#define SHAREDMEMSIZE 64
+#define SHAREDMEMSIZE 128
 
 class SingleInstanceClass
 {

@@ -1,4 +1,5 @@
 1.6.1
+Added extra data to shm for the future.
 Added semaphores to single instance app ( not really need yet ).
 Clean up msg queues on exit with multi instance.
 Delete shared mem and msg queue on exit.
