@@ -96,10 +96,11 @@ int main (int argc, char **argv)
 
 	if(siapp->running==true)
 		{
-			kkedit->queueID=siapp->queueID;
-			kkedit->sessionID=siapp->key;
 			msgStruct	message;
 			int			msglen;
+
+			kkedit->queueID=siapp->queueID;
+			kkedit->sessionID=siapp->key;
 			msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","ACTIVATEAPPMSG");
 			message.mType=ACTIVATEAPPMSG;
 			msgsnd(siapp->queueID,&message,msglen,0);
