@@ -8,4 +8,4 @@ Type=Application
 Categories=Utility;
 MimeType=text/plain
 Icon=KKEditQT.png
-Exec=kkeditqt
+Exec=kkeditqt %F

@@ -1,4 +1,6 @@
 1.6.1
+Added extra mime types to cpplang plugin.
+Minor fix to .desktop files.
 Added extra data to shm for the future.
 Added semaphores to single instance app ( not really need yet ).
 Clean up msg queues on exit with multi instance.
