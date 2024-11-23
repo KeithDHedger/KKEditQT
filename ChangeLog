@@ -1,4 +1,5 @@
 1.6.1
+Added number of sessions to prefs max=128 default 24.
 Added extra mime types to cpplang plugin.
 Minor fix to .desktop files.
 Added extra data to shm for the future.

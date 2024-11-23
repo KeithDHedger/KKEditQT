@@ -85,7 +85,8 @@ static const char *whatIsPrefsInt[MAXPREFSINTWIDGETS]={\
 "<html>Number of characters to a text tab, default <b>4</b>.</html>",\
 "<html>Max characters in menu items and function definitions, default <b>64</b>.</html>",\
 "<html>Maximum number of recently opened files stored, default <b>10</b>.</html>",\
-"<html>Check for messages every X ms, default <b>1000</b>.</html>"};
+"<html>Check for messages every X ms, default <b>1000</b>.</html>",\
+"<html>Maximum number of sessions default <b>24</b>.</html>"};
 
 void KKEditClass::buildPrefsWindow(void)
 {
@@ -369,6 +370,12 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
 	makePrefsDial(MAXRECENTS,"Max Recent Files:",this->recentFiles->maxFiles,0,MAXTEXTWIDTH,posy);
 	prefsIntWidgets[MAXRECENTS]->setWhatsThis(whatIsPrefsInt[MAXRECENTS]);
+
+//max sessions
+	posy++;
+	makePrefsDial(MAXMENUSESSIONS,"Max Sessions:",this->maxSessions,0,MAXSESSIONS,posy);
+	prefsIntWidgets[MAXMENUSESSIONS]->setWhatsThis(whatIsPrefsInt[MAXMENUSESSIONS]);//TODO//
+
 //find replace history max
 	posy++;
 	makePrefsDial(MAXHISTORY,"Max Find/Replace History:",this->maxFRHistory,0,MAXTEXTWIDTH,posy);
@@ -386,7 +393,7 @@ void KKEditClass::buildPrefsWindow(void)
 	makePrefsDial(MSGCHECKTIME,"Check Messages Every (ms):",this->prefsMsgTimer,1,10000,posy);
 	prefsIntWidgets[MSGCHECKTIME]->setWhatsThis(whatIsPrefsInt[MSGCHECKTIME]);
 
-//end admin
+//end application
 
 	posy++;
 	table->addItem(space,posy,0,100,-1);
@@ -785,7 +792,7 @@ void KKEditClass::buildMainGui(void)
 	this->fileMenu->addMenu(this->saveSessionsMenu);
 	this->saveCurrentSessionMenuItem=this->makeMenuItemClass(SAVESESSIONSMENU,"Save Current Session",0,NULL,SAVESESSIONMENUNAME,CURRENTSESSION);
 	this->saveSessionsMenu->addSeparator();
-	for(int j=1;j<MAXSESSIONS;j++)
+	for(int j=1;j<this->maxSessions;j++)
 		{
 			menuItemSink=this->makeMenuItemClass(SAVESESSIONSMENU,this->sessionNames.value(j),0,NULL,SAVESESSIONMENUNAME,j);
 		}
@@ -795,7 +802,7 @@ void KKEditClass::buildMainGui(void)
 	this->fileMenu->addMenu(this->restoreSessionsMenu);
 	this->restoreDefaultSessionMenuItem=this->makeMenuItemClass(RESTORESESSIONSMENU,"Restore Autosave Session",0,NULL,RESTORESESSIONMENUNAME,CURRENTSESSION);
 	this->restoreSessionsMenu->addSeparator();
-	for(int j=1;j<MAXSESSIONS;j++)
+	for(int j=1;j<this->maxSessions;j++)
 		{
 			menuItemSink=this->makeMenuItemClass(RESTORESESSIONSMENU,this->sessionNames.value(j),0,NULL,RESTORESESSIONMENUNAME,j);
 			this->restoreSessionMenuItemsList.append(menuItemSink);

@@ -346,7 +346,8 @@ void KKEditClass::initApp(int argc,char** argv)
 		});
 
 	tdir.mkpath(this->sessionFolder);
-	for(int j=0;j<MAXSESSIONS;j++)
+	this->maxSessions=this->prefs.value("app/maxsessions",24).toInt();
+	for(int j=0;j<this->maxSessions;j++)
 		{
 			QProcess::execute("touch",QStringList()<<this->sessionFolder+"/Session-"+QString::number(j));
 
@@ -377,7 +378,6 @@ void KKEditClass::initApp(int argc,char** argv)
 				}
 		}
 
-//qDebug()<<tmpfoldertemplate;
 		this->tmpFolderName=mkdtemp(tmpfoldertemplate);
 		if(this->tmpFolderName.isEmpty()==true)
 			{
@@ -511,6 +511,7 @@ void KKEditClass::readConfigs(void)
 	this->defaultShortCutsList=this->prefs.value("app/shortcuts",QVariant(QStringList({"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"}))).toStringList();
 	this->onExitSaveSession=this->prefs.value("app/onexitsavesession",QVariant(bool(true))).value<bool>();
 	this->disabledPlugins=this->prefs.value("app/disabledplugins").toStringList();
+	this->maxSessions=this->prefs.value("app/maxsessions",24).toInt();
 
 //find
 	this->findList=this->prefs.value("find/findlist").toStringList();
@@ -686,6 +687,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/toolsopgeometry",this->toolOutputWindow->geometry());
 	this->prefs.setValue("app/shortcuts",this->defaultShortCutsList);
 	this->prefs.setValue("app/onexitsavesession",this->onExitSaveSession);
+	this->prefs.setValue("app/maxsessions",this->maxSessions);
 
 //find
 	this->setSearchPrefs();

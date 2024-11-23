@@ -101,7 +101,7 @@ void KKEditClass::doSessionsMenuItems(void)
 					this->restoreSessionsMenu->addAction(this->restoreDefaultSessionMenuItem);
 					this->restoreSessionsMenu->addSeparator();
 					this->restoreSessionMenuItemsList.clear();
-					for(int j=1;j<MAXSESSIONS;j++)
+					for(int j=1;j<this->maxSessions;j++)
 						{
 							menuItemSink=this->makeMenuItemClass(RESTORESESSIONSMENU,this->sessionNames.value(j),0,NULL,RESTORESESSIONMENUNAME,j);
 							this->restoreSessionMenuItemsList.append(menuItemSink);
@@ -145,6 +145,8 @@ void KKEditClass::doSessionsMenuItems(void)
 
 	if(sender()->objectName().compare(RESTORESESSIONMENUNAME)==0)
 		{
+			if(mc->text().isEmpty()==true)//TODO//
+				return;
 			this->sessionBusy=true;
 			sessionnumber=mc->getMenuID();
 //autosave session
@@ -1368,6 +1370,11 @@ void KKEditClass::setPreferences(void)
 	this->recentFiles->maxFiles=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXRECENTS])->value();
 	this->autoShowMinChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[COMPLETIONSIZE])->value();
 	this->prefsMsgTimer=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MSGCHECKTIME])->value();
+
+
+	this->maxSessions=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXMENUSESSIONS])->value();
+
+
 	this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
 	this->prefStyleNameHold=this->prefStyleName;
 
