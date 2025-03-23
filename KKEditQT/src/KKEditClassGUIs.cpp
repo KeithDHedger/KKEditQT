@@ -181,7 +181,7 @@ void KKEditClass::buildPrefsWindow(void)
 
 //tabwidth
 	posy=1;
-	makePrefsDial(TABWIDTH,"Tab width:",this->prefsTabWidth,2,64,posy);
+	makePrefsDial(TABWIDTH,"Tab width:",this->prefsTabWidth,1,64,posy);
 	prefsIntWidgets[TABWIDTH]->setWhatsThis(whatIsPrefsInt[TABWIDTH]);
 
 //style
@@ -778,7 +778,6 @@ void KKEditClass::buildMainGui(void)
 
 //save
 	this->saveMenuItem=this->makeMenuItemClass(FILEMENU,"Save",QKeySequence::Save,"document-save",SAVEMENUNAME,SAVEMENUITEM);
-
 //savas
 	this->saveAsMenuItem=this->makeMenuItemClass(FILEMENU,"Save As",QKeySequence("Ctrl+Shift+S"),"document-save-as",SAVEASMENUNAME,SAVEASMENUITEM);
 

@@ -80,7 +80,6 @@ unsigned long SingleInstanceClass::hashFromKey(QString key)
 
 SingleInstanceClass::SingleInstanceClass(QString name,int suppliedkey)
 {
-	bool		gotsh;
 	Display	*display=NULL;
 	int		workspace=-1;
 	int		screen;

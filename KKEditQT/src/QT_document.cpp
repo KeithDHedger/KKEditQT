@@ -326,6 +326,7 @@ void DocumentClass::setXtraSelections(void)
 	this->extraSelections.append(this->bracketMatch);
 	this->extraSelections.append(this->findMatch);
 	this->extraSelections.append(this->selectedLine);
+	this->extraSelections.append(this->verticalSelectMatch);
 	this->setExtraSelections(this->extraSelections);
 }
 
@@ -374,6 +375,25 @@ const QString DocumentClass::textUnderCursor()
 	if(cursor.atBlockStart()==false)
 		cursor.movePosition(QTextCursor::PreviousWord,QTextCursor::KeepAnchor);
 	return cursor.selectedText();
+}
+
+void DocumentClass::mousePressEvent(QMouseEvent *event)
+{
+	if((event->buttons() & Qt::LeftButton)==Qt::LeftButton)
+		{
+			this->verticalSelectMatch.clear();
+			this->verticalText="";
+		}
+
+	if((event->modifiers() & Qt::AltModifier)==Qt::AltModifier)
+		{
+			QTextCursor	startcurs=this->cursorForPosition(event->pos());
+			this->doingVSelect=true;
+			this->startVCol=startcurs.columnNumber();
+			this->startVLine=startcurs.blockNumber();
+		}
+
+	QPlainTextEdit::mousePressEvent(event);
 }
 
 void DocumentClass::keyPressEvent(QKeyEvent *event)
@@ -863,15 +883,62 @@ void DocumentClass::mouseMoveEvent(QMouseEvent *event)
 {
 	if(this->mainKKEditClass->mouseVisible==false)
 		this->mainKKEditClass->setMouseState(true);
-	QPlainTextEdit::mouseMoveEvent(event);
+
+	if(this->doingVSelect==false)
+		QPlainTextEdit::mouseMoveEvent(event);
+	else
+		{
+			QString						data="";
+			QTextEdit::ExtraSelection	findmatch;
+			QTextCharFormat				format;
+			QTextBlock					blockfrom;
+			int							blockfromstart;
+			QTextCursor					cursor=this->cursorForPosition(event->pos());
+			int							endvline=cursor.blockNumber()+1;
+			QFontMetrics					fm(this->mainKKEditClass->prefsDocumentFont);
+			int							endvcol=(event->pos().x()/fm.boundingRect("X").width());
+			int							textcnt=endvcol-this->startVCol+1;
+
+			this->verticalSelectMatch.clear();
+			format.setBackground(this->palette().highlight().color());
+
+			if(this->startVLine<=endvline)
+				{
+					for(int lines=this->startVLine;lines<endvline;lines++)
+						{
+							blockfrom=this->document()->findBlockByNumber(lines);
+							blockfromstart=blockfrom.position();
+							cursor=this->textCursor();
+							if(!(this->startVCol>blockfrom.length()))
+								{
+									if(textcnt>(blockfrom.length()-this->startVCol-1))
+										{
+											cursor.setPosition(blockfromstart+(this->startVCol));
+											cursor.movePosition(QTextCursor::QTextCursor::EndOfBlock,QTextCursor::KeepAnchor,1);
+										}
+									else
+										{
+											cursor.setPosition(blockfromstart+this->startVCol);
+											cursor.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,textcnt);
+										}
+								}
+							data+=cursor.selectedText()+"\n";
+							findmatch.format=format;
+							findmatch.cursor=cursor;
+							this->verticalSelectMatch.append(findmatch);
+						}
+					this->verticalText=data;
+					this->setXtraSelections();
+				}
+		}
 }
 
 void DocumentClass::mouseReleaseEvent(QMouseEvent *event)
 {
 	QTextCursor thiscursor=this->textCursor();
-
 	this->searchPos=this->textCursor().position();
 	this->mainKKEditClass->currentTab=this->mainKKEditClass->mainNotebook->currentIndex();
+	this->doingVSelect=false;
 	QPlainTextEdit::mouseReleaseEvent(event);
 }
 

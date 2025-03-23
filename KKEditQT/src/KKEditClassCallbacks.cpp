@@ -708,7 +708,15 @@ void KKEditClass::doEditMenuItems()
 				break;
 			case COPYMENUITEM:
 				if(document!=NULL)
-					document->copy();
+					{
+						if(document->verticalText.isEmpty()==false)
+							{
+								this->application->clipboard()->setText(document->verticalText);
+								break;
+							}
+						if(document->textCursor().hasSelection()==true)
+							document->copy();
+					}
 				break;
 			case PASTEMENUITEM:
 				if(document!=NULL)
@@ -925,7 +933,6 @@ void KKEditClass::doTimer(void)
 {
 	int			retcode=0;
 	msgStruct	buffer;
-	bool			wait=false;
 
 #ifdef _BUILDDOCVIEWER_
 	this->setDocMenu();

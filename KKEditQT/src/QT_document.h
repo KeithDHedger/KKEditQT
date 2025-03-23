@@ -44,6 +44,7 @@ class DocumentClass : public QPlainTextEdit
 		QList<QTextEdit::ExtraSelection>	hilightSelections;
 		QList<QTextEdit::ExtraSelection>	bracketMatch;
 		QList<QTextEdit::ExtraSelection>	findMatch;
+		QList<QTextEdit::ExtraSelection>	verticalSelectMatch;
 		
 		QTextEdit::ExtraSelection		selection;
 		QTextEdit::ExtraSelection		selectedLine;
@@ -97,11 +98,12 @@ class DocumentClass : public QPlainTextEdit
 		int								totalMatches=0;
 		bool								changeDirection=false;
 		bool								finishedSearch=false;
-
 		bool								findStr(int what=FINDNEXT);
 		void								setHighlightAll(void);
-
 		const QString					textUnderCursor();
+
+//vertical selection
+		QString							verticalText="";
 
 	protected:
 	    void								resizeEvent(QResizeEvent *event);
@@ -109,17 +111,18 @@ class DocumentClass : public QPlainTextEdit
 		void								keyReleaseEvent(QKeyEvent *event);
 		void								focusInEvent(QFocusEvent *e);
 		void								contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
+		void								mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 		void								mouseDoubleClickEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 		void								mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 		void								mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-		
-		
+
 		void								paintEvent(QPaintEvent* event);
 //dand
 		void								dragEnterEvent(QDragEnterEvent* event);
 		void								dragLeaveEvent(QDragLeaveEvent* event);
 		void								dropEvent(QDropEvent* event);
 		void								dragMoveEvent(QDragMoveEvent *event);
+
 
 	private slots:
 		void								highlightCurrentLine();
@@ -141,6 +144,10 @@ class DocumentClass : public QPlainTextEdit
 		bool								lastCursorPosition=false;
 		int								holdColoumn=0;
 		bool								holdBlockEnd=false;
+//vertical selection
+		bool								doingVSelect=false;
+		int								startVCol=0;
+		int								startVLine=0;
 };
 
 class LineNumberArea : public QWidget

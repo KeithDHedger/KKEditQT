@@ -1283,6 +1283,8 @@ void KKEditClass::setToolbarSensitive(void)
 		{
 			override=doc->dirty;
 			hasselection=doc->textCursor().hasSelection();
+			if(doc->verticalSelectMatch.size()>0)
+				hasselection=true;
 		}
 
 	if(this->mainNotebook->count()==0)

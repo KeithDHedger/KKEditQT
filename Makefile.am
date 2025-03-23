@@ -26,5 +26,6 @@ uninstall-hook:
 
 distclean-local:
 	rm KKEditQT/src/moc_*
+	./buildplugs.sh distclean
 
 

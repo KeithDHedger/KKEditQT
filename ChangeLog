@@ -1,4 +1,7 @@
 1.6.1
+Fixed signal name change in terminal plugin for qt6.
+Set min tab width to 1.
+Added vertical select ( hold 'ALT' then click selecting text ).
 Added number of sessions to prefs max=128 default 24.
 Added extra mime types to cpplang plugin.
 Minor fix to .desktop files.

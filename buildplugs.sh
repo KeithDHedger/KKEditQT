@@ -23,6 +23,9 @@ BUILDTOOLKITPLUGS=${BUILDTOOLKITPLUGS:-1}
 export LOCAL=${LOCAL:-0}
 
 INSTALLTO="$2"
+#export MAXJOBS=$(( ( $(nproc) -3 ) /3 ))
+export MAXJOBS=${MAXJOBS:-1}
+
 export INSTALLTO
 
 if [[ "$1" = "clean" ]];then
@@ -35,6 +38,11 @@ fi
 if [ ${LOCAL:-0} -eq 1 ];then
 	unset DESTDIR
 fi
+
+waitforjobs()
+{
+    while test $(jobs -p | wc -w) -ge "$1"; do wait -n; done
+}
 
 buildPlug ()
 {
@@ -49,7 +57,7 @@ buildPlug ()
 
 	echo -e "${NORMAL}${GREEN}In ${GREEN}$PARENTDIR doing $WHAT on $THISDIR ...${NORMAL}"
 	case $WHAT in
-		"clean")
+		"clean"|"distclean")
 			rm -rf build
 			;;
 		"build")
@@ -84,6 +92,7 @@ if [ $BUILDLANGPLUGS -eq 1 ];then
 			while read
 				do
 					pushd $(dirname $REPLY) &>/dev/null
+						waitforjobs $MAXJOBS
 						( buildPlug "$1" "$2" ) &
 					popd &>/dev/null
 				done < <(find -maxdepth 2 -iname "*.pro")
@@ -101,6 +110,7 @@ if [ $BUILDPLUGS -eq 1 ];then
 			while read
 				do
 					pushd $(dirname $REPLY) &>/dev/null
+						waitforjobs $MAXJOBS
 						( buildPlug "$1" "$2" ) &
 					popd &>/dev/null
 
@@ -119,6 +129,7 @@ if [ $BUILDTOOLKITPLUGS -eq 1 ];then
 			while read
 				do
 					pushd $(dirname $REPLY) &>/dev/null
+						waitforjobs $MAXJOBS
 						( buildPlug "$1" "$2" ) &
 					popd &>/dev/null
 				done < <(find -maxdepth 2 -iname "*.pro")

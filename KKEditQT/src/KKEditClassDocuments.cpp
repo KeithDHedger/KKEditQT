@@ -109,7 +109,7 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 			if(gottaglist.count()>1)
 				{
 					QVBoxLayout	*vlayout=new QVBoxLayout;
-					QWidget		*hbox;
+					//QWidget		*hbox;
 					QHBoxLayout	*hlayout;
 					QPushButton	*button;
 					QPushButton	*button1;

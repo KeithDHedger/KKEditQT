@@ -284,12 +284,20 @@ void TerminalPluginPlug::plugSettings(void)
 
 	openonstart=new QCheckBox("Open On Start");
 	openonstart->setChecked(this->openOnStart);
+#ifdef _USEQT6_
+	QObject::connect(openonstart,&QCheckBox::checkStateChanged,[this](Qt::CheckState state) { this->openOnStart=(bool)state; });
+#else
 	QObject::connect(openonstart,&QCheckBox::stateChanged,[this](bool what) { this->openOnStart=what; });
+#endif
 	vlayout->addWidget(openonstart);
 
 	savevis=new QCheckBox("Save Current State");
 	savevis->setChecked(this->saveCurrentVis);
+#ifdef _USEQT6_
+	QObject::connect(openonstart,&QCheckBox::checkStateChanged,[this](Qt::CheckState state) { this->saveCurrentVis=(bool)state; });
+#else
 	QObject::connect(savevis,&QCheckBox::stateChanged,[this](bool what) { this->saveCurrentVis=what; });
+#endif
 	vlayout->addWidget(savevis);
 
 	usetabs=new QCheckBox("Open In Tabs");
