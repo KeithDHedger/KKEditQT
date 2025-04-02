@@ -61,6 +61,7 @@ static const char *whatIsPrefsBool[MAXPREFSWIDGETS]={\
 "<html>Don't open duplicate file, just switch tabs.</html>",\
 "<html>Don't warn if file changed on disk, just update document.</html>",\
 "<html>Auto show completions.</html>",\
+"<html>Auto set tabs to one space when ALT selecting and restore on mouse release.</html>",\
 "<html><div align=\"center\">Check this if you have sent me big bags of cash.<br>Big bags of jewels also acceptable.<br><center><span style='font-size:24px;'>&#128519;</span></center></div></html>"};
 
 //prefsOtherWidgets
@@ -171,6 +172,11 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
 	makePrefsCheck(AUTOSHOW,"Show Completions",this->prefsAutoShowCompletions,0,posy);
 	prefsWidgets[AUTOSHOW]->setWhatsThis(whatIsPrefsBool[AUTOSHOW]);
+
+//auto set tabs to one space and back when ALT selecting
+	posy++;
+	makePrefsCheck(AUTOONETAB,"Auto Set Tabs",this->autoOneTab,0,posy);
+	prefsWidgets[AUTOONETAB]->setWhatsThis(whatIsPrefsBool[AUTOONETAB]);
 
 	tab->setLayout(table);
 	prefsnotebook->addTab(tab,"General Appearance");

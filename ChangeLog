@@ -1,4 +1,5 @@
 1.6.1
+Added "Auto Set Tabs" to prefs to set tabs to one space when ALT selecting and reset on mouse release.
 Fixed signal name change in terminal plugin for qt6.
 Set min tab width to 1.
 Added vertical select ( hold 'ALT' then click selecting text ).

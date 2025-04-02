@@ -388,9 +388,15 @@ void DocumentClass::mousePressEvent(QMouseEvent *event)
 	if((event->modifiers() & Qt::AltModifier)==Qt::AltModifier)
 		{
 			QTextCursor	startcurs=this->cursorForPosition(event->pos());
+			if(this->mainKKEditClass->autoOneTab==true)
+				{
+					QFontMetrics	fm(this->mainKKEditClass->prefsDocumentFont);
+					this->setTabStopDistance(fm.horizontalAdvance(" "));
+				}
 			this->doingVSelect=true;
 			this->startVCol=startcurs.columnNumber();
 			this->startVLine=startcurs.blockNumber();
+
 		}
 
 	QPlainTextEdit::mousePressEvent(event);
@@ -935,11 +941,18 @@ void DocumentClass::mouseMoveEvent(QMouseEvent *event)
 
 void DocumentClass::mouseReleaseEvent(QMouseEvent *event)
 {
-	QTextCursor thiscursor=this->textCursor();
+	QTextCursor	thiscursor=this->textCursor();
+
 	this->searchPos=this->textCursor().position();
 	this->mainKKEditClass->currentTab=this->mainKKEditClass->mainNotebook->currentIndex();
+	if((this->doingVSelect=true) && (this->mainKKEditClass->autoOneTab==true))
+		{
+			QFontMetrics	fm(this->mainKKEditClass->prefsDocumentFont);
+			this->setTabStopDistance(fm.horizontalAdvance(" ")*this->mainKKEditClass->prefsTabWidth);
+		}
 	this->doingVSelect=false;
 	QPlainTextEdit::mouseReleaseEvent(event);
+
 }
 
 void DocumentClass::mouseDoubleClickEvent(QMouseEvent *event)

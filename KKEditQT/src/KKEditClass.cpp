@@ -512,6 +512,7 @@ void KKEditClass::readConfigs(void)
 	this->onExitSaveSession=this->prefs.value("app/onexitsavesession",QVariant(bool(true))).value<bool>();
 	this->disabledPlugins=this->prefs.value("app/disabledplugins").toStringList();
 	this->maxSessions=this->prefs.value("app/maxsessions",24).toInt();
+	this->autoOneTab=this->prefs.value("app/autoonetab",QVariant(bool(false))).value<bool>();
 
 //find
 	this->findList=this->prefs.value("find/findlist").toStringList();
@@ -688,6 +689,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/shortcuts",this->defaultShortCutsList);
 	this->prefs.setValue("app/onexitsavesession",this->onExitSaveSession);
 	this->prefs.setValue("app/maxsessions",this->maxSessions);
+	this->prefs.setValue("app/autoonetab",this->autoOneTab);
 
 //find
 	this->setSearchPrefs();

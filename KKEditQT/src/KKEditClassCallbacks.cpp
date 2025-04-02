@@ -1377,7 +1377,7 @@ void KKEditClass::setPreferences(void)
 	this->recentFiles->maxFiles=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXRECENTS])->value();
 	this->autoShowMinChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[COMPLETIONSIZE])->value();
 	this->prefsMsgTimer=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MSGCHECKTIME])->value();
-
+	this->autoOneTab=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOONETAB])->checkState();
 
 	this->maxSessions=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXMENUSESSIONS])->value();
 
