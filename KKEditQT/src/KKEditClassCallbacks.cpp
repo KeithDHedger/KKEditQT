@@ -704,7 +704,24 @@ void KKEditClass::doEditMenuItems()
 				break;
 			case CUTMENUITEM:
 				if(document!=NULL)
-					document->cut();
+					{
+						QTextCursor	cursor;
+						cursor=document->textCursor();
+						cursor.beginEditBlock();
+
+						if(document->verticalText.isEmpty()==false)
+							{
+								this->application->clipboard()->setText(document->verticalText);
+								for(int j=0;j<document->verticalSelectMatch.count();j++)
+									{
+										QTextCursor tc=document->verticalSelectMatch.at(j).cursor;
+										tc.removeSelectedText();
+									}
+							}
+						else
+							document->cut();
+						cursor.endEditBlock();
+					}
 				break;
 			case COPYMENUITEM:
 				if(document!=NULL)
@@ -724,16 +741,26 @@ void KKEditClass::doEditMenuItems()
 				break;
 			case DELETEMENUITEM:
 				{
-					QTextCursor	cursor;
-					cursor=document->textCursor();
-					cursor.beginEditBlock();
-
 					if(document!=NULL)
 						{
-							if(cursor.hasSelection()==true)
-								cursor.removeSelectedText();
+							QTextCursor	cursor;
+							cursor=document->textCursor();
+							cursor.beginEditBlock();
+
+							if(document->verticalText.isEmpty()==false)
+								{
+									this->application->clipboard()->setText(document->verticalText);
+									for(int j=0;j<document->verticalSelectMatch.count();j++)
+										{
+											QTextCursor tc=document->verticalSelectMatch.at(j).cursor;
+											tc.removeSelectedText();
+										}
+								}
+							else
+								if(cursor.hasSelection()==true)
+									cursor.removeSelectedText();
+							cursor.endEditBlock();
 						}
-						cursor.endEditBlock();
 				}
 				break;
 			case SELECTALLMENUITEM:

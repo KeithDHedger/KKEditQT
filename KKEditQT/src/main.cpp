@@ -77,6 +77,9 @@ int main (int argc, char **argv)
 		}
 
 	SingleInstanceClass *siapp=new SingleInstanceClass("KKEditQT",kkedit->sessionID);
+
+	fprintf(stderr,"queueAddr=0x%x shmQueueID=0x%x msgKey=0x%x\n",siapp->queueAddr,siapp->shmQueueID,siapp->key);
+
 	if(kkedit->parser.isSet("multi"))
 		{
 			kkedit->queueID=siapp->queueID;
@@ -88,7 +91,7 @@ int main (int argc, char **argv)
 			kill(getpid(),SIGUSR1);
 			kkedit->application->setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));
 			siapp->isMulti=true;
-			fprintf(stderr,"queueAddr=0x%x shmQueueID=0x%x\n",siapp->queueAddr,siapp->shmQueueID);
+			//fprintf(stderr,"queueAddr=0x%x shmQueueID=0x%x msgKey=0x%x\n",siapp->queueAddr,siapp->shmQueueID,siapp->key);
 			status=kkedit->application->exec();
 			delete kkedit;
 			delete siapp;
