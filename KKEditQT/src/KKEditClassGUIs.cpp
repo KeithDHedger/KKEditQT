@@ -864,6 +864,8 @@ void KKEditClass::buildMainGui(void)
 	this->copyMenuItem=this->makeMenuItemClass(EDITMENU,"Copy",QKeySequence::Copy,"edit-copy",COPYMENUNAME,COPYMENUITEM);
 //paste
 	this->pasteMenuItem=this->makeMenuItemClass(EDITMENU,"Paste",QKeySequence::Paste,"edit-paste",PASTEMENUNAME,PASTEMENUITEM);
+// vertical paste
+	this->verticalPasteMenuItem=this->makeMenuItemClass(EDITMENU,"Vertical Paste",0,"edit-paste",VERTICALPASTEMENUNAME,VERTICALPASTEMENUITEM);
 //delete
 	this->deleteMenuItem=this->makeMenuItemClass(EDITMENU,"Delete",QKeySequence::Delete,"edit-delete",DELETEMENUNAME,DELETEMENUITEM);
 //selectall

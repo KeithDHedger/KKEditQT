@@ -380,10 +380,7 @@ const QString DocumentClass::textUnderCursor()
 void DocumentClass::mousePressEvent(QMouseEvent *event)
 {
 	if((event->buttons() & Qt::LeftButton)==Qt::LeftButton)
-		{
-			this->verticalSelectMatch.clear();
-			this->verticalText="";
-		}
+		this->verticalSelectMatch.clear();
 
 	if((event->modifiers() & Qt::AltModifier)==Qt::AltModifier)
 		{
@@ -649,6 +646,7 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	menu.addAction(menuactions.at(CUTMENUITEM-UNDOMENUITEM));
 	menu.addAction(menuactions.at(COPYMENUITEM-UNDOMENUITEM));
 	menu.addAction(menuactions.at(PASTEMENUITEM-UNDOMENUITEM));
+	menu.addAction(menuactions.at(VERTICALPASTEMENUITEM-UNDOMENUITEM));
 	menu.addAction(menuactions.at(DELETEMENUITEM-UNDOMENUITEM));
 	menu.addSeparator();
 	menu.addAction(menuactions.at(SELECTALLMENUITEM-UNDOMENUITEM));
@@ -906,6 +904,7 @@ void DocumentClass::mouseMoveEvent(QMouseEvent *event)
 			int							textcnt=endvcol-this->startVCol+1;
 
 			this->verticalSelectMatch.clear();
+			this->verticalText="";
 			format.setBackground(this->palette().highlight().color());
 
 			if(this->startVLine<=endvline)

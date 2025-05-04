@@ -735,10 +735,50 @@ void KKEditClass::doEditMenuItems()
 							document->copy();
 					}
 				break;
+
+			case VERTICALPASTEMENUITEM:
+				if(document!=NULL)
+					{
+						QTextCursor	cursor;
+						QTextBlock	block;
+						QString		str;
+
+						cursor=document->textCursor();
+						cursor.beginEditBlock();
+						if(document->verticalText.isEmpty()==false)
+							{
+								QStringList	strings=document->verticalText.split('\n',Qt::SkipEmptyParts);
+								int			bn=cursor.blockNumber();
+								int			col=cursor.positionInBlock();
+								for(int j=0;j<strings.count();j++)
+									{
+										block=document->document()->findBlockByNumber(bn);
+										QTextCursor	cursor1(block);
+
+										if(col>block.length()-1)
+											{
+												str.fill(' ',col-block.length()+1);
+												cursor1.movePosition(QTextCursor::EndOfBlock,QTextCursor::MoveAnchor);
+												cursor1.insertText(str+strings.at(j));	
+											}
+										else
+											{
+												cursor1.movePosition(QTextCursor::StartOfBlock);
+												cursor1.movePosition(QTextCursor::Right,QTextCursor::MoveAnchor,col);
+												cursor1.insertText(strings.at(j));
+										}
+										bn++;
+									}
+							}
+						cursor.endEditBlock();
+					}
+				break;
+
 			case PASTEMENUITEM:
 				if(document!=NULL)
 					document->paste();
 				break;
+
 			case DELETEMENUITEM:
 				{
 					if(document!=NULL)
