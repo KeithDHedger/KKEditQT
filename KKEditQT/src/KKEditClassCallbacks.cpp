@@ -709,7 +709,14 @@ void KKEditClass::doEditMenuItems()
 						cursor=document->textCursor();
 						cursor.beginEditBlock();
 
-						if(document->verticalText.isEmpty()==false)
+						if(document->textCursor().hasSelection()==true)
+							{
+								document->cut();
+								cursor.endEditBlock();
+								break;
+							}
+
+						if((document->verticalText.isEmpty()==false))
 							{
 								this->application->clipboard()->setText(document->verticalText);
 								for(int j=0;j<document->verticalSelectMatch.count();j++)
@@ -718,21 +725,23 @@ void KKEditClass::doEditMenuItems()
 										tc.removeSelectedText();
 									}
 							}
-						else
-							document->cut();
 						cursor.endEditBlock();
 					}
 				break;
 			case COPYMENUITEM:
 				if(document!=NULL)
 					{
+						if(document->textCursor().hasSelection()==true)
+							{
+								document->copy();
+								break;
+							}
+
 						if(document->verticalText.isEmpty()==false)
 							{
 								this->application->clipboard()->setText(document->verticalText);
 								break;
 							}
-						if(document->textCursor().hasSelection()==true)
-							document->copy();
 					}
 				break;
 
@@ -787,6 +796,13 @@ void KKEditClass::doEditMenuItems()
 							cursor=document->textCursor();
 							cursor.beginEditBlock();
 
+							if(cursor.hasSelection()==true)
+								{
+									cursor.removeSelectedText();
+									cursor.endEditBlock();
+									break;
+								}
+
 							if(document->verticalText.isEmpty()==false)
 								{
 									this->application->clipboard()->setText(document->verticalText);
@@ -796,9 +812,6 @@ void KKEditClass::doEditMenuItems()
 											tc.removeSelectedText();
 										}
 								}
-							else
-								if(cursor.hasSelection()==true)
-									cursor.removeSelectedText();
 							cursor.endEditBlock();
 						}
 				}

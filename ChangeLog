@@ -1,4 +1,5 @@
 1.6.1
+Fixed copy/cut/delete after vertical selection.
 Added 'Vertical Paste'  to Edit menu. Empty/short lines are padded with spaces if needed before pasting.
 Output msgkey ( session ID ) on start up.
 Added vertical delete.
