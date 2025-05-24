@@ -93,6 +93,7 @@ void KKEditClass::newFile(const QString data,const QString filename)
 	int				tabnum;
 	bool				holdsb=this->sessionBusy;
 	plugData			pd;
+	int				ci=this->mainNotebook->currentIndex()+1;
 
 	this->sessionBusy=true;
 	doc=new DocumentClass(this);
@@ -118,6 +119,8 @@ void KKEditClass::newFile(const QString data,const QString filename)
 
 	doc->state=NORMALTAB;
 	doc->setTabColourType(doc->state);
+
+	this->moveTabToRight(ci);
 
 //plugins
 	pd.doc=doc;
@@ -383,6 +386,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			return(true);
 		}
 
+			int ci=this->mainNotebook->currentIndex()+1;
 	retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
 	if(retval==true)
 		{

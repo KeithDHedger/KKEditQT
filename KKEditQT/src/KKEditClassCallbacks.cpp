@@ -1458,9 +1458,9 @@ void KKEditClass::setPreferences(void)
 	this->autoShowMinChars=qobject_cast<QSpinBox*>(this->prefsIntWidgets[COMPLETIONSIZE])->value();
 	this->prefsMsgTimer=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MSGCHECKTIME])->value();
 	this->autoOneTab=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOONETAB])->checkState();
+	this->openTabToRight=qobject_cast<QCheckBox*>(this->prefsWidgets[OPENTABPOS])->checkState();
 
 	this->maxSessions=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXMENUSESSIONS])->value();
-
 
 	this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
 	this->prefStyleNameHold=this->prefStyleName;
@@ -1580,7 +1580,11 @@ void KKEditClass::doTabBarContextMenu(void)
 				this->checkDoc(doc);
 				break;
 			case OPENFROMHERE:
-				this->openFile(QString("%1/%2").arg(doc->getDirPath()).arg(mc->text()));
+				{
+					int ci=this->mainNotebook->currentIndex()+1;
+					this->openFile(QString("%1/%2").arg(doc->getDirPath()).arg(mc->text()));
+					this->moveTabToRight(ci);
+				}				
 				break;
 			case HIDETAB:
 				this->setTabVisibilty(mc->getMenuID() & 0xff,false);

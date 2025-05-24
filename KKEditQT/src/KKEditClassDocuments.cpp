@@ -327,5 +327,17 @@ void KKEditClass::checkDoc(DocumentClass *doc)
 #endif
 }
 
+void KKEditClass::moveTabToRight(int newpos)
+{
+	if(this->openTabToRight==true)
+		{
+			int tabnum=this->mainNotebook->currentIndex();
+			DocumentClass *doc=this->getDocumentForTab(tabnum);
+			this->mainNotebook->removeTab(tabnum);
+			this->mainNotebook->insertTab(newpos,doc,doc->getFileName());
+			this->mainNotebook->setCurrentIndex(0);
+			this->mainNotebook->setCurrentIndex(newpos);
+	}
+}
 
 

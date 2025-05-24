@@ -513,6 +513,7 @@ void KKEditClass::readConfigs(void)
 	this->disabledPlugins=this->prefs.value("app/disabledplugins").toStringList();
 	this->maxSessions=this->prefs.value("app/maxsessions",24).toInt();
 	this->autoOneTab=this->prefs.value("app/autoonetab",QVariant(bool(false))).value<bool>();
+	this->openTabToRight=this->prefs.value("app/opentabtoright",QVariant(bool(true))).value<bool>();
 
 //find
 	this->findList=this->prefs.value("find/findlist").toStringList();
@@ -690,6 +691,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/onexitsavesession",this->onExitSaveSession);
 	this->prefs.setValue("app/maxsessions",this->maxSessions);
 	this->prefs.setValue("app/autoonetab",this->autoOneTab);
+	this->prefs.setValue("app/opentabtoright",this->openTabToRight);
 
 //find
 	this->setSearchPrefs();
@@ -1114,6 +1116,7 @@ bool KKEditClass::closeTab(int index)
 	QTextCursor		tc;
 	bool				thisislasttab=false;
 	plugData			pd;
+	int				ci=this->mainNotebook->currentIndex()-1;
 
 	this->sessionBusy=true;
 
@@ -1177,6 +1180,7 @@ bool KKEditClass::closeTab(int index)
 			this->rebuildFunctionMenu(-1);
 		}
 
+	this->mainNotebook->setCurrentIndex(ci);
 	return(true);
 }
 

@@ -1,4 +1,5 @@
 1.6.1
+Added opening tab to right of current tab or at end, see prefs.
 Fixed copy/cut/delete after vertical selection.
 Added 'Vertical Paste'  to Edit menu. Empty/short lines are padded with spaces if needed before pasting.
 Output msgkey ( session ID ) on start up.

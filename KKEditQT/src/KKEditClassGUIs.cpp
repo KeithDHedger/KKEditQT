@@ -62,6 +62,7 @@ static const char *whatIsPrefsBool[MAXPREFSWIDGETS]={\
 "<html>Don't warn if file changed on disk, just update document.</html>",\
 "<html>Auto show completions.</html>",\
 "<html>Auto set tabs to one space when ALT selecting and restore on mouse release.</html>",\
+"<html>Open new tab to right of current tab ( true ) or at end (false ).</html>",\
 "<html><div align=\"center\">Check this if you have sent me big bags of cash.<br>Big bags of jewels also acceptable.<br><center><span style='font-size:24px;'>&#128519;</span></center></div></html>"};
 
 //prefsOtherWidgets
@@ -177,6 +178,11 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
 	makePrefsCheck(AUTOONETAB,"Auto Set Tabs",this->autoOneTab,0,posy);
 	prefsWidgets[AUTOONETAB]->setWhatsThis(whatIsPrefsBool[AUTOONETAB]);
+
+//open tab to right of current tab
+	posy++;
+	makePrefsCheck(OPENTABPOS,"Open New Tab To Right",this->openTabToRight,0,posy);
+	prefsWidgets[OPENTABPOS]->setWhatsThis(whatIsPrefsBool[OPENTABPOS]);
 
 	tab->setLayout(table);
 	prefsnotebook->addTab(tab,"General Appearance");
@@ -1373,6 +1379,7 @@ void KKEditClass::buildSpellCheckerGUI(void)
 bool KKEditClass::openFileDialog(void)
 {
 	chooserDialogClass	chooser(chooserDialogType::loadDialog);
+	int					ci=this->mainNotebook->currentIndex()+1;
 
 	chooser.setMultipleSelect(true);
 	chooser.gFind.LFSTK_sortByTypeAndName();
@@ -1391,7 +1398,8 @@ bool KKEditClass::openFileDialog(void)
 				this->openFile(chooser.multiFileList.at(j).toUtf8().constData(),0,true);
 		}
 	this->openFromDialog=false;
-	switchPage(this->mainNotebook->currentIndex());
+	this->moveTabToRight(ci);
+
 	return(true);
 }
 
