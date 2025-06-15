@@ -514,6 +514,7 @@ void KKEditClass::readConfigs(void)
 	this->maxSessions=this->prefs.value("app/maxsessions",24).toInt();
 	this->autoOneTab=this->prefs.value("app/autoonetab",QVariant(bool(false))).value<bool>();
 	this->openTabToRight=this->prefs.value("app/opentabtoright",QVariant(bool(true))).value<bool>();
+	this->openFirstTabWithSession=this->prefs.value("app/selectfirsttab",QVariant(bool(true))).value<bool>();
 
 //find
 	this->findList=this->prefs.value("find/findlist").toStringList();
@@ -692,6 +693,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/maxsessions",this->maxSessions);
 	this->prefs.setValue("app/autoonetab",this->autoOneTab);
 	this->prefs.setValue("app/opentabtoright",this->openTabToRight);
+	this->prefs.setValue("app/selectfirsttab",this->openFirstTabWithSession);
 
 //find
 	this->setSearchPrefs();

@@ -228,6 +228,8 @@ void KKEditClass::doSessionsMenuItems(void)
 					this->runNoOutput(QString("echo -e quit>\"%1/session\"").arg(this->tmpFolderName));
 
 					this->currentSessionNumber=sessionnumber;
+					if(this->openFirstTabWithSession==true)
+						this->mainNotebook->setCurrentIndex(0);
 					file.close();
 					this->mainWindow->setGeometry(x,y,w,h);
 //plugins
@@ -1459,6 +1461,7 @@ void KKEditClass::setPreferences(void)
 	this->prefsMsgTimer=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MSGCHECKTIME])->value();
 	this->autoOneTab=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOONETAB])->checkState();
 	this->openTabToRight=qobject_cast<QCheckBox*>(this->prefsWidgets[OPENTABPOS])->checkState();
+	this->openFirstTabWithSession=qobject_cast<QCheckBox*>(this->prefsWidgets[SELECTFIRSTTAB])->checkState();
 
 	this->maxSessions=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXMENUSESSIONS])->value();
 

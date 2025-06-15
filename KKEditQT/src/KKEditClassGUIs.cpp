@@ -63,6 +63,7 @@ static const char *whatIsPrefsBool[MAXPREFSWIDGETS]={\
 "<html>Auto show completions.</html>",\
 "<html>Auto set tabs to one space when ALT selecting and restore on mouse release.</html>",\
 "<html>Open new tab to right of current tab ( true ) or at end (false ).</html>",\
+"<html>Select first tab after resoring session.</html>",\
 "<html><div align=\"center\">Check this if you have sent me big bags of cash.<br>Big bags of jewels also acceptable.<br><center><span style='font-size:24px;'>&#128519;</span></center></div></html>"};
 
 //prefsOtherWidgets
@@ -183,6 +184,14 @@ void KKEditClass::buildPrefsWindow(void)
 	posy++;
 	makePrefsCheck(OPENTABPOS,"Open New Tab To Right",this->openTabToRight,0,posy);
 	prefsWidgets[OPENTABPOS]->setWhatsThis(whatIsPrefsBool[OPENTABPOS]);
+
+	tab->setLayout(table);
+	prefsnotebook->addTab(tab,"General Appearance");
+
+//select 1st tab when restoring session
+	posy++;
+	makePrefsCheck(SELECTFIRSTTAB,"Select First Tab On Restore Session",this->openFirstTabWithSession,0,posy);
+	prefsWidgets[SELECTFIRSTTAB]->setWhatsThis(whatIsPrefsBool[SELECTFIRSTTAB]);
 
 	tab->setLayout(table);
 	prefsnotebook->addTab(tab,"General Appearance");
