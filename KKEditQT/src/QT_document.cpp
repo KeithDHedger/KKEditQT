@@ -245,9 +245,29 @@ void DocumentClass::highlightCurrentLine()
 					cnt=pos;
 					do
 						{
+							if((cnt>1) && (((txt.at(cnt)=='"') || (txt.at(cnt)=='\'')) && (txt.at(cnt-1)!='\\')))
+								{
+									QChar lookingfor=txt.at(cnt);
+									bool loopflag=true;
+									cnt++;
+									while((cnt<txt.length()-1) && (loopflag==true))
+										{
+											if(txt.at(cnt)=='\\')
+												{
+													cnt+=2;
+													continue;
+												}
+											if((txt.at(cnt)==lookingfor))
+												loopflag=false;
+											else
+												cnt++;
+										}
+								}
+
 							cnt++;
-							if(cnt==txt.length())
+							if(cnt>=txt.length())
 								break;
+
 							if(txt.at(cnt)==openbrackets.at(whatbracket))
 								stack++;
 							if(txt.at(cnt)==closebrackets.at(whatbracket))
@@ -277,8 +297,29 @@ void DocumentClass::highlightCurrentLine()
 							cnt=pos;
 							do
 								{
+//retstr+="while(inpop.readLineInto(&variables[\""+match.captured(2).trimmed()+"\"]))\n";
+//if(txt.at(cnt)=='"' && txt.at(cnt-1)!='\\')
+
+//if((cnt>1) && ((((txt.at(cnt)=='"') || (txt.at(cnt)=='\''))) && (txt.at(cnt-1)!='\\')&& ((txt.at(cnt-2)!='\'') || (txt.at(cnt-2)!='"')))) 
+									if((cnt>1) && ((txt.at(cnt)=='"') || (txt.at(cnt)=='\'')))
+										{
+											QChar lookingfor=txt.at(cnt);
+											bool loopflag=true;
+											cnt--;
+											while((cnt>1) && (loopflag==true))
+												{
+											//QTextStream(stderr)<<txt.at(cnt);
+													if((txt.at(cnt)==lookingfor) && (txt.at(cnt-1)=='\\'))
+														cnt-=2;
+													if((txt.at(cnt)==lookingfor))
+														loopflag=false;
+													else
+														cnt--;
+												}
+										}
+
 									cnt--;
-									if(cnt==-1)
+									if(cnt<0)
 										break;
 									if(txt.at(cnt)==closebrackets.at(whatbracket))
 										stack++;
