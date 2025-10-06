@@ -1605,6 +1605,7 @@ void KKEditClass::doTabBarContextMenu(void)
 				break;
 		}
 	this->setToolbarSensitive();
+					
 }
 
 void KKEditClass::doOddMenuItems(void)

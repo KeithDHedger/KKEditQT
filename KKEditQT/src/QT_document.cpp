@@ -297,10 +297,6 @@ void DocumentClass::highlightCurrentLine()
 							cnt=pos;
 							do
 								{
-//retstr+="while(inpop.readLineInto(&variables[\""+match.captured(2).trimmed()+"\"]))\n";
-//if(txt.at(cnt)=='"' && txt.at(cnt-1)!='\\')
-
-//if((cnt>1) && ((((txt.at(cnt)=='"') || (txt.at(cnt)=='\''))) && (txt.at(cnt-1)!='\\')&& ((txt.at(cnt-2)!='\'') || (txt.at(cnt-2)!='"')))) 
 									if((cnt>1) && ((txt.at(cnt)=='"') || (txt.at(cnt)=='\'')))
 										{
 											QChar lookingfor=txt.at(cnt);
@@ -308,7 +304,6 @@ void DocumentClass::highlightCurrentLine()
 											cnt--;
 											while((cnt>1) && (loopflag==true))
 												{
-											//QTextStream(stderr)<<txt.at(cnt);
 													if((txt.at(cnt)==lookingfor) && (txt.at(cnt-1)=='\\'))
 														cnt-=2;
 													if((txt.at(cnt)==lookingfor))

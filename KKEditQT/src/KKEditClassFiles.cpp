@@ -401,7 +401,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc->setFilePath(fileinfo.canonicalFilePath());
 			doc->setFileName(fileinfo.fileName());
 			doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
-			this->mainNotebook->setTabToolTip(tabnum,doc->getFilePath());
 			this->mainNotebook->setCurrentIndex(tabnum);
 			if(correctedln>0)
 				this->gotoLine(correctedln);
@@ -443,5 +442,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	pd.tabNumber=this->mainNotebook->currentIndex();
 	pd.what=DOLOAD;
 	this->runAllPlugs(pd);
+
 	return(retval);
 }

@@ -1402,6 +1402,12 @@ void KKEditClass::setToolbarSensitive(void)
 	pd.what=DOSETSENSITVE;
 	pd.doc=doc;
 	this->runAllPlugs(pd);
+
+	for(int j=0;j<this->mainNotebook->count();j++)
+		{
+			doc=this->getDocumentForTab(j);
+			this->mainNotebook->setTabToolTip(j,doc->getFilePath());
+		}
 }
 
 void KKEditClass::runCLICommands(int quid)

@@ -1,4 +1,5 @@
 1.6.1
+Fixed tab tooltip not displaying filepath for doc.
 Better bracket matching.
 Added option to select 1st tab when restoring session.
 Added opening tab to right of current tab or at end, see prefs.
