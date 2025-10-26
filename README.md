@@ -31,6 +31,8 @@ Ported to QT5/6.<br>
 This is the QT5/6 version of KKEdit.<br>
 I now consider this version to be fully functional.<br>
 
+If updating please run the 'setuptools' script FIRST!<br>
+
 BUGS etc.
 kdhedger68713@gmail.com
 
