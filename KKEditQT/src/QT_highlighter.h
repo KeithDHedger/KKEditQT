@@ -52,8 +52,6 @@ QT_END_NAMESPACE
 
 class Highlighter : public QSyntaxHighlighter
 {
-	Q_OBJECT
-
 public:
 	Highlighter(QTextDocument *parent,QPlainTextEdit *doc,KKEditClass *kk=NULL);
 	bool							setLanguage(QString lang);

@@ -192,7 +192,7 @@ QStringList KKEditClass::verifyTool(QString filepath)
 	return(sl);
 }
 
-void KKEditClass::setToolsData(int what)
+void KKEditClass::setToolsData(int what,QWidget *combo)
 {
 	QFile					file;
 	QStringList				sl;
@@ -213,7 +213,8 @@ void KKEditClass::setToolsData(int what)
 
 	savebutton=this->toolsWindow->findChild<QPushButton*>(QString("%1").arg(TOOLSSAVE));
 	savebutton->setEnabled(!this->toolSelect->currentData().toString().isEmpty());
-	if(sender()->objectName().compare(TOOLCOMBOBOX)==0)
+//	if(sender()->objectName().compare(TOOLCOMBOBOX)==0)
+	if(combo->objectName().compare(TOOLCOMBOBOX)==0)
 		{
 			if(what==0)
 				{
@@ -251,7 +252,8 @@ void KKEditClass::setToolsData(int what)
 	rootcheck=this->toolsWindow->findChild<QCheckBox*>(TOOLRUNASROOT);
 	barcheck=this->toolsWindow->findChild<QCheckBox*>(TOOLUSEPOLE);
 
-	if(sender()->objectName().compare(TOOLCOMBOBOX)==0)
+	//if(sender()->objectName().compare(TOOLCOMBOBOX)==0)
+	if(combo->objectName().compare(TOOLCOMBOBOX)==0)
 		{
 			flags=sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).toInt();
 			runintermcheck->setEnabled(true);
@@ -342,10 +344,12 @@ void KKEditClass::setToolsData(int what)
 			//bool		docflag=false;
 
 //run in term
-			if(sender()->objectName().compare(TOOLRUNINTERM)==0)
+			//if(sender()->objectName().compare(TOOLRUNINTERM)==0)
+			if(combo->objectName().compare(TOOLRUNINTERM)==0)
 				resetradios=true;
 //set sync
-			if(sender()->objectName().compare(TOOLRUNSYNC)==0)
+			//if(sender()->objectName().compare(TOOLRUNSYNC)==0)
+			if(combo->objectName().compare(TOOLRUNSYNC)==0)
 				{
 					if(synccheck->isChecked()==true)
 						{

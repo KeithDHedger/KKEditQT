@@ -20,7 +20,7 @@
 
 #include "KKEditClass.h"
 
-void KKEditClass::doFindButton(void)
+void KKEditClass::doFindButton(QPushButton *btn)
 {
 	DocumentClass	*document;
 
@@ -39,7 +39,9 @@ void KKEditClass::doFindButton(void)
 		}
 
 	this->currentTab=this->mainNotebook->currentIndex();
-	this->doFindReplace(sender()->objectName().toInt());
+	//this->doFindReplace(sender()->objectName().toInt());
+	qDebug()<<btn->objectName().toInt();
+	this->doFindReplace(btn->objectName().toInt());
 	if(this->hightlightAll==true)
 		{
 			document=this->getDocumentForTab(-1);

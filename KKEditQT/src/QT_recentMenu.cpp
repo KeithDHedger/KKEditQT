@@ -19,10 +19,6 @@
  */
 
 #include "QT_recentMenu.h"
-#ifndef moc_QT_recentMenu
-#include "moc_QT_recentMenu.cpp"
-#define moc_QT_recentMenu
-#endif
 
 RecentMenuClass::~RecentMenuClass()
 {
@@ -35,7 +31,12 @@ RecentMenuClass::RecentMenuClass(KKEditClass *kk)
 	QIcon	itemicon=QIcon::fromTheme("document-open");
 	this->mainKKEditClass=kk;
 	this->recentMenu=new QMenu("Open Recent");
-	QObject::connect(this->recentMenu,SIGNAL(triggered(QAction*)),this,SLOT(menuClicked(QAction*)));
+	
+	QObject::connect(this->recentMenu,&QMenu::triggered,[this](QAction *act)
+		{
+			this->menuClicked(act);
+		});
+
 	this->recentMenu->setIcon(itemicon);
 
 	this->mainKKEditClass=kk;

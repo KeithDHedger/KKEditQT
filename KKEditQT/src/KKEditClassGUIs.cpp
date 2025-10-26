@@ -96,7 +96,8 @@ void KKEditClass::buildPrefsWindow(void)
 	QVBoxLayout			*mainvbox=new QVBoxLayout();
 	QHBoxLayout			*hbox=new QHBoxLayout;
 	QTabWidget			*prefsnotebook=new QTabWidget;
-	QWidget				*button;
+	//QWidget				*button;
+	QPushButton			*button;
 	QPushButton			*whatsbutton;
 	QWidget				*tab;
 	QLabel				*widgetlabel;
@@ -114,8 +115,11 @@ void KKEditClass::buildPrefsWindow(void)
 	this->populateDnD();
 	this->populateStore();
 
-	QObject::connect(this->listWidget,SIGNAL(itemDoubleClicked(QListWidgetItem*)),this,SLOT(doDoubleClickPrefs(QListWidgetItem*)));
 
+	QObject::connect(this->listWidget,&QListWidget::itemDoubleClicked,[this](QListWidgetItem* item)
+		{
+			this->doDoubleClickPrefs(item);
+		});
 	this->listWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 	this->listWidget->setDragEnabled(true);
 	this->listWidget->setDragDropMode(QAbstractItemView::InternalMove);
@@ -223,11 +227,27 @@ void KKEditClass::buildPrefsWindow(void)
 			QString	s=it.next();
 			qobject_cast<QComboBox*>(prefsOtherWidgets[THEMECOMBO])->addItem(QFileInfo(s).baseName());
 		}
+
+#ifndef _USEQT6_
 	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
 		{
 			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
 			this->prefStyleNameHold=this->prefStyleName;
 		});
+#else
+	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),&QComboBox::activated,[this](int index)
+		{
+			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
+			this->prefStyleNameHold=this->prefStyleName;
+		});
+#endif
+
+
+//	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
+//		{
+//			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
+//			this->prefStyleNameHold=this->prefStyleName;
+//		});
 }
 //global
 {
@@ -239,11 +259,19 @@ void KKEditClass::buildPrefsWindow(void)
 			QString	s=it.next();
 			qobject_cast<QComboBox*>(prefsOtherWidgets[THEMECOMBO])->addItem(QFileInfo(s).baseName());
 		}
+#ifndef _USEQT6_
 	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
 		{
 			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
 			this->prefStyleNameHold=this->prefStyleName;
 		});
+#else
+	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),&QComboBox::activated,[this](int index)
+		{
+			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
+			this->prefStyleNameHold=this->prefStyleName;
+		});
+#endif
 }
 	qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->setCurrentText(this->prefStyleName);
 
@@ -252,7 +280,18 @@ void KKEditClass::buildPrefsWindow(void)
 	prefsOtherWidgets[SHORTCUTSCOMBO]=new QComboBox;
 	prefsOtherWidgets[SHORTCUTSCOMBO]->setWhatsThis(whatIsPrefsOther[SHORTCUTSCOMBO]);
 	this->resetKeyCombo();
-    QObject::connect(prefsOtherWidgets[SHORTCUTSCOMBO],SIGNAL(activated(int)),this,SLOT(buildGetKeyShortCut(int)));
+ 
+#ifndef _USEQT6_
+	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[SHORTCUTSCOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
+		{
+			this->buildGetKeyShortCut(index);
+		});
+#else
+	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[SHORTCUTSCOMBO]),&QComboBox::activated,[this](int index)
+		{
+			this->buildGetKeyShortCut(index);
+		});
+#endif
 
 	widgetlabel=new QLabel("Set Keyboard Shortcuts:");
 	table->addWidget(widgetlabel,posy,0);
@@ -268,7 +307,11 @@ void KKEditClass::buildPrefsWindow(void)
 	table->addWidget(widgetlabel,posy,0);
 	table->addWidget(prefsOtherWidgets[PREFSCURRENTFONT],posy,1);
 	table->addWidget(fontbutton,posy,2);
-	QObject::connect(fontbutton,SIGNAL(clicked()),this,SLOT(setFont()));
+
+	QObject::connect(fontbutton,&QPushButton::clicked,[this]()
+		{
+			this->setFont();
+		});
 
 //current linecol
 	posy++;
@@ -276,15 +319,19 @@ void KKEditClass::buildPrefsWindow(void)
 	prefsOtherWidgets[CURRENTLINECOLOUR]=new QLabel("LINE");
 	prefsOtherWidgets[CURRENTLINECOLOUR]->setWhatsThis(whatIsPrefsOther[CURRENTLINECOLOUR]);
     qobject_cast<QLabel*>(prefsOtherWidgets[CURRENTLINECOLOUR])->setFrameStyle(QFrame::Raised | QFrame::Panel);
-    QPushButton *colorButton = new QPushButton("Set Colour");
+    QPushButton *colourButton = new QPushButton("Set Colour");
 	table->addWidget(widgetlabel,posy,0);
 	table->addWidget(prefsOtherWidgets[CURRENTLINECOLOUR],posy,1);
-	table->addWidget(colorButton,posy,2);
+	table->addWidget(colourButton,posy,2);
 
 	QColor colour=QColor(this->prefsHiLiteLineColor);
 	prefsOtherWidgets[CURRENTLINECOLOUR]->setProperty("palette",QPalette(colour));
 	prefsOtherWidgets[CURRENTLINECOLOUR]->setProperty("autoFillBackground",true);
-	QObject::connect(colorButton,SIGNAL(clicked()),this,SLOT(setLineColour()));
+
+	QObject::connect(colourButton,&QPushButton::clicked,[this]()
+		{
+			this->setLineColour();
+		});
 
 //bm highlight colour
 	posy++;
@@ -300,7 +347,11 @@ void KKEditClass::buildPrefsWindow(void)
 	QColor colour1=QColor(this->prefsBookmarkHiLiteColor);
 	prefsOtherWidgets[BMHIGHLIGHTCOLOUR]->setProperty("palette",QPalette(colour1));
 	prefsOtherWidgets[BMHIGHLIGHTCOLOUR]->setProperty("autoFillBackground",true);
-	QObject::connect(colorButton1,SIGNAL(clicked()),this,SLOT(setBMColour()));
+
+	QObject::connect(colorButton1,&QPushButton::clicked,[this]()
+		{
+			this->setBMColour();
+		});
 
 //autoshow completion
 	posy++;
@@ -369,10 +420,27 @@ void KKEditClass::buildPrefsWindow(void)
 			else
 				qobject_cast<QComboBox*>(prefsOtherWidgets[PREFSPAGESIZE])->addItem(ps.name());
 		}
+
+
+#ifndef _USEQT6_
 	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE]),QOverload<int>::of(&QComboBox::activated),[this](int index)
 		{
 			this->prefsPageSize=qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE])->currentIndex();
 		});
+#else
+	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE]),&QComboBox::activated,[this](int index)
+		{
+			this->prefsPageSize=qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE])->currentIndex();
+		});
+#endif
+
+
+
+
+//	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE]),QOverload<int>::of(&QComboBox::activated),[this](int index)
+//		{
+//			this->prefsPageSize=qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE])->currentIndex();
+//		});
 	qobject_cast<QComboBox*>(prefsOtherWidgets[PREFSPAGESIZE])->setCurrentIndex(this->prefsPageSize);
 
 	widgetlabel=new QLabel("PDF Page Size:");
@@ -459,7 +527,12 @@ void KKEditClass::buildPrefsWindow(void)
 	hbox=new QHBoxLayout;
 	hbox->addStretch(1);
 	button=new QPushButton("Save Prefs");
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(setPreferences()));
+
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->setPreferences();
+		});
+
 	hbox->addWidget(button);
 	hbox->addStretch(1);
 
@@ -474,7 +547,12 @@ void KKEditClass::buildPrefsWindow(void)
 
 	button=new QPushButton("Restore Prefs");
 	button->setObjectName(QString("%1").arg(CANCELPREFS));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+	
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->doOddButtons(CANCELPREFS);
+		});
+
 	hbox->addWidget(button);
 	hbox->addStretch(1);
 	mainvbox->addLayout(hbox);
@@ -491,7 +569,11 @@ void KKEditClass::addIcon(const char* icon,const char* data,int toolnumber,const
 	qicon=QIcon::fromTheme(icon);
 	menuitem->setObjectName(data);
 	menuitem->setIcon(qicon);
-	QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(addToToolBar()));
+
+	QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+		{
+			this->addToToolBar(menuitem);
+		});
 	menuitem->setMenuID(toolnumber);
 	menuitem->setToolTip(tooltip);
 
@@ -711,12 +793,36 @@ void KKEditClass::buildFindReplace(void)
 //rep all
 	this->frSwitches[FRREPLACEALL]=new QCheckBox("Replace All");
 	this->frSwitches[FRREPLACEALL]->setChecked(this->replaceAll);
-	QObject::connect(this->frSwitches[FRREPLACEALL],SIGNAL(stateChanged(int)),this,SLOT(setSearchPrefs()));
+
+#ifndef _USEQT6_
+	QObject::connect(this->frSwitches[FRREPLACEALL],&QCheckBox::stateChanged,[this](int state)
+		{
+			this->setSearchPrefs();
+		});
+#else
+	QObject::connect(this->frSwitches[FRREPLACEALL],&QCheckBox::checkStateChanged,[this](Qt::CheckState state)
+		{
+			this->setSearchPrefs();
+		});
+#endif
+
 	hlayout->addWidget(this->frSwitches[FRREPLACEALL]);
 //search back
 	this->frSwitches[FRSEARCHBACK]=new QCheckBox("Search Backwards");
 	this->frSwitches[FRSEARCHBACK]->setChecked(this->searchBack);
-	QObject::connect(this->frSwitches[FRSEARCHBACK],SIGNAL(stateChanged(int)),this,SLOT(setSearchPrefs()));
+
+#ifndef _USEQT6_
+	QObject::connect(this->frSwitches[FRSEARCHBACK],&QCheckBox::stateChanged,[this](int state)
+		{
+			this->setSearchPrefs();
+		});
+#else
+	QObject::connect(this->frSwitches[FRSEARCHBACK],&QCheckBox::checkStateChanged,[this](Qt::CheckState state)
+		{
+			this->setSearchPrefs();
+		});
+#endif
+
 	hlayout->addWidget(this->frSwitches[FRSEARCHBACK]);
 
 	vlayout->addWidget(hbox);
@@ -729,7 +835,12 @@ void KKEditClass::buildFindReplace(void)
 
 	button=new QPushButton("Find");
 	button->setObjectName(FINDNEXTOBJECTNAME);
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doFindButton()));
+
+	QObject::connect(button,&QPushButton::clicked,[this,button]()
+		{
+			this->doFindButton(button);
+		});
+
 	icon=QIcon::fromTheme("edit-find");
 	button->setIcon(icon);
 	hlayout->addWidget(button);
@@ -738,8 +849,13 @@ void KKEditClass::buildFindReplace(void)
 		this->frReplace=new QPushButton("Replace");
 	else
 		this->frReplace=new QPushButton("Replace All");
-	frReplace->setObjectName(FINDREPLACEOBJECTNAME);
-	QObject::connect(frReplace,SIGNAL(clicked()),this,SLOT(doFindButton()));
+	this->frReplace->setObjectName(FINDREPLACEOBJECTNAME);
+
+	QObject::connect(frReplace,&QPushButton::clicked,[this]()
+		{
+			this->doFindButton(this->frReplace);
+		});
+
 	icon=QIcon::fromTheme("edit-find-replace");
 	this->frReplace->setIcon(icon);
 	hlayout->addWidget(this->frReplace);
@@ -756,10 +872,23 @@ void KKEditClass::buildMainGui(void)
 	this->mainNotebook=new NoteBookClass(this);
 //this->mainNotebook->setStyleSheet(QString("QTabBar::tab {width: 256;}"));//TODO//
 	this->mainNotebook->setContextMenuPolicy(Qt::CustomContextMenu);
-	QObject::connect(this->mainNotebook,SIGNAL(customContextMenuRequested(const QPoint &)),SLOT(tabContextMenu(const QPoint &)));
 
-	QObject::connect(this->mainNotebook,SIGNAL(currentChanged(int)),this,SLOT(switchPage(int)));
-	QObject::connect(this->mainNotebook,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));
+	QObject::connect(this->mainNotebook,&QTabWidget::customContextMenuRequested,[this](const QPoint &pos)
+		{
+			this->tabContextMenu(pos);
+		});
+
+
+	QObject::connect(this->mainNotebook,&QTabWidget::currentChanged,[this](int index)
+		{
+			this->switchPage(index);
+		});
+
+
+	QObject::connect(this->mainNotebook,&QTabWidget::tabCloseRequested,[this](int index)
+		{
+			this->closeTab(index);
+		});
 
 	this->menuBar=new QMenuBar;
 	this->toolBar=new ToolBarClass(this);
@@ -1120,7 +1249,19 @@ void KKEditClass::buildTools(void)
 
 	this->toolSelect=new QComboBox;
 	this->toolSelect->setObjectName(TOOLCOMBOBOX);
-	QObject::connect(this->toolSelect,SIGNAL(activated(int)),this,SLOT(setToolsData(int)));
+
+#ifndef _USEQT6_
+	QObject::connect(qobject_cast<QComboBox*>(this->toolSelect),QOverload<int>::of(&QComboBox::activated),[this](int index)
+		{
+			this->setToolsData(index,(QWidget*)this->toolSelect);
+		});
+#else
+	QObject::connect(qobject_cast<QComboBox*>(this->toolSelect),&QComboBox::activated,[this](int index)
+		{
+			this->setToolsData(index,(QWidget*)this->toolSelect);
+		});
+#endif
+
 	mainvbox->addWidget(this->toolSelect);
 	this->rebuildToolsMenu();
 
@@ -1175,17 +1316,53 @@ void KKEditClass::buildTools(void)
 //run in term
 	check=new QCheckBox("Run Tool In Terminal");
 	check->setObjectName(TOOLRUNINTERM);
-	QObject::connect(check,SIGNAL(stateChanged(int)),this,SLOT(setToolsData(int)));
+
+#ifndef _USEQT6_
+	QObject::connect(check,&QCheckBox::stateChanged,[this,check](int state)
+		{
+			this->setToolsData(state,(QWidget*)check);
+		});
+#else
+	QObject::connect(check,&QCheckBox::checkStateChanged,[this,check](Qt::CheckState state)
+		{
+			this->setToolsData(state,(QWidget*)check);
+		});
+#endif
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 //show html doc
 	check=new QCheckBox("Show HTML Doc");
 	check->setObjectName(TOOLSHOWDOC);
-	QObject::connect(check,SIGNAL(stateChanged(int)),this,SLOT(setToolsData(int)));
+
+#ifndef _USEQT6_
+	QObject::connect(check,&QCheckBox::stateChanged,[this,check](int state)
+		{
+			this->setToolsData(state,(QWidget*)check);
+		});
+#else
+	QObject::connect(check,&QCheckBox::checkStateChanged,[this,check](Qt::CheckState state)
+		{
+			this->setToolsData(state,(QWidget*)check);
+		});
+#endif
+
+
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 //run sync
 	check=new QCheckBox("Run Tool Synchronously");
 	check->setChecked(true);
-	QObject::connect(check,SIGNAL(stateChanged(int)),this,SLOT(setToolsData(int)));	
+
+#ifndef _USEQT6_
+	QObject::connect(check,&QCheckBox::stateChanged,[this,check](int state)
+		{
+			this->setToolsData(state,(QWidget*)check);
+		});
+#else
+	QObject::connect(check,&QCheckBox::checkStateChanged,[this,check](Qt::CheckState state)
+		{
+			this->setToolsData(state,(QWidget*)check);
+		});
+#endif
+
 	check->setObjectName(TOOLRUNSYNC);
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 
@@ -1233,32 +1410,57 @@ void KKEditClass::buildTools(void)
 	hbox->addStretch(1);
 	button=new QPushButton("Save Tool");
 	button->setObjectName(QString("%1").arg(TOOLSSAVE));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->doOddButtons(TOOLSSAVE);
+		});
+
 	button->setEnabled(false);
 	hbox->addWidget(button);
 
 	hbox->addStretch(1);
 	button=new QPushButton("Save Tool As");
 	button->setObjectName(QString("%1").arg(TOOLSSAVEAS));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->doOddButtons(TOOLSSAVEAS);
+		});
+
 	hbox->addWidget(button);
 
 	hbox->addStretch(1);
 	button=new QPushButton("Delete Tool");
 	button->setObjectName(QString("%1").arg(TOOLSDELETE));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->doOddButtons(TOOLSDELETE);
+		});
+
 	hbox->addWidget(button);
 
 	hbox->addStretch(1);
 	button=new QPushButton("Edit Tool");
 	button->setObjectName(QString("%1").arg(TOOLSEDIT));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->doOddButtons(TOOLSEDIT);
+		});
+
 	hbox->addWidget(button);
 
 	hbox->addStretch(1);
 	button=new QPushButton("Dismiss");
 	button->setObjectName(QString("%1").arg(TOOLSCANCEL));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->doOddButtons(TOOLSCANCEL);
+		});
+
 	hbox->addWidget(button);
 	hbox->addStretch(1);
 	mainvbox->addLayout(hbox);
@@ -1361,22 +1563,39 @@ void KKEditClass::buildSpellCheckerGUI(void)
 
 	button=new QPushButton("Apply");
 	button->setObjectName(QString("%1").arg(APPLYWORDBUTTON));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->doOddButtons(APPLYWORDBUTTON);
+		});
+
 	hlayout->addWidget(button);
 
 	button=new QPushButton("Ignore");
 	button->setObjectName(QString("%1").arg(IGNOREWORDBUTTON));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->doOddButtons(IGNOREWORDBUTTON);
+		});
 	hlayout->addWidget(button);
 
 	button=new QPushButton("Add");
 	button->setObjectName(QString("%1").arg(ADDWORDBUTTON));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->doOddButtons(ADDWORDBUTTON);
+		});
 	hlayout->addWidget(button);
 
 	button=new QPushButton("Cancel");
 	button->setObjectName(QString("%1").arg(CANCELSPELLCHECK));
-	QObject::connect(button,SIGNAL(clicked()),this,SLOT(doOddButtons()));
+
+	QObject::connect(button,&QPushButton::clicked,[this]()
+		{
+			this->doOddButtons(CANCELSPELLCHECK);
+		});
 	hlayout->addWidget(button);
 
 	vlayout->addWidget(hbox);
@@ -1832,7 +2051,8 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 	if(tab==-1)
 		doc=this->getDocumentForTab(-1);
 	else
-		doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(tab));
+		//doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(tab));
+		doc=(DocumentClass*)this->mainNotebook->widget(tab);
 	if(doc==0)
 		return;
 	if(doc==NULL)
@@ -1875,7 +2095,12 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 
 									menuitem->setMenuID(linenumber);
 									menuitem->mainKKEditClass=this;
-									QObject::connect(menuitem,SIGNAL(triggered()),menuitem,SLOT(menuClickedGotoLine()));			
+									
+									QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+										{
+											menuitem->menuClickedGotoLine();
+										});
+
 									if(this->prefsFunctionMenuLayout==4)
 										{
 											if(menus.contains(entrytype)==false)

@@ -19,10 +19,6 @@
  */
 
 #include "QT_notebook.h"
-#ifndef moc_QT_notebook
-#include "moc_QT_notebook.cpp"
-#define moc_QT_notebook
-#endif
 
 NoteBookClass::~NoteBookClass()
 {

@@ -32,8 +32,6 @@ class TabColours;
 
 class NoteBookClass : public QTabWidget
 {
-	Q_OBJECT
-
 	public:
 		explicit NoteBookClass(KKEditClass *kk,QWidget *parent=0);
 		~NoteBookClass();

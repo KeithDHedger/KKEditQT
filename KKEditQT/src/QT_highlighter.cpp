@@ -19,10 +19,7 @@
  */
 
 #include "QT_highlighter.h"
-#ifndef moc_QT_highlighter
-#include "moc_QT_highlighter.cpp"
-#define moc_QT_highlighter
-#endif
+
 #include <QTextDocument>
 
 bool Highlighter::setLanguage(QString lang)

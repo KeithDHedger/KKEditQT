@@ -20,9 +20,11 @@
 
 #include "KKEditClass.h"
 
-void KKEditClass::doSessionsMenuItems(void)
+void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+//	MenuItemClass	*mc=NULL;
+//MenuItemClass	*mc=(MenuItemClass*)sender();
 	QFile			file;
 	bool				retval;
 	DocumentClass	*doc;
@@ -39,11 +41,12 @@ void KKEditClass::doSessionsMenuItems(void)
 	else
 		sessionnumber=mc->getMenuID();
 
-	if((sessionnumber==0) || (sender()->objectName().compare(SAVESESSIONMENUNAME)==0) || (sender()->objectName().compare(QUITMENUNAME)==0))
+	//if((sessionnumber==0) || (sender()->objectName().compare(SAVESESSIONMENUNAME)==0) || (sender()->objectName().compare(QUITMENUNAME)==0))
+	if((sessionnumber==0) || (mc->objectName().compare(SAVESESSIONMENUNAME)==0) || (mc->objectName().compare(QUITMENUNAME)==0))
 		{
 			if(sessionnumber!=0)
 				{
-					if(sender()->objectName().compare(QUITMENUNAME)==0)
+					if(mc->objectName().compare(QUITMENUNAME)==0)
 						{
 							sessionnumber=0;
 						}
@@ -143,7 +146,8 @@ void KKEditClass::doSessionsMenuItems(void)
 			return;
 		}
 
-	if(sender()->objectName().compare(RESTORESESSIONMENUNAME)==0)
+	//if(sender()->objectName().compare(RESTORESESSIONMENUNAME)==0)
+	if(mc->objectName().compare(RESTORESESSIONMENUNAME)==0)
 		{
 			if(mc->text().isEmpty()==true)//TODO//
 				return;
@@ -264,9 +268,11 @@ void KKEditClass::doSessionsMenuItems(void)
 	this->mainWindow->repaint();
 }
 
-void KKEditClass::doBookmarkMenuItems()
+void KKEditClass::doBookmarkMenuItems(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+//	MenuItemClass	*mc=NULL;
+//MenuItemClass	*mc=(MenuItemClass*)sender();
 	DocumentClass	*document=this->getDocumentForTab(-1);
 	QTextCursor		tc;
 
@@ -290,9 +296,11 @@ void KKEditClass::doBookmarkMenuItems()
 		}
 }
 
-void KKEditClass::doToolsMenuItems()
+void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+	//MenuItemClass	*mc=NULL;
+//MenuItemClass	*mc=(MenuItemClass*)sender();
 	DocumentClass	*document=this->getDocumentForTab(-1);
 	QStringList		sl;
 	QString			filelist;
@@ -513,10 +521,11 @@ void KKEditClass::doToolsMenuItems()
 		}
 }
 
-void KKEditClass::doHelpMenuItems()
+void KKEditClass::doHelpMenuItems(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-
+	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+	//MenuItemClass	*mc=NULL;
+//MenuItemClass	*mc=(MenuItemClass*)sender();
 	switch(mc->getMenuID())
 		{
 			 case ABOUTMENUITEM:
@@ -546,10 +555,11 @@ void KKEditClass::doHelpMenuItems()
 		}
 }
 
-void KKEditClass::doNavMenuItems()
+void KKEditClass::doNavMenuItems(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-
+//	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+	//MenuItemClass	*mc=NULL;
+//MenuItemClass	*mc=(MenuItemClass*)sender();
 	switch(mc->getMenuID())
 		{
 			case GOBACKMENUITEM:
@@ -576,9 +586,11 @@ void KKEditClass::doNavMenuItems()
 		}
 }
 
-void KKEditClass::doViewMenuItems()
+void KKEditClass::doViewMenuItems(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+//	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+//	MenuItemClass	*mc=(MenuItemClass*)sender();
+	
 
 	switch(mc->getMenuID())
 		{
@@ -676,9 +688,11 @@ void KKEditClass::doViewMenuItems()
 		}
 }
 
-void KKEditClass::doEditMenuItems()
+void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+//	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+//	MenuItemClass	*mc=(MenuItemClass*)sender();
+
 	DocumentClass	*document=this->getDocumentForTab(-1);
 
 	switch(mc->getMenuID())
@@ -858,9 +872,9 @@ void KKEditClass::doEditMenuItems()
 		}
 }
 
-void KKEditClass::doFileMenuItems()
+void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
 
 	switch(mc->getMenuID())
 		{
@@ -1553,17 +1567,26 @@ void KKEditClass::setFont(void)
 		}
 }
 
-void KKEditClass::addToToolBar(void)
+void KKEditClass::addToToolBar(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-
-	this->prefsToolBarLayout=(char*)qobject_cast<MenuItemClass*>(mc)->objectName().constData();
+qDebug()<<"addToToolBar(MenuItemClass *mc)"<<mc->objectName();
+	this->prefsToolBarLayout=(char*)mc->objectName().constData();
 	this->populateStore();
 }
 
-void KKEditClass::doTabBarContextMenu(void)
+//void KKEditClass::addToToolBar(void)
+//{
+//qDebug()<<"addToToolBar(void)";
+//	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+////	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+////
+////	this->prefsToolBarLayout=(char*)qobject_cast<MenuItemClass*>(mc)->objectName().constData();
+////	this->populateStore();
+//}
+
+void KKEditClass::doTabBarContextMenu(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
 	QClipboard		*clipboard=this->application->clipboard();
 	DocumentClass	*doc;
 
@@ -1608,9 +1631,9 @@ void KKEditClass::doTabBarContextMenu(void)
 					
 }
 
-void KKEditClass::doOddMenuItems(void)
+void KKEditClass::doOddMenuItems(MenuItemClass *mc)
 {
-	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
+	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
 
 #ifdef _ASPELL_
 	DocumentClass	*doc=this->getDocumentForTab(-1);
@@ -1635,14 +1658,15 @@ void KKEditClass::doOddMenuItems(void)
 			}
 }
 
-void KKEditClass::doOddButtons(void)
+void KKEditClass::doOddButtons(int what)
 {
+//qDebug()<<what;
 #ifdef _ASPELL_
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 #endif
 	bool			saveas=false;
 
-	switch(sender()->objectName().toInt())
+	switch(what)
 		{
 			case TOOLSEDIT:
 				{
@@ -1776,6 +1800,153 @@ void KKEditClass::doOddButtons(void)
 			default:
 				break;
 		}
+
+
+return;
+#if 0
+	switch(what)
+		{
+			case DOAPISEARCH:
+				this->findDefWidget->setText(this->findDefWidget->text().trimmed());
+				this->goToDefinition(this->findDefWidget->text());
+				break;
+		}
+
+	switch(sender()->objectName().toInt())
+		{
+			case TOOLSEDIT:
+				{
+					QFile	file;
+					file.setFileName(QString("%1/%2").arg(this->toolsFolder).arg(this->toolsWindow->findChild<QLineEdit*>(TOOLCOMMAND)->text()));
+					if(file.exists())
+						this->openFile(file.fileName());
+					else
+						{
+							this->application->clipboard()->setText(this->toolsWindow->findChild<QLineEdit*>(TOOLCOMMAND)->text());
+						}
+				}
+				this->toolsWindow->hide();
+				break;
+			case TOOLSSAVEAS:
+				saveas=true;
+			case TOOLSSAVE:
+				{
+					int			flags=0;
+					QFile		file;
+					bool			retval;
+					QPushButton	*savebutton;
+	
+					if(saveas==false)
+						file.setFileName(this->toolSelect->currentData().toString());
+					else
+						file.setFileName(QString("%1/%2").arg(this->toolsFolder).arg(this->toolsWindow->findChild<QLineEdit*>(TOOLNAME)->text()));
+
+					retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
+					if(retval==true)
+						{
+							QTextStream(&file) << TOOLALWAYSINPOPUP << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLALWAYSINPOPUP)->isChecked() << Qt::endl;
+							QTextStream(&file) << TOOLCLEAROP << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLCLEAROP)->isChecked() << Qt::endl;
+							QTextStream(&file) << TOOLCOMMAND << "\t" << this->toolsWindow->findChild<QLineEdit*>(TOOLCOMMAND)->text() << Qt::endl;
+							QTextStream(&file) << TOOLCOMMENT << "\t" << this->toolsWindow->findChild<QLineEdit*>(TOOLCOMMENT)->text() << Qt::endl;
+
+							if(this->toolsWindow->findChild<QRadioButton*>(TOOLPASTEOUT)->isChecked()==true)
+								flags=TOOL_PASTE_OP;
+							if(this->toolsWindow->findChild<QRadioButton*>(TOOLREPLACEALL)->isChecked()==true)
+								flags=TOOL_REPLACE_OP;
+							if(this->toolsWindow->findChild<QRadioButton*>(TOOLVIEWOUT)->isChecked()==true)
+								flags=TOOL_VIEW_OP;
+							if(this->toolsWindow->findChild<QCheckBox*>(TOOLRUNSYNC)->isChecked()==false)
+								flags|=TOOL_ASYNC;
+							if(this->toolsWindow->findChild<QCheckBox*>(TOOLSHOWDOC)->isChecked()==true)
+								flags|=TOOL_SHOW_DOC;
+
+							QTextStream(&file) << TOOLFLAGS << "\t" << flags << Qt::endl;
+							QTextStream(&file) << TOOLSHOWINPOPUP << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLSHOWINPOPUP)->isChecked() << Qt::endl;
+							QTextStream(&file) << TOOLRUNINTERM << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLRUNINTERM)->isChecked() << Qt::endl;
+							QTextStream(&file) << TOOLNAME << "\t" << this->toolsWindow->findChild<QLineEdit*>(TOOLNAME)->text() << Qt::endl;
+							QTextStream(&file) << TOOLRUNASROOT << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLRUNASROOT)->isChecked() << Qt::endl;
+							QTextStream(&file) << TOOLKEY << "\t" << this->toolsWindow->findChild<QLineEdit*>(TOOLKEY)->text() << Qt::endl;
+							QTextStream(&file) << TOOLUSEPOLE << "\t" << this->toolsWindow->findChild<QCheckBox*>(TOOLUSEPOLE)->isChecked() << Qt::endl;
+
+							file.close();
+
+							flags=this->toolSelect->currentIndex();
+			 				this->rebuildToolsMenu();
+							if(saveas==true)
+								flags=this->toolSelect->findText(this->toolsWindow->findChild<QLineEdit*>(TOOLNAME)->text());
+			 				this->toolSelect->setCurrentIndex(flags);
+							this->runNoOutput(QString("echo quit>\"%1/tools\"").arg(this->tmpFolderName));
+							savebutton=this->toolsWindow->findChild<QPushButton*>(QString("%1").arg(TOOLSSAVE));
+							savebutton->setEnabled(true);
+						}
+				}
+				break;
+			case TOOLSDELETE:
+				{
+					QFile		file;
+					file.setFileName(this->toolSelect->currentData().toString());
+					QFileInfo	fileinfo(file);
+					if(this->yesNoDialog("Deleting "+fileinfo.fileName(),"This is not undoable, continue?")!=QMessageBox::Yes)
+						return;
+
+					file.remove();
+					this->rebuildToolsMenu();
+					this->runNoOutput(QString("echo quit>\"%1/tools\"").arg(this->tmpFolderName));
+				}
+				break;
+			case TOOLSCANCEL:
+				this->toolsWindow->hide();
+				break;
+#ifdef _ASPELL_
+			case APPLYWORDBUTTON:
+				this->spellCheckGUI->hide();
+				if(this->returnWord==false)
+					{
+						doc->textCursor().removeSelectedText();
+						doc->textCursor().insertText(this->wordDropBox->currentText());
+					}
+				else
+					this->goodWord=this->wordDropBox->currentText();
+				this->returnWord=false;
+				break;
+			case IGNOREWORDBUTTON:
+				if(this->returnWord==false)
+					aspell_speller_add_to_session(this->spellChecker,doc->textCursor().selectedText().toStdString().c_str(),-1);
+				else
+					aspell_speller_add_to_session(this->spellChecker,this->badWord.toStdString().c_str(),-1);
+				this->spellCheckGUI->hide();
+				this->returnWord=false;
+				break;
+			case ADDWORDBUTTON:
+				aspell_speller_add_to_personal(this->spellChecker,this->badWord.toStdString().c_str(),-1);
+				aspell_speller_save_all_word_lists(this->spellChecker);
+				this->spellCheckGUI->hide();
+				break;
+			case CANCELSPELLCHECK:
+				this->cancelCheck=true;
+				this->spellCheckGUI->hide();
+				break;
+#endif
+			case CANCELPREFS:
+				this->prefsWindow->hide();
+				this->readConfigs();
+				this->resetAllFilePrefs();
+				this->switchPage(this->mainNotebook->currentIndex());
+				break;
+			case DOLIVESEARCH:
+				this->doLiveSearch(this->liveSearchWidget->text());
+				break;
+//			case DOAPISEARCH:
+//				this->findDefWidget->setText(this->findDefWidget->text().trimmed());
+//				this->goToDefinition(this->findDefWidget->text());
+//				break;
+			case DOCVIEWERGOHOME:
+				this->showWebPage("",this->htmlURI);
+				break;
+			default:
+				break;
+		}
+#endif
 }
 
 bool KKEditClass::docViewLinkTrap(const QUrl url)
@@ -1908,9 +2079,9 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 		}
 }
 
-void KKEditClass::doAppShortCuts(void)
+void KKEditClass::doAppShortCuts(QShortcut *sc)
 {
-	QShortcut		*sc=qobject_cast<QShortcut*>(sender());
+	//QShortcut		*sc=qobject_cast<QShortcut*>(sender());
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 	QString			txt;
 	QTextCursor		cursor;

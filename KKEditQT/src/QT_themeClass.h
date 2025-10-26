@@ -27,8 +27,6 @@
 
 class ThemeClass : public QObject
 {
-	Q_OBJECT
-
 	public:
 		ThemeClass(KKEditClass *kk);
 		~ThemeClass();

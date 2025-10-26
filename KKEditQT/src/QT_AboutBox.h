@@ -1,22 +1,23 @@
 /*
  *
- * ©K. D. Hedger. Thu 26 Nov 14:19:15 GMT 2015 keithdhedger@gmail.com
+ * ©K. D. Hedger. Wed  8 Oct 13:16:07 BST 2025 keithdhedger@gmail.com
 
- * This file (QT_AboutBox.h) is part of AspellGUI.
+ * This file (QT_AboutBox.h) is part of KKEditQT.
 
- * AspellGUI is free software: you can redistribute it and/or modify
+ * KKEditQT is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
+ * (at your option) any later version.
 
- * AspellGUI is distributed in the hope that it will be useful,
+ * KKEditQT is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with AspellGUI.  If not, see <http://www.gnu.org/licenses/>.
- */
+ * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 
 #ifndef _QT_ABOUTBOX_
 #define _QT_ABOUTBOX_
@@ -46,8 +47,6 @@ static const char *defaultauthors="K.D.Hedger ©2013-2022<br><a href=\"mailto:" 
 
 class AboutBoxClass : public QObject
 {
-    Q_OBJECT
-int x=1;
 	public:
 		AboutBoxClass(QWidget* window,QString pixpath);
 		~AboutBoxClass();

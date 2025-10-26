@@ -19,10 +19,6 @@
  */
 
 #include "QT_menuitem.h"
-#ifndef moc_QT_menuitem
-#include "moc_QT_menuitem.cpp"
-#define moc_QT_menuitem
-#endif
 
 MenuItemClass::~MenuItemClass()
 {
@@ -57,7 +53,8 @@ QString MenuItemClass::getMenuString(void)
 
 void MenuItemClass::menuClickedGotoLine()
 {
-	DocumentClass	*document=qobject_cast<DocumentClass*>(this->mainKKEditClass->mainNotebook->currentWidget());
+//	DocumentClass	*document=qobject_cast<DocumentClass*>(this->mainKKEditClass->mainNotebook->currentWidget());
+	DocumentClass	*document=(DocumentClass*)this->mainKKEditClass->mainNotebook->currentWidget();
 	this->mainKKEditClass->history->pushToBackList(document->getCurrentLineNumber(),document->getFilePath());
 	this->mainKKEditClass->gotoLine(this->getMenuID());
 }

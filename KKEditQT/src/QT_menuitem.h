@@ -22,6 +22,7 @@
 #define _QT_MENUITEM_
 
 #include "kkedit-includes.h"
+#include <QAction>
 
 //typedef void (*menuCallbackVoid)(Widget* widget,long data);
 //typedef bool (*menuCallbackBool)(Widget* widget,long data);
@@ -29,8 +30,6 @@
 
 class MenuItemClass : public QAction
 {
-	Q_OBJECT
-
 	public:
 		explicit MenuItemClass(const QString &text, QWidget *parent = 0);
 		~MenuItemClass();

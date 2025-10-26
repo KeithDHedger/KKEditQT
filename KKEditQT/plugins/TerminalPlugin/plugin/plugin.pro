@@ -20,6 +20,6 @@ INSTALLS += documentation
 INSTALLS += image
 
 CONFIG += install_ok
-#message("QT version =" $$(QTVERSION))
+#message("QT version =" $$(USEQTVERSION))
 
-unix:!macx: LIBS += -lqtermwidget$$(QTVERSION)
+unix:!macx: LIBS += -lqtermwidget$$(USEQTVERSION)

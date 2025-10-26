@@ -23,9 +23,9 @@
 DocumentClass* KKEditClass::getDocumentForTab(int tabnum)
 {
 	if(tabnum==-1)
-		return(qobject_cast<DocumentClass*>(this->mainNotebook->currentWidget()));
+		return((DocumentClass*)this->mainNotebook->currentWidget());
 	else
-		return(qobject_cast<DocumentClass*>(this->mainNotebook->widget(tabnum)));
+		return((DocumentClass*)this->mainNotebook->widget(tabnum));
 }
 
 void KKEditClass::resetAllFilePrefs(void)
@@ -83,8 +83,7 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 					while(it.hasNext())
 						{
 							it.next();
-							if(it.fileName().startsWith("moc_",Qt::CaseInsensitive)==false)
-								files<<QString("%1").arg(it.filePath());
+							files<<QString("%1").arg(it.filePath());
 						}	
 				}
 		}
@@ -120,11 +119,27 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 					searchdialog->setWindowTitle("Select Definition");
 					searchdialog->setAttribute(Qt::WA_DeleteOnClose,true);
 					searchcombobox=new QComboBox;
-					connect(searchcombobox,QOverload<int>::of(&QComboBox::activated),[=](int index)
-						{
-							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
-							this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
-						});
+
+#ifndef _USEQT6_
+	QObject::connect(searchcombobox,QOverload<int>::of(&QComboBox::activated),[this,gottaglist](int index)
+		{
+			this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
+			this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
+		});
+#else
+	QObject::connect(searchcombobox,&QComboBox::activated,[this,gottaglist](int index)
+		{
+			this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
+			this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
+		});
+#endif
+
+
+//					QObject::connect(searchcombobox,QOverload<int>::of(&QComboBox::activated),[=](int index)
+//						{
+//							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
+//							this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
+//						});
 
 					for(int h=0;h<gottaglist.count();h++)
 						searchcombobox->addItem(gottaglist.at(h).tagType+": "+gottaglist.at(h).tagName+" > "+QFileInfo(gottaglist.at(h).tagFilepath).fileName()+QString(":%1").arg(gottaglist.at(h).lineNumber));

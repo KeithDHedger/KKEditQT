@@ -25,8 +25,6 @@
 
 class RecentMenuClass : public QObject
 {
-	Q_OBJECT
-
 	public:
 		RecentMenuClass(KKEditClass *kk);
 		~RecentMenuClass();

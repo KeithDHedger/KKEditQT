@@ -18,18 +18,18 @@ Save/Restore session.<br>
 Run external tool synchronously or asynchronously.<br>
 Pass selected text to external tools.<br>
 <br>
-Find API declarations in installed QT5 Docs, Gtk-Doc's.<br>
+Find API declarations in installed QT5/6 Docs, Gtk-Doc's.<br>
 <br>
 Full source code highlighted printing<br>
 <br>
 The usual source view options, line wrap, line numbers etc.<br>
 <br>
-Ported to QT5.<br>
+Ported to QT5/6.<br>
 <br>
-+ When building from a fesh clone for the first time, please use ./autogen.sh instead of ./configure, args passed to autogen.sh are the same for configure, this only needs to be done on a fresh clone<br>
++ When building from a fesh clone for the first time, please use ./autogen.sh, args passed to autogen.sh are the same for configure, this only needs to be done on a fresh clone<br>
 
-This is the QT5 version of KKEDit and is not yet as full featured as the gtk version that it will soon replace.<br>
-I now consider this version to be fully functional ( if not fully featured ).<br>
+This is the QT5/6 version of KKEdit.<br>
+I now consider this version to be fully functional.<br>
 
 BUGS etc.
 kdhedger68713@gmail.com

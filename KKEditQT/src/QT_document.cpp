@@ -19,10 +19,6 @@
  */
 
 #include "QT_document.h"
-#ifndef moc_QT_document
-#include "moc_QT_document.cpp"
-#define moc_QT_document
-#endif
 
 int DocumentClass::getCurrentLineNumber(void)
 {
@@ -601,13 +597,37 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	this->setCenterOnScroll(true);
 	lineNumberArea=new LineNumberArea(this);
 
-	connect(this,SIGNAL(blockCountChanged(int)),this,SLOT(updateLineNumberAreaWidth(int)));
-	connect(this,SIGNAL(updateRequest(QRect,int)),this,SLOT(updateLineNumberArea(QRect,int)));
-	connect(this,SIGNAL(cursorPositionChanged()),this,SLOT(highlightCurrentLine()));
-	connect(this,SIGNAL(textChanged()),this,SLOT(modified()));
+	//connect(this,SIGNAL(blockCountChanged(int)),this,SLOT(updateLineNumberAreaWidth(int)));
+	QObject::connect(this,&QPlainTextEdit::blockCountChanged,[this](int block)
+		{
+			this->updateLineNumberAreaWidth(block);
+		});
+//	connect(this,SIGNAL(updateRequest(QRect,int)),this,SLOT(updateLineNumberArea(QRect,int)));
+	QObject::connect(this,&QPlainTextEdit::updateRequest,[this](QRect r,int i)
+		{
+			this->updateLineNumberArea(r,i);
+		});
+//	connect(this,SIGNAL(cursorPositionChanged()),this,SLOT(highlightCurrentLine()));
+	QObject::connect(this,&QPlainTextEdit::cursorPositionChanged,[this]()
+		{
+			this->highlightCurrentLine();
+		});
+//	connect(this,SIGNAL(textChanged()),this,SLOT(modified()));
+	QObject::connect(this,&QPlainTextEdit::textChanged,[this]()
+		{
+			this->modified();
+		});
 
-	connect(this,SIGNAL(undoAvailable(bool)),this,SLOT(setUndo(bool)));
-	connect(this,SIGNAL(redoAvailable(bool)),this,SLOT(setRedo(bool)));
+//	connect(this,SIGNAL(undoAvailable(bool)),this,SLOT(setUndo(bool)));
+	QObject::connect(this,&QPlainTextEdit::undoAvailable,[this](bool undo)
+		{
+			this->setUndo(undo);
+		});
+//	connect(this,SIGNAL(redoAvailable(bool)),this,SLOT(setRedo(bool)));
+	QObject::connect(this,&QPlainTextEdit::redoAvailable,[this](bool undo)
+		{
+			this->setRedo(undo);
+		});
 
 	updateLineNumberAreaWidth(this->oldBlockCount);
 	highlightCurrentLine();
@@ -698,10 +718,12 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 		}
 
 //tools
-	menuactions=qobject_cast<QMenu*>(this->mainKKEditClass->toolsMenu)->actions();
+	//menuactions=qobject_cast<QMenu*>(this->mainKKEditClass->toolsMenu)->actions();
+	menuactions=this->mainKKEditClass->toolsMenu->actions();
 	for(int j=1;j<menuactions.count();j++)
 		{
-			mc=qobject_cast<MenuItemClass*>(menuactions.at(j));
+			//mc=qobject_cast<MenuItemClass*>(menuactions.at(j));
+			mc=(MenuItemClass*)menuactions.at(j);
 			if(mc!=NULL)
 				{
 					if(mc->alwaysInPopup==true)
@@ -713,7 +735,8 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 
 	for(int j=1;j<menuactions.count();j++)
 		{
-			mc=qobject_cast<MenuItemClass*>(menuactions.at(j));
+			//mc=qobject_cast<MenuItemClass*>(menuactions.at(j));
+			mc=(MenuItemClass*)menuactions.at(j);
 			if(mc!=NULL)
 				{
 					if(this->textCursor().hasSelection()==true)

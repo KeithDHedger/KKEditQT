@@ -19,10 +19,6 @@
  */
  
 #include "QT_toolbar.h"
-#ifndef moc_QT_toolbar
-#include "moc_QT_toolbar.cpp"
-#define moc_QT_toolbar
-#endif
 
 ToolBarClass::~ToolBarClass()
 {

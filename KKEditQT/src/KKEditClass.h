@@ -182,8 +182,6 @@ struct miniPrefsReturnStruct
 
 class KKEditClass : public QObject
 {
-	Q_OBJECT
-
 	public:
 		KKEditClass(QApplication *app);
 		~KKEditClass();
@@ -572,37 +570,48 @@ class KKEditClass : public QObject
 
 	public slots:
 		void							doTimer(void);
-		void							doFileMenuItems();
-		void							doEditMenuItems();
-		void							doViewMenuItems();
-		void							doNavMenuItems();
-		void							doBookmarkMenuItems();
-		void							doHelpMenuItems();
-		void							doToolsMenuItems();
-		void							doTabBarContextMenu(void);
-		void							doOddMenuItems(void);
-		void							doOddButtons(void);
+		//void							doFileMenuItems();
+		void							doFileMenuItems(MenuItemClass *mc);
+		//void							doEditMenuItems();
+		void							doEditMenuItems(MenuItemClass *mc);
+		//void							doViewMenuItems();
+		void							doViewMenuItems(MenuItemClass *mc);
+		//void							doNavMenuItems();
+		void							doNavMenuItems(MenuItemClass *mc);
+		//void							doBookmarkMenuItems();
+		void							doBookmarkMenuItems(MenuItemClass *mc);
+		//void							doHelpMenuItems();
+		void							doHelpMenuItems(MenuItemClass *mc);
+		//void							doToolsMenuItems();
+		void							doToolsMenuItems(MenuItemClass *mc);
+		//void							doTabBarContextMenu(void);
+		void							doTabBarContextMenu(MenuItemClass *mc);
+		//void							doOddMenuItems(void);
+		void							doOddMenuItems(MenuItemClass *mc);
+		void							doOddButtons(int what=-1);
 
 		void							doDoubleClickPrefs(QListWidgetItem *item);
 		void							setPreferences(void);
 		void							setBMColour(void);
 		void							setLineColour(void);
 		void							setFont(void);
-		void							addToToolBar(void);
+		//void							//addToToolBar(void);
+		void							addToToolBar(MenuItemClass *mc);
 		void							buildGetKeyShortCut(int index);
 
 		void							switchPage(int index);
 		bool							closeTab(int index);
 		void							closeAllTabs(void);
 
-		void							doFindButton(void);
+		void							doFindButton(QPushButton *btn);
 		void							tabContextMenu(const QPoint &pt);
 
-		void							doAppShortCuts(void);
+		void							doAppShortCuts(QShortcut *sc);
 
-		void							doSessionsMenuItems(void);
+		//void							doSessionsMenuItems(void);
+		void							doSessionsMenuItems(MenuItemClass *mc);
 
-		void							setToolsData(int);
+		void							setToolsData(int what,QWidget *combo);
 
 //search functions
 		void							setSearchPrefs(void);

@@ -10,16 +10,7 @@ fi
 
 cd "KKEditQT/src"
 
-rm moc_* &>/dev/null||true
 csrclst=$(echo "../src/*.c" "../src/*.cpp")
 echo COMMONSRC = $csrclst > ../sources
-
-$MOCPATH KKEditClass.h -o moc_KKEditClass.cpp
-while read
-	do
-		outfile=${REPLY#./*}
-		outfile=moc_${outfile%*.h}.cpp
-		$MOCPATH $REPLY -o $outfile
-	done < <(find -name "*QT*.h")
 
 exit 0

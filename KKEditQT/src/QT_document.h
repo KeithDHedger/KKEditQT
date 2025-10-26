@@ -30,8 +30,6 @@ enum {NORMALTAB=0,CHANGEDONDISKTAB,IGNORECHANGEDONDISKTAB,LOCKEDTAB,DIRTYTAB};
 
 class DocumentClass : public QPlainTextEdit
 {
-	Q_OBJECT
-
 	public:
 		explicit DocumentClass(KKEditClass *kk,QWidget *parent=0);
 		~DocumentClass();
@@ -152,7 +150,7 @@ class DocumentClass : public QPlainTextEdit
 
 class LineNumberArea : public QWidget
 {
-	Q_OBJECT
+	//Q_OBJECT
 
 	public:
 	    LineNumberArea(DocumentClass *editor) : QWidget(editor)

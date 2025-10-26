@@ -35,43 +35,84 @@ MenuItemClass* KKEditClass::makeMenuItemClass(int mainmenu,const QString name,co
 		{
 			case FILEMENU:
 				this->fileMenu->addAction(menuitem);
-				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doFileMenuItems()));
+			
+				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+					{
+						this->doFileMenuItems(menuitem);
+					});
 				break;
 			case EDITMENU:
 				this->editMenu->addAction(menuitem);
-				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doEditMenuItems()));
+				
+				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+					{
+						this->doEditMenuItems(menuitem);
+					});
 				break;
 			case VIEWMENU:
 				this->viewMenu->addAction(menuitem);
-				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doViewMenuItems()));
+				
+				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+					{
+						this->doViewMenuItems(menuitem);
+					});
 				break;
 			case NAVMENU:
 				this->navMenu->addAction(menuitem);
-				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doNavMenuItems()));
+				
+				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+					{
+						this->doNavMenuItems(menuitem);
+					});
 				break;
 			case BOOKMARKSMENU:
 				this->bookMarkMenu->addAction(menuitem);
-				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doBookmarkMenuItems()));
+				
+				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+					{
+						this->doBookmarkMenuItems(menuitem);
+					});
 				break;
 			case HELPMENU:
 				this->helpMenu->addAction(menuitem);
-				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doHelpMenuItems()));
+				
+				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+					{
+						this->doHelpMenuItems(menuitem);
+					});
 				break;
 			case TOOLSMENU:
 				this->toolsMenu->addAction(menuitem);
-				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doToolsMenuItems()));
+			
+				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+					{
+						this->doToolsMenuItems(menuitem);
+					});
 				break;
 			case SAVESESSIONSMENU:
 				this->saveSessionsMenu->addAction(menuitem);
-				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doSessionsMenuItems()));
+				
+				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+					{
+						this->doSessionsMenuItems(menuitem);
+					});
+
 				break;
 			case RESTORESESSIONSMENU:
 				this->restoreSessionsMenu->addAction(menuitem);
-				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doSessionsMenuItems()));
+				
+				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+					{
+						this->doSessionsMenuItems(menuitem);
+					});
 				break;
 
 			case NOMENU:
-				QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doOddMenuItems()));
+				
+				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+					{
+						this->doOddMenuItems(menuitem);
+					});
 				break;
 		}
 

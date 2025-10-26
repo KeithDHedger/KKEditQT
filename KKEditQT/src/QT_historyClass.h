@@ -31,8 +31,6 @@ struct historyData
  
 class HistoryClass : public QObject
 {
-	Q_OBJECT
-
 	public:
 		HistoryClass(KKEditClass *kk);
 		~HistoryClass();

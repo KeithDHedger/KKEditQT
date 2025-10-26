@@ -19,10 +19,6 @@
  */
 
 #include "KKEditClass.h"
-#ifndef moc_KKEditClass
-#include "moc_KKEditClass.cpp"
-#define moc_KKEditClass
-#endif
 
 static const char			*replacementShorts[]={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"};
 static const QStringList		reservedShortcutKeys={"Ctrl+Shift+C","Ctrl+Shift+V"};
@@ -183,7 +179,13 @@ void KKEditClass::setUpToolBar(void)
 						this->findDefWidget=new QLineEdit;
 						this->findDefWidget->setObjectName(QString("%1").arg(DOAPISEARCH));
 						this->findDefWidget->setToolTip("Search For Define");
-						QObject::connect(this->findDefWidget,SIGNAL(returnPressed()),this,SLOT(doOddButtons()));
+						
+						
+						QObject::connect(this->findDefWidget,&QLineEdit::returnPressed,[this]()
+							{
+								this->doOddButtons(DOAPISEARCH);
+							});
+
 						this->toolBar->addWidget(this->findDefWidget);
 						break;
 //livesearch
@@ -193,8 +195,16 @@ void KKEditClass::setUpToolBar(void)
 						this->liveSearchWidget=new QLineEdit;
 						this->liveSearchWidget->setToolTip("Live Search");
 						this->liveSearchWidget->setObjectName(QString("%1").arg(DOLIVESEARCH));
-						QObject::connect(this->liveSearchWidget,SIGNAL(textChanged(QString)),this,SLOT(doLiveSearch(QString)));
-						QObject::connect(this->liveSearchWidget,SIGNAL(returnPressed()),this,SLOT(doOddButtons()));
+						
+						QObject::connect(this->liveSearchWidget,&QLineEdit::textChanged,[this](QString text)
+							{
+								this->doLiveSearch(text);
+							});
+						
+						QObject::connect(this->liveSearchWidget,&QLineEdit::returnPressed,[this]()
+							{
+								this->doOddButtons(DOLIVESEARCH);
+							});
 						this->toolBar->addWidget(this->liveSearchWidget);
 						break;
 
@@ -220,7 +230,8 @@ void KKEditClass::switchPage(int index)
 	if(this->sessionBusy==true)
 		return;
 
-	doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(index));
+	//doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(index));
+	doc=(DocumentClass*)this->mainNotebook->widget(index);
 	if(doc==0)
 		return;
 	if(doc==NULL)
@@ -268,7 +279,10 @@ void KKEditClass::rebuildBookMarkMenu()
 
 void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 {
-	DocumentClass	*doc=this->pages.value(qobject_cast<DocumentClass*>(widget)->pageIndex);
+	//DocumentClass	*doc=this->pages.value(qobject_cast<DocumentClass*>(widget)->pageIndex);
+	//DocumentClass	*doc=(DocumentClass*)this->pages.value(widget)->pageIndex;
+	DocumentClass	*tdoc=(DocumentClass*)(widget);
+	DocumentClass	*doc=this->pages.value(tdoc->pageIndex);
 	QTextCursor		cursor;
 	bookMarkStruct	bms;
 
@@ -415,7 +429,11 @@ void KKEditClass::initApp(int argc,char** argv)
 				fprintf(stderr,"Can't create message queue, scripting wont work :( ...\n");
 		}
 	this->checkMessages=new QTimer();
-	QObject::connect(this->checkMessages,SIGNAL(timeout()),this,SLOT(doTimer()));
+
+	QObject::connect(this->checkMessages,&QTimer::timeout,[this]()
+		{
+			this->doTimer();
+		});
 	this->checkMessages->start(this->prefsMsgTimer);
 	this->theme->loadTheme(this->prefStyleName);
 	this->buildMainGui();
@@ -442,7 +460,11 @@ void KKEditClass::initApp(int argc,char** argv)
 	QIcon	itemicon=QIcon::fromTheme("tools-check-spelling");
 	this->spellCheckMenuItem->setMenuID(SPELLCHECKMENUITEM);
 	this->spellCheckMenuItem->setIcon(itemicon);
-	QObject::connect(this->spellCheckMenuItem,SIGNAL(triggered()),this,SLOT(doOddMenuItems()));
+
+	QObject::connect(this->spellCheckMenuItem,&QAction::triggered,[this]()
+		{
+			this->doOddMenuItems(this->spellCheckMenuItem);
+		});
 	this->buildSpellCheckerGUI();
 #endif
 
@@ -587,7 +609,11 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 											menuitem1=new MenuItemClass(flist.at(k));
 											menuitem1->setMenuID(OPENFROMHERE+tabIndex);
 											filemenu.addAction(menuitem1);
-											QObject::connect(menuitem1,SIGNAL(triggered()),this,SLOT(doTabBarContextMenu()));
+											
+											QObject::connect(menuitem1,&QAction::triggered,[this,menuitem1]()
+												{
+													this->doTabBarContextMenu(menuitem1);
+												});
 										}
 								}
 							continue;
@@ -614,7 +640,11 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 					else
 						itemicon=QIcon::fromTheme(this->tabContextMenuItems[cnt].icon);
 					menuitem->setIcon(itemicon);
-					QObject::connect(menuitem,SIGNAL(triggered()),this,SLOT(doTabBarContextMenu()));
+					
+					QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
+						{
+							this->doTabBarContextMenu(menuitem);
+						});
 				}
 //plugins
 			pd.menu=&menu;
@@ -1138,7 +1168,8 @@ bool KKEditClass::closeTab(int index)
 	pd.what=DOCLOSE;
 	this->runAllPlugs(pd);
 
-	doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(thispage));
+	//doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(thispage));
+	doc=(DocumentClass*)this->mainNotebook->widget(thispage);
 	if(doc!=0)
 		{
 			if(doc->dirty==true)
@@ -1191,7 +1222,7 @@ void KKEditClass::shutDownApp()
 	this->writeExitData();
 
 	if(this->onExitSaveSession==true)
-		this->doSessionsMenuItems();
+		this->doSessionsMenuItems(NULL);
 
 	if(this->saveAllFiles(true)==true)
 		{
@@ -1261,7 +1292,11 @@ void KKEditClass::setAppShortcuts(void)
 				{
 					this->appShortcuts[j]->setKey(QKeySequence(this->defaultShortCutsList.at(j)));
 					this->appShortcuts[j]->setObjectName(QString("%1").arg(j));
-					QObject::connect(this->appShortcuts[j],SIGNAL(activated()),this,SLOT(doAppShortCuts()));
+					
+					QObject::connect(this->appShortcuts[j],&QShortcut::activated,[this,j]()
+						{
+							this->doAppShortCuts(this->appShortcuts[j]);
+						});
 				}
 			else
 				{

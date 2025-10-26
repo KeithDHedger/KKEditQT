@@ -27,8 +27,6 @@ class KKEditClass;
 
 class ToolBarClass : public QToolBar
 {
-	Q_OBJECT
-
 	public:
 		explicit ToolBarClass(KKEditClass *kk,QWidget *parent=0);
 		~ToolBarClass();

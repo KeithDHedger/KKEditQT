@@ -7,16 +7,23 @@ else
 	. ./toolspath
 fi
 
-if [ $QTVERSION -ne 6 ];then
-	ENABLEQT6="--disable-qt6"
-else
-	ENABLEQT6="--enable-qt6"
-fi
 ./remakesourcelist
+
 aclocal
 autoheader
-touch NEWS AUTHORS
+touch NEWS README AUTHORS ChangeLog
 automake --add-missing --copy
+
+case $USEQTVERSION in
+	"5")
+		autoconf configure.qt5.ac > ./configure
+		chmod +x ./configure
+		;;
+	*)
+		autoconf configure.ac > ./configure
+		;;
+esac
+
 autoconf
-./configure $@ $ENABLEQT6
+./configure $@
 

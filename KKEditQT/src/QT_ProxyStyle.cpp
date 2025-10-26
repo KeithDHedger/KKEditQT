@@ -19,10 +19,6 @@
 */
 
 #include "QT_ProxyStyle.h"
-#ifndef moc_QT_ProxyStyle
-#include "moc_QT_ProxyStyle.cpp"
-#define moc_QT_ProxyStyle
-#endif
 
 int ProxyStyle::styleHint(StyleHint hint,const QStyleOption *option,const QWidget *widget,QStyleHintReturn *returnData) const
 {
