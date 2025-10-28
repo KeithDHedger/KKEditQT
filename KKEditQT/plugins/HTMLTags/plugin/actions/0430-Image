@@ -6,8 +6,9 @@ shift
 . "$(dirname ${0})/9999-globalFunctions"
 
 TITLE="$(basename "${@}")"
-WIDTH=100
-HEIGHT=100
+eval $(cat /tmp/htmltagdata)
+WIDTH=${WIDTH:-100}
+HEIGHT=${HEIGHT:-100}
 RESULT="$TITLE|$WIDTH|$HEIGHT"
 
 if RESULT=$(getImageForm);then
@@ -15,6 +16,17 @@ if RESULT=$(getImageForm);then
 	WIDTH=$(echo "$RESULT"|awk -F\| '{print $2}')
 	HEIGHT=$(echo "$RESULT"|awk -F\| '{print $3}')
 
-	echo -n "<img src=\"${@}\" alt=\"${@}\" title=\"$TITLE\" height=\"$HEIGHT\" width=\"$WIDTH\">"
+	if [[ $WIDTH -gt 0 ]];then
+		DOWIDTH=" width=\"$WIDTH\""
+	fi
+	if [[ $HEIGHT -gt 0 ]];then
+		DOHEIGHT=" height=\"$HEIGHT\""
+	fi
+	echo "WIDTH=$WIDTH" >> /tmp/htmltagdata
+	echo "HEIGHT=$HEIGHT" >> /tmp/htmltagdata
+	sed -i "s/WIDTH=.*$/WIDTH=${WIDTH}/" /tmp/htmltagdata
+	sed -i "s/HEIGHT=.*$/HEIGHT=${HEIGHT}/" /tmp/htmltagdata
+	sort -u /tmp/htmltagdata > /tmp/htmltagdata.temp
+	mv /tmp/htmltagdata.temp /tmp/htmltagdata
+	echo -n "<img src=\"${@}\" alt=\"${@}\" title=\"$TITLE\"${DOHEIGHT}${DOWIDTH}>"
 fi
-
