@@ -21,164 +21,7 @@
 #ifndef _KKEDITCLASS_
 #define _KKEDITCLASS_
 
-#define STATUSBARTIMEOUT 5000
-
-enum {FILEMENU=0x4000,EDITMENU,VIEWMENU,NAVMENU,FUNCTIONSMENU,BOOKMARKSMENU,TOOLSMENU,PLUGINSMENU,HELPMENU,SAVESESSIONSMENU,RESTORESESSIONSMENU,CURRENTSESSION,NOMENU};
-
-//file
-enum {NEWMENUITEM=0x8000,OPENMENUITEM,HEXDUMPMENUITEM,NEWADMINEDMENUITEM,NEWEDMENUITEM,MANPAGEEDMENUITEM,BUILDDOCSMENUITEM,BUILDDOCSETMENUITEM,SAVEMENUITEM,SAVEASMENUITEM,SAVEALLMENUITEM,SAVESESSIONMENUITEM,RESTORESESSIONMENUITEM,PRINTMENUITEM,CLOSEMENUITEM,CLOSEALLMENUITEM,REVERTMENUITEM,EXPORTTOPDFMENUITEM,IMPORTFROMPDFMENUITEM,QUITMENUITEM};
-//edit
-enum {UNDOMENUITEM=0x9000,REDOMENUITEM,UNDOALLMENUITEM,REDOALLMENUITEM,EDSEP1,CUTMENUITEM,COPYMENUITEM,PASTEMENUITEM,VERTICALPASTEMENUITEM,DELETEMENUITEM,EDSEP2,SELECTALLMENUITEM,EDSEP3,FINDMENUITEM,FINDNEXTMENUITEM,EDSEP4,SORTTABSMENUITEM,SHOWALLTABSMENUITEM,SELECTTABMENUITEM,EDSEP5,PREFSMENUITEM,PLUGPREFSMENUITEM};
-//view
-enum {DOCSMENUITEM=0xa000,TOGGLETOOLBARMENUITEM,TOGGLETOOLWINDOWMENUITEM,TOGGLESTATUSBARMENUITEM,TOGGLEDOCVIEWMENUITEM,RAISEDOCVIEWMENUITEM,TOGGLELINENUMBERSMENUITEM,TOGGLELINEWRAPMENUITEM,TOGGLEHILITELINEMENUITEM,TOGGLEWHITESPACEMENUITEM,TOGGLESYNTAXHILITINGMENUITEM,TOGGLECOMPLETIONSMENUITEM};
-//nav
-enum {GOTODEFINEMENUITEM=0xb000,OPENINCLUDEMENUITEM,GOTOLINEMENUITEM,SEARCHFORDEFINEMENUITEM,SEARCHDOXYDOCS,GOBACKMENUITEM,GOFORWARDMENUITEM,GOTODEFINEMENUSINGLEITEM};
-//func
-//bms
-enum {REMOVEALLBOOKMARKSMENUITEM=0xc000,TOGGLEBOOKMARKMENUITEM,REMOVEBOOKMARKSFROMPAGE};
-
-//tools
-enum {MANAGETOOLSMENUITEM=0xd000,TOOLNUMBER};
-//plugins
-//help
-enum {ABOUTMENUITEM=0xe000,ABOUTQTMENUITEM,HELPMENUITEM};
-
-enum	{AUTOINDENT=0,SHOWNUMS,WRAP,HIGHLIGHT,SYNTAXHILITE,USESINGLE,AUTOSAVE,NODUPLICATE,NOWARN,AUTOSHOW,AUTOONETAB,OPENTABPOS,SELECTFIRSTTAB,BEKIND,MAXPREFSWIDGETS};
-enum {MAXTABCHARS=0,MAXHISTORY,MAXFUNCDEPTH,COMPLETIONSIZE,TABWIDTH,MENUWIDTH,MAXRECENTS,MSGCHECKTIME,MAXMENUSESSIONS,MAXPREFSINTWIDGETS};
-enum {FUNCTIONCOMBO=0,THEMECOMBO,FONTNAMECOMBO,PREFSTERMCOMMAND,PREFSPRINTCOMMAND,PREFSPAGESIZE,PREFSROOTCOMMAND,PREFSCURRENTFONT,BMHIGHLIGHTCOLOUR,CURRENTLINECOLOUR,SHORTCUTSCOMBO,MAXPREFSOTHERWIDGETS};
-
-enum {FINDNEXT=1,FINDPREV,FINDREPLACE};
-
-//odd enums
-enum {SPELLCHECKMENUITEM=0x2000,APPLYWORDBUTTON,IGNOREWORDBUTTON,ADDWORDBUTTON,CANCELSPELLCHECK,CANCELPREFS,DOLINEBOX,DOLIVESEARCH,DOAPISEARCH,DOCVIEWERGOHOME,TOOLSSAVE,TOOLSCANCEL,TOOLSDELETE,TOOLSSAVEAS,TOOLSEDIT};
-
-struct tabMenuStruct
-{
-	unsigned int		what;
-	const char		*label;
-	const char		*icon;
-};
-
-enum {COPYFOLDERPATH=0xf000,COPYFILEPATH=0xf100,COPYFILENAME=0xf200,SPELLCHECKDOC=0xf300,SRCHILTIE=0xf400,HIDETAB=0xf500,LOCKCONTENTS=0xf600,OPENFROMHERE=0xf700};
-
-enum {TABCONTEXTMENUCNT=(OPENFROMHERE-COPYFOLDERPATH) / 0x100 +1};
-
-enum {NONESRCCODE=0,CPPSRCCODE=0x100,CSRCCODE=0x200,BASHSRCCODE=0x300,PYTHONSRCCODE=0x400,GOSRCCODE=0x500,LUASRCCODE=0x600,YAMLSRCCODE=0x700,PHPSRCCODE=0x800,XMLSRCCODE=0x900,CSSSRCCODE=0xa00,JSSRCCODE=0xb00,MAKESRCCODE=0xc00};
-
-enum {HIDETABSHORTCUT=0,DELETELINESHORTCUT,DELETETOEOLSHORTCUT,DELETETOSOLSHORTCUT,SELECTWORDSHORTCUT,DELETEWORDSHORTCUT,DUPLICATELINESHORTCUT,SELECTLINESHORTCUT,MOVELINEUPSHORTCUT,MOVELINEDOWNSHORTCUT,MOVESELECTIONUPSHORTCUT,MOVESELECTIONDOWNSHORTCUT,FORCESHOWCOMPLETE,NOMORESHORTCUT,NOSHORTCUT};
-
-enum {FRCASE=0,FRUSEREGEX,FRREPLACEFIND,FRWRAP,FRALLFILES,FRHIGHLIGHTALL,FRREPLACEALL,FRSEARCHBACK,FRMAXSWITCHES};
-
-class ProxyStyle;
-class ThemeClass;
-class DocumentClass;
-class TabColours;
-class NoteBookClass;
-class MenuItemClass;
-class RecentMenuClass;
-class HistoryClass;
-class ToolBarClass;
-class kkEditQTPluginInterface;
-
-#include "kkedit-includes.h"
-
-#include "tagClass.h"
-#include "QT_ProxyStyle.h"
-#include "ChooserDialog.h"
-#include "QT_themeClass.h"
-#include "QT_AboutBox.h"
-#include "QT_menuitem.h"
-#include "QT_historyClass.h"
-#include "QT_recentMenu.h"
-#include "QT_highlighter.h"
-#include "QT_document.h"
-#include "QT_toolbar.h"
-#include "QT_notebook.h"
-
-#include "kkeditqtPluginInterface.h"
-
-struct pluginStruct
-{
-	QPluginLoader					*pluginLoader=NULL;
-	QString							plugPath="";
-	QString							plugName="";
-	QString							plugVersion="";
-	kkEditQTPluginInterface			*instance=NULL;
-	unsigned int						wants=DONONE;
-	bool								loaded=false;
-	bool								statusChanged=false;
-	bool								broken=false;
-	bool								local=false;
-#ifdef _DEBUGCODE_
-	void				printIt(void)
-		{
-		//	qSetMessagePattern("[%{type}] %{appname} (%{file}:%{line}) - %{message}");
-			qDebug() << "pluginLoader" << pluginLoader;
-			qDebug() << "plugPath" << plugPath;
-			qDebug() << "plugName" << plugName;
-			qDebug() << "plugVersion" << plugVersion;
-			qDebug() << "instance" << instance;
-			qDebug() << "loaded" << loaded;
-			qDebug() << "statusChanged" << statusChanged;
-			qDebug() << "broken" << broken;
-
-			switch(wants)
-				{
-					case DONONE:
-						qDebug() << "wants DONONE";
-						break;
-					case DOSAVE:
-						qDebug() << "wants DOSAVE";
-						break;
-					case DOLOAD:
-						qDebug() << "wants DOLOAD";
-						break;
-					case DOCLOSE:
-						qDebug() << "wants DOCLOSE";
-						break;
-					case DORESSESSION:
-						qDebug() << "wants DORESSESSION";
-						break;
-					case DOSAVESESSION:
-						qDebug() << "wants DOSAVESESSION";
-						break;
-					case DOCONTEXTMENU:
-						qDebug() << "wants DOCONTEXTMENU";
-						break;
-					case DOTABPOPUP:
-						qDebug() << "wants DOTABPOPUP";
-						break;
-					case DOSETSENSITVE:
-						qDebug() << "wants DOSETSENSITVE";
-						break;
-					case DOSWITCHPAGE:
-						qDebug() << "wants DOSWITCHPAGE";
-						break;
-					case DONEWDOCUMENT:
-						qDebug() << "wants DONEWDOCUMENT";
-						break;
-					case DOSHUTDOWN:
-						qDebug() << "wants DOSHUTDOWN";
-						break;
-					case DOABOUT:
-						qDebug() << "wants DOABOUT";
-						break;
-					case DOSETTINGS:
-						qDebug() << "wants DOSETTINGS";
-						break;
-					default://qDebug("My hex number is: %x", hexnum);
-						qDebug() << "wants" << Qt::bin << Qt::showbase << wants;
-				}
-			qDebug()<<"";
-		};
-#endif
-};
-
-struct miniPrefsReturnStruct
-{
-	QDialog					*theDialog;
-	QHash<int,QLineEdit*>	boxes;
-};
+#include "globalincludes.h"
 
 class KKEditClass : public QObject
 {
@@ -570,23 +413,14 @@ class KKEditClass : public QObject
 
 	public slots:
 		void							doTimer(void);
-		//void							doFileMenuItems();
 		void							doFileMenuItems(MenuItemClass *mc);
-		//void							doEditMenuItems();
 		void							doEditMenuItems(MenuItemClass *mc);
-		//void							doViewMenuItems();
 		void							doViewMenuItems(MenuItemClass *mc);
-		//void							doNavMenuItems();
 		void							doNavMenuItems(MenuItemClass *mc);
-		//void							doBookmarkMenuItems();
 		void							doBookmarkMenuItems(MenuItemClass *mc);
-		//void							doHelpMenuItems();
 		void							doHelpMenuItems(MenuItemClass *mc);
-		//void							doToolsMenuItems();
 		void							doToolsMenuItems(MenuItemClass *mc);
-		//void							doTabBarContextMenu(void);
 		void							doTabBarContextMenu(MenuItemClass *mc);
-		//void							doOddMenuItems(void);
 		void							doOddMenuItems(MenuItemClass *mc);
 		void							doOddButtons(int what=-1);
 
@@ -595,7 +429,6 @@ class KKEditClass : public QObject
 		void							setBMColour(void);
 		void							setLineColour(void);
 		void							setFont(void);
-		//void							//addToToolBar(void);
 		void							addToToolBar(MenuItemClass *mc);
 		void							buildGetKeyShortCut(int index);
 
@@ -608,7 +441,6 @@ class KKEditClass : public QObject
 
 		void							doAppShortCuts(QShortcut *sc);
 
-		//void							doSessionsMenuItems(void);
 		void							doSessionsMenuItems(MenuItemClass *mc);
 
 		void							setToolsData(int what,QWidget *combo);

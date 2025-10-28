@@ -1,4 +1,5 @@
 1.6.2
+Tidied up includes.
 Simplified set up for Qt5/6 build.
 Removed unneeded Q_OBJECT macro's from headers.
 Removed SIGNAL/SLOTS macros now using lambdas.

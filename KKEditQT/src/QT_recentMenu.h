@@ -21,7 +21,7 @@
 #ifndef _QT_RECENTMENU_
 #define _QT_RECENTMENU_
 
-#include "kkedit-includes.h"
+#include "globalincludes.h"
 
 class RecentMenuClass : public QObject
 {

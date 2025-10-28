@@ -18,7 +18,7 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "kkedit-includes.h"
+#include "globalincludes.h"
 #include "SingleInstanceClass.h"
 
 KKEditClass	*kkedit=NULL;

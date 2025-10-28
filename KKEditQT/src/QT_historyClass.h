@@ -21,7 +21,7 @@
 #ifndef _QT_HISTORYCLASS_
 #define _QT_HISTORYCLASS_
 
-#include "kkedit-includes.h"
+#include "globalincludes.h"
 
 struct historyData
 {

@@ -1,24 +1,23 @@
 /*
  *
- * ©K. D. Hedger. Wed  8 Oct 13:16:24 BST 2025 keithdhedger@gmail.com
+ * ©K. D. Hedger. Fri 10 Oct 14:20:15 BST 2025 keithdhedger@gmail.com
 
- * This file (QT_AboutBox.cpp) is part of KKEditQT.
+ * This file (QT_AboutBox.cpp) is part of ManPageEditorQT.
 
- * KKEditQT is free software: you can redistribute it and/or modify
+ * ManPageEditorQT is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
 
- * KKEditQT is distributed in the hope that it will be useful,
+ * ManPageEditorQT is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
+ * along with ManPageEditorQT.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kkedit-includes.h"
 #include "QT_AboutBox.h"
 
 void AboutBoxClass::setAuthors(QString authors)
@@ -87,7 +86,6 @@ void AboutBoxClass::showCredits(void)
 void AboutBoxClass::killAboutBox(void)
 {
 	this->aboutDialog->close();
-	delete this;
 }
 
 void AboutBoxClass::showLicence(void)
@@ -133,6 +131,10 @@ void AboutBoxClass::showLicence(void)
 	delete this->licenceDialog;
 }
 
+AboutBoxClass::AboutBoxClass(void)
+{
+}
+
 AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
 {
 	QVBoxLayout	*vlayout=new QVBoxLayout;
@@ -163,7 +165,7 @@ AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
 	vlayout->addWidget(label);
 //text
 	label=new QLabel;
-	label->setText("KKEditQT Code Text Editor");
+	label->setText("QT 5/6 Linux Manpage Editor");
 	label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	vlayout->addWidget(label);
 //copyrite
@@ -173,7 +175,7 @@ AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
 	vlayout->addWidget(label);
 //homepage
 	label=new QLabel;
-	label->setText("<a href=\"" KKEDITQTPAGE "\">" PACKAGE "</a>");
+	label->setText("<a href=\"" MANPAGEPAGEQTPAGE "\">" PACKAGE "</a>");
 	label->setOpenExternalLinks(true);
 	label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	vlayout->addWidget(label);
@@ -196,4 +198,52 @@ AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
 
 	vlayout->addWidget(hbox);
 	this->aboutDialog->setLayout((QLayout*)vlayout);
+}
+
+void AboutBoxClass::showHelp(void)
+{
+	QDialog		helpdialog;
+	QTextBrowser	*te=new QTextBrowser;
+	QVBoxLayout	*docvlayout=new QVBoxLayout;
+	QHBoxLayout	*hlayout;
+	QPushButton	*button;
+
+	docvlayout->setContentsMargins(MARGINS,MARGINS,MARGINS,MARGINS);
+	docvlayout->addWidget(te);
+
+	te->setSource(QUrl::fromLocalFile(QString("%1/%2").arg(DATADIR).arg("help/index.html")),QTextDocument::HtmlResource);
+	te->setOpenExternalLinks(true);
+	hlayout=new QHBoxLayout;
+//back
+
+	button=new QPushButton("&Back");
+	QObject::connect(button,&QPushButton::clicked,[te]()
+		{
+			te->backward();
+		});
+	hlayout->addWidget(button);
+//forward
+	button=new QPushButton("&Forward");
+	QObject::connect(button,&QPushButton::clicked,[te]()
+		{
+			te->forward();
+		});
+	hlayout->addWidget(button);
+	hlayout->addStretch();
+//close
+	button=new QPushButton("&Close");
+	QObject::connect(button,&QPushButton::clicked,[&helpdialog]()
+		{
+			helpdialog.close();
+		});
+	hlayout->addWidget(button);
+
+	docvlayout->addLayout(hlayout);
+
+	button->setIcon(QIcon::fromTheme("window-close"));
+	helpdialog.setLayout(docvlayout);
+	helpdialog.setWindowTitle(QString("%1 Help").arg(PACKAGE_NAME));
+	helpdialog.resize(880,660);
+	helpdialog.setModal(true);
+	helpdialog.exec();
 }

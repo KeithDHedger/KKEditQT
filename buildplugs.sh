@@ -27,8 +27,9 @@ export LOCAL=${LOCAL:-0}
 
 INSTALLTO="$2"
 #export MAXJOBS=$(( ( $(nproc) -3 ) /3 ))
-export MAXJOBS=${MAXJOBS:-1}
 
+MAXJOBS=${MAXJOBS:-1}
+export MAXJOBS
 export INSTALLTO
 
 if [[ "$1" = "clean" ]];then
@@ -44,7 +45,7 @@ fi
 
 waitforjobs()
 {
-    while test $(jobs -p | wc -w) -ge "$1"; do wait -n; done
+    while test $(jobs -p | wc -w) -gt "$1"; do wait -n; done
 }
 
 buildPlug ()

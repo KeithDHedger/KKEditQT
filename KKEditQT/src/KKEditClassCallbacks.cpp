@@ -550,6 +550,8 @@ void KKEditClass::doHelpMenuItems(MenuItemClass *mc)
 			 	this->application->aboutQt();
 			 	break;
 			 case HELPMENUITEM:
+			 	//AboutBoxClass	about;
+				//about.showHelp();
 			 	this->showWebPage("Help For " PACKAGE,"file://" DATADIR "/help/index.html");
 			 	break;
 		}

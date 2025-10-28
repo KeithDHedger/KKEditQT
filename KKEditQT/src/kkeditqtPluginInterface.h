@@ -42,7 +42,7 @@
 
 struct plugData;
 
-#include "kkedit-includes.h"
+#include "globalincludes.h"
 
 struct plugData
 {

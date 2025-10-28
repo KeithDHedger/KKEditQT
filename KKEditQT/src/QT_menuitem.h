@@ -21,7 +21,7 @@
 #ifndef _QT_MENUITEM_
 #define _QT_MENUITEM_
 
-#include "kkedit-includes.h"
+#include "globalincludes.h"
 #include <QAction>
 
 //typedef void (*menuCallbackVoid)(Widget* widget,long data);
