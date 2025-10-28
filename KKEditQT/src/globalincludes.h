@@ -80,7 +80,7 @@
 #define NEWADMINMENUNAME "newadminmenu"
 
 #define NEWEDITORMENUNAME "neweditormenu"
-#define MANEDITORMENUNAME "maneditormenu"
+#define MANEDITORMENUNAME "maneditormenuqt"
 #define DOXYBUILDMENUNAME "doxybuildmenu"
 #define DOCSETBUILDMENUNAME "dosetbuildmenu"
 #define RECENTMENUNAME "recentmenu"

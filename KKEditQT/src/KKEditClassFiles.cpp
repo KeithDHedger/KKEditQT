@@ -331,7 +331,7 @@ void KKEditClass::newEditor(int what)
 				break;
 			case MANPAGEEDMENUITEM:
 				if(this->gotManEditor==0)
-					QProcess::startDetached("manpageeditor",QStringList());
+					QProcess::startDetached("manpageeditorqt",QStringList());
 				break;
 		}
 }

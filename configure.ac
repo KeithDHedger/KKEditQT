@@ -119,11 +119,11 @@ if test $QTSU = false; then
 	AC_MSG_NOTICE([https://github.com/KeithDHedger/QtSu])
 fi
 
-AC_CHECK_PROG(MANPAGEEDITOR, manpageeditor ,true,false)
-if test $MANPAGEEDITOR = false; then
-	AC_MSG_NOTICE([No Manpage Editor program found!])
+AC_CHECK_PROG(MANPAGEEDITORQT, manpageeditorqt ,true,false)
+if test $MANPAGEEDITORQT = false; then
+	AC_MSG_NOTICE([No Manpage Editor QT program found!])
 	AC_MSG_NOTICE([You can download it from here:])
-	AC_MSG_NOTICE([https://github.com/KeithDHedger/ManPageEditor])
+	AC_MSG_NOTICE([https://github.com/KeithDHedger/ManPageEditorQT])
 fi
 
 AC_CONFIG_FILES(Makefile KKEditQT/app/Makefile KKEditQT/helpers/Makefile)

@@ -914,9 +914,9 @@ void KKEditClass::buildMainGui(void)
 //extras
 	menuItemSink=this->makeMenuItemClass(FILEMENU,"New Admin Editor",0,DATADIR"/pixmaps/ROOTKKEditQT.png",NEWADMINMENUNAME,NEWADMINEDMENUITEM);
 	menuItemSink=this->makeMenuItemClass(FILEMENU,"New Editor",0,DATADIR"/pixmaps/MenuKKEditQT.png",NEWEDITORMENUNAME,NEWEDMENUITEM);
-	
+
 	if(gotManEditor==0)
-		menuItemSink=this->makeMenuItemClass(FILEMENU,"Manpage Editor",0,DATADIR"/pixmaps/ManPageEditor.png",MANEDITORMENUNAME,MANPAGEEDMENUITEM);
+		menuItemSink=this->makeMenuItemClass(FILEMENU,"Manpage Editor QT",0,DATADIR"/pixmaps/ManPageEditorQT.png",MANEDITORMENUNAME,MANPAGEEDMENUITEM);
 
 //doxy
 	if(gotDoxygen==0)

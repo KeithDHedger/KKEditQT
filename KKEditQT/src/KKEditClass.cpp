@@ -401,7 +401,7 @@ void KKEditClass::initApp(int argc,char** argv)
 
 //qDebug()<<this->tmpFolderName;
 	this->gotDoxygen=QProcess::execute("sh",QStringList()<<"-c"<<"which doxygen 2>&1 >/dev/null");
-	this->gotManEditor=QProcess::execute("sh",QStringList()<<"-c"<<"which manpageeditor 2>&1 >/dev/null");
+	this->gotManEditor=QProcess::execute("sh",QStringList()<<"-c"<<"which manpageeditorqt 2>&1 >/dev/null");
 	this->gotPDFToText=QProcess::execute("sh",QStringList()<<"-c"<<"which pdftotext 2>&1 >/dev/null");
 	this->gotPDFCrop=QProcess::execute("sh",QStringList()<<"-c"<<"which pdfcrop 2>&1 >/dev/null");
 
