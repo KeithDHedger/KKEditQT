@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([KKEditQT],[1.6.2],[PROJ],[KKEditQT])
+AC_INIT([KKEditQT],[1.6.3],[PROJ],[KKEditQT])
 
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_CXX
@@ -46,7 +46,7 @@ AC_MSG_NOTICE([Using Qt6])
 AC_MSG_CHECKING(whether to build doc viewer)
 AC_ARG_ENABLE(docviewer,AS_HELP_STRING([--enable-docviewer],[Build the Doc viewer]),
     [enable_docviewer=$enableval],
-    [enable_docviewer="yes"])
+    [enable_docviewer="no"])
 AC_MSG_RESULT($enable_docviewer)
 
 if test "$enable_docviewer" = "yes"; then

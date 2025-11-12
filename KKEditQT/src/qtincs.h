@@ -1,0 +1,89 @@
+#ifndef _QTINCS_
+#define _QTINCS_
+
+#include "config.h"
+
+#ifdef _BUILDDOCVIEWER_
+#include <QWebEngineView>
+#include <QWebEngineSettings>
+#ifdef _USEQT6_
+#include <QWebEngineContextMenuRequest>
+#else
+#include <QWebEngineContextMenuData>
+#endif
+#endif
+
+#ifdef _ASPELL_
+#include <aspell.h>
+#endif
+
+#include <QAction>
+#include <QApplication>
+#include <QComboBox>
+#include <QCompleter>
+#include <QDeadlineTimer>
+#include <QDebug>
+#include <QGuiApplication>
+#include <QInputDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListView>
+#include <QMap>
+#include <QMessageBox>
+#include <QMimeDatabase>
+#include <QObject>
+#include <QPlainTextEdit>
+#include <QPrintDialog>
+#include <QPrintPreviewDialog>
+#include <QPrinter>
+#include <QProxyStyle>
+#include <QPushButton>
+#include <QSettings>
+#include <QStandardItemModel>
+#include <QStorageInfo>
+#include <QStringList>
+#include <QStringListModel>
+#include <QSyntaxHighlighter>
+#include <QTabWidget>
+#include <QTextCharFormat>
+#include <QTextDocument>
+#include <QTextFormat>
+#include <QTimer>
+#include <QVBoxLayout>
+#include <QVariant>
+#include <QWidget>
+#include <QtCore>
+#include <QtPlugin>
+#include <QtWidgets>
+
+#include <X11/Xatom.h>
+#include <X11/Xlib.h>
+#include <algorithm>
+#include <dirent.h>
+#include <fcntl.h>
+#include <fstream>
+#include <ftw.h>
+#include <functional>
+#include <iostream>
+#include <libgen.h>
+#include <linux/limits.h>
+#include <map>
+#include <semaphore.h>
+#include <signal.h>
+#include <sqlite3.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <string>
+#include <sys/ioctl.h>
+#include <sys/ipc.h>
+#include <sys/mman.h>
+#include <sys/msg.h>
+#include <sys/shm.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
+#include <vector>
+
+#endif

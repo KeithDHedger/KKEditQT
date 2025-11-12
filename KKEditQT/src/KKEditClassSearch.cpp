@@ -18,6 +18,8 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "QT_notebook.h"
+#include "QT_document.h"
 #include "KKEditClass.h"
 
 void KKEditClass::doFindButton(QPushButton *btn)

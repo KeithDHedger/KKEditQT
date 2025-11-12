@@ -18,7 +18,10 @@
  * along with ManPageEditorQT.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "qtincs.h"
 #include "QT_AboutBox.h"
+
+#define MARGINS 4
 
 void AboutBoxClass::setAuthors(QString authors)
 {

@@ -21,14 +21,7 @@
 #ifndef _UTILITYCLASS_
 #define _UTILITYCLASS_
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string>
-#include <vector>
-#include <map>
-#include <algorithm>
-#include <fstream>
-#include <iostream>
+#include "qtincs.h"
 
 class LFSTK_UtilityClass
 {

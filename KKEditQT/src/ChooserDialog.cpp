@@ -22,6 +22,7 @@
 
 chooserDialogClass::~chooserDialogClass()
 {
+	delete this->gFind;
 }
 
 void chooserDialogClass::setShowImagesInList(bool show)
@@ -93,33 +94,33 @@ void chooserDialogClass::setFileList(void)
 	QStandardItem	*item;
 
 	this->fileListModel->clear();
-	this->gFind.LFSTK_setIncludeHidden(this->showHidden);
-	this->gFind.LFSTK_findFiles(this->localWD.toStdString().c_str());
-	this->gFind.LFSTK_sortByTypeAndName();
+	this->gFind->LFSTK_setIncludeHidden(this->showHidden);
+	this->gFind->LFSTK_findFiles(this->localWD.toStdString().c_str());
+	this->gFind->LFSTK_sortByTypeAndName();
 
-	for(int j=0;j<gFind.LFSTK_getDataCount();j++)
+	for(int j=0;j<gFind->LFSTK_getDataCount();j++)
 		{
-			if((gFind.data.at(j).fileType==FILELINKTYPE) || (gFind.data.at(j).fileType==FOLDERLINKTYPE))
+			if((gFind->data.at(j).fileType==FILELINKTYPE) || (gFind->data.at(j).fileType==FOLDERLINKTYPE))
 				{
-					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind.data.at(j).name.c_str()),QString("->%1").arg(gFind.data.at(j).name.c_str()));
+					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind->data.at(j).name.c_str()),QString("->%1").arg(gFind->data.at(j).name.c_str()));
 					item->setFont(QFont(item->font().family(),-1,QFont::Bold));
 				}
-			else if(gFind.data.at(j).fileType==BROKENLINKTYPE)
+			else if(gFind->data.at(j).fileType==BROKENLINKTYPE)
 				{
-					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind.data.at(j).name.c_str()),QString("%1 - Broken Link").arg(gFind.data.at(j).name.c_str()));
+					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind->data.at(j).name.c_str()),QString("%1 - Broken Link").arg(gFind->data.at(j).name.c_str()));
 					item->setFont(QFont(item->font().family(),-1,QFont::Bold));
 				}
 			else
 				{
-					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind.data.at(j).name.c_str()),gFind.data.at(j).name.c_str());
+					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind->data.at(j).name.c_str()),gFind->data.at(j).name.c_str());
 				}
-			if((gFind.data.at(j).fileType==FOLDERTYPE) || (gFind.data.at(j).fileType==FOLDERLINKTYPE))
+			if((gFind->data.at(j).fileType==FOLDERTYPE) || (gFind->data.at(j).fileType==FOLDERLINKTYPE))
 				item->setDragEnabled(true);
 			else
 				item->setDragEnabled(false);
 			
-			item->setData(gFind.data.at(j).name.c_str(),Qt::UserRole);
-			item->setStatusTip(this->localWD+"/"+gFind.data.at(j).name.c_str());
+			item->setData(gFind->data.at(j).name.c_str(),Qt::UserRole);
+			item->setStatusTip(this->localWD+"/"+gFind->data.at(j).name.c_str());
 			this->fileListModel->appendRow(item);
 		}
 	this->fileList.scrollToTop();
@@ -627,9 +628,9 @@ void chooserDialogClass::buildMainGui(void)
 	QObject::connect(&this->fileTypes,&QComboBox::currentTextChanged,[this](const QString &text)
 		{
 			if(text.compare("All Files")==0)
-				this->gFind.LFSTK_setFileTypes("");
+				this->gFind->LFSTK_setFileTypes("");
 			else
-				this->gFind.LFSTK_setFileTypes(text.toStdString());
+				this->gFind->LFSTK_setFileTypes(text.toStdString());
 			this->setFileList();
 		});
 
@@ -758,6 +759,8 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 	QDir			folders("/");
 	QString		command;
 	QRect		r;
+
+	this->gFind=new LFSTK_findClass;
 
 	this->recentFoldersPath=QString("%1/.config/KDHedger/recentfolders").arg(QDir::homePath());
 	this->recentFilesPath=QString("%1/.config/KDHedger/recentfiles").arg(QDir::homePath());

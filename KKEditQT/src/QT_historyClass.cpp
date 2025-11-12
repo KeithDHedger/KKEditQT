@@ -18,6 +18,7 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
  
+#include "QT_document.h"
 #include "QT_historyClass.h"
 
 HistoryClass::~HistoryClass()

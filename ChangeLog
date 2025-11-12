@@ -1,4 +1,10 @@
+1.6.3
+When the Doc Viewer is disabled api's etc are viewed in a QTextBrowser that displays a subset of HTML ( doxydocs don't display well yet ). 
+Doc viewer now disabled by default.
+Cleaned up includes.
+
 1.6.2
+Includes clean up.
 Updated HTML tag plugin.
 Updated 'Help'
 Tidied up includes.

@@ -18,9 +18,6 @@
  * along with LFSToolKit.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <dirent.h>
-#include <libgen.h>
-
 #include "LFSTKFindClass.h"
 
 LFSTK_findClass *fc;

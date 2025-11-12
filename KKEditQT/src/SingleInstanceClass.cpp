@@ -18,7 +18,6 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "globalincludes.h"
 #include "SingleInstanceClass.h"
 
 void* SingleInstanceClass::getX11Prop(Display	*display,Window w,Atom prop,Atom type,int fmt,unsigned long *rcountp)

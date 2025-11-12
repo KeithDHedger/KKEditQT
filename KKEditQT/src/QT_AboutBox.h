@@ -21,7 +21,6 @@
 #ifndef _QT_ABOUTBOX_
 #define _QT_ABOUTBOX_
 
-#include "globalincludes.h"
 #include "internet.h"
 
 class AboutBoxClass : public QObject

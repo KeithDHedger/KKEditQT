@@ -22,7 +22,6 @@
 #ifndef _QT_THEMECLASS_
 #define _QT_THEMECLASS_
 
-#include "KKEditClass.h"
 #include "PluginCommon.h"
 
 class ThemeClass : public QObject

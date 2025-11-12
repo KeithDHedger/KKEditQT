@@ -1,6 +1,6 @@
 TEMPLATE        = lib
 CONFIG         += plugin
-QT             += gui core
+QT             += gui core 
 HEADERS         = gtk2toolkit.h
 SOURCES         = gtk2toolkit.cpp
 TARGET          = $$qtLibraryTarget(gtk2toolkit)

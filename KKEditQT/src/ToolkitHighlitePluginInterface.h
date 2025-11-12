@@ -21,11 +21,13 @@
 #ifndef TOOLKITHIGHLITEPLUGININTERFACE_H
 #define TOOLKITHIGHLITEPLUGININTERFACE_H
 
-#include <QtCore>
-#include <QTextFormat>
+#include <QObject>
+#include <QString>
+#include <QMap>
+#include <QTextCharFormat>
+#include <QRegularExpression>
 
 #include "PluginCommon.h"
-
 
 class ToolkitHighlitePluginInterface
 {
@@ -41,12 +43,8 @@ class ToolkitHighlitePluginInterface
 		virtual void		setToolkitRules(QVector<highLightingRule> *rules)=0;
 };
 
-QT_BEGIN_NAMESPACE
-
 #define ToolkitHighlitePluginInterface_iid "org.KKEditQT.ToolkitHighlitePluginInterface"
-
 Q_DECLARE_INTERFACE(ToolkitHighlitePluginInterface,ToolkitHighlitePluginInterface_iid)
-QT_END_NAMESPACE
 
 #endif
 

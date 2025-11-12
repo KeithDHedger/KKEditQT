@@ -18,6 +18,10 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "QT_notebook.h"
+#include "QT_historyClass.h"
+#include "tagClass.h"
+#include "QT_document.h"
 #include "KKEditClass.h"
 
 DocumentClass* KKEditClass::getDocumentForTab(int tabnum)

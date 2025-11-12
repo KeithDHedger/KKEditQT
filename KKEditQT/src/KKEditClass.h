@@ -23,6 +23,15 @@
 
 #include "globalincludes.h"
 
+class docBrowserClass;
+class ProxyStyle;
+class ThemeClass;
+class NoteBookClass;
+class MenuItemClass;
+class RecentMenuClass;
+class HistoryClass;
+class ToolBarClass;
+
 class KKEditClass : public QObject
 {
 	public:
@@ -345,6 +354,10 @@ class KKEditClass : public QObject
 		bool							docviewerVisible=false;
 		MenuItemClass				*toggleDocViewMenuItem;
 		QAction						*openInNewTab=NULL;
+#else
+		docBrowserClass				*docView=NULL;
+		bool							docviewerVisible=false;
+		MenuItemClass				*toggleDocViewMenuItem;
 //docviewer functions
 #endif
 		void							buildDocViewer(void);

@@ -1,56 +1,9 @@
 #ifndef _GLOBALINCS_
 #define _GLOBALINCS_
 
-#include "config.h"
+#include "qtincs.h"
 
-#include <QApplication>
-#include <QtWidgets>
-#include <QSettings>
-#include <QPrintDialog>
-#include <QPrinter>
-#include <QPrintPreviewDialog>
-#include <QCompleter>
-#include <QObject>
-#include <QtPlugin>
-#include <QWebEngineSettings>
-#include <QProxyStyle>
-
-#include <fcntl.h>
-#include <libgen.h>
-#include <linux/limits.h>
-#include <map>
-#include <semaphore.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <string>
-#include <sys/ioctl.h>
-#include <sys/ipc.h>
-#include <sys/mman.h>
-#include <sys/msg.h>
-#include <sys/shm.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <time.h>
-#include <unistd.h>
-#include <vector>
-
-#include <sqlite3.h>
-
-#ifdef _USEQT6_
-#include <QWebEngineContextMenuRequest>
-#else
-#include <QWebEngineContextMenuData>
-#endif
-
-#ifdef _ASPELL_
-#include <aspell.h>
-#endif
-
-#ifdef _BUILDDOCVIEWER_
-#include <QWebEngineView>
-#endif
+struct pluginStruct;
 
 #define MAXMSGSIZE 4096
 #define MSGKEY 0x8000
@@ -218,6 +171,12 @@ enum {HIDETABSHORTCUT=0,DELETELINESHORTCUT,DELETETOEOLSHORTCUT,DELETETOSOLSHORTC
 
 enum {FRCASE=0,FRUSEREGEX,FRREPLACEFIND,FRWRAP,FRALLFILES,FRHIGHLIGHTALL,FRREPLACEALL,FRSEARCHBACK,FRMAXSWITCHES};
 
+struct miniPrefsReturnStruct
+{
+	QDialog					*theDialog;
+	QHash<int,QLineEdit*>	boxes;
+};
+
 class KKEditClass;
 class DocumentClass;
 
@@ -323,34 +282,5 @@ struct pluginStruct
 		};
 #endif
 };
-
-struct miniPrefsReturnStruct
-{
-	QDialog					*theDialog;
-	QHash<int,QLineEdit*>	boxes;
-};
-
-class ProxyStyle;
-class ThemeClass;
-class TabColours;
-class NoteBookClass;
-class MenuItemClass;
-class RecentMenuClass;
-class HistoryClass;
-class ToolBarClass;
-class kkEditQTPluginInterface;
-
-#include "QT_document.h"
-#include "tagClass.h"
-#include "QT_ProxyStyle.h"
-#include "ChooserDialog.h"
-#include "QT_themeClass.h"
-#include "QT_AboutBox.h"
-#include "QT_menuitem.h"
-#include "QT_historyClass.h"
-#include "QT_recentMenu.h"
-#include "QT_highlighter.h"
-#include "QT_toolbar.h"
-#include "QT_notebook.h"
 
 #endif

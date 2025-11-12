@@ -21,8 +21,11 @@
 #ifndef SYNTAXHIGHLITEPLUGININTERFACE_H
 #define SYNTAXHIGHLITEPLUGININTERFACE_H
 
-#include <QtCore>
-#include <QTextFormat>
+#include <QObject>
+#include <QString>
+#include <QMap>
+#include <QTextCharFormat>
+#include <QRegularExpression>
 
 #include "PluginCommon.h"
 
@@ -45,12 +48,8 @@ class SyntaxHighlitePluginInterface
 		virtual void		runCustomRule(QString text,highLightingRule *hr)=0;
 };
 
-QT_BEGIN_NAMESPACE
-
 #define SyntaxHighlitePluginInterface_iid "org.KKEditQT.SyntaxHighlitePluginInterface"
-
 Q_DECLARE_INTERFACE(SyntaxHighlitePluginInterface, SyntaxHighlitePluginInterface_iid)
-QT_END_NAMESPACE
 
 #endif
 

@@ -21,15 +21,11 @@
 #ifndef HIGHLIGHTER_H
 #define HIGHLIGHTER_H
 
-#include <QSyntaxHighlighter>
-#include <QTextCharFormat>
-#include <QPlainTextEdit>
-
 #include "SyntaxHighlitePluginInterface.h"
 #include "ToolkitHighlitePluginInterface.h"
-#include "config.h"
+//#include "config.h"
 
-#include "KKEditClass.h"
+//#include "KKEditClass.h"
 class KKEditClass;
 
 struct langPluginStruct
@@ -40,15 +36,11 @@ struct langPluginStruct
 	QString							langName="";
 	QString							plugVersion="";
 	QString							mimeType="";
-	SyntaxHighlitePluginInterface	*instance=NULL;
+	SyntaxHighlitePluginInterface		*instance=NULL;
 	ToolkitHighlitePluginInterface	*instanceTK=NULL;
 	bool								loaded=false;
 	bool								broken=false;
 };
-
-QT_BEGIN_NAMESPACE
-class QTextDocument;
-QT_END_NAMESPACE
 
 class Highlighter : public QSyntaxHighlighter
 {

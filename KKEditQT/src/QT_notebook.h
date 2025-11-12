@@ -21,9 +21,6 @@
 #ifndef _QT_NOTEBOOK_
 #define _QT_NOTEBOOK_
 
-class KKEditClass;
-class TabColours;
-
 #include "KKEditClass.h"
 
 #define LEFTSCROLLBUTTON 1

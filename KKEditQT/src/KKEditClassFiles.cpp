@@ -18,7 +18,13 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "QT_notebook.h"
+#include "QT_recentMenu.h"
+#include "QT_menuitem.h"
+#include "QT_document.h"
+#include "QT_highlighter.h"
 #include "KKEditClass.h"
+#include "ChooserDialog.h"
 
 void KKEditClass::runPipeAndCaptureToToolOP(QString command)
 {
@@ -67,9 +73,9 @@ void KKEditClass::openAsHexDump(void)
 	chooserDialogClass	chooser(chooserDialogType::loadDialog);
 
 	chooser.setMultipleSelect(true);
-	chooser.gFind.LFSTK_sortByTypeAndName();
+	chooser.gFind->LFSTK_sortByTypeAndName();
 	chooser.setShowImagesInList(false);
-	chooser.gFind.LFSTK_setIgnoreBroken(true);
+	chooser.gFind->LFSTK_setIgnoreBroken(true);
 	chooser.addFileTypes("All Files");
 	chooser.dialogWindow.exec();
 	if(chooser.valid==false)
@@ -160,8 +166,8 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 				dialogpath=doc->getFilePath();
 
 			chooserDialogClass	chooser(chooserDialogType::saveDialog,doc->getFileName());
-			chooser.gFind.LFSTK_sortByTypeAndName();
-			chooser.gFind.LFSTK_setIgnoreBroken(true);
+			chooser.gFind->LFSTK_sortByTypeAndName();
+			chooser.gFind->LFSTK_setIgnoreBroken(true);
 			chooser.setShowImagesInList(false);
 			chooser.addFileTypes(".cpp;.c;.h;.hpp;.m;.mm;.py;.go;.java;.js;.rb;.sh;.rs;.tcl;.pl");
 			chooser.addFileTypes(".html;.xml;.css;.php;.pro;.in;.am;.m4;.md;.ac;.json;.class;.sql");

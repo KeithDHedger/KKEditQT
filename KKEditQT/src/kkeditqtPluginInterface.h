@@ -43,6 +43,10 @@
 struct plugData;
 
 #include "globalincludes.h"
+#include "internet.h"
+#include "QT_document.h"
+#include "QT_notebook.h"
+#include "KKEditClass.h"
 
 struct plugData
 {
@@ -139,12 +143,8 @@ class kkEditQTPluginInterface
 		virtual unsigned int	plugWants(void)=0;
 };
 
-QT_BEGIN_NAMESPACE
-
 #define kkEditQTPluginInterface_iid "org.KKEditQT.kkEditQTPluginInterface"
-
 Q_DECLARE_INTERFACE(kkEditQTPluginInterface, kkEditQTPluginInterface_iid)
-QT_END_NAMESPACE
 
 #endif
 

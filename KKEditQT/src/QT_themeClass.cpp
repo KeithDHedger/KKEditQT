@@ -18,6 +18,8 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "QT_notebook.h"
+#include "globalincludes.h"
 #include "QT_themeClass.h"
 
 ThemeClass::ThemeClass(KKEditClass *kk)
@@ -32,13 +34,15 @@ ThemeClass::~ThemeClass()
 
 void ThemeClass::loadTheme(QString themename)
 {
-	int				cnt;
     QVariantMap		mainmap;
 	QVariantMap		map;
  	QVariantList		locallist;
 	QJsonDocument	doc;
 	QJsonParseError	errorPtr;
 	QByteArray		data;
+
+	int				cnt;
+	bool				retval;
 
 	this->currentTheme="default";
 
@@ -53,9 +57,12 @@ void ThemeClass::loadTheme(QString themename)
 
 	QFile			inFile(this->currentTheme);
 
-    inFile.open(QIODevice::ReadOnly|QIODevice::Text);
-    data=inFile.readAll();
-    inFile.close();
+    retval=inFile.open(QIODevice::ReadOnly|QIODevice::Text);
+    if(retval==true)
+		{
+		    data=inFile.readAll();
+		    inFile.close();
+		 }
 
     doc=QJsonDocument::fromJson(data,&errorPtr);
 	if(doc.isNull())

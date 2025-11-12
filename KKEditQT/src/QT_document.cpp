@@ -18,6 +18,10 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "QT_notebook.h"
+#include "QT_menuitem.h"
+#include "QT_themeClass.h"
+#include "QT_highlighter.h"
 #include "QT_document.h"
 
 int DocumentClass::getCurrentLineNumber(void)

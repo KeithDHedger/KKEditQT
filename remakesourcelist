@@ -8,6 +8,16 @@ else
 	./setuptools
 fi
 
+if [[ $RECOMPILEHEADER -eq 1 ]];then
+	pushd KKEditQT/src
+		echo "Compiling headers ..."
+		#echo g++ -c $(pkg-config --cflags Qt${USEQTVERSION}Core Qt${USEQTVERSION}Widgets Qt${USEQTVERSION}Gui Qt${USEQTVERSION}PrintSupport Qt${USEQTVERSION}WebEngineWidgets sqlite3) -fPIC -x  c++-header qtincs.h -o qtincs.h.gch
+		echo g++ -c $(pkg-config --cflags Qt${USEQTVERSION}Core Qt${USEQTVERSION}Widgets Qt${USEQTVERSION}Gui Qt${USEQTVERSION}PrintSupport sqlite3) -fPIC -x  c++-header qtincs.h -o qtincs.h.gch
+		#g++ -c $(pkg-config --cflags Qt${USEQTVERSION}Core Qt${USEQTVERSION}Widgets Qt${USEQTVERSION}Gui  Qt${USEQTVERSION}PrintSupport Qt${USEQTVERSION}WebEngineWidgets sqlite3) -fPIC -x  c++-header qtincs.h -o qtincs.h.gch
+		g++ -c $(pkg-config --cflags Qt${USEQTVERSION}Core Qt${USEQTVERSION}Widgets Qt${USEQTVERSION}Gui  Qt${USEQTVERSION}PrintSupport sqlite3) -fPIC -x  c++-header qtincs.h -o qtincs.h.gch
+	popd
+fi
+
 cd "KKEditQT/src"
 
 csrclst=$(echo "../src/*.c" "../src/*.cpp")

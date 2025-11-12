@@ -18,6 +18,7 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "QT_menuitem.h"
 #include "KKEditClass.h"
 
 void KKEditClass::rebuildToolsMenu(void)

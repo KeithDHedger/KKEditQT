@@ -18,7 +18,17 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "docBrowser.h"
+#include "QT_notebook.h"
+#include "QT_toolbar.h"
+#include "QT_recentMenu.h"
+#include "QT_menuitem.h"
+#include "tagClass.h"
+#include "QT_document.h"
+#include "QT_themeClass.h"
+#include "QT_highlighter.h"
 #include "KKEditClass.h"
+#include "ChooserDialog.h"
 
 void KKEditClass::makePrefsDial(int widgnum,const QString label,int value,int minvalue,int maxvalue,int posy)
 {
@@ -1110,6 +1120,9 @@ void KKEditClass::buildMainGui(void)
 	this->toggleDocViewMenuItem=this->makeMenuItemClass(VIEWMENU,"Show Docviewer",0,NULL,SHOWDOCVIEWERMENUNAME,TOGGLEDOCVIEWMENUITEM);
 //docviewer to front
 	menuItemSink=this->makeMenuItemClass(VIEWMENU,"Raise Docviewer",0,NULL,RAISEDOCVIEWERMENUNAME,RAISEDOCVIEWMENUITEM);
+#else
+	this->toggleDocViewMenuItem=this->makeMenuItemClass(VIEWMENU,"Show Docviewer",0,NULL,SHOWDOCVIEWERMENUNAME,TOGGLEDOCVIEWMENUITEM);
+	menuItemSink=this->makeMenuItemClass(VIEWMENU,"Raise Docviewer",0,NULL,RAISEDOCVIEWERMENUNAME,RAISEDOCVIEWMENUITEM);
 #endif
 
 	this->viewMenu->addSeparator();
@@ -1610,8 +1623,8 @@ bool KKEditClass::openFileDialog(void)
 	int					ci=this->mainNotebook->currentIndex()+1;
 
 	chooser.setMultipleSelect(true);
-	chooser.gFind.LFSTK_sortByTypeAndName();
-	chooser.gFind.LFSTK_setIgnoreBroken(true);
+	chooser.gFind->LFSTK_sortByTypeAndName();
+	chooser.gFind->LFSTK_setIgnoreBroken(true);
 	chooser.setShowImagesInList(false);
 	chooser.addFileTypes(".cpp;.c;.h;.hpp;.m;.mm;.py;.go;.java;.js;.rb;.sh;.rs;.tcl;.pl");
 	chooser.addFileTypes(".html;.xml;.css;.php;.pro;.in;.am;.m4;.md;.ac;.json;.class;.sql");
@@ -1791,6 +1804,8 @@ void KKEditClass::buildDocViewer(void)
 	docvlayout->addSpacing(6);
 
 	this->docView->hide();
+#else
+	this->docView=new docBrowserClass(this);
 #endif
 }
 

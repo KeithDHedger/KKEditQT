@@ -18,7 +18,18 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "docBrowser.h"
+#include "QT_notebook.h"
+#include "QT_toolbar.h"
+#include "QT_recentMenu.h"
+#include "QT_historyClass.h"
+#include "QT_menuitem.h"
+#include "QT_document.h"
+#include "QT_ProxyStyle.h"
+#include "QT_themeClass.h"
+#include "QT_highlighter.h"
 #include "KKEditClass.h"
+#include "ChooserDialog.h"
 
 static const char			*replacementShorts[]={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"};
 static const QStringList		reservedShortcutKeys={"Ctrl+Shift+C","Ctrl+Shift+V"};
@@ -28,7 +39,6 @@ KKEditClass::KKEditClass(QApplication *app)
 	this->application=app;
 	this->history=new HistoryClass(this);
 	this->fileWatch=new QFileSystemWatcher(this);
-
 }
 
 KKEditClass::~KKEditClass()
@@ -60,6 +70,18 @@ KKEditClass::~KKEditClass()
 	system(QString("rmdir %1 2>/dev/null").arg(this->tmpFolderName).toStdString().c_str());
 #ifdef _BUILDDOCVIEWER_
 	delete this->webEngView;
+#else
+	QSettings	prefs;
+	QRect		rg;
+	QRect		rf;
+
+	rg=this->docView->winWidget->geometry();
+	rf=this->docView->winWidget->frameGeometry();
+	rf.setHeight(rf.height()-(rf.height()-rg.height()));
+	rf.setWidth(rf.width()-(rf.width()-rg.width()));
+	prefs.setValue("docClassDocWindow/geometry",rf);
+	this->docView->winWidget->hide();
+	delete this->docView;
 #endif
 }
 
@@ -442,6 +464,8 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->loadPlugins();
 
 #ifdef _BUILDDOCVIEWER_
+	this->buildDocViewer();
+#else
 	this->buildDocViewer();
 #endif
 
@@ -1506,6 +1530,17 @@ void KKEditClass::setDocMenu(void)
 			this->toggleDocViewMenuItem->setText("Show Docviewer");
 			this->docviewerVisible=false;
 		}
+#else
+	if(this->docView->winWidget->isVisible()==true)//ugly hack!!//
+		{
+			this->toggleDocViewMenuItem->setText("Hide Docviewer");
+			this->docviewerVisible=true;
+		}
+	else
+		{
+			this->toggleDocViewMenuItem->setText("Show Docviewer");
+			this->docviewerVisible=false;
+		}
 #endif
 }
 
@@ -1523,7 +1558,9 @@ void KKEditClass::showWebPage(QString windowtitle,QString url)
 	this->docView->raise();
 
 #else
-	QDesktopServices::openUrl(QUrl(url));
+	this->docView->windowTitle=windowtitle;
+	this->docView->createNewWindow(url);
+//	QDesktopServices::openUrl(QUrl(url));
 #endif
 }
 

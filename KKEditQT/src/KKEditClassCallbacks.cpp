@@ -18,7 +18,18 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "docBrowser.h"
+#include "QT_notebook.h"
+#include "QT_toolbar.h"
+#include "QT_recentMenu.h"
+#include "QT_historyClass.h"
+#include "QT_menuitem.h"
+#include "QT_document.h"
+#include "QT_themeClass.h"
+#include "QT_highlighter.h"
 #include "KKEditClass.h"
+#include "QT_AboutBox.h"
+#include "ChooserDialog.h"
 
 void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 {
@@ -651,6 +662,19 @@ void KKEditClass::doViewMenuItems(MenuItemClass *mc)
 						this->toggleDocViewMenuItem->setText("Show Docviewer");
 						this->docView->hide();
 					}
+#else
+				this->docviewerVisible=!this->docviewerVisible;
+				if(this->docviewerVisible)
+					{
+						this->toggleDocViewMenuItem->setText("Hide Docviewer");
+						this->docView->winWidget->show();
+						this->docView->winWidget->activateWindow();
+					}
+				else
+					{
+						this->toggleDocViewMenuItem->setText("Show Docviewer");
+						this->docView->winWidget->hide();
+					}
 #endif
 				break;
 
@@ -660,6 +684,11 @@ void KKEditClass::doViewMenuItems(MenuItemClass *mc)
 				this->toggleDocViewMenuItem->setText("Hide Docviewer");
 				this->docView->show();
 				this->docView->activateWindow();
+#else
+				this->docviewerVisible=true;
+				this->toggleDocViewMenuItem->setText("Hide Docviewer");
+				this->docView->winWidget->show();
+				this->docView->winWidget->activateWindow();
 #endif
 				break;
 
@@ -941,8 +970,8 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 					chooserDialogClass	chooser(chooserDialogType::saveDialog,QString("%1.pdf").arg(doc->getFileName()));
 
 					chooser.setMultipleSelect(false);
-					chooser.gFind.LFSTK_sortByTypeAndName();
-					chooser.gFind.LFSTK_setIgnoreBroken(true);
+					chooser.gFind->LFSTK_sortByTypeAndName();
+					chooser.gFind->LFSTK_setIgnoreBroken(true);
 					chooser.setShowImagesInList(false);
 					chooser.addFileTypes(".pdf");
 					chooser.addFileTypes("All Files");
@@ -982,8 +1011,8 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 					chooserDialogClass	chooser(chooserDialogType::loadDialog);
 
 					chooser.setMultipleSelect(false);
-					chooser.gFind.LFSTK_sortByTypeAndName();
-					chooser.gFind.LFSTK_setIgnoreBroken(true);
+					chooser.gFind->LFSTK_sortByTypeAndName();
+					chooser.gFind->LFSTK_setIgnoreBroken(true);
 					chooser.setShowImagesInList(false);
 					chooser.addFileTypes(".pdf");
 					chooser.addFileTypes("All Files");

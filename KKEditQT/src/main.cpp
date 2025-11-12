@@ -19,6 +19,7 @@
  */
 
 #include "globalincludes.h"
+#include "KKEditClass.h"
 #include "SingleInstanceClass.h"
 
 KKEditClass	*kkedit=NULL;

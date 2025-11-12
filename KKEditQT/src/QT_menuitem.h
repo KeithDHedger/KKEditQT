@@ -22,11 +22,6 @@
 #define _QT_MENUITEM_
 
 #include "globalincludes.h"
-#include <QAction>
-
-//typedef void (*menuCallbackVoid)(Widget* widget,long data);
-//typedef bool (*menuCallbackBool)(Widget* widget,long data);
-
 
 class MenuItemClass : public QAction
 {

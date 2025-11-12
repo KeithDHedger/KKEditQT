@@ -18,6 +18,7 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "QT_menuitem.h"
 #include "KKEditClass.h"
 
 MenuItemClass* KKEditClass::makeMenuItemClass(int mainmenu,const QString name,const QKeySequence key,const QString iconname,const QString objectname,int userdata)

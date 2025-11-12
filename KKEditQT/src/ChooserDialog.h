@@ -21,29 +21,9 @@
 #ifndef _CHOOSERDIALOG_
 #define _CHOOSERDIALOG_
 
-#include <QWidget>
-#include <QMessageBox>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QStringList>
-#include <QListView>
-#include <QStringListModel>
-#include <QDebug>
-#include <QStorageInfo>
-#include <QVariant>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QComboBox>
-
-#include <QStandardItemModel>
-#include <QMimeDatabase>
-#include <QInputDialog>
-#include <QGuiApplication>
-#include <QSettings>
-#include <QMap>
-
-#include "LFSTKFindClass.h"
+#include "qtincs.h"
 #include "LFSTKUtilityClass.h"
+#include "LFSTKFindClass.h"
 
 #define MAXIMAGESIZETOTHUMB 2000000
 
@@ -63,7 +43,7 @@ class chooserDialogClass
 		QString				realName;
 		QString				realFilePath;
 		QVector<QString>		multiFileList;
-		LFSTK_findClass		gFind;
+		LFSTK_findClass		*gFind;
 		bool					fileExists=false;
 		bool					useMulti=false;
 		bool					valid=true;
@@ -112,4 +92,5 @@ class chooserDialogClass
 		void					setFileData(void);
 		void					setFavs(void);
 };
+
 #endif

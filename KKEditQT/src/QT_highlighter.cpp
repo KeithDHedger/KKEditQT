@@ -18,9 +18,10 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "qtincs.h"
+#include "QT_notebook.h"
+#include "QT_themeClass.h"
 #include "QT_highlighter.h"
-
-#include <QTextDocument>
 
 bool Highlighter::setLanguage(QString lang)
 {

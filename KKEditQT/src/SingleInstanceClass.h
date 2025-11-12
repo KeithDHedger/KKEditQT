@@ -21,8 +21,7 @@
 #ifndef _SINGLEINSTANCECLASS_
 #define _SINGLEINSTANCECLASS_
 
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
+#include "globalincludes.h"
 
 #define SHAREDMEMSIZE 128
 

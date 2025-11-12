@@ -18,19 +18,11 @@
  * along with LFSToolKit.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdio.h>
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <stdlib.h>
-#include <ftw.h>
-#include <functional>
-#include <string.h>
-
-#include "LFSTKUtilityClass.h"
-
 #ifndef _FINDCLASS_
 #define _FINDCLASS_
+
+#include "qtincs.h"
+#include "LFSTKUtilityClass.h"
 
 enum {BROKENLINKTYPE=0,ANYTYPE,FILELINKTYPE,FILETYPE,FOLDERLINKTYPE,FOLDERTYPE};
 
