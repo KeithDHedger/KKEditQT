@@ -71,11 +71,11 @@ while read
 echo "</body>">>"$HTMLFILE"
 echo "</html>">>"$HTMLFILE"
 
-if [[ ${foundcnt} -eq 1 ]];then
-	echo '<!DOCTYPE html>' >"$HTMLFILE"
-	echo '<html>' >>"$HTMLFILE"
-	echo '<head>'>>"$HTMLFILE"
-	echo '<meta http-equiv="refresh" content="0; url='"$holdpath"'" />' >>"$HTMLFILE"
-	echo '</head>' >>"$HTMLFILE"
-	echo '</html>' >>"$HTMLFILE"
-fi
+#if [[ ${foundcnt} -eq 1 ]];then
+#	echo '<!DOCTYPE html>' >"$HTMLFILE"
+#	echo '<html>' >>"$HTMLFILE"
+#	echo '<head>'>>"$HTMLFILE"
+#	echo '<meta http-equiv="refresh" content="0; url='"$holdpath"'" />' >>"$HTMLFILE"
+#	echo '</head>' >>"$HTMLFILE"
+#	echo '</html>' >>"$HTMLFILE"
+#fi
