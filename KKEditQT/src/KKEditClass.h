@@ -48,7 +48,6 @@ class KKEditClass : public QObject
 		QString						htmlURI;
 		QSettings					prefs;
 		int							gotManEditor;
-		int							gotDoxygen;
 		int							gotPDFToText;
 		int							gotPDFCrop;
 
@@ -100,9 +99,6 @@ class KKEditClass : public QObject
 		void							findFile(void);
 		void							buildTools(void);
 		void							showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile);
-		void							buildDocs(void);
-		void							buildDocset(void);
-		void							showDocs(void);
 		void							shutDownApp(void);
 		void							setMouseState(bool mouseon);
 
@@ -362,7 +358,7 @@ class KKEditClass : public QObject
 #endif
 		void							buildDocViewer(void);
 		void							setDocMenu(void);
-		bool							docViewLinkTrap(const QUrl url);
+//		bool							docViewLinkTrap(const QUrl url);
 
 //prefswindow
 //prefswindow vars
@@ -403,10 +399,6 @@ class KKEditClass : public QObject
 //find replace functions
 		void							buildFindReplace(void);
 		void							doFindReplace(int response_id);
-
-//search vars
-//search functions
-		void							searchDoxyDocs(const QString txt);
 
 //plugins
 //plugin menu

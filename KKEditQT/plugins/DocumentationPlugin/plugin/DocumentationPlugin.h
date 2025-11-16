@@ -23,7 +23,14 @@
 
 enum {MENUNAME=0,COMMAND,SHOWITEM,SEARCHALL,SETTINGSCNT};
 
+//#include "../../../../config.h"
 #include "../../../src/kkeditqtPluginInterface.h"
+
+//struct miniPrefsReturnStruct
+//{
+//	QDialog					*theDialog;
+//	QHash<int,QLineEdit*>	boxes;
+//};
 
 class DocumentationPlugin : public QObject, kkEditQTPluginInterface
 {
@@ -45,14 +52,27 @@ class DocumentationPlugin : public QObject, kkEditQTPluginInterface
 		plugData			*data=NULL;
 		DocumentClass	*doc=NULL;
 		QMenu			*apiMenu=NULL;
+		QAction			*doxyMenu=NULL;
+		QAction			*docsetMenu=NULL;
+		QAction			*showDocsMenu=NULL;
 		QString			customCommand="";
 		QAction			*customCommandMenu=NULL;
 		bool				noStatusInfo=true;
 		QStringList		resList;
+		QString			filePath;
+		QString			folderPath;
+		QString			tempFolderPath;
 
-		QString			runPipeAndCapture(QString command);
-		void				runSearch(QString command);
-		void				runAllSearchs(void);
+		QString					runPipeAndCapture(QString command);
+		void						runSearch(QString command);
+		void						runAllSearchs(void);
+		void						buildDocumentation(void);
+		void						buildDocset(void);
+		miniPrefsReturnStruct	miniPrefsDialog(QString prefsname,QStringList items,bool liveupdate=false);
+		void						showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile);
+		void						showDocs(void);
+		void						findInDocs(void);
+		void						searchDoxyDocs(const QString txt);
 };
 
 #endif

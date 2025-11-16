@@ -716,7 +716,7 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	if(this->textCursor().hasSelection()==true)
 		{
 			menuactions=qobject_cast<QMenu*>(this->mainKKEditClass->navMenu)->actions();
-			menu.addAction(menuactions.at(SEARCHDOXYDOCS-GOTODEFINEMENUITEM));
+			menu.addAction(menuactions.at(SEARCHFORDEFINEMENUITEM-GOTODEFINEMENUITEM));
 			menu.addAction(menuactions.at(GOTODEFINEMENUITEM-GOTODEFINEMENUITEM));
 			menu.addSeparator();
 		}

@@ -68,20 +68,13 @@ KKEditClass::~KKEditClass()
 
 	system(QString("rm %1/* 2>/dev/null").arg(this->tmpFolderName).toStdString().c_str());/**/
 	system(QString("rmdir %1 2>/dev/null").arg(this->tmpFolderName).toStdString().c_str());
-#ifdef _BUILDDOCVIEWER_
-	delete this->webEngView;
-#else
-	QSettings	prefs;
-	QRect		rg;
-	QRect		rf;
 
-	rg=this->docView->winWidget->geometry();
-	rf=this->docView->winWidget->frameGeometry();
-	rf.setHeight(rf.height()-(rf.height()-rg.height()));
-	rf.setWidth(rf.width()-(rf.width()-rg.width()));
-	prefs.setValue("docClassDocWindow/geometry",rf);
-	this->docView->winWidget->hide();
-	delete this->docView;
+#ifdef _BUILDDOCVIEWER_
+	if(this->webEngView!=NULL)
+		delete this->webEngView;
+#else
+	if(this->docView!=NULL)
+		delete this->docView;
 #endif
 }
 
@@ -422,7 +415,6 @@ void KKEditClass::initApp(int argc,char** argv)
 			}
 
 //qDebug()<<this->tmpFolderName;
-	this->gotDoxygen=QProcess::execute("sh",QStringList()<<"-c"<<"which doxygen 2>&1 >/dev/null");
 	this->gotManEditor=QProcess::execute("sh",QStringList()<<"-c"<<"which manpageeditorqt 2>&1 >/dev/null");
 	this->gotPDFToText=QProcess::execute("sh",QStringList()<<"-c"<<"which pdftotext 2>&1 >/dev/null");
 	this->gotPDFCrop=QProcess::execute("sh",QStringList()<<"-c"<<"which pdfcrop 2>&1 >/dev/null");
@@ -893,249 +885,6 @@ miniPrefsReturnStruct KKEditClass::miniPrefsDialog(QString prefsname,QStringList
 
 	prefs.theDialog->setLayout(docvlayout);
 	return(prefs);
-}
-
-void KKEditClass::buildDocset(void)
-{
-	DocumentClass	*doc=this->getDocumentForTab(-1);
-	FILE				*fp;
-	char				line[4096];
-	QDir				currentdir;
-
-	if(doc==NULL)
-		return;
-
-	QSettings	buildDocsetPrefs("KDHedger","DocsetPrefs");
-	QString		makedocsfolder=QString("%1/docs/").arg(DATADIR);
-	bool			gotdoxyfile;
-	QString		thename;
-	QString		thetype;
-	QString		thepath;
-	QString		theanchor;
-	sqlite3		*DB;
-	QString		sql;
-	char			*messaggeError=NULL; 
-	int			exit=0;
-	QDir			d;
-	miniPrefsReturnStruct myprefs;
-
-	QString		projectname;
-	QString		versionbox;
-	QString		iconbox;
-	QString		destdir;
-
-	if(QFile::exists(doc->getDirPath()+"/Doxyfile"))
-		{
-			gotdoxyfile=true;
-			QProcess::execute("cp",QStringList()<<doc->getDirPath()+"/Doxyfile"<<this->tmpFolderName);
-		}
-	else
-		{
-			QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<this->tmpFolderName);
-			gotdoxyfile=false;
-		}
-
-	if(gotdoxyfile==false)
-		{
-			projectname=buildDocsetPrefs.value("ProjectName","MyProject").toString().simplified();
-			versionbox=buildDocsetPrefs.value("ProjectVersion","0.0.1").toString().simplified();
-		}
-	else
-		{
-			projectname=runPipeAndCapture(QString("sed -n 's/PROJECT_NAME=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified();
-			versionbox=runPipeAndCapture(QString("sed -n 's/PROJECT_NUMBER=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified();	
-		}
-	destdir=buildDocsetPrefs.value("DestinationFolder",QString("%1/.local/share/Zeal/Zeal/docsets").arg(QDir::homePath())).toString();
-	iconbox=buildDocsetPrefs.value("IconPath",QString("%1/LFSTux.png").arg(makedocsfolder)).toString();
-
-	myprefs=this->miniPrefsDialog("DocsetPrefs",QStringList()<<"Project Name"<<"Project Version"<<"Icon Path"<<"Destination Folder");
-	myprefs.boxes[0]->setText(projectname);
-	myprefs.boxes[1]->setText(versionbox);
-	myprefs.boxes[2]->setText(iconbox);
-	myprefs.boxes[3]->setText(destdir);
-	int res=myprefs.theDialog->exec();
-
-	if(res==1)
-		{
-			runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/;s@^OUTPUT_DIRECTORY.*=.*$@OUTPUT_DIRECTORY=%3@;s/^GENERATE_DOCSET.*=.*$/GENERATE_DOCSET=YES/;s/^SEARCHENGINE.*=.*$/SEARCHENGINE=NO/;s/^DOT_IMAGE_FORMAT.*=.*$/DOT_IMAGE_FORMAT=png/' '%3/Doxyfile'").arg(myprefs.boxes[0]->text()).arg(myprefs.boxes[1]->text()).arg(this->tmpFolderName));
-
-			this->showBarberPole("Building Docset","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
-			fp=popen(QString("pushd '%1'&>/dev/null;doxygen '%2/Doxyfile';popd &>/dev/null").arg(doc->getDirPath()).arg(this->tmpFolderName).toStdString().c_str(),"r");
-			if(fp!=NULL)
-				{
-					while(fgets(line,4095,fp))
-						{
-							line[strlen(line)-1]=0;
-							this->runNoOutput(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
-						}
-					pclose(fp);
-				}
-			else
-				{
-					this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
-					return;
-				}
-
-			currentdir=QDir::current();
-			QDir::setCurrent(this->tmpFolderName+"/html");
-
-			d.mkpath(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset/Contents/Resources");
-			exit=sqlite3_open(QString("%1/%2.docset/%3").arg(myprefs.boxes[3]->text()).arg(myprefs.boxes[0]->text()).arg("Contents/Resources/docSet.dsidx").toStdString().c_str(),&DB);
-			if(exit!=SQLITE_OK)
-				{ 
-					std::cerr << "Error open DB " << sqlite3_errmsg(DB) << std::endl; 
-					return; 
-				}
-
-			sql="CREATE TABLE searchIndex(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT);CREATE UNIQUE INDEX anchor ON searchIndex (name, type, path);";
-			exit=sqlite3_exec(DB,sql.toStdString().c_str(),NULL,0,&messaggeError); 
-
-			if(exit != SQLITE_OK)
-				{ 
-					std::cerr << "Error Creating Table" << messaggeError << std::endl; 
-					sqlite3_free(messaggeError); 
-				} 
- 
-			sqlite3_exec(DB,"BEGIN TRANSACTION",NULL,NULL,&messaggeError);
-			this->runNoOutput(QString("cp -rp %1 %2").arg(this->tmpFolderName+"/html/").arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset/Contents/Resources/Documents"));
-			this->runNoOutput(QString("cp %1/html/Info.plist %2").arg(this->tmpFolderName).arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset/Contents/"));
-			this->runNoOutput(QString("convert %1 -resize 16x16 %2/icon.png").arg(myprefs.boxes[2]->text()).arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset"));
-			this->runNoOutput(QString("convert %1 -resize 32x32 %2/icon@2x.png").arg(myprefs.boxes[2]->text()).arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset"));
-			fp=popen("kkeditqttagreader Tokens.xml Token Name Type Path Anchor","r");
-			if(fp!=NULL)
-				{
-					while(fgets(line,4095,fp))
-						{
-							line[strlen(line)-1]=0;
-							thename=QString(line).section(' ',0,0).section('=',1,1);
-							thetype=QString(line).section(' ',1,1).section('=',1,1);
-							thepath=QString(line).section(' ',2,2).section('=',1,1);
-							theanchor=QString(line).section(' ',3,3).section('=',1,1);
-							if((thename.isEmpty()==true) || (thepath.isEmpty()==true))
-								continue;
-							if(thename.length()<NAME_MAX)
-								{
-									this->runNoOutput(QString("echo -n \"%1 %3 ...\n0\" >\"%2/progress\"").arg("Adding").arg(this->tmpFolderName).arg(thename));
-									if(theanchor.isEmpty()==false)
-										thepath=thepath+"#"+theanchor;
-									sql="insert into searchindex (name,type,path) values ('"+thename+"','"+thetype+"','"+thepath+"');";
-									exit=sqlite3_exec(DB,sql.toStdString().c_str(),NULL,0,&messaggeError);
-									if(exit != SQLITE_OK)
-										{ 
-											std::cerr << "Error Insert: " << messaggeError<<std::endl; 
-											sqlite3_free(messaggeError); 
-										}
-								}
-						}
-					pclose(fp);
-				}
-
-			sqlite3_exec(DB,"END TRANSACTION",NULL,NULL,&messaggeError);
-			sqlite3_close(DB); 
-
-			QDir::setCurrent(currentdir.canonicalPath());
-
-			this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
-		}
-	delete myprefs.theDialog;
-}
-
-void KKEditClass::buildDocs(void)
-{
-	DocumentClass			*doc=this->getDocumentForTab(-1);
-	FILE						*fp;
-	char						line[4096];
-	QDir						currentdir;
-	bool						gotdoxyfile;
-	QSettings				buildDocsPrefs("KDHedger","DocsPrefs");
-	miniPrefsReturnStruct	myprefs;
-	QString					projectname;
-	QString					versionbox;
-
-	if(doc==NULL)
-		return;
-
-	currentdir=QDir::current();
-	QDir::setCurrent(doc->getDirPath());
-
-	if(QFile::exists(doc->getDirPath()+"/Doxyfile"))
-		{
-			gotdoxyfile=true;
-		}
-	else
-		{
-			QProcess::execute("cp",QStringList()<<DATADIR "/docs/Doxyfile"<<doc->getDirPath());
-			gotdoxyfile=false;
-		}
-
-
-	if(gotdoxyfile==false)
-		{
-			projectname=buildDocsPrefs.value("ProjectName","MyProject").toString().simplified();
-			versionbox=buildDocsPrefs.value("ProjectVersion","0.0.1").toString().simplified();
-		}
-	else
-		{
-			projectname=runPipeAndCapture(QString("sed -n 's/PROJECT_NAME=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified();
-			versionbox=runPipeAndCapture(QString("sed -n 's/PROJECT_NUMBER=\\(.*\\)/\\1/p' %1").arg(doc->getDirPath()+"/Doxyfile")).simplified();	
-		}
-
-
-	myprefs=this->miniPrefsDialog("DocsPrefs",QStringList()<<"Project Name"<<"Project Version");
-	myprefs.boxes[0]->setText(projectname);
-	myprefs.boxes[1]->setText(versionbox);
-
-	int res=myprefs.theDialog->exec();	
-	if(res==1)
-		{
-			QString com=QString("sed -i 's|^PROJECT_NAME=.*$|PROJECT_NAME=%1|;s|^PROJECT_NUMBER=.*$|PROJECT_NUMBER=%2|;s|^GENERATE_DOCSET=.*$|GENERATE_DOCSET=YES|;s|^SERVER_BASED_SEARCH=.*$|SERVER_BASED_SEARCH=NO|' '%3'").arg(myprefs.boxes[0]->text()).arg(myprefs.boxes[1]->text()).arg("Doxyfile");
-			runPipeAndCapture(com);
-			delete myprefs.theDialog;
-		}
-	else
-		{
-			delete myprefs.theDialog;
-			return;
-		}
-
-	this->showBarberPole("Building Docs","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
-	this->runNoOutput(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg("Building Docs, Please Wait...").arg(this->tmpFolderName));
-	fp=popen("doxygen Doxyfile","r");
-	if(fp!=NULL)
-		{
-			while(fgets(line,4095,fp))
-				{
-					line[strlen(line)-1]=0;
-					this->runNoOutput(QString("echo -n \"%1\n0\" >\"%2/progress\"").arg(line).arg(this->tmpFolderName));
-				}
-			pclose(fp);
-		}
-	else
-		{
-			this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
-			return;
-		}		
-
-	this->runNoOutput(QString("echo -e \"quit\n100\">\"%1/progress\"").arg(this->tmpFolderName));
-	QDir::setCurrent(currentdir.canonicalPath());
-	this->showDocs();
-}
-
-void KKEditClass::showDocs(void)
-{
-	DocumentClass	*doc=this->getDocumentForTab(-1);
-
-	if(doc==NULL)
-		return;
-
-	QFileInfo		fileinfo(QString("%1/html/index.html").arg(doc->getDirPath()));
-
-	if(fileinfo.exists()==false)
-		this->buildDocs();
-	else
-		{
-			this->showWebPage("Doxygen Documentation",QString("file://%1/html/index.html").arg(doc->getDirPath()));
-		}
 }
 
 void KKEditClass::closeAllTabs(void)
@@ -1783,6 +1532,7 @@ void KKEditClass::runAllPlugs(plugData pd)
 					pd.plugName=this->plugins[j].plugName;
 					pd.plugPath=this->plugins[j].plugPath;
 					pd.plugVersion=this->plugins[j].plugVersion;
+					pd.tempFolder=this->tmpFolderName;
 #ifdef _DEBUGCODE_
 					pd.printIt();
 #endif

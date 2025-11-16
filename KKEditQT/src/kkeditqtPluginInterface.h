@@ -53,6 +53,7 @@ struct plugData
 	QString			plugName;
 	QString			plugPath;
 	QString			plugVersion;
+	QString			tempFolder;
 	QMenu			*menu=NULL;
 	DocumentClass	*doc=NULL;//can only use parent functions ( QPlainTextEdit ).
 	int				tabNumber=-1;

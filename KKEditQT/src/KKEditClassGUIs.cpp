@@ -928,12 +928,6 @@ void KKEditClass::buildMainGui(void)
 	if(gotManEditor==0)
 		menuItemSink=this->makeMenuItemClass(FILEMENU,"Manpage Editor QT",0,DATADIR"/pixmaps/ManPageEditorQT.png",MANEDITORMENUNAME,MANPAGEEDMENUITEM);
 
-//doxy
-	if(gotDoxygen==0)
-		{
-			menuItemSink=this->makeMenuItemClass(FILEMENU,"Build Documentation",0,"edit-copy",DOXYBUILDMENUNAME,BUILDDOCSMENUITEM);
-			menuItemSink=this->makeMenuItemClass(FILEMENU,"Build Docset",0,"edit-copy",DOCSETBUILDMENUNAME,BUILDDOCSETMENUITEM);
-		}
 	this->fileMenu->addSeparator();
 
 //save
@@ -1095,9 +1089,6 @@ void KKEditClass::buildMainGui(void)
 			}
 		}
 
-//show docs
-	menuItemSink=this->makeMenuItemClass(VIEWMENU,"Show Documentation",0,NULL,SHOWDOCSMENUNAME,DOCSMENUITEM);
-
 //toggle toolbar bar
 	if(this->toolbarVisible)
 		toggleToolBarMenuItem=this->makeMenuItemClass(VIEWMENU,"Hide Tool Bar",0,NULL,SHOWTOOLBARMENUNAME,TOGGLETOOLBARMENUITEM);
@@ -1172,9 +1163,6 @@ void KKEditClass::buildMainGui(void)
 	goToLineDialogMenuItem=this->makeMenuItemClass(NAVMENU,"Go To Line",0,"go-down",GOTOLINEMENUNAME,GOTOLINEMENUITEM);
 //find define
 	menuItemSink=this->makeMenuItemClass(NAVMENU,"Search For Define",0,"edit-find",SEARCHFORDEFMENUNAME,SEARCHFORDEFINEMENUITEM);
-//goto doxy docs
-	if(gotDoxygen==0)
-		menuItemSink=this->makeMenuItemClass(NAVMENU,"Find In Documentation",0,"edit-find",SEARCHDOXYMENUNAME,SEARCHDOXYDOCS);
 //go back
 	this->goBackMenu=this->makeMenuItemClass(NAVMENU,"Back",0,"go-previous","NOTNEEDED",GOBACKMENUITEM);
 //go forward

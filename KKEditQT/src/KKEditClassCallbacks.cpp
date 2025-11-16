@@ -592,23 +592,13 @@ void KKEditClass::doNavMenuItems(MenuItemClass *mc)
 			case SEARCHFORDEFINEMENUITEM:
 				this->functionSearchDialog();
 				break;
-			case SEARCHDOXYDOCS:
-				this->searchDoxyDocs("");
-				break;
 		}
 }
 
 void KKEditClass::doViewMenuItems(MenuItemClass *mc)
-{
-//	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-//	MenuItemClass	*mc=(MenuItemClass*)sender();
-	
-
+{	
 	switch(mc->getMenuID())
 		{
-			case DOCSMENUITEM:
-				this->showDocs();
-				break;
 			case TOGGLETOOLBARMENUITEM:
 				this->toolbarVisible=!this->toolbarVisible;
 				if(this->toolbarVisible)
@@ -649,6 +639,8 @@ void KKEditClass::doViewMenuItems(MenuItemClass *mc)
 					}
 				break;
 			case TOGGLEDOCVIEWMENUITEM:
+				if(this->docView==NULL)
+					return;
 #ifdef _BUILDDOCVIEWER_
 				this->docviewerVisible=!this->docviewerVisible;
 				if(this->docviewerVisible)
@@ -663,6 +655,8 @@ void KKEditClass::doViewMenuItems(MenuItemClass *mc)
 						this->docView->hide();
 					}
 #else
+				if((this->docView==NULL) || (this->docView->winWidget==NULL))
+					return;
 				this->docviewerVisible=!this->docviewerVisible;
 				if(this->docviewerVisible)
 					{
@@ -679,12 +673,16 @@ void KKEditClass::doViewMenuItems(MenuItemClass *mc)
 				break;
 
 			case RAISEDOCVIEWMENUITEM:
+				if(this->docView==NULL)
+					return;
 #ifdef _BUILDDOCVIEWER_
 				this->docviewerVisible=true;
 				this->toggleDocViewMenuItem->setText("Hide Docviewer");
 				this->docView->show();
 				this->docView->activateWindow();
 #else
+				if((this->docView==NULL) || (this->docView->winWidget==NULL))
+					return;
 				this->docviewerVisible=true;
 				this->toggleDocViewMenuItem->setText("Hide Docviewer");
 				this->docView->winWidget->show();
@@ -927,12 +925,6 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 			case
 				MANPAGEEDMENUITEM:
 				this->newEditor(MANPAGEEDMENUITEM);
-				break;
-			case BUILDDOCSMENUITEM:
-				this->buildDocs();
-				break;
-			case BUILDDOCSETMENUITEM:
-				this->buildDocset();
 				break;
 			case SAVEMENUITEM:
 				this->saveFile(-1,false);
@@ -1832,77 +1824,77 @@ void KKEditClass::doOddButtons(int what)
 		}
 }
 
-bool KKEditClass::docViewLinkTrap(const QUrl url)
-{
-	QString	str=url.toString();
-	QString	finalstring;
-	int		linenum=0;
-	int		stringcnt=0;
-
-	str.remove(QRegularExpression("file:\\/\\/"));
-	str.remove("_source.html");
-	str.remove(QRegularExpression("\\/html"));
-	str.remove(QRegularExpression("\\.html$"));
-	linenum=QRegularExpression("#l([[:digit:]]*)").match(str).captured(1).toInt();
-	str.remove(QRegularExpression("#l[[:digit:]]*"));
-
-	while(stringcnt<str.length())
-		{
-			if(str.at(stringcnt)=='_')
-				{
-					stringcnt++;
-					if(str.at(stringcnt).isLetter())
-						{
-							finalstring+=str.at(stringcnt++).toUpper();
-							continue;
-						}
-					switch(str.at(stringcnt).unicode())
-						{
-							case '_':
-								finalstring+="_";
-								break;
-							case '8':
-								finalstring+=".";
-							case '\n':
-								break;
-						}
-				}
-			else
-				{
-					finalstring+=str.at(stringcnt);
-				}
-			stringcnt++;
-		}
-
-	if(this->openFile(finalstring,linenum)==true)
-		{
-			return(true);
-		}
-	else
-		{
-			QString datafile=QRegularExpression("file://(.*\\.html)#.*$").match(url.toString()).captured(1);
-			QString lnk=QRegularExpression("file://(.*)\\.html#(.*)$").match(url.toString()).captured(2);
-			if(datafile.isEmpty()==false)
-				{
-					str=this->runPipeAndCapture(QString("cat %1|sed -n 's|^.*%2\">\\(.*\\)</a>.*$|\\1|p'|head -n1").arg(datafile).arg(lnk)).remove("\n");
-					if(goToDefinition(str)==true)
-						return(true);	
-				}
-
-			if(QRegularExpression(".*/(struct)(.*)$").match(str).captured(1).compare("struct")==0)
-				{
-					if(goToDefinition(QRegularExpression(".*/(struct)(.*)$").match(finalstring).captured(2))==true)
-						return(true);
-				}
-
-			if(QRegularExpression(".*/(class)(.*)$").match(str).captured(1).compare("class")==0)
-				{
-					if(goToDefinition(QRegularExpression(".*/(class)(.*)$").match(finalstring).captured(2))==true)
-						return(true);
-				}
-		}
-	return(false);
-}
+//bool KKEditClass::docViewLinkTrap(const QUrl url)
+//{
+//	QString	str=url.toString();
+//	QString	finalstring;
+//	int		linenum=0;
+//	int		stringcnt=0;
+//
+//	str.remove(QRegularExpression("file:\\/\\/"));
+//	str.remove("_source.html");
+//	str.remove(QRegularExpression("\\/html"));
+//	str.remove(QRegularExpression("\\.html$"));
+//	linenum=QRegularExpression("#l([[:digit:]]*)").match(str).captured(1).toInt();
+//	str.remove(QRegularExpression("#l[[:digit:]]*"));
+//
+//	while(stringcnt<str.length())
+//		{
+//			if(str.at(stringcnt)=='_')
+//				{
+//					stringcnt++;
+//					if(str.at(stringcnt).isLetter())
+//						{
+//							finalstring+=str.at(stringcnt++).toUpper();
+//							continue;
+//						}
+//					switch(str.at(stringcnt).unicode())
+//						{
+//							case '_':
+//								finalstring+="_";
+//								break;
+//							case '8':
+//								finalstring+=".";
+//							case '\n':
+//								break;
+//						}
+//				}
+//			else
+//				{
+//					finalstring+=str.at(stringcnt);
+//				}
+//			stringcnt++;
+//		}
+//
+//	if(this->openFile(finalstring,linenum)==true)
+//		{
+//			return(true);
+//		}
+//	else
+//		{
+//			QString datafile=QRegularExpression("file://(.*\\.html)#.*$").match(url.toString()).captured(1);
+//			QString lnk=QRegularExpression("file://(.*)\\.html#(.*)$").match(url.toString()).captured(2);
+//			if(datafile.isEmpty()==false)
+//				{
+//					str=this->runPipeAndCapture(QString("cat %1|sed -n 's|^.*%2\">\\(.*\\)</a>.*$|\\1|p'|head -n1").arg(datafile).arg(lnk)).remove("\n");
+//					if(goToDefinition(str)==true)
+//						return(true);	
+//				}
+//
+//			if(QRegularExpression(".*/(struct)(.*)$").match(str).captured(1).compare("struct")==0)
+//				{
+//					if(goToDefinition(QRegularExpression(".*/(struct)(.*)$").match(finalstring).captured(2))==true)
+//						return(true);
+//				}
+//
+//			if(QRegularExpression(".*/(class)(.*)$").match(str).captured(1).compare("class")==0)
+//				{
+//					if(goToDefinition(QRegularExpression(".*/(class)(.*)$").match(finalstring).captured(2))==true)
+//						return(true);
+//				}
+//		}
+//	return(false);
+//}
 
 void KKEditClass::fileChangedOnDisk(const QString &path)
 {

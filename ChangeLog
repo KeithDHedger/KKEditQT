@@ -1,5 +1,11 @@
 1.6.3
-When the Doc Viewer is disabled api's etc are viewed in a QTextBrowser that displays a subset of HTML ( doxydocs don't display well yet ). 
+Fixed trying to show non existant page in viewer.
+Added Show docs to docplugin.
+Fixed docset with spaces in name.
+Removed javascript search when building doxygen documentation.
+Moved documentaion to documentaion plugin.
+Fixed trying to show/raise doc viewer before 1st use.
+When the Doc Viewer is disabled api's etc are viewed in a QTextBrowser that displays a subset of HTML ( doxydocs don't display well yet ).
 Doc viewer now disabled by default.
 Cleaned up includes.
 

@@ -24,8 +24,20 @@
 
 docBrowserClass::~docBrowserClass()
 {
-	this->winWidget->close();
-	delete this->winWidget;
+	QSettings	prefs;
+	QRect		rg;
+	QRect		rf;
+
+	if(this->winWidget!=NULL)
+		{
+			rg=this->winWidget->geometry();
+			rf=this->winWidget->frameGeometry();
+			rf.setHeight(rf.height()-(rf.height()-rg.height()));
+			rf.setWidth(rf.width()-(rf.width()-rg.width()));
+			prefs.setValue("docClassDocWindow/geometry",rf);
+			this->winWidget->close();
+			delete this->winWidget;
+		}
 }
 
 docBrowserClass::docBrowserClass(KKEditClass *kk)
@@ -68,10 +80,6 @@ bool docBrowserClass::setToPathOrHTML(QUrl path)
 
 	if(mime.contains("html")==false)
 		{
-		//if(this->noBack==false)
-		{
-			//te->backward();
-		}
 			if(ts.startsWith("file://"))
 				ts=ts.mid(7);
 			QString	content;
@@ -104,211 +112,237 @@ void docBrowserClass::createNewWindow(QString path1)
 	QRect		rg;
 	QString		path=path1;
 
-	this->winWidget=new QWidget;
-	hlayout=new QHBoxLayout;
+	if(QFileInfo(path1).exists()==false)
+		{
+			if(this->winWidget!=NULL)
+				{
+					this->winWidget->close();
+					delete this->te;
+					delete this->winWidget;
+					this->te=NULL;
+					this->winWidget=NULL;
+				}
+			return;
+		}
 
-	te->setAcceptRichText(true);
-	this->te=te;
+	if(this->winWidget==NULL)
+		{
+			this->winWidget=new QWidget;
+			hlayout=new QHBoxLayout;
 
-	docvlayout->setContentsMargins(MARGINS,MARGINS,MARGINS,MARGINS);
-	docvlayout->addWidget(te);
+			te->setAcceptRichText(true);
+			this->te=te;
 
-	QDir::setCurrent(QFileInfo(path).path());
+			docvlayout->setContentsMargins(MARGINS,MARGINS,MARGINS,MARGINS);
+			docvlayout->addWidget(te);
 
-	this->setToPathOrHTML(path);
+			QDir::setCurrent(QFileInfo(path).path());
 
-	te->setOpenExternalLinks(true);
-	te->setContextMenuPolicy(Qt::CustomContextMenu);
+			this->setToPathOrHTML(path);
 
-	this->setPaths(path1);
+			te->setOpenExternalLinks(true);
+			te->setContextMenuPolicy(Qt::CustomContextMenu);
 
-	this->homePath=this->basePath;
-	this->homeDir=this->baseDir;
+			this->setPaths(path1);
 
-	te->setSearchPaths(QStringList()<<this->homeDir);
+			this->homePath=this->basePath;
+			this->homeDir=this->baseDir;
+
+			te->setSearchPaths(QStringList()<<this->homeDir);
 	
-	QObject::connect(te,&QWidget::customContextMenuRequested,[this,te](const QPoint &pos)
-		{
-			QMenu	*menu=new QMenu(te);
-			const QUrl linkUrl = te->anchorAt(pos);
-	        // Add custom actions
-			if(linkUrl.isValid())
+			QObject::connect(te,&QWidget::customContextMenuRequested,[this,te](const QPoint &pos)
 				{
-					//qDebug()<<"context menu "<<linkUrl;
-					QAction	*openAction=menu->addAction("Open Link In External App");
-					QAction	*copyAction=menu->addAction("Copy Link Address");
-
-					// Connect the actions
-					QObject::connect(copyAction, &QAction::triggered, [this,te,linkUrl]()
+					QMenu	*menu=new QMenu(te);
+					const QUrl linkUrl = te->anchorAt(pos);
+			        // Add custom actions
+					if(linkUrl.isValid())
 						{
-							QString retval=this->urlTofile(linkUrl);
-							QGuiApplication::clipboard()->setText(retval);
-						});
+							//qDebug()<<"context menu "<<linkUrl;
+							QAction	*openAction=menu->addAction("Open Link In External App");
+							QAction	*copyAction=menu->addAction("Copy Link Address");
+
+							// Connect the actions
+							QObject::connect(copyAction, &QAction::triggered, [this,te,linkUrl]()
+								{
+									QString retval=this->urlTofile(linkUrl);
+									QGuiApplication::clipboard()->setText(retval);
+								});
  
-					QObject::connect(openAction, &QAction::triggered, [this,te,linkUrl]()
+							QObject::connect(openAction, &QAction::triggered, [this,te,linkUrl]()
+								{
+									QString retval=this->urlTofile(linkUrl);
+									QDesktopServices::openUrl(QUrl(retval));
+								});
+
+							// Add existing actions to the menu
+							menu->addSeparator(); // Optional: Separator for better appearance
+							menu->exec(te->mapToGlobal(pos));
+							return;
+						}
+				});
+
+			QObject::connect(te, &QTextBrowser::anchorClicked, [this,te](const QUrl &link)
+				{
+					bool		setsrc=false;
+					bool		ret=false;
+					QString	ts=this->urlTofile(link);
+
+					ret=this->setToPathOrHTML(QUrl(ts));
+					if(ret==true)
+						return;
+
+					if(link.toString().contains(QRegularExpression(R"RX(.*#.*$)RX")))
 						{
-							QString retval=this->urlTofile(linkUrl);
-							QDesktopServices::openUrl(QUrl(retval));
-						});
+							this->basePath=link.toString().replace(QRegularExpression(R"RX((.*)#.*)RX"),"\\1");
+							if(this->basePath.startsWith("file://"))
+								this->basePath=this->basePath.mid(7);
+							this->basePath=QFileInfo(this->basePath).canonicalFilePath();
+							this->baseDir=QFileInfo(QFileInfo(this->basePath).path()).canonicalFilePath();
+							return;
+						}
 
-					// Add existing actions to the menu
-					menu->addSeparator(); // Optional: Separator for better appearance
-					menu->exec(te->mapToGlobal(pos));
-					return;
-				}
-		});
+					if(link.toString().startsWith("file://")==true)
+						{
+							this->basePath=link.toString().mid(7).replace(QRegularExpression(R"RX((.*)#.*)RX"),"\\1");
+							this->baseDir=QFileInfo(this->basePath).path();
+						}
+					else
+						{
+							this->basePath=QFileInfo(this->basePath).path()+"/"+link.toString();
+							this->baseDir=QFileInfo(this->basePath).path();
+							setsrc=true;
+						}
 
-	QObject::connect(te, &QTextBrowser::anchorClicked, [this,te](const QUrl &link)
-		{
-			bool		setsrc=false;
-			bool		ret=false;
-			QString	ts=this->urlTofile(link);
-
-			ret=this->setToPathOrHTML(QUrl(ts));
-			if(ret==true)
-				{
-					return;
-				}
-
-			if(link.toString().contains(QRegularExpression(R"RX(.*#.*$)RX")))
-				{
-					this->basePath=link.toString().replace(QRegularExpression(R"RX((.*)#.*)RX"),"\\1");
-					if(this->basePath.startsWith("file://"))
-						this->basePath=this->basePath.mid(7);
-					this->basePath=QFileInfo(this->basePath).canonicalFilePath();
-					this->baseDir=QFileInfo(QFileInfo(this->basePath).path()).canonicalFilePath();
-					return;
-				}
-
-			if(link.toString().startsWith("file://")==true)
-				{
-					this->basePath=link.toString().mid(7).replace(QRegularExpression(R"RX((.*)#.*)RX"),"\\1");
-					this->baseDir=QFileInfo(this->basePath).path();
-				}
-			else
-				{
-					this->basePath=QFileInfo(this->basePath).path()+"/"+link.toString();
-					this->baseDir=QFileInfo(this->basePath).path();
-					setsrc=true;
-				}
-
-			this->basePath=QFileInfo(this->basePath).canonicalFilePath();
-			this->baseDir=QFileInfo(this->baseDir).canonicalFilePath();
-			if(this->basePath.isEmpty()==true)
-				{
-					this->basePath=link.toString();
-					this->baseDir=QFileInfo(this->basePath).path();
 					this->basePath=QFileInfo(this->basePath).canonicalFilePath();
 					this->baseDir=QFileInfo(this->baseDir).canonicalFilePath();
-					setsrc=true;	
-				}
+					if(this->basePath.isEmpty()==true)
+						{
+							this->basePath=link.toString();
+							this->baseDir=QFileInfo(this->basePath).path();
+							this->basePath=QFileInfo(this->basePath).canonicalFilePath();
+							this->baseDir=QFileInfo(this->baseDir).canonicalFilePath();
+							setsrc=true;	
+						}
 
-			if(setsrc==true)
-				te->setSource(this->basePath);
+					if(setsrc==true)
+						te->setSource(this->basePath);
 
-			if(this->basePath.isEmpty()==true)
-				{
-					this->basePath=te->source().toString();
-					this->baseDir=QFileInfo(this->basePath).path();
-					this->basePath=QFileInfo(this->basePath).canonicalFilePath();
-					this->baseDir=QFileInfo(this->baseDir).canonicalFilePath();
-					setsrc=false;
-				}
+					if(this->basePath.isEmpty()==true)
+						{
+							this->basePath=te->source().toString();
+							this->baseDir=QFileInfo(this->basePath).path();
+							this->basePath=QFileInfo(this->basePath).canonicalFilePath();
+							this->baseDir=QFileInfo(this->baseDir).canonicalFilePath();
+							setsrc=false;
+						}
 
-			if(setsrc==true)
-				te->setSource(this->basePath);
-		});
+					if(setsrc==true)
+						te->setSource(this->basePath);
+				});
 
 //home
-	button=new QPushButton("&Home");
-	QObject::connect(button,&QPushButton::clicked,[this,te]()
-		{
-			this->setToPathOrHTML(QUrl(this->homePath));
-			this->basePath=this->homePath;
-			this->baseDir=this->homeDir;
-		});
-	hlayout->addWidget(button);
-	hlayout->addStretch();
+			button=new QPushButton("&Home");
+			QObject::connect(button,&QPushButton::clicked,[this,te]()
+				{
+					this->setToPathOrHTML(QUrl(this->homePath));
+					this->basePath=this->homePath;
+					this->baseDir=this->homeDir;
+				});
+			hlayout->addWidget(button);
+			hlayout->addStretch();
 
 //back
-	button=new QPushButton("&Back");//CRAPPY!!!
-	QObject::connect(button,&QPushButton::clicked,[this,te]()
-		{
-			if(te->isBackwardAvailable()==false)
-				return;
-			if(this->noBack==false)
-				te->backward();
-			else
+			button=new QPushButton("&Back");//CRAPPY!!!
+			QObject::connect(button,&QPushButton::clicked,[this,te]()
 				{
-					te->reload();
-					this->noBack=false;
-					return;
-				}
+					if(te->isBackwardAvailable()==false)
+						return;
+					if(this->noBack==false)
+						te->backward();
+					else
+						{
+							te->reload();
+							this->noBack=false;
+							return;
+						}
 
-			this->noBack=false;
-			this->basePath=QFileInfo(te->historyUrl(0).toString()).canonicalFilePath();
-			this->baseDir=QFileInfo(QFileInfo(te->historyUrl(0).toString()).path()).canonicalFilePath();
-			if(this->basePath.isEmpty()==true)
-				{
-					this->basePath=te->historyUrl(0).toString().mid(7);
-					this->basePath=this->basePath.replace(QRegularExpression(R"RX((.*)#.*)RX"),"\\1");
-					this->basePath=QFileInfo(this->basePath).canonicalFilePath();
-					this->baseDir=QFileInfo(QFileInfo(this->basePath).path()).canonicalFilePath();
-				}
-		});
-	hlayout->addWidget(button);
+					this->noBack=false;
+					this->basePath=QFileInfo(te->historyUrl(0).toString()).canonicalFilePath();
+					this->baseDir=QFileInfo(QFileInfo(te->historyUrl(0).toString()).path()).canonicalFilePath();
+					if(this->basePath.isEmpty()==true)
+						{
+							this->basePath=te->historyUrl(0).toString().mid(7);
+							this->basePath=this->basePath.replace(QRegularExpression(R"RX((.*)#.*)RX"),"\\1");
+							this->basePath=QFileInfo(this->basePath).canonicalFilePath();
+							this->baseDir=QFileInfo(QFileInfo(this->basePath).path()).canonicalFilePath();
+						}
+				});
+			hlayout->addWidget(button);
 
 //forward
-	button=new QPushButton("&Forward");
-	QObject::connect(button,&QPushButton::clicked,[this,te]()
-		{
-			if(te->isForwardAvailable()==false)
-				return;
-			te->forward();
-
-			this->basePath=QFileInfo(te->historyUrl(0).toString()).canonicalFilePath();
-			this->baseDir=QFileInfo(QFileInfo(this->basePath).path()).canonicalFilePath();
-
-			if(this->basePath.isEmpty()==true)
+			button=new QPushButton("&Forward");
+			QObject::connect(button,&QPushButton::clicked,[this,te]()
 				{
-					this->basePath=te->historyUrl(0).toString().mid(7);
-					this->basePath=this->basePath.replace(QRegularExpression(R"RX((.*)#.*)RX"),"\\1");
-					this->basePath=QFileInfo(this->basePath).canonicalFilePath();
+					if(te->isForwardAvailable()==false)
+						return;
+					te->forward();
+
+					this->basePath=QFileInfo(te->historyUrl(0).toString()).canonicalFilePath();
 					this->baseDir=QFileInfo(QFileInfo(this->basePath).path()).canonicalFilePath();
-				}
-		this->setToPathOrHTML(te->source());	
-	});
-	hlayout->addWidget(button);
-	hlayout->addStretch();
+
+					if(this->basePath.isEmpty()==true)
+						{
+							this->basePath=te->historyUrl(0).toString().mid(7);
+							this->basePath=this->basePath.replace(QRegularExpression(R"RX((.*)#.*)RX"),"\\1");
+							this->basePath=QFileInfo(this->basePath).canonicalFilePath();
+							this->baseDir=QFileInfo(QFileInfo(this->basePath).path()).canonicalFilePath();
+						}
+					this->setToPathOrHTML(te->source());	
+				});
+			hlayout->addWidget(button);
+			hlayout->addStretch();
 
 //close
-	button=new QPushButton("&Hide");
-	QObject::connect(button,&QPushButton::clicked,[this]()
+			button=new QPushButton("&Hide");
+			button->setIcon(QIcon::fromTheme("window-close"));
+			QObject::connect(button,&QPushButton::clicked,[this]()
+				{
+					QSettings	prefs;
+					QRect		rg;
+					QRect		rf;
+
+					rg=this->winWidget->geometry();
+					rf=this->winWidget->frameGeometry();
+					rf.setHeight(rf.height()-(rf.height()-rg.height()));
+					rf.setWidth(rf.width()-(rf.width()-rg.width()));
+					prefs.setValue("docClassDocWindow/geometry",rf);
+					this->winWidget->hide();
+					this->mainKKEditClass->docviewerVisible=false;
+					this->mainKKEditClass->toggleDocViewMenuItem->setText("Show Docviewer");
+				});
+			hlayout->addWidget(button);
+
+			docvlayout->addLayout(hlayout);
+
+		}
+	else
 		{
-			QSettings	prefs;
-			QRect		rg;
-			QRect		rf;
-
-			rg=this->winWidget->geometry();
-			rf=this->winWidget->frameGeometry();
-			rf.setHeight(rf.height()-(rf.height()-rg.height()));
-			rf.setWidth(rf.width()-(rf.width()-rg.width()));
-			prefs.setValue("docClassDocWindow/geometry",rf);
-			this->winWidget->hide();
-			this->mainKKEditClass->docviewerVisible=false;
-			this->mainKKEditClass->toggleDocViewMenuItem->setText("Show Docviewer");
-		});
-	hlayout->addWidget(button);
-
-	docvlayout->addLayout(hlayout);
-
-	button->setIcon(QIcon::fromTheme("window-close"));
+			QDir::setCurrent(QFileInfo(path).path());
+			this->setToPathOrHTML(path);
+			this->winWidget->setWindowTitle(this->windowTitle);
+			this->winWidget->show();
+			this->winWidget->activateWindow();
+			this->winWidget->raise();
+			return;
+		}
 
 	this->winWidget->setWindowTitle(this->windowTitle);
 	this->winWidget->setLayout(docvlayout); 
 	rg=prefs.value("docClassDocWindow/geometry",QVariant(QRect(50,50,1024,768))).value<QRect>();
 	this->winWidget->setGeometry(rg);
 	this->winWidget->show();
+	this->winWidget->activateWindow();
+	this->winWidget->raise();
 }
 
 QString docBrowserClass::urlTofile(QUrl path)
