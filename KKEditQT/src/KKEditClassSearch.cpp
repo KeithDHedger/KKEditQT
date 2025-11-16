@@ -41,8 +41,6 @@ void KKEditClass::doFindButton(QPushButton *btn)
 		}
 
 	this->currentTab=this->mainNotebook->currentIndex();
-	//this->doFindReplace(sender()->objectName().toInt());
-	qDebug()<<btn->objectName().toInt();
 	this->doFindReplace(btn->objectName().toInt());
 	if(this->hightlightAll==true)
 		{

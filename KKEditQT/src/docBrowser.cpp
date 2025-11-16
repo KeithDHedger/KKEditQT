@@ -157,7 +157,6 @@ void docBrowserClass::createNewWindow(QString path1)
 			        // Add custom actions
 					if(linkUrl.isValid())
 						{
-							//qDebug()<<"context menu "<<linkUrl;
 							QAction	*openAction=menu->addAction("Open Link In External App");
 							QAction	*copyAction=menu->addAction("Copy Link Address");
 

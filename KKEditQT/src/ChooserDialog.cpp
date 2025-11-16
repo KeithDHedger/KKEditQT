@@ -458,7 +458,7 @@ void chooserDialogClass::setFileData(void)
 					f.link(recentfiles);
 				}
 		}
-//	prefs.setValue("size",this->dialogWindow.size());
+
 	QRect rg;
 	QRect rf;
 	rg=this->dialogWindow.geometry();

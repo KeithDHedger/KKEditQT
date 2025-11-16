@@ -294,8 +294,6 @@ void KKEditClass::rebuildBookMarkMenu()
 
 void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 {
-	//DocumentClass	*doc=this->pages.value(qobject_cast<DocumentClass*>(widget)->pageIndex);
-	//DocumentClass	*doc=(DocumentClass*)this->pages.value(widget)->pageIndex;
 	DocumentClass	*tdoc=(DocumentClass*)(widget);
 	DocumentClass	*doc=this->pages.value(tdoc->pageIndex);
 	QTextCursor		cursor;
@@ -1243,7 +1241,6 @@ void KKEditClass::runCLICommands(int quid)
  					msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s",opensessionname.toStdString().c_str());
 					message.mType=RESTORESESSIONMSG;
 					msgsnd(quid,&message,msglen,0);
-				//qDebug()<<"session"<<opensessionname<<quid<<message.mText;
 				}
 
 			pathtopwd=get_current_dir_name();

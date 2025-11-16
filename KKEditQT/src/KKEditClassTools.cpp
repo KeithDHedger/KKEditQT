@@ -214,7 +214,6 @@ void KKEditClass::setToolsData(int what,QWidget *combo)
 
 	savebutton=this->toolsWindow->findChild<QPushButton*>(QString("%1").arg(TOOLSSAVE));
 	savebutton->setEnabled(!this->toolSelect->currentData().toString().isEmpty());
-//	if(sender()->objectName().compare(TOOLCOMBOBOX)==0)
 	if(combo->objectName().compare(TOOLCOMBOBOX)==0)
 		{
 			if(what==0)
@@ -253,7 +252,6 @@ void KKEditClass::setToolsData(int what,QWidget *combo)
 	rootcheck=this->toolsWindow->findChild<QCheckBox*>(TOOLRUNASROOT);
 	barcheck=this->toolsWindow->findChild<QCheckBox*>(TOOLUSEPOLE);
 
-	//if(sender()->objectName().compare(TOOLCOMBOBOX)==0)
 	if(combo->objectName().compare(TOOLCOMBOBOX)==0)
 		{
 			flags=sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).toInt();
@@ -342,14 +340,11 @@ void KKEditClass::setToolsData(int what,QWidget *combo)
 			bool		resetradios=false;
 			bool		syncflag=false;
 			bool		termflag=false;
-			//bool		docflag=false;
 
 //run in term
-			//if(sender()->objectName().compare(TOOLRUNINTERM)==0)
 			if(combo->objectName().compare(TOOLRUNINTERM)==0)
 				resetradios=true;
 //set sync
-			//if(sender()->objectName().compare(TOOLRUNSYNC)==0)
 			if(combo->objectName().compare(TOOLRUNSYNC)==0)
 				{
 					if(synccheck->isChecked()==true)

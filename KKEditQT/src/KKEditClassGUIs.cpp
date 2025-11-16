@@ -59,7 +59,6 @@ void KKEditClass::doPrefs(void)
 	this->prefsWindow->show();
 }
 
-//{"<html>Set line auto indenting\nLines are indented with space/tabs on pressing '<b>RETURN</b>'<br><img src=\"" DATADIR "/help/addtoolbutton.gif\" height=\"100\" width=\"200\"></html>",
 static const char *whatIsPrefsBool[MAXPREFSWIDGETS]={\
 "<html>Set line auto indenting\nLines are indented with space/tabs on pressing '<b>RETURN</b>'",\
 "<html>Show line numbers.</html>",\
@@ -251,14 +250,8 @@ void KKEditClass::buildPrefsWindow(void)
 			this->prefStyleNameHold=this->prefStyleName;
 		});
 #endif
-
-
-//	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
-//		{
-//			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
-//			this->prefStyleNameHold=this->prefStyleName;
-//		});
 }
+
 //global
 {
 	QDir		languagesDir(QString("%1/themes/").arg(DATADIR));
@@ -444,13 +437,6 @@ void KKEditClass::buildPrefsWindow(void)
 		});
 #endif
 
-
-
-
-//	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE]),QOverload<int>::of(&QComboBox::activated),[this](int index)
-//		{
-//			this->prefsPageSize=qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE])->currentIndex();
-//		});
 	qobject_cast<QComboBox*>(prefsOtherWidgets[PREFSPAGESIZE])->setCurrentIndex(this->prefsPageSize);
 
 	widgetlabel=new QLabel("PDF Page Size:");
@@ -1553,7 +1539,6 @@ void KKEditClass::buildSpellCheckerGUI(void)
 
 	this->wordDropBox=new QComboBox;
 	this->wordDropBox->setEditable(true);
-	//reinterpret_cast<QComboBox*>(this->findDropBox)->setCompleter(0);
 	vlayout->addWidget(this->wordDropBox);
 
 //switches 3rd row
@@ -1690,9 +1675,6 @@ void KKEditClass::buildDocViewer(void)
 	this->openInNewTab=this->webEngView->pageAction(QWebEnginePage::OpenLinkInNewTab);
 	this->openInNewTab->setText("Show In Source File");
 
-//QWebEngineSettings *st=this->webEngViewsettings();
-//st->setAttribute();
-
 //don't want these menu items.
 	dump=this->webEngView->pageAction(QWebEnginePage::OpenLinkInNewWindow);
 	dump->setVisible(false);
@@ -1713,14 +1695,12 @@ void KKEditClass::buildDocViewer(void)
 #ifdef _USEQT6_
 			if(contextMenuData->linkUrl().isValid())
 				{
-					//qDebug()<<contextMenuData->linkUrl();
 					this->currentURL=contextMenuData->linkUrl().toString();
 					bool ret=this->docViewLinkTrap(contextMenuData->linkUrl());//TODO//needs improving
 
 #else
 			if(contextMenuData.isValid() && contextMenuData.linkUrl().isValid())
 				{
-					//qDebug()<<contextMenuData.linkUrl();
 					this->currentURL=contextMenuData.linkUrl().toString();
 					bool ret=this->docViewLinkTrap(contextMenuData.linkUrl());//TODO//needs improving
 #endif
@@ -2054,7 +2034,6 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 	if(tab==-1)
 		doc=this->getDocumentForTab(-1);
 	else
-		//doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(tab));
 		doc=(DocumentClass*)this->mainNotebook->widget(tab);
 	if(doc==0)
 		return;
@@ -2123,6 +2102,4 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 			this->funcMenu->setEnabled(true);
 		}
 }
-
-
 

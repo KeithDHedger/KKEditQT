@@ -33,9 +33,6 @@
 
 void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 {
-	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-//	MenuItemClass	*mc=NULL;
-//MenuItemClass	*mc=(MenuItemClass*)sender();
 	QFile			file;
 	bool				retval;
 	DocumentClass	*doc;
@@ -52,7 +49,6 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 	else
 		sessionnumber=mc->getMenuID();
 
-	//if((sessionnumber==0) || (sender()->objectName().compare(SAVESESSIONMENUNAME)==0) || (sender()->objectName().compare(QUITMENUNAME)==0))
 	if((sessionnumber==0) || (mc->objectName().compare(SAVESESSIONMENUNAME)==0) || (mc->objectName().compare(QUITMENUNAME)==0))
 		{
 			if(sessionnumber!=0)
@@ -129,7 +125,6 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 					rf.setHeight(rf.height()-(rf.height()-rg.height()));
 					rf.setWidth(rf.width()-(rf.width()-rg.width()));
 
-					//QTextStream(&file) << this->mainWindow->geometry().x() << " " << this->mainWindow->geometry().y() << " " <<this->mainWindow->geometry().width() << " " << this->mainWindow->geometry().height() << Qt::endl;
 					QTextStream(&file) << rf.x() << " " << rf.y() << " " <<rf.width() << " " << rf.height() << Qt::endl;
 					QTextStream(&file) << "#RESERVED" << Qt::endl;
 					QTextStream(&file) << "#RESERVED" << Qt::endl;
@@ -157,7 +152,6 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 			return;
 		}
 
-	//if(sender()->objectName().compare(RESTORESESSIONMENUNAME)==0)
 	if(mc->objectName().compare(RESTORESESSIONMENUNAME)==0)
 		{
 			if(mc->text().isEmpty()==true)//TODO//
@@ -281,9 +275,6 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 
 void KKEditClass::doBookmarkMenuItems(MenuItemClass *mc)
 {
-	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-//	MenuItemClass	*mc=NULL;
-//MenuItemClass	*mc=(MenuItemClass*)sender();
 	DocumentClass	*document=this->getDocumentForTab(-1);
 	QTextCursor		tc;
 
@@ -309,9 +300,6 @@ void KKEditClass::doBookmarkMenuItems(MenuItemClass *mc)
 
 void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 {
-	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	//MenuItemClass	*mc=NULL;
-//MenuItemClass	*mc=(MenuItemClass*)sender();
 	DocumentClass	*document=this->getDocumentForTab(-1);
 	QStringList		sl;
 	QString			filelist;
@@ -409,10 +397,7 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 
 						if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).trimmed().toInt()==1)
 							clearop=true;
-//
-//						if(sl.at(TOOL_CLEAR_VIEW).section(TOOLCLEAROP,1,1).trimmed().toInt()==1)
-//							clearop=true;
-//
+
 						if((sl.at(TOOL_FLAGS).section(TOOLFLAGS,1,1).trimmed().toInt() & TOOL_SHOW_DOC)==TOOL_SHOW_DOC)
 							showdoc=true;
 
@@ -420,9 +405,6 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 							{
 								sync=false;
 								clearop=false;
-//								pasteop=false;
-//								replacedoc=false;
-//								ignoreop=false;/
 								showdoc=false;
 							}
 						else
@@ -435,9 +417,6 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 								interm=true;
 								showdoc=false;
 								clearop=false;
-//								pasteop=false;
-//								replacedoc=false;
-//								ignoreop=false;
 								sync=false;
 							}
 
@@ -534,9 +513,6 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 
 void KKEditClass::doHelpMenuItems(MenuItemClass *mc)
 {
-	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	//MenuItemClass	*mc=NULL;
-//MenuItemClass	*mc=(MenuItemClass*)sender();
 	switch(mc->getMenuID())
 		{
 			 case ABOUTMENUITEM:
@@ -569,9 +545,6 @@ void KKEditClass::doHelpMenuItems(MenuItemClass *mc)
 
 void KKEditClass::doNavMenuItems(MenuItemClass *mc)
 {
-//	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-	//MenuItemClass	*mc=NULL;
-//MenuItemClass	*mc=(MenuItemClass*)sender();
 	switch(mc->getMenuID())
 		{
 			case GOBACKMENUITEM:
@@ -718,9 +691,6 @@ void KKEditClass::doViewMenuItems(MenuItemClass *mc)
 
 void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 {
-//	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-//	MenuItemClass	*mc=(MenuItemClass*)sender();
-
 	DocumentClass	*document=this->getDocumentForTab(-1);
 
 	switch(mc->getMenuID())
@@ -902,8 +872,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 
 void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 {
-	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-
 	switch(mc->getMenuID())
 		{
 //file menu
@@ -985,16 +953,6 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 									this->runPipeAndCapture(command);
 									this->runNoOutput(QString("echo -e quit>\"%1/progress\"").arg(this->tmpFolderName));
 								}
-
-//QTextDocument document1;
-//document1.setHtml(doc->document()->toHtml());
-//QPrinter printer1(QPrinter::PrinterResolution);
-//printer1.setOutputFormat(QPrinter::PdfFormat);
-//printer1.setPaperSize(QPrinter::A4);
-//printer1.setOutputFileName("/tmp/test.pdf");
-//printer1.setPageMargins(QMarginsF(1, 1, 1, 1));
-//document1.setPageSize(printer1.pageRect().size());
-//document1.print(&printer1);
 						}
 				}
 				break;
@@ -1591,24 +1549,12 @@ void KKEditClass::setFont(void)
 
 void KKEditClass::addToToolBar(MenuItemClass *mc)
 {
-qDebug()<<"addToToolBar(MenuItemClass *mc)"<<mc->objectName();
 	this->prefsToolBarLayout=(char*)mc->objectName().constData();
 	this->populateStore();
 }
 
-//void KKEditClass::addToToolBar(void)
-//{
-//qDebug()<<"addToToolBar(void)";
-//	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-////	MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-////
-////	this->prefsToolBarLayout=(char*)qobject_cast<MenuItemClass*>(mc)->objectName().constData();
-////	this->populateStore();
-//}
-
 void KKEditClass::doTabBarContextMenu(MenuItemClass *mc)
 {
-	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
 	QClipboard		*clipboard=this->application->clipboard();
 	DocumentClass	*doc;
 
@@ -1655,8 +1601,6 @@ void KKEditClass::doTabBarContextMenu(MenuItemClass *mc)
 
 void KKEditClass::doOddMenuItems(MenuItemClass *mc)
 {
-	//MenuItemClass	*mc=qobject_cast<MenuItemClass*>(sender());
-
 #ifdef _ASPELL_
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 #endif
@@ -1682,7 +1626,6 @@ void KKEditClass::doOddMenuItems(MenuItemClass *mc)
 
 void KKEditClass::doOddButtons(int what)
 {
-//qDebug()<<what;
 #ifdef _ASPELL_
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 #endif
@@ -1956,12 +1899,10 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 
 void KKEditClass::doAppShortCuts(QShortcut *sc)
 {
-	//QShortcut		*sc=qobject_cast<QShortcut*>(sender());
 	DocumentClass	*doc=this->getDocumentForTab(-1);
 	QString			txt;
 	QTextCursor		cursor;
 	int				anc;
-	//bool				retval=true;
 
 	if(doc==NULL)
 		return;

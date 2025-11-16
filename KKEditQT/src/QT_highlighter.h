@@ -23,9 +23,7 @@
 
 #include "SyntaxHighlitePluginInterface.h"
 #include "ToolkitHighlitePluginInterface.h"
-//#include "config.h"
 
-//#include "KKEditClass.h"
 class KKEditClass;
 
 struct langPluginStruct

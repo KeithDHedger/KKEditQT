@@ -150,8 +150,6 @@ class DocumentClass : public QPlainTextEdit
 
 class LineNumberArea : public QWidget
 {
-	//Q_OBJECT
-
 	public:
 	    LineNumberArea(DocumentClass *editor) : QWidget(editor)
 			{

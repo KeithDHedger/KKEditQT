@@ -1,4 +1,5 @@
 1.6.3
+Code clean.
 Fixed spell check.
 Sped up definition search.
 Fixed plugin help.
@@ -8,7 +9,7 @@ Fixed docset with spaces in name.
 Removed JavaScript search when building doxygen documentation.
 Moved documentation to documentation plugin.
 Fixed trying to show/raise doc viewer before 1st use.
-When the Doc Viewer is disabled api's etc are viewed in a QTextBrowser that displays a subset of HTML ( doxydocs don't display well yet ).
+When the Doc Viewer is disabled API's etc are viewed in a QTextBrowser that displays a subset of HTML ( doxydocs don't display well yet ).
 Doc viewer now disabled by default.
 Cleaned up includes.
 
@@ -22,7 +23,7 @@ Removed unneeded Q_OBJECT macro's from headers.
 Removed SIGNAL/SLOTS macros now using lambdas.
 
 1.6.1
-Fixed tab tooltip not displaying filepath for doc.
+Fixed tab tooltip not displaying file path for doc.
 Better bracket matching.
 Added option to select 1st tab when restoring session.
 Added opening tab to right of current tab or at end, see prefs.
@@ -42,7 +43,7 @@ Added extra data to shm for the future.
 Added semaphores to single instance app ( not really need yet ).
 Clean up msg queues on exit with multi instance.
 Delete shared mem and msg queue on exit.
-Moved from QSharedMemory to normal linux shared memory ( qt screws with the key ).
+Moved from QSharedMemory to normal Linux shared memory ( qt screws with the key ).
 Fixed major exit error.
 Added '-r/--raise' option to kkeditqtmsg.
 Trapped SIGUSR1 to force checking of message queue.
@@ -112,7 +113,7 @@ Fixed scrollable menu inline css for qt6.
 Cleaned up folders.
 Added strip to install.
 Renamed KKEditQTProgressBar to kkeditqtprogressbar.
-Fixed makefile minor install errors.
+Fixed Makefile minor install errors.
 Added tagreader helper.
 
 1.5.1
@@ -145,22 +146,22 @@ Fancied up buildplugs script.
 Fixed plugins segfaulting when needing setsensitive after initing.
 Added various searches to  DocumentationPlugin.
 Removed unneeded search code.
-Removed toolbar line entry's for search qt/gtk apis.
+Removed toolbar line entry's for search qt/gtk API's.
 Set doc instance in plugData when when doing setsensitive.
 Set DocumentationPlugin menu in nav menu enabled.
 Jump straight to link if only one result from DocumentationPlugin.
-Sort DocumentationPlugin infos.
+Sort DocumentationPlugin info's.
 Fixed segfault in DocumentationPlugin if unmatched link/name pairs.
 Bring docviewer to front when showing from view menu.
 Removed qt docs folder pref.
-Removed search for gtk/qt5 apis.
+Removed search for gtk/qt5 API's.
 Replaced search for gtk/qt5 nav menu items with integrated find API menu item.
 Added DocumentationPlugin for searching API's, much more versatile,  currently includes searches for qt5/6, gtk2/3, all gtk-doc. ( Need to do documentation :( ).
 
 1.5.0
 Fixed annoying warning from automake.
 Set QtSu as default gui su ( can be changed in prefs ).
-Tweaked pole makefile.am.
+Tweaked pole Makefile.am.
 Now includes moc generated files directly instead of compiling and linking them.
 Fixed KKEditQTProgressBar Makefile to not link against unneeded qt libs.
 Fixed unneeded include of QX11Info in singleinstance class.
@@ -189,7 +190,7 @@ Changed min required Qt5WebEngineWidgets version to 5.15.0.
 1.0.0
 Removed some debug messages.
 Fixed minor gui glitch with overwrite msg.
-Fixed some filetypes.
+Fixed some file types.
 Added set maximum number of recent files/folders.
 Check and create necessary folders.
 Added recent files.
@@ -197,16 +198,16 @@ Added recent folders.
 Added remove fav button to side list to remove currently selected favourite.
 Added favourites ( dAndd a folder from file list to side list ).
 Added filter drop down.
-Added filetypes filter.
+Added file types filter.
 Fixed non-existent last folder.
 Added check for file exists warning.
 Improved sorting in file dialog.
 Added 'Refresh' to file dialog.
 Fixed file type sorting.
 Fixed showing broken links.
-Fixed filetypes on remote share.
+Fixed file types on remote share.
 Fixed cancelling in file chooser.
-Fixed open as hexdump with spaces in filepath.
+Fixed open as hexdump with spaces in file path.
 File chooser now remembers last load/save folder.
 Fixes for file chooser.
 Added custom file chooser.
@@ -226,7 +227,7 @@ Fixes for getting glib/gio etc defs in 'Search in GTK Docs'.
 Fixed ctags version not supporting depth to recurse.
 Fixed creating temporary files/folders.
 Lowered version needed for Qt5WebEngineWidgets.
-Fixed wrong foldername in buildplugs.sh
+Fixed wrong folder name in buildplugs.sh
 Fixed bracket match.
 Fixed displaying plugin 'Help'
 Removed confusing 'Home' button from docviewer.
@@ -304,7 +305,7 @@ Fixed running tools as root.
 0.7.2
 KKEditQTProgressBar cleanup.
 Speeded up finding definitions from documentation.
-Various ui tweaks.
+Various UI tweaks.
 Added save history file menu to SaveHistory plugin.
 Smartened up plugin prefs dialog.
 Added 'very safe' mode, no plugins, themes, syntax highlighters loaded, no exit data written.
@@ -388,7 +389,7 @@ Clicking 'Apply' in plugin prefs now updates prefs file immediately.
 Added splash screen.
 Added --debugcode option to configure.
 Fixed spurious setting document dirty.
-Recent files now use full filepath.
+Recent files now use full file path.
 Fixed open from here in tab context menu.
 Completion popup ( mostly! ) only pops up at end of word not beginning. 
 Added favourites menu plugin.
@@ -428,11 +429,11 @@ Fixed incorrect function menu while closing tab with hidden tabs,
 Double clicking in white space now selects the white space.
 Code clean.
 CPP highlight plugin tweaks.
-Fixed minor ui glitch with highlighting 'c' functions.
+Fixed minor UI glitch with highlighting 'c' functions.
 Added 'Edit Tool' to manage tools, if tool command is a file, opens it, else copies command to clipboard.
 Done bracket matching.
 Done docviewer find.
-Changed web search to duckduckgo ( google to aggressive about cookies ).
+Changed web search to duckduckgo ( google too aggressive about cookies ).
 Done search forward/backward in doc viewer.
 Fixed tools run sync/async.
 Speed tweaks for find definition.

@@ -21,7 +21,6 @@
 #ifndef _DOCBROWSER_
 #define _DOCBROWSER_
 
-//#include "globalincludes.h"
 #include "qtincs.h"
 #define MARGINS 4
 
