@@ -1,4 +1,5 @@
 1.6.3
+Fixed plugin help.
 Fixed trying to show non existant page in viewer.
 Added Show docs to docplugin.
 Fixed docset with spaces in name.

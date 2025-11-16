@@ -753,7 +753,7 @@ void DocumentationPlugin::plugAbout(void)
 					args<<"-k";
 					args<<QString("%1").arg(this->mainKKEditClass->sessionID);
 					args<<"-c"<<"openindocview";
-					args<<"-d"<<"file:///"+fileinfo.canonicalPath()+"/docs/help.html";
+					args<<"-d"<<fileinfo.canonicalPath()+"/docs/help.html";
 					QProcess::startDetached("kkeditqtmsg",args);
 					this->mainKKEditClass->pluginPrefsWindow->hide();
 				}
