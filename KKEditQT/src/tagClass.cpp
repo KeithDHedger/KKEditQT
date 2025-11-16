@@ -57,26 +57,27 @@ void tagClass::getTagList(QStringList filepaths,int sorttype)
 	switch(sorthow)
 		{
 			case 0:
-				sort="sort -k 2rb,2rb -k 1b,1b";
+				sort="sort -u -k 2rb,2rb -k 1b,1b";
 				break;
 			case 1:
-				sort="sort -k 2rb,2rb -k 3n,3n";
+				sort="sort -u -k 2rb,2rb -k 3n,3n";
 				break;
 			case 2:
-				sort="sort -k 3n";
+				sort="sort -u -k 3n";
 				break;
 			case 4:
-				sort="sort -k 2rb,2rb -k 1b,1b";
+				sort="sort -u -k 2rb,2rb -k 1b,1b";
 				break;
 			default:
-				sort="sort";
+				sort="sort -u";
 				break;
 		}
 
 	for(int k=0;k<filepaths.count();k++)
 		paths+="'"+filepaths.at(k)+"' ";
 
-	command=QString("ctags -Gx %1|%2|sed 's@ \\+@ @g'").arg(paths).arg(sort);
+	//command=QString("ctags -Gx %1|%2|sed 's@ \\+@ @g'").arg(paths).arg(sort);
+	command=QString("ctags -x %1|%2|sed 's@ \\+@ @g'").arg(paths).arg(sort);
 	results=this->mainKKEditClass->runPipeAndCapture(command);
 	lines=results.split("\n",Qt::SkipEmptyParts);
 

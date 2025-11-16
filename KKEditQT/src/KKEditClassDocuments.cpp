@@ -97,7 +97,6 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 		}
 
 	files.removeDuplicates();
-	
 	tc.getTagList(files);
 	for(int h=0;h<tc.tagList.count();h++)
 		{
@@ -112,7 +111,6 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 			if(gottaglist.count()>1)
 				{
 					QVBoxLayout	*vlayout=new QVBoxLayout;
-					//QWidget		*hbox;
 					QHBoxLayout	*hlayout;
 					QPushButton	*button;
 					QPushButton	*button1;
@@ -125,25 +123,18 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 					searchcombobox=new QComboBox;
 
 #ifndef _USEQT6_
-	QObject::connect(searchcombobox,QOverload<int>::of(&QComboBox::activated),[this,gottaglist](int index)
-		{
-			this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
-			this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
-		});
+					QObject::connect(searchcombobox,QOverload<int>::of(&QComboBox::activated),[this,gottaglist](int index)
+						{
+							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
+							this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
+						});
 #else
-	QObject::connect(searchcombobox,&QComboBox::activated,[this,gottaglist](int index)
-		{
-			this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
-			this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
-		});
+					QObject::connect(searchcombobox,&QComboBox::activated,[this,gottaglist](int index)
+						{
+							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
+							this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
+						});
 #endif
-
-
-//					QObject::connect(searchcombobox,QOverload<int>::of(&QComboBox::activated),[=](int index)
-//						{
-//							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
-//							this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
-//						});
 
 					for(int h=0;h<gottaglist.count();h++)
 						searchcombobox->addItem(gottaglist.at(h).tagType+": "+gottaglist.at(h).tagName+" > "+QFileInfo(gottaglist.at(h).tagFilepath).fileName()+QString(":%1").arg(gottaglist.at(h).lineNumber));
@@ -230,11 +221,12 @@ bool KKEditClass::checkSelection(QString selection)
 #ifdef _ASPELL_
 	int							correct;
 	AspellWordList*				suggestions;
-	AspellStringEnumeration*	elements;
+	AspellStringEnumeration		*elements;
 	const char*					suggestedword;
 	int							wordcnt=0;
 	char*						wordlist[100];
-	const char					*word=selection.toStdString().c_str();
+	QByteArray					ba=selection.toLocal8Bit();
+	const char					*word=ba.constData();
 
 	correct=aspell_speller_check(spellChecker,word,-1);
 	this->wordDropBox->clear();

@@ -1,10 +1,12 @@
 1.6.3
+Fixed spell check.
+Sped up definition search.
 Fixed plugin help.
-Fixed trying to show non existant page in viewer.
-Added Show docs to docplugin.
+Fixed trying to show non existent page in viewer.
+Added Show docs to doc plugin.
 Fixed docset with spaces in name.
-Removed javascript search when building doxygen documentation.
-Moved documentaion to documentaion plugin.
+Removed JavaScript search when building doxygen documentation.
+Moved documentation to documentation plugin.
 Fixed trying to show/raise doc viewer before 1st use.
 When the Doc Viewer is disabled api's etc are viewed in a QTextBrowser that displays a subset of HTML ( doxydocs don't display well yet ).
 Doc viewer now disabled by default.
@@ -52,18 +54,18 @@ Added right click context menu to terminal plugin for copying pasting etc.
 Sorted plugins in prefs dialog.
 Minor gui tweaks.
 Removed some redundant code.
-Better function etc recognition especially for html.
+Better function etc recognition especially for HTML.
 Better file type guess for functions.
 Fixed finding definition on files with spaces in the path.
-Updated html tags help.
-More html tags.
+Updated HTML tags help.
+More HTML tags.
 Added input to controls in htmltags.
 Removed duplicate image item from htmltags.
-Added more html tags.
-Fixed unicode pargraph endings when passing selection to html tags.
+Added more HTML tags.
+Fixed Unicode paragraph endings when passing selection to HTML tags.
 Now uses multi threads when building plugins.
 Added menu icon to htmltags plugin.
-Html tags plug is now also in main plugin menu.
+HTML tags plug is now also in main plugin menu.
 Fixed enabling about/settings buttons in plug prefs dialog when enabling/disabling plugin.
 Added help docs to HTML tag plugin.
 Added submenus to HTML tag plugin.
@@ -72,16 +74,16 @@ Added HTML tag plugin.
 Set main window title.
 Fixed saving dialog geometry.
 Fixed saving file including suffix to recentfiles.
-Fixed entering path in filedialog.
-Fixed freeze on restoring empty sesion.
+Fixed entering path in file dialog.
+Fixed freeze on restoring empty session.
 Better save restore of main/doc viewer windows.
 GUI tweak to file dialog.
 Tided configure output.
 Added export to PDF ( page size is in prefs ).
-Added import from PDF ( will only import text from pdf ).
+Added import from PDF ( will only import text from PDF ).
 Added global search for define to toolbar.
 Searching in current document now includes local defines.
-Added line nunmber of define in dropdown box when finding definition.
+Added line number of define in dropdown box when finding definition.
 Go to definition button in toolbar now only searches in the current document.
 Adding  @NNN after filename will open file at line NNN eg:kkeditqt /etc/fstab@5, if file is already open just select tab and jump to line.
 Fixed main Makefile.am.
@@ -91,9 +93,9 @@ Removed redundant makedocset script.
 
 1.5.2
 Speed improvements for bulddocset.
-Fixed segfault when restoring session when a file has a bookmakrk entry but cant be found.
+Fixed segfault when restoring session when a file has a bookmark entry but cant be found.
 Added sqlite3 as dependency.
-Fixed not showing documentaion after building.
+Fixed not showing documentation after building.
 Fixed default names/versions in dialogs for building docs/docset.
 Fixed delay before showing progress bar when building docs.
 Added 'Reload' to plugin prefs dialog.
@@ -105,7 +107,7 @@ Speed improvements for building docset.
 Fixed annoying warnings from json language plugin.
 Removed menu style option from prefs.
 Added QT_ProxyStyle class.
-Fixed storing current url of docviewer ( necessary for favourites plugin etc ).
+Fixed storing current URL of docviewer ( necessary for favourites plugin etc ).
 Fixed scrollable menu inline css for qt6.
 Cleaned up folders.
 Added strip to install.
@@ -120,12 +122,12 @@ Plugin Prefs dialog now doesn't close on 'Apply'.
 Updates to DocumentationPlugin actions.
 'Search For Define' now uses ( caseless ) regex.
 Speed updates to function definition search.
-Fixed setting back history when seleecting from combobox in Select Definition dialog.
+Fixed setting back history when selecting from combobox in Select Definition dialog.
 Don't auto select 1st item from combobox in Select Definition dialog.
 Made Select Definition dialog non modal.
 Set OK button focus on Select Definition dialog
 Fixed restoring autosave session from cli ( use:kkeditqt -r "autosave" ).
-Improvments to search for define toolbar box.
+Improvements to search for define toolbar box.
 Removed need for two pass build.
 Forced use docset options when building docs ( needed for Tokens.xml file ).
 Redone search in documentation.
@@ -137,12 +139,12 @@ Fixed building pole with wrong version of QT.
 Added "Raise docviewer" menuitem to "View" menu.
 Custom command menu text now shows command to run.
 Added custom command to DocumentationPlugin API menu.
-Started documeting DocumentationPlugin formats.
+Started documenting DocumentationPlugin formats.
 Closed plugin prefs dialog when selecting help from the plugs about menu.
 Fancied up buildplugs script.
 Fixed plugins segfaulting when needing setsensitive after initing.
 Added various searches to  DocumentationPlugin.
-Removed unneded search code.
+Removed unneeded search code.
 Removed toolbar line entry's for search qt/gtk apis.
 Set doc instance in plugData when when doing setsensitive.
 Set DocumentationPlugin menu in nav menu enabled.
@@ -153,15 +155,15 @@ Bring docviewer to front when showing from view menu.
 Removed qt docs folder pref.
 Removed search for gtk/qt5 apis.
 Replaced search for gtk/qt5 nav menu items with integrated find API menu item.
-Added DocumentationPlugin for searching API's, much more versatile,  currently includes searches for qt5/6, gtk2/3, all gtk-doc. ( Need to do documentaion :( ).
+Added DocumentationPlugin for searching API's, much more versatile,  currently includes searches for qt5/6, gtk2/3, all gtk-doc. ( Need to do documentation :( ).
 
 1.5.0
 Fixed annoying warning from automake.
 Set QtSu as default gui su ( can be changed in prefs ).
 Tweaked pole makefile.am.
-Now includes moc generated files directly instaead of compiling and linking them.
+Now includes moc generated files directly instead of compiling and linking them.
 Fixed KKEditQTProgressBar Makefile to not link against unneeded qt libs.
-Fixed uneeded include of QX11Info in singleinstance class.
+Fixed unneeded include of QX11Info in singleinstance class.
 Fixed not uninstalling som png files
 Fixed kkeditqtmsg Makefile to not link against unneeded qt libs.
 Updated to use Qt6 or Qt5
@@ -174,7 +176,7 @@ Changed default 'Force Show Completion' to Ctrl+Shift+F. You MUST change this in
 Fixed unloading terminal plug.
 Added opening new terminals in tabs.
 Added multiple terminals.
-Now saves size, position, floating and viibility of Terminal Plug.
+Now saves size, position, floating and visibility of Terminal Plug.
 Added save current state to terminal plug settings.
 Fixed annoying qtermwidget5 changing menu text.
 If qtermwidget5 not available will not try to build TerminalPlugin.
@@ -188,29 +190,29 @@ Changed min required Qt5WebEngineWidgets version to 5.15.0.
 Removed some debug messages.
 Fixed minor gui glitch with overwrite msg.
 Fixed some filetypes.
-Added set maximimum nuber of recent files/folders.
+Added set maximum number of recent files/folders.
 Check and create necessary folders.
 Added recent files.
 Added recent folders.
 Added remove fav button to side list to remove currently selected favourite.
-Added favorites ( dAndd a folder from file list to sidelist ).
+Added favourites ( dAndd a folder from file list to side list ).
 Added filter drop down.
 Added filetypes filter.
-Fixed non-existant last folder.
+Fixed non-existent last folder.
 Added check for file exists warning.
 Improved sorting in file dialog.
 Added 'Refresh' to file dialog.
 Fixed file type sorting.
 Fixed showing broken links.
 Fixed filetypes on remote share.
-Fixed canceling in file chooser.
+Fixed cancelling in file chooser.
 Fixed open as hexdump with spaces in filepath.
 File chooser now remembers last load/save folder.
 Fixes for file chooser.
 Added custom file chooser.
 Improved opening c,c++ etc style include files from nav menu.
 Fixed double click select on large wrapped line.
-Updated installaled root .desktop file.
+Updated installed root .desktop file.
 Updated default "Run As Root" pref.
 Fixed opening root editor from menu.
 Raise find/replace dialog when dialog is already open.
@@ -219,7 +221,7 @@ Double click on hyphenated word ( aaa-bbb-ccc ) or on version string ( 1.2.3 ) n
 Tweaked shlang plugin.
 Tweaked single instance.
 Fixed badly exported DISPLAY variable.
-Changed KKEDIT_FILE_LIST passed to tools to newline seperated list.
+Changed KKEDIT_FILE_LIST passed to tools to newline separated list.
 Fixes for getting glib/gio etc defs in 'Search in GTK Docs'.
 Fixed ctags version not supporting depth to recurse.
 Fixed creating temporary files/folders.
@@ -233,8 +235,8 @@ Fixed staged install via DESTDIR.
 Switch to qtwebengine from obsolete qtwebkit.
 
 0.7.5
-Fixed msgid and single mode when opening on same workspace number but different display ( display is taken fromm DISPLAY var ).
-Fixed misplaced call to search qt5 api docs.
+Fixed msgid and single mode when opening on same workspace number but different display ( display is taken from DISPLAY var ).
+Fixed misplaced call to search qt5 API docs.
 
 0.7.4
 Fixed show docs when no files open.
@@ -262,7 +264,7 @@ Added session name to info passed to external tools.
 Changed KKEditProjectPNG.png to KKEditQTProject.png.
 Sorted function decs in docview.
 Improved qt5 function lookup.
-Suppressed some unneeed variable warnings.
+Suppressed some unneeded variable warnings.
 Added icons to plugin menus.
 Code clean.
 Added icons to plugin menus.
@@ -274,7 +276,7 @@ Fixed inserting top from tool into document if tool is run as root.
 Running tools as root and/or synchronously now works properly.
 Sorted out enabling/disabling switches on tools setup dialog.
 Code clean.
-Moved tempory folder to /run from /tmp.
+Moved temporary folder to /run from /tmp.
 Updated external tools.
 
 0.7.3
@@ -288,12 +290,12 @@ Added using progress bar to external tools.
 Fixed bookmarks moving when adding/deleting line(s).
 Minor UI tweaks.
 Added Go language syntax highlighter.
-Fixed edge case where kkeditqt opened in one folder then trying to open a file with releative path from another folder.
+Fixed edge case where kkeditqt opened in one folder then trying to open a file with relative path from another folder.
 Fixed opening duplicate files with relative path.
-Tabbing at begining of line then pressing 'up/down' returns cursor to START/BEGINNING of previous/next line.
+Tabbing at beginning of line then pressing 'up/down' returns cursor to START/BEGINNING of previous/next line.
 Started '"what's this' info for prefs dialog.
-Set native 'print to pdf' default output folder to ~/Documents/.
-Added option to set external application to handle printg ( QT5 doesn't play well with CUPS ).
+Set native 'print to PDF' default output folder to ~/Documents/.
+Added option to set external application to handle printing ( QT5 doesn't play well with CUPS ).
 Fixed crash when trying to print with no docs.
 Fixed duplicate files being added to recents menu.
 Fixed toggling tool output window.
@@ -325,13 +327,13 @@ Fixed changing theme in prefs.
 Set visual insertion point for drag and drop on doc.
 Code clean.
 Fixed setting doc dirty on drop file.
-Fixed reseting functions menu on file save.
+Fixed resetting functions menu on file save.
 Dropping file on doc now inserts at drop point.
 Set max length of info line in KKEditQTProgressBar.
 Added simple help to Symbols menu plugin ( Edit->Plugin Prefs->Symbols menu About->Help ).
 Fixed multi char graphemes.
 Added Symbols menu plugin.
-Repaced coloured tabs with icon to show doc status.
+Replaced coloured tabs with icon to show doc status.
 Added total number of open files to env sent to tool command.
 Fixed place holders in tool command.
 Set tool bar items enabled properly after 'Revert'.
@@ -358,12 +360,12 @@ Redone find/replace, now replaces '\n' and '\t' in the search dialog correctly.
 Revert file no longer deletes undo history.
 Done warn on file change pref.
 Done refresh document when file changes on disk.
-Add sytnatx highlighting for binary numbers in 'c/c++'.
+Add syntax highlighting for binary numbers in 'c/c++'.
 Added functions for multiple different multiline highlighting.
 More syntax highlighting fixes.
 Fixed '//' inside quotes wrongly being highlighted as comment ( c,c++ etc ).
 Added runCustomRule to language plugins.
-Done documentaion interaction ( hold 'CTRL' while clicking ( some! )links in built documentation ).
+Done documentation interaction ( hold 'CTRL' while clicking ( some! )links in built documentation ).
 Fixed holding 'SHIFT' when selecting tab from edit menu to move tab next to current tab.
 Fixed setting KKEDIT_FILE_LIST env var for tool.
 Excluded moc_* files from doxygen.
@@ -380,15 +382,15 @@ Fixed asking to save files when selecting Save All from menu.
 Code clean.
 Added SaveHistory plugin.
 Language plugin tweaks.
-Splash screen closed on showing barberpole.
+Splash screen closed on showing barber pole.
 Fixed hang in recent files if file unavailable.
-Clicking 'Apply' in plugin pefs now updates prefs file immediately.
+Clicking 'Apply' in plugin prefs now updates prefs file immediately.
 Added splash screen.
 Added --debugcode option to configure.
 Fixed spurious setting document dirty.
 Recent files now use full filepath.
 Fixed open from here in tab context menu.
-Completion popup ( mostly! ) only pops up at end of word not begining. 
+Completion popup ( mostly! ) only pops up at end of word not beginning. 
 Added favourites menu plugin.
 Set tab scroll buttons enabled/visible.
 Exclude .o files from open from here tab menu.
@@ -399,7 +401,7 @@ Fixed toggle bookmark creating two or more bookmarks on the same line.
 Various theme/language/toolkit plug tweaks.
 Updates to theme files.
 Fixed lock contents.
-Added toolkik highlighter plugin.
+Added toolkit highlighter plugin.
 Added getcurrenturl to kkeditqtmsg.
 Added openindocview to kkeditqtmsg.
 More tab fixes for qttabbar.
@@ -426,11 +428,11 @@ Fixed incorrect function menu while closing tab with hidden tabs,
 Double clicking in white space now selects the white space.
 Code clean.
 CPP highlight plugin tweaks.
-Fixed minor ui glitch with hilighting 'c' functions.
+Fixed minor ui glitch with highlighting 'c' functions.
 Added 'Edit Tool' to manage tools, if tool command is a file, opens it, else copies command to clipboard.
 Done bracket matching.
 Done docviewer find.
-Changed web search to duckduckgo ( google to agrresive about cookies ).
+Changed web search to duckduckgo ( google to aggressive about cookies ).
 Done search forward/backward in doc viewer.
 Fixed tools run sync/async.
 Speed tweaks for find definition.
@@ -443,13 +445,13 @@ Redone find/replace/replace all/, also in multiple files, wrap etc, TODO backwar
 Fixed toggle bookmark.
 Fixed bookmark menu width prefs.
 Added clipboard plugin.
-Done calling plugrun functions on all plugins at certain poiints ( save/load/switch page etc ).
+Done calling plugrun functions on all plugins at certain points ( save/load/switch page etc ).
 Fixed current session not being changed.
 Changed session file format use:sed -i '1a 50 50 800 600\n#RESERVED\n#RESERVED\n#RESERVED' ~.KKEditQT/sesssions/Session-1 to convert session file ( change 'Session-1' to suit ).
 Gui fixes for jumping to book mark.
 Fixed passing hex/octal/decimal number to -key.
 Changed restore short option from -s to -r.
-Fixed tab visisiblity when saving/restoring sessions.
+Fixed tab visibility when saving/restoring sessions.
 Done runtool msg.
 Done selecttabbylabel msg.
 Done selecttab msg.
@@ -467,19 +469,19 @@ Added variables colour to themes.
 Added java lang plug.
 Code clean in lang plugs.
 Added PHP language plugin.
-Added javascript language plugin.
-Added html language plugin.
-Switched to sytntax highlighting plugins.
+Added JavaScript language plugin.
+Added HTML language plugin.
+Switched to syntax highlighting plugins.
 
 0.5.3
 Languages installed in ~/.KKEditQT/langplugins now take precedence.
 Fixed languages that g=have no multi line comment.
 Fixed marking document dirty if changing highlighting.
-Fixed ste syntax language in tab menu.
+Fixed set syntax language in tab menu.
 Added makefile language plugin.
 Added red ( root ) theme.
 Added grey theme.
-Lanuage plugins code clean.
+Language plugins code clean.
 Added "lanuageextra" styling to style files.
 Fixed multi line comment having start/end patterns the same.
 Added python lang plugin.
@@ -521,7 +523,7 @@ Added scrollable text to tool output window.
 Remove unwanted borders from doc viewer window.
 Wrapped live search.
 Added be kind check box to prefs.
-Fixed dispapearing edit boxes, when setting prefs.
+Fixed disappearing edit boxes, when setting prefs.
 Removed some debug code.
 Done Live search
 Updated docs.
@@ -531,8 +533,8 @@ Started history class.
 Fixed new editor menu item.
 Updated tab context menu icons.
 Added max recent files to prefs.
-Fixed dont add file path to recent if already present.
-Done dont open duplicate file pref.
+Fixed don't add file path to recent if already present.
+Done don't open duplicate file pref.
 
 0.5.1
 Done open recent menu.
@@ -542,7 +544,7 @@ Done help.
 Removed browser command from prefs now use default browser ( as set by xdg ).
 Done About box.
 Removed book marks when closing tab.
-Single instace class code clean.
+Single instance class code clean.
 Done quit app from cli.
 Done load session by name from cli.
 Done single instance commands.
