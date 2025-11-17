@@ -189,9 +189,12 @@ void docBrowserClass::createNewWindow(QString path1)
 					ret=this->setToPathOrHTML(QUrl(ts));
 					if(ret==true)
 						return;
-
 					if(link.toString().contains(QRegularExpression(R"RX(.*#.*$)RX")))
 						{
+							if(link.toString().at(0)=='.')
+								{
+									QDir::setCurrent(this->baseDir);
+								}
 							this->basePath=link.toString().replace(QRegularExpression(R"RX((.*)#.*)RX"),"\\1");
 							if(this->basePath.startsWith("file://"))
 								this->basePath=this->basePath.mid(7);
@@ -329,6 +332,7 @@ void docBrowserClass::createNewWindow(QString path1)
 			QDir::setCurrent(QFileInfo(path).path());
 			this->setToPathOrHTML(path);
 			this->winWidget->setWindowTitle(this->windowTitle);
+			this->te->reload();
 			this->winWidget->show();
 			this->winWidget->activateWindow();
 			this->winWidget->raise();

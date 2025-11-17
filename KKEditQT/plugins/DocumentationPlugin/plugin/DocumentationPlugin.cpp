@@ -412,7 +412,9 @@ void DocumentationPlugin::buildDocumentation(void)
 		{
 			QString					projectname;
 			QString					versionbox;
+			QString					dotimagetype;
 			QString					holddir;
+			QString					dump;
 			QSettings				settings("KDHedger","DocsPrefs");
 			miniPrefsReturnStruct	myprefs;
 			bool						gotdoxyfile=false;
@@ -421,7 +423,7 @@ void DocumentationPlugin::buildDocumentation(void)
 			int						res;
 
 			holddir=QDir::currentPath();
-			if(QFileInfo(QString("%1/Doxyfile").arg(QFileInfo(this->folderPath).absolutePath())).exists()==true)
+			if(QFileInfo(QString("%1/Doxyfile").arg(QFileInfo(this->folderPath).absoluteFilePath())).exists()==true)
 				gotdoxyfile=true;
 			else
 				QProcess::execute("cp",QStringList()<<QString("%1/Doxyfile").arg(QFileInfo(this->plugPath).absolutePath())<<this->folderPath);
@@ -430,32 +432,47 @@ void DocumentationPlugin::buildDocumentation(void)
 
 			if(gotdoxyfile==true)
 				{
-					projectname=this->runPipeAndCapture(QString("sed -n 's/PROJECT_NAME=\\(.*\\)/\\1/p' %1").arg(this->folderPath+"/Doxyfile")).simplified();
-					versionbox=this->runPipeAndCapture(QString("sed -n 's/PROJECT_NUMBER=\\(.*\\)/\\1/p' %1").arg(this->folderPath+"/Doxyfile")).simplified();
+					projectname=this->runPipeAndCapture(QString("sed -n 's/PROJECT_NAME=\\(.*\\)/\\1/p' %1").arg(this->folderPath+"/Doxyfile"));
+					versionbox=this->runPipeAndCapture(QString("sed -n 's/PROJECT_NUMBER=\\(.*\\)/\\1/p' %1").arg(this->folderPath+"/Doxyfile"));
+					dotimagetype=this->runPipeAndCapture(QString("sed -n 's/DOT_IMAGE_FORMAT=\\(.*\\)/\\1/p' %1").arg(this->folderPath+"/Doxyfile"));
 				}
 			else
 				{
 					projectname=settings.value("Project Name").toString();
 					if(projectname.isEmpty()==true)
-						projectname=this->runPipeAndCapture(QString("sed -n 's/PROJECT_NAME=\\(.*\\)/\\1/p' %1").arg(this->folderPath+"/Doxyfile")).simplified();
+						projectname=this->runPipeAndCapture(QString("sed -n 's/PROJECT_NAME=\\(.*\\)/\\1/p' %1").arg(this->folderPath+"/Doxyfile"));
 					versionbox=settings.value("Project Version").toString();
 					if(versionbox.isEmpty()==true)
-						versionbox=this->runPipeAndCapture(QString("sed -n 's/PROJECT_NUMBER=\\(.*\\)/\\1/p' %1").arg(this->folderPath+"/Doxyfile")).simplified();
+						versionbox=this->runPipeAndCapture(QString("sed -n 's/PROJECT_NUMBER=\\(.*\\)/\\1/p' %1").arg(this->folderPath+"/Doxyfile"));
+					dotimagetype=settings.value("DOT Image Type","").toString();
 				}
 
-			myprefs=this->miniPrefsDialog("DocsPrefs",QStringList()<<"Project Name"<<"Project Version",true);
+			myprefs=this->miniPrefsDialog("DocsPrefs",QStringList()<<"Project Name"<<"Project Version"<<"DOT Image Type",true);
 			myprefs.boxes[0]->setText(projectname);
 			myprefs.boxes[1]->setText(versionbox);
+			myprefs.boxes[2]->setText(dotimagetype);
 
 			res=myprefs.theDialog->exec();	
 			if(res==1)
 				{
 					QString com=QString("sed -i 's|^PROJECT_NAME=.*$|PROJECT_NAME=%1|;s|^PROJECT_NUMBER=.*$|PROJECT_NUMBER=%2|;s|^GENERATE_DOCSET=.*$|GENERATE_DOCSET=YES|;s|^SERVER_BASED_SEARCH=.*$|SERVER_BASED_SEARCH=NO|;s|^SEARCHENGINE=.*$|SEARCHENGINE=NO|' '%3'").arg(myprefs.boxes[0]->text()).arg(myprefs.boxes[1]->text()).arg("Doxyfile");
-					this->runPipeAndCapture(com);
+					if(myprefs.boxes[2]->text().isEmpty()==false)
+						{
+							dump=this->runPipeAndCapture(QString("sed -i 's/HAVE_DOT=.*/HAVE_DOT=YES/' %1").arg(this->folderPath+"/Doxyfile"));
+							dump=this->runPipeAndCapture(QString("sed -i 's/DOT_IMAGE_FORMAT=.*/DOT_IMAGE_FORMAT=%2/' %1").arg(this->folderPath+"/Doxyfile").arg(myprefs.boxes[2]->text()));
+						}
+					else
+						{
+							dump=this->runPipeAndCapture(QString("sed -i 's/HAVE_DOT=.*/HAVE_DOT=NO/' %1").arg(this->folderPath+"/Doxyfile"));
+							dump=this->runPipeAndCapture(QString("sed -i 's/DOT_IMAGE_FORMAT=.*/DOT_IMAGE_FORMAT=/' %1").arg(this->folderPath+"/Doxyfile"));
+						}
+					dump=this->runPipeAndCapture(com);
 					delete myprefs.theDialog;
 				}
 			else
 				{
+					if(gotdoxyfile==false)
+						QProcess::execute("rm",QStringList()<<QString("%1/Doxyfile").arg(this->folderPath));
 					delete myprefs.theDialog;
 					QDir::setCurrent(holddir);
 					return;
@@ -581,12 +598,13 @@ void DocumentationPlugin::searchDoxyDocs(const QString txt)
 					out << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" << Qt::endl;
 					out << "</head>" << Qt::endl;
 					out << "<style>" << Qt::endl;
-					out << "tab0  {position:absolute;left:80px;}" << Qt::endl;
+					//out << "tab0  {position:absolute;left:80px;}" << Qt::endl;
 					out << "</style>" << Qt::endl;
 					out << "<body>" << Qt::endl;
 
 					for(int loop=0;loop<cnt;loop++)
-						out <<QString("<div align=\"left\">%3<tab0><a href=\"%1\">%2</a></div>\n").arg(resultmap[loop].tagPath).arg(resultmap[loop].tagName).arg(resultmap[loop].tagType) << Qt::endl;
+						//out <<QString("<div align=\"left\">%3<tab0><a href=\"%1\">%2</a></div>\n").arg(resultmap[loop].tagPath).arg(resultmap[loop].tagName).arg(resultmap[loop].tagType) << Qt::endl;
+						out <<QString("<div align=\"left\">%3&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"%1\">%2</a></div>\n").arg(resultmap[loop].tagPath).arg(resultmap[loop].tagName).arg(resultmap[loop].tagType) << Qt::endl;
 
 					out << "</body>" << Qt::endl;
 					out << "</html>" << Qt::endl;
@@ -606,10 +624,7 @@ void DocumentationPlugin::findInDocs(void)
 
 	tc=this->doc->textCursor();
 	if(tc.hasSelection()==true)
-		{
-qDebug()<<"Find In Documentation"<<tc.selectedText();
-this->searchDoxyDocs(tc.selectedText());
-}
+		this->searchDoxyDocs(tc.selectedText());
 }
 
 void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)

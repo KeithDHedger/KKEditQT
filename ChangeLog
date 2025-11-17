@@ -1,4 +1,7 @@
 1.6.3
+Fixed updating docviewer.
+Setting an image type in the dialog box when building docs will enable images, else no images built.
+Removed images from documentation.
 Code clean.
 Fixed spell check.
 Sped up definition search.
