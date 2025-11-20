@@ -72,10 +72,9 @@ KKEditClass::~KKEditClass()
 #ifdef _BUILDDOCVIEWER_
 	if(this->webEngView!=NULL)
 		delete this->webEngView;
-#else
+#endif
 	if(this->docView!=NULL)
 		delete this->docView;
-#endif
 }
 
 void KKEditClass::handleSignal(int signum)
@@ -92,6 +91,13 @@ void KKEditClass::handleSignal(int signum)
 			default:
 				break;
 		}
+}
+
+void KKEditClass::activateMainWindow(void)
+{
+	this->mainWindow->show();
+	this->mainWindow->activateWindow();
+	this->mainWindow->raise();
 }
 
 void KKEditClass::setUpToolBar(void)

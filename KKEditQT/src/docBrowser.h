@@ -48,6 +48,7 @@ class docBrowserClass
 		bool			noBack=false;
 		bool			setToPathOrHTML(QUrl path);
 		void			setPaths(QUrl path);
+		void			openSrcFile(QString path);
 ;};
 
 #endif

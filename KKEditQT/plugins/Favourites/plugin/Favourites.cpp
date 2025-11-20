@@ -172,8 +172,16 @@ void FavouritesPlug::doAction(QString data)
 
 	if((data.startsWith("file://")) || (data.startsWith("http://")) || (data.startsWith("https://")))
 		{
-			command=QString("kkeditqtmsg -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->sessionID).arg(data);
-			system(command.toStdString().c_str());
+			if(data.startsWith("file://"))
+				{
+					//command=QString("kkeditqtmsg -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->sessionID).arg(data.mid(7));
+					command=QString("kkeditqtmsg -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->sessionID).arg(data);
+					system(command.toStdString().c_str());
+				}
+			else
+				{
+					QDesktopServices::openUrl (QUrl(data));
+				}
 		}
 	else
 		{

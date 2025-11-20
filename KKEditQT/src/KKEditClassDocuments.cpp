@@ -127,6 +127,7 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 						{
 							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
 							this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
+							
 						});
 #else
 					QObject::connect(searchcombobox,&QComboBox::activated,[this,gottaglist](int index)
@@ -181,6 +182,7 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 	if(retval==false)
 		this->statusBar->showMessage(QString("Couldn't find definition for %1").arg(searchtxt),STATUSBARTIMEOUT);
 
+	this->activateMainWindow();
 	return(retval);
 }
 

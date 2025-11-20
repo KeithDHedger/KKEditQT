@@ -117,6 +117,7 @@ class KKEditClass : public QObject
 		void							writeExitData(void);
 		int							yesNoDialog(QString txt,QString info);
 		miniPrefsReturnStruct		miniPrefsDialog(QString prefsname,QStringList items,bool liveupdate=true);
+		void							activateMainWindow(void);
 
 //webpage
 		void							showWebPage(QString windowtitle,QString url);

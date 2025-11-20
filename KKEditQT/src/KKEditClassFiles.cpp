@@ -388,11 +388,15 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	if((this->prefsNoOpenduplicate==true) && (this->checkForOpenFile(fileinfo.canonicalFilePath())==true))
 		{
 			if(correctedln>0)
-				this->gotoLine(correctedln);
+				{
+					this->gotoLine(correctedln);
+					if(this->sessionBusy==false)
+						this->activateMainWindow();
+				}
 			return(true);
 		}
 
-			int ci=this->mainNotebook->currentIndex()+1;
+	int ci=this->mainNotebook->currentIndex()+1;
 	retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
 	if(retval==true)
 		{
@@ -448,6 +452,9 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	pd.tabNumber=this->mainNotebook->currentIndex();
 	pd.what=DOLOAD;
 	this->runAllPlugs(pd);
+
+	if(this->sessionBusy==false)
+		this->activateMainWindow();
 
 	return(retval);
 }

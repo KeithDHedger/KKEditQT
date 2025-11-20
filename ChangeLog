@@ -1,4 +1,8 @@
 1.6.3
+Activate main window when opening file from favourites.
+Activate main window when going to definition from doc viewer.
+Open Link In Source File in docviewer now works much better.
+Added copy text to docviewer context menu.
 Fixed updating docviewer.
 Setting an image type in the dialog box when building docs will enable images, else no images built.
 Removed images from documentation.

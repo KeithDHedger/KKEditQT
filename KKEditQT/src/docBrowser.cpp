@@ -63,13 +63,13 @@ bool docBrowserClass::setToPathOrHTML(QUrl path)
 {
 	QString	ts=path.toString();
 	QString	mime=QMimeDatabase().mimeTypeForFile(ts,QMimeDatabase::MatchDefault).name();
-
 	if(mime.contains("video"))
 		{
 			te->backward();
 			te->forward();
 			return(true);
 		}
+this->mainKKEditClass->currentURL="file://"+ts;
 
 	if(mime.contains("html")==true)
 		{
@@ -102,9 +102,27 @@ bool docBrowserClass::setToPathOrHTML(QUrl path)
 	return(false);
 }
 
+void docBrowserClass::openSrcFile(QString path)
+{
+	QString	str=path;
+	QString	anchor;
+
+	str.remove(QRegularExpression("file:\\/\\/"));
+	anchor=QRegularExpression(R"RX(.*#(.*))RX").match(str).captured(1);
+	str.remove(QRegularExpression(R"RX(#.*$)RX"));
+
+	QString contents=this->mainKKEditClass->runPipeAndCapture(QString("sed -n '/<title>/p' '%1'").arg(str)).simplified();
+
+	contents=QRegularExpression(R"RX(\b([[:alnum:]\._]*)( (Struct|Class|File) Reference| Source File)?</title>)RX").match(contents).captured(1);
+	if(this->mainKKEditClass->goToDefinition(contents)==true)
+		return;
+	else
+		this->mainKKEditClass->openFile("../"+contents,anchor.mid(1).toInt());
+}
+
 void docBrowserClass::createNewWindow(QString path1)
 {
-	QTextBrowser	*te=new QTextBrowser;
+	//QTextBrowser	*te=new QTextBrowser;
 	QVBoxLayout	*docvlayout=new QVBoxLayout;
 	QHBoxLayout	*hlayout;
 	QPushButton	*button;
@@ -112,21 +130,22 @@ void docBrowserClass::createNewWindow(QString path1)
 	QRect		rg;
 	QString		path=path1;
 
-	if(QFileInfo(path1).exists()==false)
-		{
-			if(this->winWidget!=NULL)
-				{
-					this->winWidget->close();
-					delete this->te;
-					delete this->winWidget;
-					this->te=NULL;
-					this->winWidget=NULL;
-				}
-			return;
-		}
+//	if(QFileInfo(path1).exists()==false)
+//		{
+//			if(this->winWidget!=NULL)
+//				{
+//					this->winWidget->close();
+//					delete this->te;
+//					delete this->winWidget;
+//					this->te=NULL;
+//					this->winWidget=NULL;
+//				}
+//			return;
+//		}
 
 	if(this->winWidget==NULL)
 		{
+			QTextBrowser	*te=new QTextBrowser;
 			this->winWidget=new QWidget;
 			hlayout=new QHBoxLayout;
 
@@ -138,7 +157,10 @@ void docBrowserClass::createNewWindow(QString path1)
 
 			QDir::setCurrent(QFileInfo(path).path());
 
-			this->setToPathOrHTML(path);
+			if(path1.contains(QRegularExpression("^.*#.*$")))
+				te->setSource(path1);
+			else
+				this->setToPathOrHTML(path);
 
 			te->setOpenExternalLinks(true);
 			te->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -152,13 +174,28 @@ void docBrowserClass::createNewWindow(QString path1)
 	
 			QObject::connect(te,&QWidget::customContextMenuRequested,[this,te](const QPoint &pos)
 				{
-					QMenu	*menu=new QMenu(te);
-					const QUrl linkUrl = te->anchorAt(pos);
+					QMenu		*menu=new QMenu(te);
+					const QUrl	linkUrl = te->anchorAt(pos);
+					QTextCursor	txt=te->textCursor();
+					bool			gotsel=false;
+
+					if(txt.hasSelection()==true)
+						{
+							gotsel=true;
+							QAction	*copyText=menu->addAction("Copy Text");
+							QObject::connect(copyText, &QAction::triggered, [this,txt]()
+								{
+									QGuiApplication::clipboard()->setText(txt.selectedText());
+								});
+						}
+
 			        // Add custom actions
 					if(linkUrl.isValid())
 						{
-							QAction	*openAction=menu->addAction("Open Link In External App");
 							QAction	*copyAction=menu->addAction("Copy Link Address");
+
+							QAction	*openAction=menu->addAction("Open Link In External App");
+							QAction	*openInSrcAction=menu->addAction("Open Link In Source File");
 
 							// Connect the actions
 							QObject::connect(copyAction, &QAction::triggered, [this,te,linkUrl]()
@@ -173,9 +210,25 @@ void docBrowserClass::createNewWindow(QString path1)
 									QDesktopServices::openUrl(QUrl(retval));
 								});
 
+							QObject::connect(openInSrcAction, &QAction::triggered, [this,te,linkUrl]()
+								{
+									QString s;
+									if(linkUrl.isLocalFile()==true)
+										s=QFileInfo(linkUrl.toString()).absoluteFilePath();
+									else
+										s=QFileInfo(this->baseDir+"/"+linkUrl.toString()).absoluteFilePath();
+									this->openSrcFile(s);
+								});
+
 							// Add existing actions to the menu
 							menu->addSeparator(); // Optional: Separator for better appearance
 							menu->exec(te->mapToGlobal(pos));
+							return;
+						}
+					else
+						{
+							if(gotsel==true)
+								menu->exec(te->mapToGlobal(pos));
 							return;
 						}
 				});
@@ -187,6 +240,13 @@ void docBrowserClass::createNewWindow(QString path1)
 					QString	ts=this->urlTofile(link);
 
 					ret=this->setToPathOrHTML(QUrl(ts));
+					QString addfile;
+					if(ts.startsWith("file://"))
+						addfile="";
+					else
+						addfile="file://";
+					this->mainKKEditClass->currentURL=addfile+ts;
+
 					if(ret==true)
 						return;
 					if(link.toString().contains(QRegularExpression(R"RX(.*#.*$)RX")))
@@ -330,7 +390,18 @@ void docBrowserClass::createNewWindow(QString path1)
 	else
 		{
 			QDir::setCurrent(QFileInfo(path).path());
-			this->setToPathOrHTML(path);
+			if(path1.contains(QRegularExpression("^.*#.*$")))
+				this->te->setSource(path1);
+			else
+				this->setToPathOrHTML(path);
+
+			QString addfile;
+			if(path.startsWith("file://"))
+				addfile="";
+			else
+				addfile="file://";
+			this->mainKKEditClass->currentURL=addfile+path;
+
 			this->winWidget->setWindowTitle(this->windowTitle);
 			this->te->reload();
 			this->winWidget->show();

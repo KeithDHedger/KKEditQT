@@ -1706,10 +1706,7 @@ void KKEditClass::buildDocViewer(void)
 #endif
 					if(ret==true)
 						{
-							this->mainWindow->show();
-							this->mainWindow->activateWindow();
-							this->mainWindow->show();
-							this->mainWindow->raise();
+							this->activateMainWindow();
 						}
 				}
 		});
