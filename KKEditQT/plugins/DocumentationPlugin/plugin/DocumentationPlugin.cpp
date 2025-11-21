@@ -298,10 +298,10 @@ void DocumentationPlugin::buildDocset(void)
 
 			settings.sync();
 			myprefs=this->miniPrefsDialog("DocumentationPlugin",QStringList()<<"Project Name"<<"Project Version"<<"Icon Path"<<"Destination Folder",true);
-			myprefs.boxes[0]->setText(projectname);
-			myprefs.boxes[1]->setText(versionbox);
-			myprefs.boxes[2]->setText(iconbox);
-			myprefs.boxes[3]->setText(destdir);
+			myprefs.boxes[0]->setText(projectname.trimmed());
+			myprefs.boxes[1]->setText(versionbox.trimmed());
+			myprefs.boxes[2]->setText(iconbox.trimmed());
+			myprefs.boxes[3]->setText(destdir.trimmed());
 			res=myprefs.theDialog->exec();
 
 			if(res==1)
@@ -448,9 +448,9 @@ void DocumentationPlugin::buildDocumentation(void)
 				}
 
 			myprefs=this->miniPrefsDialog("DocsPrefs",QStringList()<<"Project Name"<<"Project Version"<<"DOT Image Type",true);
-			myprefs.boxes[0]->setText(projectname);
-			myprefs.boxes[1]->setText(versionbox);
-			myprefs.boxes[2]->setText(dotimagetype);
+			myprefs.boxes[0]->setText(projectname.trimmed());
+			myprefs.boxes[1]->setText(versionbox.trimmed());
+			myprefs.boxes[2]->setText(dotimagetype.trimmed());
 
 			res=myprefs.theDialog->exec();	
 			if(res==1)

@@ -122,7 +122,6 @@ void docBrowserClass::openSrcFile(QString path)
 
 void docBrowserClass::createNewWindow(QString path1)
 {
-	//QTextBrowser	*te=new QTextBrowser;
 	QVBoxLayout	*docvlayout=new QVBoxLayout;
 	QHBoxLayout	*hlayout;
 	QPushButton	*button;
