@@ -3,16 +3,6 @@
 
 #include "config.h"
 
-#ifdef _BUILDDOCVIEWER_
-#include <QWebEngineView>
-#include <QWebEngineSettings>
-#ifdef _USEQT6_
-#include <QWebEngineContextMenuRequest>
-#else
-#include <QWebEngineContextMenuData>
-#endif
-#endif
-
 #ifdef _ASPELL_
 #include <aspell.h>
 #endif

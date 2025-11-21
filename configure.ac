@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([KKEditQT],[1.6.3],[PROJ],[KKEditQT])
+AC_INIT([KKEditQT],[2.0.0],[PROJ],[KKEditQT])
 
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_CXX
@@ -31,8 +31,6 @@ PKG_CHECK_MODULES(QTPRINTSUPPORT, $QTPRINTSUPPORT_MODULES)
 AC_SUBST(QTPRINTSUPPORT_CFLAGS)
 AC_SUBST(QTPRINTSUPPORT_LIBS)
 
-AC_DEFINE([_USEQT6_], [], [Build Qt6])
-
 QTTERM_MODULES="qtermwidget6 >= 2.0.0"
 PKG_CHECK_MODULES(QTTERM, $QTTERM_MODULES, [gotterm=yes], [:])
 if test "$gotterm" = "yes"; then
@@ -40,23 +38,6 @@ if test "$gotterm" = "yes"; then
 else
 	touch KKEditQT/plugins/TerminalPlugin/pass
 	AC_MSG_NOTICE([No QTermWidget, not building TerminalPlugin])
-fi
-AC_MSG_NOTICE([Using Qt6])
-
-AC_MSG_CHECKING(whether to build doc viewer)
-AC_ARG_ENABLE(docviewer,AS_HELP_STRING([--enable-docviewer],[Build the Doc viewer]),
-    [enable_docviewer=$enableval],
-    [enable_docviewer="no"])
-AC_MSG_RESULT($enable_docviewer)
-
-if test "$enable_docviewer" = "yes"; then
-	WEBENGINEWIDGETS_MODULES="Qt6WebEngineWidgets >= 6.6.0"
-
-	PKG_CHECK_MODULES(WEBENGINEWIDGETS, $WEBENGINEWIDGETS_MODULES)
-	AC_SUBST(WEBENGINEWIDGETS_CFLAGS)
-	AC_SUBST(WEBENGINEWIDGETS_LIBS)
-
-	AC_DEFINE([_BUILDDOCVIEWER_], [], [Build doc viewer])
 fi
 
 AC_MSG_CHECKING(whether to include spell checker (aspell))

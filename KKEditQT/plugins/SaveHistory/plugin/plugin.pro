@@ -1,6 +1,6 @@
 TEMPLATE        = lib
 CONFIG         += plugin
-QT             += widgets printsupport webenginewidgets
+QT             += widgets printsupport
 HEADERS         = SaveHistory.h
 SOURCES         = SaveHistory.cpp
 TARGET          = $$qtLibraryTarget(SaveHistory)

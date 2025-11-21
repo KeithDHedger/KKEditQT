@@ -23,14 +23,7 @@
 
 enum {MENUNAME=0,COMMAND,SHOWITEM,SEARCHALL,SETTINGSCNT};
 
-//#include "../../../../config.h"
 #include "../../../src/kkeditqtPluginInterface.h"
-
-//struct miniPrefsReturnStruct
-//{
-//	QDialog					*theDialog;
-//	QHash<int,QLineEdit*>	boxes;
-//};
 
 class DocumentationPlugin : public QObject, kkEditQTPluginInterface
 {

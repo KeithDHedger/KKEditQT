@@ -345,18 +345,10 @@ class KKEditClass : public QObject
 
 //docviewer vars
 		QString						currentURL;
-#ifdef _BUILDDOCVIEWER_
-		QMainWindow					*docView=NULL;
-		QWebEngineView				*webEngView=NULL;
-		bool							docviewerVisible=false;
-		MenuItemClass				*toggleDocViewMenuItem;
-		QAction						*openInNewTab=NULL;
-#else
 		docBrowserClass				*docView=NULL;
 		bool							docviewerVisible=false;
 		MenuItemClass				*toggleDocViewMenuItem;
 //docviewer functions
-#endif
 		void							buildDocViewer(void);
 		void							setDocMenu(void);
 //		bool							docViewLinkTrap(const QUrl url);

@@ -1,6 +1,6 @@
 TEMPLATE        = lib
 CONFIG         += plugin
-QT             += widgets printsupport webenginewidgets
+QT             += widgets printsupport
 HEADERS         = Favourites.h
 SOURCES         = Favourites.cpp
 TARGET          = $$qtLibraryTarget(Favourites)

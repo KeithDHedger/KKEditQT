@@ -122,20 +122,11 @@ bool KKEditClass::findDefInFolders(QString searchtxt,bool singlepage)
 					searchdialog->setAttribute(Qt::WA_DeleteOnClose,true);
 					searchcombobox=new QComboBox;
 
-#ifndef _USEQT6_
-					QObject::connect(searchcombobox,QOverload<int>::of(&QComboBox::activated),[this,gottaglist](int index)
-						{
-							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
-							this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
-							
-						});
-#else
 					QObject::connect(searchcombobox,&QComboBox::activated,[this,gottaglist](int index)
 						{
 							this->history->pushToBackList(this->getDocumentForTab(-1)->getCurrentLineNumber(),this->getDocumentForTab(-1)->getFilePath());
 							this->openFile(gottaglist.at(index).tagFilepath,gottaglist.at(index).lineNumber,false,false);
 						});
-#endif
 
 					for(int h=0;h<gottaglist.count();h++)
 						searchcombobox->addItem(gottaglist.at(h).tagType+": "+gottaglist.at(h).tagName+" > "+QFileInfo(gottaglist.at(h).tagFilepath).fileName()+QString(":%1").arg(gottaglist.at(h).lineNumber));

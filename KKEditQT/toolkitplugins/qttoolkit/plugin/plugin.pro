@@ -1,9 +1,9 @@
 TEMPLATE        = lib
 CONFIG         += plugin
 QT             += gui core
-HEADERS         = qt5toolkit.h
-SOURCES         = qt5toolkit.cpp
-TARGET          = $$qtLibraryTarget(qt5toolkit)
+HEADERS         = qttoolkit.h
+SOURCES         = qttoolkit.cpp
+TARGET          = $$qtLibraryTarget(qttoolkit)
 DESTDIR         = plugins
 
 documentation.path = $${target.path}/docs

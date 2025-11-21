@@ -1,3 +1,10 @@
+2.0.0
+Fixed about box text.
+Fixed segfault at start.
+Removed dep on QWebEngine* from plugins.
+No longer supports Qt5.
+No longer supports QWebEngine for viewing doc's ( too heavy ).
+
 1.6.3
 Activate main window when opening file from favourites.
 Activate main window when going to definition from doc viewer.

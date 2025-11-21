@@ -1,6 +1,6 @@
 TEMPLATE        = lib
 CONFIG         += plugin
-QT             += widgets printsupport webenginewidgets
+QT             += widgets printsupport
 HEADERS         = OpenUri.h
 SOURCES         = OpenUri.cpp
 TARGET          = $$qtLibraryTarget(OpenUri)

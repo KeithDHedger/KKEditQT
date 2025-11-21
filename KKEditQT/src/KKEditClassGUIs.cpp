@@ -237,19 +237,11 @@ void KKEditClass::buildPrefsWindow(void)
 			qobject_cast<QComboBox*>(prefsOtherWidgets[THEMECOMBO])->addItem(QFileInfo(s).baseName());
 		}
 
-#ifndef _USEQT6_
-	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
-		{
-			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
-			this->prefStyleNameHold=this->prefStyleName;
-		});
-#else
 	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),&QComboBox::activated,[this](int index)
 		{
 			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
 			this->prefStyleNameHold=this->prefStyleName;
 		});
-#endif
 }
 
 //global
@@ -262,19 +254,12 @@ void KKEditClass::buildPrefsWindow(void)
 			QString	s=it.next();
 			qobject_cast<QComboBox*>(prefsOtherWidgets[THEMECOMBO])->addItem(QFileInfo(s).baseName());
 		}
-#ifndef _USEQT6_
-	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
-		{
-			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
-			this->prefStyleNameHold=this->prefStyleName;
-		});
-#else
+
 	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),&QComboBox::activated,[this](int index)
 		{
 			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
 			this->prefStyleNameHold=this->prefStyleName;
 		});
-#endif
 }
 	qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->setCurrentText(this->prefStyleName);
 
@@ -284,17 +269,10 @@ void KKEditClass::buildPrefsWindow(void)
 	prefsOtherWidgets[SHORTCUTSCOMBO]->setWhatsThis(whatIsPrefsOther[SHORTCUTSCOMBO]);
 	this->resetKeyCombo();
  
-#ifndef _USEQT6_
-	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[SHORTCUTSCOMBO]),QOverload<int>::of(&QComboBox::activated),[this](int index)
-		{
-			this->buildGetKeyShortCut(index);
-		});
-#else
 	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[SHORTCUTSCOMBO]),&QComboBox::activated,[this](int index)
 		{
 			this->buildGetKeyShortCut(index);
 		});
-#endif
 
 	widgetlabel=new QLabel("Set Keyboard Shortcuts:");
 	table->addWidget(widgetlabel,posy,0);
@@ -424,18 +402,10 @@ void KKEditClass::buildPrefsWindow(void)
 				qobject_cast<QComboBox*>(prefsOtherWidgets[PREFSPAGESIZE])->addItem(ps.name());
 		}
 
-
-#ifndef _USEQT6_
-	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE]),QOverload<int>::of(&QComboBox::activated),[this](int index)
-		{
-			this->prefsPageSize=qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE])->currentIndex();
-		});
-#else
 	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE]),&QComboBox::activated,[this](int index)
 		{
 			this->prefsPageSize=qobject_cast<QComboBox*>(this->prefsOtherWidgets[PREFSPAGESIZE])->currentIndex();
 		});
-#endif
 
 	qobject_cast<QComboBox*>(prefsOtherWidgets[PREFSPAGESIZE])->setCurrentIndex(this->prefsPageSize);
 
@@ -790,34 +760,20 @@ void KKEditClass::buildFindReplace(void)
 	this->frSwitches[FRREPLACEALL]=new QCheckBox("Replace All");
 	this->frSwitches[FRREPLACEALL]->setChecked(this->replaceAll);
 
-#ifndef _USEQT6_
-	QObject::connect(this->frSwitches[FRREPLACEALL],&QCheckBox::stateChanged,[this](int state)
-		{
-			this->setSearchPrefs();
-		});
-#else
 	QObject::connect(this->frSwitches[FRREPLACEALL],&QCheckBox::checkStateChanged,[this](Qt::CheckState state)
 		{
 			this->setSearchPrefs();
 		});
-#endif
 
 	hlayout->addWidget(this->frSwitches[FRREPLACEALL]);
 //search back
 	this->frSwitches[FRSEARCHBACK]=new QCheckBox("Search Backwards");
 	this->frSwitches[FRSEARCHBACK]->setChecked(this->searchBack);
 
-#ifndef _USEQT6_
-	QObject::connect(this->frSwitches[FRSEARCHBACK],&QCheckBox::stateChanged,[this](int state)
-		{
-			this->setSearchPrefs();
-		});
-#else
 	QObject::connect(this->frSwitches[FRSEARCHBACK],&QCheckBox::checkStateChanged,[this](Qt::CheckState state)
 		{
 			this->setSearchPrefs();
 		});
-#endif
 
 	hlayout->addWidget(this->frSwitches[FRSEARCHBACK]);
 
@@ -1092,15 +1048,8 @@ void KKEditClass::buildMainGui(void)
 	else
 		this->toggleStatusBarMenuItem=this->makeMenuItemClass(VIEWMENU,"Show Status Bar",0,NULL,SHOWTOOLOUTMENUNAME,TOGGLESTATUSBARMENUITEM);
 
-#ifdef _BUILDDOCVIEWER_
-//toggle docviewer
-	this->toggleDocViewMenuItem=this->makeMenuItemClass(VIEWMENU,"Show Docviewer",0,NULL,SHOWDOCVIEWERMENUNAME,TOGGLEDOCVIEWMENUITEM);
-//docviewer to front
-	menuItemSink=this->makeMenuItemClass(VIEWMENU,"Raise Docviewer",0,NULL,RAISEDOCVIEWERMENUNAME,RAISEDOCVIEWMENUITEM);
-#else
 	this->toggleDocViewMenuItem=this->makeMenuItemClass(VIEWMENU,"Show Docviewer",0,NULL,SHOWDOCVIEWERMENUNAME,TOGGLEDOCVIEWMENUITEM);
 	menuItemSink=this->makeMenuItemClass(VIEWMENU,"Raise Docviewer",0,NULL,RAISEDOCVIEWERMENUNAME,RAISEDOCVIEWMENUITEM);
-#endif
 
 	this->viewMenu->addSeparator();
 
@@ -1237,17 +1186,10 @@ void KKEditClass::buildTools(void)
 	this->toolSelect=new QComboBox;
 	this->toolSelect->setObjectName(TOOLCOMBOBOX);
 
-#ifndef _USEQT6_
-	QObject::connect(qobject_cast<QComboBox*>(this->toolSelect),QOverload<int>::of(&QComboBox::activated),[this](int index)
-		{
-			this->setToolsData(index,(QWidget*)this->toolSelect);
-		});
-#else
 	QObject::connect(qobject_cast<QComboBox*>(this->toolSelect),&QComboBox::activated,[this](int index)
 		{
 			this->setToolsData(index,(QWidget*)this->toolSelect);
 		});
-#endif
 
 	mainvbox->addWidget(this->toolSelect);
 	this->rebuildToolsMenu();
@@ -1304,51 +1246,29 @@ void KKEditClass::buildTools(void)
 	check=new QCheckBox("Run Tool In Terminal");
 	check->setObjectName(TOOLRUNINTERM);
 
-#ifndef _USEQT6_
-	QObject::connect(check,&QCheckBox::stateChanged,[this,check](int state)
-		{
-			this->setToolsData(state,(QWidget*)check);
-		});
-#else
 	QObject::connect(check,&QCheckBox::checkStateChanged,[this,check](Qt::CheckState state)
 		{
 			this->setToolsData(state,(QWidget*)check);
 		});
-#endif
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 //show html doc
 	check=new QCheckBox("Show HTML Doc");
 	check->setObjectName(TOOLSHOWDOC);
 
-#ifndef _USEQT6_
-	QObject::connect(check,&QCheckBox::stateChanged,[this,check](int state)
-		{
-			this->setToolsData(state,(QWidget*)check);
-		});
-#else
 	QObject::connect(check,&QCheckBox::checkStateChanged,[this,check](Qt::CheckState state)
 		{
 			this->setToolsData(state,(QWidget*)check);
 		});
-#endif
-
 
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 //run sync
 	check=new QCheckBox("Run Tool Synchronously");
 	check->setChecked(true);
 
-#ifndef _USEQT6_
-	QObject::connect(check,&QCheckBox::stateChanged,[this,check](int state)
-		{
-			this->setToolsData(state,(QWidget*)check);
-		});
-#else
 	QObject::connect(check,&QCheckBox::checkStateChanged,[this,check](Qt::CheckState state)
 		{
 			this->setToolsData(state,(QWidget*)check);
 		});
-#endif
 
 	check->setObjectName(TOOLRUNSYNC);
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
@@ -1652,126 +1572,7 @@ void KKEditClass::buildGetKeyShortCut(int index)
 
 void KKEditClass::buildDocViewer(void)
 {
-#ifdef _BUILDDOCVIEWER_
-	QVBoxLayout	*docvlayout=new QVBoxLayout;
-	QHBoxLayout	*dochlayout=new QHBoxLayout;
-	QWidget		*widget;
-	QLineEdit	*findbox;
-	QPushButton	*button;
-	QRect		r;
-	QAction		*dump;
-
-	this->docView=new QMainWindow(mainWindow);
-
-	r=this->prefs.value("app/viewergeometry",QVariant(QRect(100,100,800,600))).value<QRect>();
-	this->docView->setGeometry(r);
-	docvlayout->setContentsMargins(0,0,0,0);
-	widget=new QWidget;
-	widget->setLayout(docvlayout);
-	this->docView->setCentralWidget(widget);
-
-	this->webEngView=new QWebEngineView(widget);
-
-	this->openInNewTab=this->webEngView->pageAction(QWebEnginePage::OpenLinkInNewTab);
-	this->openInNewTab->setText("Show In Source File");
-
-//don't want these menu items.
-	dump=this->webEngView->pageAction(QWebEnginePage::OpenLinkInNewWindow);
-	dump->setVisible(false);
-	dump=this->webEngView->pageAction(QWebEnginePage::SavePage);
-	dump->setVisible(false);
-	dump=this->webEngView->pageAction(QWebEnginePage::DownloadLinkToDisk);
-	dump->setVisible(false);
-
-	QObject::connect(this->openInNewTab,&QAction::triggered,[this]()
-		{
-
-#ifdef _USEQT6_
-			const auto & contextMenuData= this->webEngView->lastContextMenuRequest();
-#else
-			const auto & contextMenuData = this->webEngView->page()->contextMenuData();
-#endif
-
-#ifdef _USEQT6_
-			if(contextMenuData->linkUrl().isValid())
-				{
-					this->currentURL=contextMenuData->linkUrl().toString();
-					bool ret=this->docViewLinkTrap(contextMenuData->linkUrl());//TODO//needs improving
-
-#else
-			if(contextMenuData.isValid() && contextMenuData.linkUrl().isValid())
-				{
-					this->currentURL=contextMenuData.linkUrl().toString();
-					bool ret=this->docViewLinkTrap(contextMenuData.linkUrl());//TODO//needs improving
-#endif
-					if(ret==true)
-						{
-							this->activateMainWindow();
-						}
-				}
-		});
-
-	QObject::connect(this->webEngView,&QWebEngineView::urlChanged,[this](const QUrl url)
-		{
-			this->currentURL=url.toString();
-		});
-
-	this->webEngView->setUrl(QUrl("file://" DATADIR "/help/index.html"));
-
-	docvlayout->addWidget(this->webEngView);
-
-	button=new QPushButton(QIcon::fromTheme("go-previous"),"Back");
-	QObject::connect(button,&QPushButton::clicked,[=]() {this->webEngView->page()->triggerAction(QWebEnginePage::Back);});
-
-	dochlayout->addSpacing(6);
-	dochlayout->addWidget(button);
-	dochlayout->addStretch(1);
-
-	findbox=new QLineEdit;
-	QObject::connect(findbox,&QLineEdit::returnPressed,[this,findbox]()
-		{
-			this->htmlURI=QString("https://duckduckgo.com/?q=%1&ia=web").arg(findbox->text());
-			this->showWebPage("Results for: " + findbox->text(),this->htmlURI);
-		});
-
-	button=new QPushButton(QIcon::fromTheme("edit-find"),"Find");
-	QObject::connect(button,&QPushButton::clicked,[this,findbox]()
-		{
-			this->htmlURI=QString("https://duckduckgo.com/?q=%1&ia=web").arg(findbox->text());
-			this->showWebPage("Results for: " + findbox->text(),this->htmlURI);
-		});
-
-	dochlayout->addWidget(button);
-	dochlayout->addWidget(findbox);
-
-	button=new QPushButton(QIcon::fromTheme("go-down"),"Down");
-	QObject::connect(button,&QPushButton::clicked,[this,findbox]()
-		{
-			this->webEngView->page()->findText(findbox->text());
-		});
-	dochlayout->addWidget(button);
-
-	button=new QPushButton(QIcon::fromTheme("go-up"),"Up");
-	QObject::connect(button,&QPushButton::clicked,[this,findbox]()
-		{
-			this->webEngView->page()->findText(findbox->text(),QWebEnginePage::FindBackward);
-		});
-	dochlayout->addWidget(button);
-
-	dochlayout->addStretch(1);
-
-	button=new QPushButton(QIcon::fromTheme("go-next"),"Forward");
-	dochlayout->addWidget(button);
-	QObject::connect(button,&QPushButton::clicked,[=]() {this->webEngView->page()->triggerAction(QWebEnginePage::Forward);});
-
-	dochlayout->addSpacing(6);
-	docvlayout->addLayout(dochlayout);
-	docvlayout->addSpacing(6);
-
-	this->docView->hide();
-#else
 	this->docView=new docBrowserClass(this);
-#endif
 }
 
 int KKEditClass::yesNoDialog(QString txt,QString info)

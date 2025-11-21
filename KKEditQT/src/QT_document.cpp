@@ -868,11 +868,7 @@ void DocumentClass::dragMoveEvent(QDragMoveEvent *event)
 	if((event->mimeData()->hasUrls()==true) || (event->mimeData()->hasText()==true))
 		{
 			event->accept();
-#ifdef _USEQT6_
 			cursor=this->cursorForPosition(event->position().toPoint());
-#else
-			cursor=this->cursorForPosition(event->pos());
-#endif
 			this->setTextCursor(cursor);
 		}
 	else
@@ -900,11 +896,7 @@ void DocumentClass::dropEvent(QDropEvent* event)
 							QString			content=QString::fromUtf8(file.readAll());
 							QMimeDatabase	db;
 							QTextCursor		cursor;
-#ifdef _USEQT6_
 							cursor=this->cursorForPosition(event->position().toPoint());
-#else
-							cursor=this->cursorForPosition(event->pos());
-#endif
 							cursor.beginEditBlock();
 								cursor.insertText(content);
 								this->setFilePrefs();
@@ -929,11 +921,8 @@ void DocumentClass::dropEvent(QDropEvent* event)
 void DocumentClass::setBMFromLineBar(QMouseEvent *event)
 {
 	QTextCursor	cursor;
-#ifdef _USEQT6_
-			cursor=this->cursorForPosition(event->position().toPoint());
-#else
-			cursor=this->cursorForPosition(event->pos());
-#endif
+
+	cursor=this->cursorForPosition(event->position().toPoint());
 	this->mainKKEditClass->handleBMMenu(this,TOGGLEBOOKMARKMENUITEM,cursor);
 	this->highlightCurrentLine();
 }

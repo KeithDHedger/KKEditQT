@@ -2,89 +2,11 @@
 
 #©keithhedger Sat 15 Jun 13:51:13 BST 2024 kdhedger68713@gmail.com
 
-echo "Finding qmakes ..."
-
-:>./toolspath
-
-places=$(find /usr/lib* /usr/bin -iname qmake 2>/dev/null |tr '\n' ' ')
-for arg in $places
-	do
-		echo "$arg uses QT Version " $($arg -v|grep -i "Qt version"|awk '{print $4}')
-	done
-echo
-select arg in  Cancel $places
-	do
-		if [[ $arg = "Cancel" ]];then exit 0;fi
-		break
-	done
-
-echo "Creating toolspath file ..."
-echo "You can re run this script any time or manually alter the 'toolspath' file to suit"
-echo "File 'toolpaths' contains:"
-echo "QMAKEPATH=$arg" >> ./toolspath
-x=$($arg -v 2>/dev/null |grep -i "Qt version"|awk '{print $4}')
-echo "USEQTVERSION=${x:0:1}"  >> ./toolspath
-echo "export QMAKEPATH USEQTVERSION" >> ./toolspath
-
-cat ./toolspath
-exit 0
-
-echo $arg
-
-places=$(find /usr/lib* /usr/bin -iname qmake 2>/dev/null |tr '\n' ' ')
-select arg in  Cancel $places
-	do
-		if [[ $arg = "Cancel" ]];then exit 0;fi
-		break
-	done
-
-echo $arg
-
-
-
-
-
-
-
-
-
-
-exit 0
-
-echo "Creating default ..."
-
-
-
-
-
-
-
-
-
-
-
-
-echo "QMAKEPATH=$(which qmake)" >> ./toolspath
-if [ $(moc -v|awk '{print $2}'|cut -d . -f 1) -eq 5 ];then
-	echo "USEQTVERSION=5" >> ./toolspath
-else
-	echo "USEQTVERSION=6" >> ./toolspath
+QMAKEPATH="$(qtchooser -run-tool=qmake -qt=qt6 -query QT_INSTALL_BINS)/qmake"
+if [[ ! -e "${QMAKEPATH}" ]];then
+	echo "Can't find QT6 version of qmake please set QMAKEPATH in ./toolspath manually, or install QT6."
+	exit 1
 fi
-echo "export QMAKEPATH USEQTVERSION" >> ./toolspath
-echo "If you have both Qt5 and Qt6 installed the default paths may need altering depending on what version of Qt you want to build against."
-echo "So manually set:"
-echo "QMAKEPATH=/path/to/qmake/binary"
-echo "Force use of Qt Version ( 5 or 6 )"
-echo "USEQTVERSION=5"
-echo "Then export them"
-echo "export QMAKEPATH USEQTVERSION"
-echo "This will vary depending on if you have BOTH qt5 and qt6 installed."
-echo "Possible locations:"
-echo "Qt6: /usr/lib64/qt6/bin/qmake /usr/lib64/qt6/libexec/moc"
-echo "Qt5: /usr/lib64/qt5/bin/qmake /usr/lib64/qt5/bin/moc"
-echo "Different distros put them in different places."
-echo "If you decide to change versions you MUST do a make distclean, as some Qt5 binarys are NOT binary compatable with Qt6"
-. ./toolspath
-echo "Path to qmake binary:$QMAKEPATH"
-echo "Using Qt version $USEQTVERSION"
-read -p "Press any key to continue, or take this oppurtunity to adjust toolspath file ... "
+
+echo "QMAKEPATH=$QMAKEPATH" > ./toolspath
+echo "export QMAKEPATH" >> ./toolspath

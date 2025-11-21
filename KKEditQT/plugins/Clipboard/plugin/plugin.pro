@@ -1,6 +1,6 @@
 TEMPLATE        = lib
 CONFIG         += plugin
-QT             += widgets printsupport webenginewidgets
+QT             += widgets printsupport
 HEADERS         = Clipboard.h
 SOURCES         = Clipboard.cpp
 TARGET          = $$qtLibraryTarget(Clipboard)

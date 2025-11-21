@@ -69,10 +69,6 @@ KKEditClass::~KKEditClass()
 	system(QString("rm %1/* 2>/dev/null").arg(this->tmpFolderName).toStdString().c_str());/**/
 	system(QString("rmdir %1 2>/dev/null").arg(this->tmpFolderName).toStdString().c_str());
 
-#ifdef _BUILDDOCVIEWER_
-	if(this->webEngView!=NULL)
-		delete this->webEngView;
-#endif
 	if(this->docView!=NULL)
 		delete this->docView;
 }
@@ -446,12 +442,13 @@ void KKEditClass::initApp(int argc,char** argv)
 			if((this->queueID=msgget(this->sessionID,IPC_CREAT|0660))==-1)
 				fprintf(stderr,"Can't create message queue, scripting wont work :( ...\n");
 		}
-	this->checkMessages=new QTimer();
 
+	this->checkMessages=new QTimer();
 	QObject::connect(this->checkMessages,&QTimer::timeout,[this]()
 		{
 			this->doTimer();
 		});
+
 	this->checkMessages->start(this->prefsMsgTimer);
 	this->theme->loadTheme(this->prefStyleName);
 	this->buildMainGui();
@@ -459,13 +456,9 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->buildToolOutputWindow();
 	this->loadPlugins();
 
-#ifdef _BUILDDOCVIEWER_
 	this->buildDocViewer();
-#else
-	this->buildDocViewer();
-#endif
-
 	this->buildFindReplace();
+
 #ifdef _ASPELL_
 	AspellCanHaveError	*possible_err;
 	this->aspellConfig=new_aspell_config();
@@ -694,14 +687,6 @@ void KKEditClass::writeExitData(void)
 			rf.setWidth(rf.width()-(rf.width()-rg.width()));
 			this->prefs.setValue("app/geometry",rf);
 		}
-
-#ifdef _BUILDDOCVIEWER_
-	rg=this->docView->geometry();//TODO//
-	rf=this->docView->frameGeometry();//TODO//
-	rf.setHeight(rf.height()-(rf.height()-rg.height()));
-	rf.setWidth(rf.width()-(rf.width()-rg.width()));
-	this->prefs.setValue("app/viewergeometry",rf);
-#endif
 
 	this->prefs.setValue("editor/funcsort",this->prefsFunctionMenuLayout);
 	this->prefs.setValue("editor/prefsdepth",this->prefsDepth);
@@ -1271,49 +1256,25 @@ void KKEditClass::runCLICommands(int quid)
 
 void KKEditClass::setDocMenu(void)
 {
-#ifdef _BUILDDOCVIEWER_
-	if(this->docView->isVisible()==true)//ugly hack!!//
+	if((this->docView!=NULL) && (this->docView->winWidget!=NULL))
 		{
-			this->toggleDocViewMenuItem->setText("Hide Docviewer");
-			this->docviewerVisible=true;
+			if(this->docView->winWidget->isVisible()==true)//ugly hack!!//
+				{
+					this->toggleDocViewMenuItem->setText("Hide Docviewer");
+					this->docviewerVisible=true;
+				}
+			else
+				{
+					this->toggleDocViewMenuItem->setText("Show Docviewer");
+					this->docviewerVisible=false;
+				}
 		}
-	else
-		{
-			this->toggleDocViewMenuItem->setText("Show Docviewer");
-			this->docviewerVisible=false;
-		}
-#else
-	if(this->docView->winWidget->isVisible()==true)//ugly hack!!//
-		{
-			this->toggleDocViewMenuItem->setText("Hide Docviewer");
-			this->docviewerVisible=true;
-		}
-	else
-		{
-			this->toggleDocViewMenuItem->setText("Show Docviewer");
-			this->docviewerVisible=false;
-		}
-#endif
 }
 
 void KKEditClass::showWebPage(QString windowtitle,QString url)
 {
-#ifdef _BUILDDOCVIEWER_
-	if(windowtitle.isEmpty()==false)
-		this->docView->setWindowTitle(windowtitle);
-
-	this->webEngView->load(QUrl::fromUserInput(url));
-	this->docView->setWindowState(Qt::WindowNoState);//TODO//doesnt work
-	this->setDocMenu();
-	this->docView->show();
-	this->docView->activateWindow();
-	this->docView->raise();
-
-#else
 	this->docView->windowTitle=windowtitle;
 	this->docView->createNewWindow(url);
-//	QDesktopServices::openUrl(QUrl(url));
-#endif
 }
 
 void KKEditClass::printDocument(void)

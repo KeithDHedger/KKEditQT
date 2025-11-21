@@ -119,7 +119,6 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 							this->tc.insertText(res);
 						}
 				});
-			//qDebug()<<j<<taglist.at(j);
 			this->mainKKEditClass->pluginMenu->addMenu(htmlContextMenu);
 		}
 }

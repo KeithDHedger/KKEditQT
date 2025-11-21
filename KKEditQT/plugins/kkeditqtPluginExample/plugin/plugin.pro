@@ -1,6 +1,6 @@
 TEMPLATE        = lib
 CONFIG         += plugin
-QT             += widgets printsupport webenginewidgets
+QT             += widgets printsupport
 HEADERS         = kkeditqtPluginExample.h
 SOURCES         = kkeditqtPluginExample.cpp
 TARGET          = $$qtLibraryTarget(kkeditqtPluginExample)

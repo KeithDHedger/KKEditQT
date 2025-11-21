@@ -614,20 +614,7 @@ void KKEditClass::doViewMenuItems(MenuItemClass *mc)
 			case TOGGLEDOCVIEWMENUITEM:
 				if(this->docView==NULL)
 					return;
-#ifdef _BUILDDOCVIEWER_
-				this->docviewerVisible=!this->docviewerVisible;
-				if(this->docviewerVisible)
-					{
-						this->toggleDocViewMenuItem->setText("Hide Docviewer");
-						this->docView->show();
-						this->docView->activateWindow();
-					}
-				else
-					{
-						this->toggleDocViewMenuItem->setText("Show Docviewer");
-						this->docView->hide();
-					}
-#else
+
 				if((this->docView==NULL) || (this->docView->winWidget==NULL))
 					return;
 				this->docviewerVisible=!this->docviewerVisible;
@@ -642,25 +629,18 @@ void KKEditClass::doViewMenuItems(MenuItemClass *mc)
 						this->toggleDocViewMenuItem->setText("Show Docviewer");
 						this->docView->winWidget->hide();
 					}
-#endif
 				break;
 
 			case RAISEDOCVIEWMENUITEM:
 				if(this->docView==NULL)
 					return;
-#ifdef _BUILDDOCVIEWER_
-				this->docviewerVisible=true;
-				this->toggleDocViewMenuItem->setText("Hide Docviewer");
-				this->docView->show();
-				this->docView->activateWindow();
-#else
+
 				if((this->docView==NULL) || (this->docView->winWidget==NULL))
 					return;
 				this->docviewerVisible=true;
 				this->toggleDocViewMenuItem->setText("Hide Docviewer");
 				this->docView->winWidget->show();
 				this->docView->winWidget->activateWindow();
-#endif
 				break;
 
 			case TOGGLELINENUMBERSMENUITEM:
@@ -1010,9 +990,8 @@ void KKEditClass::doTimer(void)
 	int			retcode=0;
 	msgStruct	buffer;
 
-#ifdef _BUILDDOCVIEWER_
 	this->setDocMenu();
-#endif
+
 	this->toolWindowVisible=this->toolOutputWindow->isVisible();
 	if(this->toolWindowVisible==true)
 		this->toggleToolWindowMenuItem->setText("Hide Tool Output");
@@ -1766,78 +1745,6 @@ void KKEditClass::doOddButtons(int what)
 				break;
 		}
 }
-
-//bool KKEditClass::docViewLinkTrap(const QUrl url)
-//{
-//	QString	str=url.toString();
-//	QString	finalstring;
-//	int		linenum=0;
-//	int		stringcnt=0;
-//
-//	str.remove(QRegularExpression("file:\\/\\/"));
-//	str.remove("_source.html");
-//	str.remove(QRegularExpression("\\/html"));
-//	str.remove(QRegularExpression("\\.html$"));
-//	linenum=QRegularExpression("#l([[:digit:]]*)").match(str).captured(1).toInt();
-//	str.remove(QRegularExpression("#l[[:digit:]]*"));
-//
-//	while(stringcnt<str.length())
-//		{
-//			if(str.at(stringcnt)=='_')
-//				{
-//					stringcnt++;
-//					if(str.at(stringcnt).isLetter())
-//						{
-//							finalstring+=str.at(stringcnt++).toUpper();
-//							continue;
-//						}
-//					switch(str.at(stringcnt).unicode())
-//						{
-//							case '_':
-//								finalstring+="_";
-//								break;
-//							case '8':
-//								finalstring+=".";
-//							case '\n':
-//								break;
-//						}
-//				}
-//			else
-//				{
-//					finalstring+=str.at(stringcnt);
-//				}
-//			stringcnt++;
-//		}
-//
-//	if(this->openFile(finalstring,linenum)==true)
-//		{
-//			return(true);
-//		}
-//	else
-//		{
-//			QString datafile=QRegularExpression("file://(.*\\.html)#.*$").match(url.toString()).captured(1);
-//			QString lnk=QRegularExpression("file://(.*)\\.html#(.*)$").match(url.toString()).captured(2);
-//			if(datafile.isEmpty()==false)
-//				{
-//					str=this->runPipeAndCapture(QString("cat %1|sed -n 's|^.*%2\">\\(.*\\)</a>.*$|\\1|p'|head -n1").arg(datafile).arg(lnk)).remove("\n");
-//					if(goToDefinition(str)==true)
-//						return(true);	
-//				}
-//
-//			if(QRegularExpression(".*/(struct)(.*)$").match(str).captured(1).compare("struct")==0)
-//				{
-//					if(goToDefinition(QRegularExpression(".*/(struct)(.*)$").match(finalstring).captured(2))==true)
-//						return(true);
-//				}
-//
-//			if(QRegularExpression(".*/(class)(.*)$").match(str).captured(1).compare("class")==0)
-//				{
-//					if(goToDefinition(QRegularExpression(".*/(class)(.*)$").match(finalstring).captured(2))==true)
-//						return(true);
-//				}
-//		}
-//	return(false);
-//}
 
 void KKEditClass::fileChangedOnDisk(const QString &path)
 {

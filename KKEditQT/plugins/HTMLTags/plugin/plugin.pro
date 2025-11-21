@@ -1,6 +1,6 @@
 TEMPLATE        = lib
 CONFIG         += plugin
-QT             += widgets printsupport webenginewidgets
+QT             += widgets printsupport
 HEADERS         = HTMLTags.h
 SOURCES         = HTMLTags.cpp
 TARGET          = $$qtLibraryTarget(HTMLTags)

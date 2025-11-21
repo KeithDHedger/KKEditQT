@@ -1,6 +1,6 @@
 TEMPLATE        = lib
 CONFIG         += plugin
-QT             += widgets printsupport webenginewidgets
+QT             += widgets printsupport
 HEADERS         = TerminalPlugin.h
 SOURCES         = TerminalPlugin.cpp
 TARGET          = $$qtLibraryTarget(TerminalPlugin)
@@ -20,6 +20,5 @@ INSTALLS += documentation
 INSTALLS += image
 
 CONFIG += install_ok
-#message("QT version =" $$(USEQTVERSION))
 
 unix:!macx: LIBS += -lqtermwidget$$(USEQTVERSION)
