@@ -21,4 +21,4 @@ INSTALLS += image
 
 CONFIG += install_ok
 
-unix:!macx: LIBS += -lqtermwidget$$(USEQTVERSION)
+unix:!macx: LIBS += -lqtermwidget6

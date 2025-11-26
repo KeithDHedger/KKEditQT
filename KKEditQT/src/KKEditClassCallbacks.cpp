@@ -90,7 +90,7 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 					bool	ok;
 					if((sessionnumber!=0) && (mc->getMenuID()!=CURRENTSESSION))
 						{
-							if(sender()->objectName().compare(QUITMENUNAME)!=0)
+							if(mc->objectName().compare(QUITMENUNAME)!=0)
 								{
 									QString	text=QInputDialog::getText(this->mainWindow,"Session Name","Enter Session Name",QLineEdit::Normal,sessionname,&ok);
 									if ((ok==true) && (!text.isEmpty()))
