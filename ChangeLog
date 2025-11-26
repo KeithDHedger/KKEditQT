@@ -1,5 +1,5 @@
 2.0.0
-fixed segfault when saving session.
+Fixed segfault when saving session.
 Fixed about box text.
 Fixed segfault at start.
 Removed dep on QWebEngine* from plugins.
