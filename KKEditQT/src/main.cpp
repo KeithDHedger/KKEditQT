@@ -19,6 +19,7 @@
  */
 
 #include "globalincludes.h"
+#include "MainWindow.h"
 #include "KKEditClass.h"
 #include "SingleInstanceClass.h"
 
@@ -93,6 +94,7 @@ int main (int argc, char **argv)
 			kkedit->application->setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));
 			siapp->isMulti=true;
 			status=kkedit->application->exec();
+
 			delete kkedit;
 			delete siapp;
 			return status;

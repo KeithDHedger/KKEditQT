@@ -165,21 +165,21 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->plugPath=pathtoplug;
 
 	this->cbnum=plugprefs.value("themenumber").toInt();
-	this->TerminalPluginMenu=new QMenu("TerminalPlugin");
+	this->TerminalPluginMenu=new QMenu("Terminals",this->mainKKEditClass->pluginMenu);
 	this->TerminalPluginMenu->setIcon(QIcon(QString("%1/TerminalPlugin.png").arg(QFileInfo(pathtoplug).absolutePath())));
 	this->mainKKEditClass->pluginMenu->addMenu(TerminalPluginMenu);
 
 	this->openOnStart=plugprefs.value("openonstart").toBool();
 	this->saveCurrentVis=plugprefs.value("savevis").toBool();
 
-	this->terminalsMenu=new QMenu("Terminals");
+	this->terminalsMenu=new QMenu("Terminals",this->TerminalPluginMenu);
 	this->addTerminal();
 
-	this->newAct=new QAction("New Terminal ...");
+	this->newAct=new QAction("New Terminal ...",this->TerminalPluginMenu);
 	this->TerminalPluginMenu->addAction(this->newAct);
 	QObject::connect(this->newAct,&QAction::triggered,[this]() { this->doMenuItem(NEWTERM,-1); });
 
-	this->toggleTabsAct=new QAction("Open in Tabs ...");
+	this->toggleTabsAct=new QAction("Open in Tabs ...",this->TerminalPluginMenu);
 	if(plugprefs.value("usetabs").toBool()==true)
 		this->toggleTabsAct->setText("Opening In Tabs ...");
 	else
@@ -187,7 +187,7 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 	{
 		QIcon	itemicon=QIcon::fromTheme("edit-copy");
-		QAction	*act=new QAction(itemicon,"Copy");
+		QAction	*act=new QAction(itemicon,"Copy",this->TerminalPluginMenu);
 		//act->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_C));
 		act->setShortcut(QKeySequence(Qt::CTRL|Qt::SHIFT|Qt::Key_C));
 		QObject::connect(act,&QAction::triggered,[this]()
@@ -199,7 +199,7 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 	{
 		QIcon	itemicon=QIcon::fromTheme("edit-paste");
-		QAction	*act=new QAction(itemicon,"Paste");
+		QAction	*act=new QAction(itemicon,"Paste",this->TerminalPluginMenu);
 		act->setShortcut(QKeySequence(Qt::CTRL|Qt::SHIFT|Qt::Key_V));
 		QObject::connect(act,&QAction::triggered,[this]()
 			{
@@ -210,7 +210,7 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 	{
 		QIcon	itemicon=QIcon::fromTheme("edit-find");
-		QAction	*act=new QAction(itemicon,"Find");
+		QAction	*act=new QAction(itemicon,"Find",this->TerminalPluginMenu);
 		QObject::connect(act,&QAction::triggered,[this]()
 			{
 				this->terminals.at(this->currentTerminal).console->toggleShowSearchBar();
@@ -255,7 +255,7 @@ void TerminalPluginPlug::plugAbout(void)
 void TerminalPluginPlug::plugSettings(void)
 {
 	QDialog		settings(this->mainKKEditClass->pluginPrefsWindow);
-	QComboBox	themebox;
+	QComboBox	themebox(this->mainKKEditClass->pluginPrefsWindow);
 	QVBoxLayout	*vlayout;
 	QHBoxLayout	*hlayout;
 	QLabel		*label;
@@ -276,33 +276,33 @@ void TerminalPluginPlug::plugSettings(void)
 	vlayout=new QVBoxLayout(&settings);
 
 	hlayout=new QHBoxLayout();
-	label=new QLabel("Themes:");
+	label=new QLabel("Themes:",this->mainKKEditClass->pluginPrefsWindow);
 	hlayout->addWidget(label);
 	hlayout->addWidget(&themebox);
 	vlayout->addLayout(hlayout);
 
-	openonstart=new QCheckBox("Open On Start");
+	openonstart=new QCheckBox("Open On Start",this->mainKKEditClass->pluginPrefsWindow);
 	openonstart->setChecked(this->openOnStart);
 	QObject::connect(openonstart,&QCheckBox::checkStateChanged,[this](Qt::CheckState state) { this->openOnStart=(bool)state; });
 
 	vlayout->addWidget(openonstart);
 
-	savevis=new QCheckBox("Save Current State");
+	savevis=new QCheckBox("Save Current State",this->mainKKEditClass->pluginPrefsWindow);
 	savevis->setChecked(this->saveCurrentVis);
 	QObject::connect(openonstart,&QCheckBox::checkStateChanged,[this](Qt::CheckState state) { this->saveCurrentVis=(bool)state; });
 
 	vlayout->addWidget(savevis);
 
-	usetabs=new QCheckBox("Open In Tabs");
+	usetabs=new QCheckBox("Open In Tabs",this->mainKKEditClass->pluginPrefsWindow);
 	usetabs->setChecked(plugprefs.value("usetabs").toBool());
 	vlayout->addWidget(usetabs);
 
 	hlayout=new QHBoxLayout();
-	btn=new QPushButton("Apply");
+	btn=new QPushButton("Apply",this->mainKKEditClass->pluginPrefsWindow);
 	QObject::connect(btn,&QPushButton::clicked,[&settings]() { settings.done(1); });
 	hlayout->addWidget(btn);
 
-	btn=new QPushButton("Cancel");
+	btn=new QPushButton("Cancel",this->mainKKEditClass->pluginPrefsWindow);
 	QObject::connect(btn,&QPushButton::clicked,[&settings]() { settings.done(0); });
 	hlayout->addWidget(btn);
 	vlayout->addLayout(hlayout);
@@ -351,7 +351,7 @@ void TerminalPluginPlug::plugRun(plugData *data)
 
 	if(data->what==DOCONTEXTMENU)
 		{
-			QAction *act=new QAction("CD to Doc Folder ...");
+			QAction *act=new QAction("CD to Doc Folder ...",this->TerminalPluginMenu);
 			data->menu->addAction(act);
 			QObject::connect(act,&QAction::triggered,[this]() { this->doMenuItem(CDTOFOLDER,this->currentTerminal); });
 		}

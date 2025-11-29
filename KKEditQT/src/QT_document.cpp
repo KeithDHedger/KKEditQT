@@ -108,7 +108,9 @@ void DocumentClass::resizeEvent(QResizeEvent *e)
 
 DocumentClass::~DocumentClass()
 {
+	//delete this->highlighter;
 	this->mainKKEditClass->pages.remove(this->pageIndex);
+	delete this->lineNumberArea;
 }
 
 void DocumentClass::updateLineNumberAreaWidth(int newcnt)
@@ -389,9 +391,9 @@ void DocumentClass::updateLineNumberArea(const QRect &rect,int dy)
 		return;
 
 	if(dy)
-		lineNumberArea->scroll(0,dy);
+		this->lineNumberArea->scroll(0,dy);
 	else
-		lineNumberArea->update(0,rect.y(),lineNumberArea->width(),rect.height());
+		this->lineNumberArea->update(0,rect.y(),this->lineNumberArea->width(),rect.height());
 
 	if(rect.contains(viewport()->rect()))
 		updateLineNumberAreaWidth(this->oldBlockCount);
@@ -592,6 +594,13 @@ void DocumentClass::keyReleaseEvent(QKeyEvent *event)
 
 DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(parent)
 {
+	this->setPlainText("");
+
+QTextCursor cursor;
+cursor=this->textCursor();
+cursor.setPosition(0);
+this->setTextCursor(cursor);
+	
 	this->doneHighlightAll=false;
 	this->lastFind=NULL;
 	this->mainKKEditClass=kk;
@@ -599,7 +608,7 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 
 	this->highlighter=new Highlighter(this->document(),this,this->mainKKEditClass);
 	this->setCenterOnScroll(true);
-	lineNumberArea=new LineNumberArea(this);
+	this->lineNumberArea=new LineNumberArea(this);
 
 	QObject::connect(this,&QPlainTextEdit::blockCountChanged,[this](int block)
 		{
@@ -627,8 +636,8 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 			this->setRedo(undo);
 		});
 
-	updateLineNumberAreaWidth(this->oldBlockCount);
-	highlightCurrentLine();
+	this->updateLineNumberAreaWidth(this->oldBlockCount);
+	this->highlightCurrentLine();
 	this->setMouseTracking(true);
 }
 

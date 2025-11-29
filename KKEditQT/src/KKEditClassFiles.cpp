@@ -18,6 +18,8 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "MainWindow.h"
+#include "runExternalProc.h"
 #include "QT_notebook.h"
 #include "QT_recentMenu.h"
 #include "QT_menuitem.h"
@@ -51,22 +53,30 @@ void KKEditClass::runPipeAndCaptureToToolOP(QString command)
 	this->application->processEvents();
 }
 
+#if 1
+QString KKEditClass::runPipeAndCapture(QString command,bool inshell)
+{
+	QString				results="";
+	runExternalProcClass	rp;
+	std::string			com="";
+
+	if(inshell==true)
+		com="sh -c \""+command.toStdString()+"\"";
+	results=QString::fromStdString(rp.runExternalCommands(com,true));
+	return(results);
+}
+#else
 QString KKEditClass::runPipeAndCapture(QString command)
 {
-	QString	dump("");
-	FILE		*fp=NULL;
-	char		line[1024];
+	QString				results="";
+	runExternalProcClass	rp;
+	std::string			com="";
 
-	fp=popen(command.toStdString().c_str(), "r");
-	if(fp!=NULL)
-		{
-			while(fgets(line,1024,fp))
-				dump+=line;
-			pclose(fp);
-		}
-	return(dump);
+	com=command.toStdString();
+	results=QString::fromStdString(rp.runExternalCommands(com,true,"",false));
+	return(results);
 }
-
+#endif
 void KKEditClass::openAsHexDump(void)
 {
 	QString				dump;
@@ -359,14 +369,13 @@ bool KKEditClass::checkForOpenFile(QString filepath)
 
 bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtorecents)//TODO//warn
 {
-	DocumentClass	*doc=new DocumentClass(this);
+	DocumentClass	*doc=NULL;
 	bool				retval=false;
-
 	int				correctedln=linenumber;
 	int				tabnum;
 	QMimeDatabase	db;
 	QMimeType		type;
-	QString			content;
+	QString			content="";
 	plugData			pd;
 	QIcon			tabicon(QString("%1/pixmaps/empty.png").arg(DATADIR));
 
@@ -400,12 +409,23 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
 	if(retval==true)
 		{
-			content=QString::fromUtf8(file.readAll());
+			this->pages[this->newPageIndex]=new DocumentClass(this);
+			doc=this->pages[this->newPageIndex];
+			doc->pageIndex=this->newPageIndex;
+			this->newPageIndex++;
+			doc->dirty=false;
+			//content=QString::fromUtf8(file.readAll());
 			type=db.mimeTypeForFile(fileinfo.canonicalFilePath());
 			doc->mimeType=type.name();
-			doc->setPlainText(content);
-			doc->pageIndex=this->newPageIndex;
-			this->pages[this->newPageIndex++]=doc;
+
+			int cnt=0;
+			content=QString::fromUtf8(file.readAll());
+			while(cnt<content.length())//hack to prevent overwhelming qplaintextedit
+				{
+					doc->moveCursor (QTextCursor::End);
+					doc->insertPlainText(content.mid(cnt,3072));
+					cnt+=3072;
+				}
 			tabnum=this->mainNotebook->addTab(doc,tabicon,doc->getTabName());
 			doc->setDirPath(fileinfo.canonicalPath());
 			doc->setFilePath(fileinfo.canonicalFilePath());
@@ -414,10 +434,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			this->mainNotebook->setCurrentIndex(tabnum);
 			if(correctedln>0)
 				this->gotoLine(correctedln);
-			doc->setHiliteLanguage();
-			doc->highlighter->rehighlight();
-			doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
-			doc->dirty=false;
 			retval=true;
 			if(addtorecents==true)
 				this->recentFiles->addFilePath(doc->getFilePath());
@@ -437,9 +453,12 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			return(false);
 		}
 
-	this->rebuildTabsMenu();
+	doc->setHiliteLanguage();
+	doc->highlighter->rehighlight();
+	doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 	doc->dirty=false;
 
+	this->rebuildTabsMenu();
 	if(this->openFromDialog==false)
 		this->switchPage(tabnum);
 

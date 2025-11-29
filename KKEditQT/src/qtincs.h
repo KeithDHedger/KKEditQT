@@ -9,6 +9,7 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QCloseEvent>
 #include <QComboBox>
 #include <QCompleter>
 #include <QDeadlineTimer>
@@ -18,6 +19,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QListView>
+#include <QMainWindow>
 #include <QMap>
 #include <QMessageBox>
 #include <QMimeDatabase>
@@ -30,6 +32,7 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QStandardItemModel>
+#include <QStandardPaths>
 #include <QStorageInfo>
 #include <QStringList>
 #include <QStringListModel>
@@ -45,6 +48,7 @@
 #include <QtCore>
 #include <QtPlugin>
 #include <QtWidgets>
+
 
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
@@ -72,8 +76,10 @@
 #include <sys/shm.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
 #include <vector>
+#include <wordexp.h>
 
 #endif

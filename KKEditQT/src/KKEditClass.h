@@ -31,6 +31,7 @@ class MenuItemClass;
 class RecentMenuClass;
 class HistoryClass;
 class ToolBarClass;
+class MainWindowClass;
 
 class KKEditClass : public QObject
 {
@@ -39,7 +40,8 @@ class KKEditClass : public QObject
 		~KKEditClass();
 
 //app vars
-		QMainWindow					*mainWindow;
+		//QMainWindow					*mainWindow;
+		MainWindowClass				*mainWindow;
 		NoteBookClass				*mainNotebook=NULL;
 		QApplication					*application=NULL;
 		QTimer 						*checkMessages=NULL;
@@ -67,6 +69,7 @@ class KKEditClass : public QObject
 #ifdef _ASPELL_
 		AspellConfig					*aspellConfig=NULL;
 		AspellSpeller				*spellChecker=0;
+
 		QDialog						*spellCheckGUI=NULL;
 		QComboBox					*wordDropBox;
 		QLabel						*infoLabel;
@@ -209,6 +212,7 @@ class KKEditClass : public QObject
 		MenuItemClass				*saveCurrentSessionMenuItem;
 		MenuItemClass				*restoreDefaultSessionMenuItem;
 		QList<MenuItemClass*>		restoreSessionMenuItemsList;
+		QList<MenuItemClass*>		saveSessionMenuItemsList;
 
 		MenuItemClass				*newMenuItem;
 		MenuItemClass				*openMenuItem;
@@ -295,7 +299,7 @@ class KKEditClass : public QObject
 		bool							openFile(QString filepath,int linenumber=1,bool warn=false,bool addtorecents=true);
 		bool							openFileDialog(void);
 		void							openAsHexDump(void);
-		QString						runPipeAndCapture(QString command);
+		QString						runPipeAndCapture(QString command,bool inshell=false);
 		void							runPipeAndCaptureToToolOP(QString command);
 		void							runNoOutput(QString command,bool sync=true,bool asroot=false);
 
@@ -333,7 +337,7 @@ class KKEditClass : public QObject
 //tools menu
 		QMenu						*toolsMenu;
 //tools vars
-		QDialog						*toolsWindow;
+		QDialog						*toolsWindow=NULL;
 		QComboBox					*toolSelect;
 		QMainWindow					*toolOutputWindow;
 		QPlainTextEdit				*toolsOPText=NULL;
@@ -362,7 +366,7 @@ class KKEditClass : public QObject
 		QDialog						*prefsWindow=NULL;
 		QListWidget					*listWidget;
 		QToolBar						*fromHBox;
-		QAction						*tool[20];
+		QAction						*tool[20]={NULL,};
 		QDialog						*keyShortcutsWindow;
 
 //prefswindow functions
@@ -377,11 +381,11 @@ class KKEditClass : public QObject
 		void							resetKeyCombo(void);
 
 //find replace vars
-		QWidget						*findReplaceDialog;
-		QComboBox					*findDropBox;
-		QComboBox					*replaceDropBox;
-		QCheckBox					*frSwitches[FRMAXSWITCHES];
-		QPushButton					*frReplace;
+		QWidget						*findReplaceDialog=NULL;
+		QComboBox					*findDropBox=NULL;
+		QComboBox					*replaceDropBox=NULL;
+		QCheckBox					*frSwitches[FRMAXSWITCHES]={NULL,};
+		QPushButton					*frReplace=NULL;
 		QStringList					findList;
 		QStringList					replaceList;
 		unsigned int					maxFRHistory=5;

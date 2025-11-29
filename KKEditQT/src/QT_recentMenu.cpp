@@ -20,11 +20,18 @@
 
 #include "QT_notebook.h"
 #include "QT_recentMenu.h"
+#include "runExternalProc.h"
 
 RecentMenuClass::~RecentMenuClass()
 {
-	this->mainKKEditClass->runNoOutput(QString("tail -n%1 %2 > %3.bak").arg(this->maxFiles).arg(this->recentFileList).arg(this->recentFileList));
-	this->mainKKEditClass->runNoOutput(QString("mv %1.bak %2").arg(this->recentFileList).arg(this->recentFileList));
+	runExternalProcClass	rp;
+	std::string			com="";
+
+	com=QString("tail -n%1 %2 | awk '!a[$0]++'").arg(this->maxFiles).arg(this->recentFileList).toStdString();
+	rp.runExternalCommands(com,false,QString(this->recentFileList+".bak").toStdString());
+	com=QString("mv %1.bak %2").arg(this->recentFileList).arg(this->recentFileList).toStdString();
+	rp.runExternalCommands(com,false);
+	delete this->recentMenu;
 }
 
 RecentMenuClass::RecentMenuClass(KKEditClass *kk)
@@ -72,22 +79,20 @@ void RecentMenuClass::updateRecents(void)
 	bool		retval;
 	int		diff;
 	int		cnt=0;
-	QAction	*newact;
+	QAction	*newact=NULL;
 
 	this->recentMenu->clear();
-	file.setFileName(this->recentFileList);
 
+	file.setFileName(this->recentFileList);
 	retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
 	if(retval==true)
 		{
 			QTextStream	in(&file);
-			QString line;
+			QString		line;
 			while(in.atEnd()==false)
 				{
 					line=in.readLine().trimmed();
-					newact=new QAction(this->mainKKEditClass->truncateWithElipses(line.trimmed(),this->mainKKEditClass->prefsMaxMenuChars));
-					newact->setObjectName(line);
-					this->recentMenu->addAction(newact);
+					this->recentMenu->addAction(line);
 				}
 			file.close();
 		}
@@ -103,7 +108,8 @@ void RecentMenuClass::updateRecents(void)
 
 void RecentMenuClass::menuClicked(QAction *action)
 {
-	this->mainKKEditClass->openFile(action->objectName());
+//	this->mainKKEditClass->openFile(action->objectName());
+	this->mainKKEditClass->openFile(action->text());
 }
 
 

@@ -18,6 +18,7 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "MainWindow.h"
 #include "QT_notebook.h"
 #include "QT_document.h"
 #include "KKEditClass.h"

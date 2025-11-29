@@ -29,19 +29,16 @@ class RecentMenuClass : public QObject
 		RecentMenuClass(KKEditClass *kk);
 		~RecentMenuClass();
 
+		QMenu	*recentMenu=NULL;
+		int		maxFiles=12;
+
 		void		updateRecents(void);
 		void		addFilePath(QString path);
-
-		QMenu		*recentMenu;
-		int			maxFiles=12;
-
-	private:		
-		QString		recentFileList;
-		KKEditClass *mainKKEditClass;
-
-	public slots:
 		void		menuClicked(QAction *action);
 
+	private:		
+		QString		recentFileList="";
+		KKEditClass *mainKKEditClass=NULL;
 };
 
 #endif

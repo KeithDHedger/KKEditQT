@@ -1,6 +1,5 @@
 **KKEditQT Source Code Editor.**<br>
 
-<b>Until this notice is removed please use the "legacy-docviewer" branch :(</b><br>
 <br>
 ![KKEditQT](screenshots/main.jpg?raw=true "KKEdit")<br>
 <br>

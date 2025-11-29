@@ -1,5 +1,12 @@
 2.0.0
+Fixed occasional crash when repeatedly restoring sessions with large files >~4000.
 Fixed segfault when saving session.
+Fixed memory leaks.
+Corrected widget parent errors.
+Fixed various mem leaks.
+Fixed aspell mem leak.
+Fixed not shutting docwindow and quiting when close selected from wm.
+Fixed opening include file from Navigation menu when extra characters ( comments ) are after the closing '>'.
 Fixed about box text.
 Fixed segfault at start.
 Removed dep on QWebEngine* from plugins.

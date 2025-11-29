@@ -23,6 +23,25 @@
 #include "QT_themeClass.h"
 #include "QT_highlighter.h"
 
+Highlighter::~Highlighter()
+{
+	for(int j=0;j<this->langPlugins.size();j++)
+		{
+			if(this->langPlugins[j].loaded==true)
+				{
+					delete this->langPlugins[j].pluginLoader;					
+				}
+		}
+
+	for(int j=0;j<this->toolkitPlugins.size();j++)
+		{
+			if(this->toolkitPlugins[j].loaded==true)
+				{
+					delete this->toolkitPlugins[j].pluginLoader;
+				}
+		}
+}
+
 bool Highlighter::setLanguage(QString lang)
 {
 	for(int j=0;j<this->langPlugins.count();j++)
@@ -96,7 +115,7 @@ void Highlighter::highlightBlock(const QString &text)
 
 	for(int j=0;j<this->highlightingRules.count();j++)
 		{
-			highLightingRule rule=highlightingRules[j];
+			highLightingRule rule=this->highlightingRules[j];
 			QRegularExpressionMatchIterator i=rule.pattern.globalMatch(text);
 			while(i.hasNext())
 				{
@@ -104,7 +123,8 @@ void Highlighter::highlightBlock(const QString &text)
 					if(rule.customRule==true)
 						{
 							this->langPlugins[this->currentPlug].instance->runCustomRule(text,&rule);
-							setFormat(rule.start,rule.len,rule.format);
+							if(rule.len!=0)
+								setFormat(rule.start,rule.len,rule.format);
 						}
 					else
 						{
@@ -166,30 +186,29 @@ void Highlighter::highlightBlock(const QString &text)
 		}
 }
 
-bool Highlighter::loadLangPlug(langPluginStruct *ps)
+
+bool Highlighter::loadLangPlug(int plugnum,QString s)
 {
 	QObject	*plugininst=NULL;
 
-	if(ps->loaded==true)
-		return(true);
-
-	ps->pluginLoader=new QPluginLoader(ps->plugPath);
-	plugininst=ps->pluginLoader->instance();
+	this->langPlugins[plugnum].pluginLoader=new QPluginLoader(s);
+	this->langPlugins[plugnum].plugPath=s;
+	plugininst=this->langPlugins[plugnum].pluginLoader->instance();
 	if(plugininst!=nullptr)
 		{
-			ps->instance=qobject_cast<SyntaxHighlitePluginInterface*>(plugininst);
-			ps->instance->initPlug(ps->plugPath);//TODO//return false if cant init
-			ps->loaded=true;
-			ps->plugName=ps->pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
-			ps->langName=ps->pluginLoader->metaData().value("MetaData").toObject().value("langname").toString();
-			ps->plugVersion=ps->pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
-			ps->mimeType=ps->pluginLoader->metaData().value("MetaData").toObject().value("mimetypes").toString();
+			this->langPlugins[plugnum].instance=qobject_cast<SyntaxHighlitePluginInterface*>(plugininst);
+			this->langPlugins[plugnum].instance->initPlug(this->langPlugins[plugnum].plugPath);//TODO//return false if cant init
+			this->langPlugins[plugnum].loaded=true;
+			this->langPlugins[plugnum].plugName=this->langPlugins[plugnum].pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
+			this->langPlugins[plugnum].langName=this->langPlugins[plugnum].pluginLoader->metaData().value("MetaData").toObject().value("langname").toString();
+			this->langPlugins[plugnum].plugVersion=this->langPlugins[plugnum].pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
+			this->langPlugins[plugnum].mimeType=this->langPlugins[plugnum].pluginLoader->metaData().value("MetaData").toObject().value("mimetypes").toString();
 		}
 	else
 		{
-			ps->loaded=false;
-			ps->broken=true;
-			ps->plugName=QFileInfo(ps->plugPath).fileName();
+			this->langPlugins[plugnum].loaded=false;
+			this->langPlugins[plugnum].broken=true;
+			this->langPlugins[plugnum].plugName=QFileInfo(this->langPlugins[plugnum].plugPath).fileName();
 			return(false);
 		}
 
@@ -208,15 +227,12 @@ void Highlighter::loadLangPlugins(void)
 	while(lit.hasNext())
 		{
 			QString			s=lit.next();
-			langPluginStruct	ps;
-
-			ps.plugPath=s;
-			if(this->loadLangPlug(&ps)==false)
+			if(this->loadLangPlug(cnt,s)==false)
 				{
 					qWarning() << "Error loading plug " << s;
 					continue;
 				}
-			this->langPlugins[cnt++]=ps;
+			cnt++;
 		}
 
 	pluginsDir.setPath(QString("%1/langplugins/").arg(DATADIR));
@@ -224,42 +240,36 @@ void Highlighter::loadLangPlugins(void)
 	while (git.hasNext())
 		{
 			QString				s=git.next();
-			langPluginStruct		ps;
-
-			ps.plugPath=s;
-			if(this->loadLangPlug(&ps)==false)
+			if(this->loadLangPlug(cnt++,s)==false)
 				{
 					qWarning() << "Error loading plug " << s;
 					continue;
 				}
-			this->langPlugins[cnt++]=ps;
 		}
 }
 
-bool Highlighter::loadToolkitPlug(langPluginStruct *ps)
+bool Highlighter::loadToolkitPlug(int plugnum,QString s)
 {
 	QObject	*plugininst=NULL;
 
-	if(ps->loaded==true)
-		return(true);
-
-	ps->pluginLoader=new QPluginLoader(ps->plugPath);
-	plugininst=ps->pluginLoader->instance();
+	this->toolkitPlugins[plugnum].pluginLoader=new QPluginLoader(s);
+	this->toolkitPlugins[plugnum].plugPath=s;
+	plugininst=this->toolkitPlugins[plugnum].pluginLoader->instance();
 	if(plugininst!=nullptr)
 		{
-			ps->instanceTK=qobject_cast<ToolkitHighlitePluginInterface*>(plugininst);
-			ps->instanceTK->initPlug(ps->plugPath);//TODO//return false if cant init
-			ps->loaded=true;
-			ps->plugName=ps->pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
-			ps->langName=ps->pluginLoader->metaData().value("MetaData").toObject().value("usefor").toString();
-			ps->plugVersion=ps->pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
-			ps->mimeType=ps->pluginLoader->metaData().value("MetaData").toObject().value("mimetypes").toString();
+			this->toolkitPlugins[plugnum].instanceTK=qobject_cast<ToolkitHighlitePluginInterface*>(plugininst);
+			this->toolkitPlugins[plugnum].instanceTK->initPlug(this->toolkitPlugins[plugnum].plugPath);//TODO//return false if cant init
+			this->toolkitPlugins[plugnum].loaded=true;
+			this->toolkitPlugins[plugnum].plugName=this->toolkitPlugins[plugnum].pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
+			this->toolkitPlugins[plugnum].langName=this->toolkitPlugins[plugnum].pluginLoader->metaData().value("MetaData").toObject().value("usefor").toString();
+			this->toolkitPlugins[plugnum].plugVersion=this->toolkitPlugins[plugnum].pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
+			this->toolkitPlugins[plugnum].mimeType=this->toolkitPlugins[plugnum].pluginLoader->metaData().value("MetaData").toObject().value("mimetypes").toString();
 		}
 	else
 		{
-			ps->loaded=false;
-			ps->broken=true;
-			ps->plugName=QFileInfo(ps->plugPath).fileName();
+			this->toolkitPlugins[plugnum].loaded=false;
+			this->toolkitPlugins[plugnum].broken=true;
+			this->toolkitPlugins[plugnum].plugName=QFileInfo(this->toolkitPlugins[plugnum].plugPath).fileName();
 			return(false);
 		}
 
@@ -274,33 +284,26 @@ void Highlighter::loadToolkitPlugins(void)
 
 	while(lit.hasNext())
 		{
-			QString					s=lit.next();
-			langPluginStruct	ps;
-
-			ps.plugPath=s;
-			if(this->loadToolkitPlug(&ps)==false)
+			QString	s=lit.next();
+			if(this->loadToolkitPlug(cnt,s)==false)
 				{
 					qWarning() << "Error loading plug " << s;
 					continue;
 				}
-			this->toolkitPlugins[cnt++]=ps;
+			cnt++;
 		}
 
-	//pluginsDir.setPath(QString("%1/toolkitplugins/").arg(DATADIR));
 	pluginsDir.setPath(QString("%1/.KKEditQT/toolkitplugins").arg(pluginsDir.homePath()));
 	QDirIterator						git(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
 	while(git.hasNext())
 		{
-			QString					s=git.next();
-			langPluginStruct			ps;
-
-			ps.plugPath=s;
-			if(this->loadToolkitPlug(&ps)==false)
+			QString	s=git.next();
+			if(this->loadToolkitPlug(cnt,s)==false)
 				{
 					qWarning() << "Error loading plug " << s;
 					continue;
 				}
-			this->toolkitPlugins[cnt++]=ps;
+			cnt++;
 		}
 }
 

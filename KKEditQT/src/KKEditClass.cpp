@@ -18,6 +18,7 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "MainWindow.h"
 #include "docBrowser.h"
 #include "QT_notebook.h"
 #include "QT_toolbar.h"
@@ -43,26 +44,30 @@ KKEditClass::KKEditClass(QApplication *app)
 
 KKEditClass::~KKEditClass()
 {
-	plugData		pd;
-	QDir			fold(this->tmpFolderName);
-
 	if(this->tmpFolderName.isEmpty()==true)
-		{
-			return;
-		}
+		return;
 
 	delete this->fileWatch;
 
 	for(int j=0;j<NOMORESHORTCUT;j++)
 		delete this->appShortcuts[j];
-	delete this->recentFiles;
-	delete this->history;
+
+#ifdef _ASPELL_
+	if(this->aspellConfig!=NULL)
+		delete_aspell_config(this->aspellConfig);
+	if(this->spellChecker!=NULL)
+		delete_aspell_speller(this->spellChecker);
+#endif
 
 	for(int j=0;j<this->plugins.count();j++)
 		{
 			if(this->plugins[j].loaded==true)
-				{
-					this->unloadPlug(&this->plugins[j]);
+			{
+			//	this->unloadPlug(&this->plugins[j]);
+			if(this->plugins[j].instance!=NULL)
+				delete this->plugins[j].instance;
+			if(this->plugins[j].pluginLoader!=NULL)
+				delete this->plugins[j].pluginLoader;
 				}
 		}
 
@@ -71,6 +76,30 @@ KKEditClass::~KKEditClass()
 
 	if(this->docView!=NULL)
 		delete this->docView;
+
+	delete this->menuBar;
+	delete this->toolBar;
+	delete this->mainNotebook;
+
+	for(int j=0;j<this->pages.size();j++)
+		delete this->pages[j];
+
+	delete this->toolsWindow;
+	delete this->goToDefineMenuSingleItem;
+	delete this->prefsWindow;
+	delete this->checkMessages;
+	for(int j=0;j<20;j++)
+		if(this->tool[j]!=NULL)
+			delete this->tool[j];
+	delete this->toolsOPText;
+	delete this->toolOutputWindow;
+	delete this->findReplaceDialog;
+	delete this->spellCheckGUI;
+	delete this->spellCheckMenuItem;
+
+	delete this->recentFiles;
+	delete this->history;
+	delete this->theme;
 }
 
 void KKEditClass::handleSignal(int signum)
@@ -110,7 +139,7 @@ void KKEditClass::setUpToolBar(void)
 //open+recent
 					case 'O':
 						{
-							QPushButton *recent=new QPushButton(NULL);
+							QPushButton *recent=new QPushButton(NULL,this->toolBar);
 							recent->setMenu(this->recentFiles->recentMenu);
 							recent->setFlat(true);
 							recent->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);	
@@ -172,8 +201,8 @@ void KKEditClass::setUpToolBar(void)
 					case '9':
 						if(this->lineNumberWidget!=NULL)
 							delete this->lineNumberWidget;
-						this->lineNumberWidget=new QLineEdit;
-						this->lineNumberWidget->setValidator(new QIntValidator);
+						this->lineNumberWidget=new QLineEdit(this->toolBar);
+						this->lineNumberWidget->setValidator(new QIntValidator(this->lineNumberWidget));
 						this->lineNumberWidget->setObjectName(QString("%1").arg(DOLINEBOX));
 						this->lineNumberWidget->setToolTip("Go To Line");
 						this->lineNumberWidget->setMaximumWidth(48);
@@ -193,7 +222,7 @@ void KKEditClass::setUpToolBar(void)
 					case 'D':
 						if(this->findDefWidget!=NULL)
 							delete this->findDefWidget;
-						this->findDefWidget=new QLineEdit;
+						this->findDefWidget=new QLineEdit(this->toolBar);
 						this->findDefWidget->setObjectName(QString("%1").arg(DOAPISEARCH));
 						this->findDefWidget->setToolTip("Search For Define");
 						
@@ -209,7 +238,7 @@ void KKEditClass::setUpToolBar(void)
 					case 'L':
 						if(this->liveSearchWidget!=NULL)
 							delete this->liveSearchWidget;
-						this->liveSearchWidget=new QLineEdit;
+						this->liveSearchWidget=new QLineEdit(this->toolBar);
 						this->liveSearchWidget->setToolTip("Live Search");
 						this->liveSearchWidget->setObjectName(QString("%1").arg(DOLIVESEARCH));
 						
@@ -228,11 +257,17 @@ void KKEditClass::setUpToolBar(void)
 //expander
 					case 'E':
 						{
-							QHBoxLayout *hbox=new QHBoxLayout;
-							QWidget		*widg=new QWidget;
+							QWidget		*widg=new QWidget(this->toolBar);
+							QHBoxLayout *hbox=new QHBoxLayout(widg);
     							hbox->addStretch(1);
     							widg->setLayout(hbox);
     							this->toolBar->addWidget(widg);
+
+//							QHBoxLayout hbox;
+//							QWidget		*widg=new QWidget(this->toolBar);
+//    							hbox.addStretch(1);
+//    							widg->setLayout(hbox);
+//    							this->toolBar->addWidget(widg);
     						}
 						break;
 				}
@@ -354,6 +389,23 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 		}
 }
 
+//#include <QEvent>
+//
+//class EventFilter1 : public QObject
+//{
+//protected:
+//    bool eventFilter(QObject * obj, QEvent * event) override
+//    {
+//    qDebug()<<"closeing ...";
+// //       if (event->type() == QEvent::Close)
+////        {
+////            qDebug() << obj->objectName()<<"closing";
+////        }
+//
+//        return QObject::eventFilter(obj, event);
+//    }
+//};
+
 void KKEditClass::initApp(int argc,char** argv)
 {
 	char		tmpfoldertemplate[]="/tmp/KKEditQT-XXXXXX";
@@ -361,6 +413,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	QDir		tdir;
 	QString	tstr;
 	QFile	file;
+	QString	s="";
 
 	this->homeFolder=QString("%1").arg(tdir.homePath());
 	this->homeDataFolder=QString("%1/%2").arg(this->homeFolder).arg(KKEDITFOLDER);
@@ -378,8 +431,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->maxSessions=this->prefs.value("app/maxsessions",24).toInt();
 	for(int j=0;j<this->maxSessions;j++)
 		{
-			QProcess::execute("touch",QStringList()<<this->sessionFolder+"/Session-"+QString::number(j));
-
+			this->runPipeAndCapture(QString("touch '%1/Session-%2'").arg(this->sessionFolder).arg(j));
 			file.setFileName(QString("%1/Session-%2").arg(this->sessionFolder).arg(j));
 			if(file.open(QIODevice::Text | QIODevice::ReadOnly))
 				{
@@ -414,10 +466,9 @@ void KKEditClass::initApp(int argc,char** argv)
 				exit (100);
 			}
 
-//qDebug()<<this->tmpFolderName;
-	this->gotManEditor=QProcess::execute("sh",QStringList()<<"-c"<<"which manpageeditorqt 2>&1 >/dev/null");
-	this->gotPDFToText=QProcess::execute("sh",QStringList()<<"-c"<<"which pdftotext 2>&1 >/dev/null");
-	this->gotPDFCrop=QProcess::execute("sh",QStringList()<<"-c"<<"which pdfcrop 2>&1 >/dev/null");
+	this->gotManEditor=QStandardPaths::findExecutable("manpageeditorqt").isEmpty();
+	this->gotPDFToText=QStandardPaths::findExecutable("pdftotext").isEmpty();
+	this->gotPDFCrop=QStandardPaths::findExecutable("pdfcrop").isEmpty();
 
 	this->mainThemeProxy=new ProxyStyle();
 // take ownership to avoid memleak
@@ -429,8 +480,8 @@ void KKEditClass::initApp(int argc,char** argv)
 //	else
 //		styleName="Root Source";
 
-
-	this->mainWindow=new QMainWindow();
+//
+	this->mainWindow=new MainWindowClass(this);
 
 	for(int j=0;j<NOMORESHORTCUT;j++)
 		this->appShortcuts[j]=new QShortcut(this->mainWindow);
@@ -467,7 +518,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	if(aspell_error_number(possible_err)!= 0)
 		puts(aspell_error_message(possible_err));
 	else
-		spellChecker=to_aspell_speller(possible_err);
+		this->spellChecker=to_aspell_speller(possible_err);
 
 	this->spellCheckMenuItem=new MenuItemClass("Spell Check");
 	QIcon	itemicon=QIcon::fromTheme("tools-check-spelling");
@@ -760,11 +811,11 @@ void KKEditClass::writeExitData(void)
 
 void KKEditClass::findFile(void)
 {
-	DocumentClass	*document=this->getDocumentForTab(-1);
-	QString			selection;
-	QString			filename;
-	QString			results;
-	QStringList		retval;
+	DocumentClass		*document=this->getDocumentForTab(-1);
+	QString				selection;
+	QString				filename;
+	QString				results;
+	QStringList			retval;
 
 	if(document==NULL)
 		return;
@@ -774,7 +825,7 @@ void KKEditClass::findFile(void)
 	if((selection.isEmpty()==true) || (selection.startsWith('#')==false))
 		return;
 
-	filename=selection.replace(QRegularExpression("#.*include\\s*[\"<](.*)[\">]"),"\\1").trimmed();
+	filename=selection.replace(QRegularExpression(R"RX(#.*include\s*[\"<](.*)[\">].*)RX"),"\\1").trimmed();
 
 	if(this->openFile(QString("%1/%2").arg(document->getDirPath()).arg(filename))==true)
 		return;
@@ -891,7 +942,6 @@ void KKEditClass::closeAllTabs(void)
 					return;
 				}
 		}
-
 	this->sessionBusy=false;
 	this->rebuildBookMarkMenu();
 	this->rebuildTabsMenu();
@@ -988,10 +1038,10 @@ void KKEditClass::shutDownApp()
 
 	if(this->saveAllFiles(true)==true)
 		{
-#ifdef _ASPELL_
-			delete_aspell_config(this->aspellConfig);
-			delete_aspell_speller(this->spellChecker);
-#endif
+//#ifdef _ASPELL_
+//			delete_aspell_config(this->aspellConfig);
+//			delete_aspell_speller(this->spellChecker);
+//#endif
 		}
 					plugData pd;
 					pd.what=DOSHUTDOWN;
@@ -1585,3 +1635,4 @@ void KKEditClass::setMouseState(bool mouseon)
 			this->mouseVisible=true;
 		}
 }
+

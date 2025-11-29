@@ -18,6 +18,7 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "MainWindow.h"
 #include "docBrowser.h"
 #include "QT_notebook.h"
 #include "QT_toolbar.h"
@@ -108,6 +109,8 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 
 					this->currentSessionNumber=sessionnumber;
 					this->restoreSessionsMenu->clear();
+					this->restoreDefaultSessionMenuItem=this->makeMenuItemClass(RESTORESESSIONSMENU,"Restore Autosave Session",0,NULL,RESTORESESSIONMENUNAME,CURRENTSESSION);
+
 					this->restoreSessionsMenu->addAction(this->restoreDefaultSessionMenuItem);
 					this->restoreSessionsMenu->addSeparator();
 					this->restoreSessionMenuItemsList.clear();
@@ -462,18 +465,18 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 											document->textCursor().beginEditBlock();
 												document->textCursor().removeSelectedText();
 												if(rootrun==false)
-													document->textCursor().insertText(this->runPipeAndCapture(str));
+													document->textCursor().insertText(this->runPipeAndCapture(str,true));
 												else
-													document->textCursor().insertText(this->runPipeAndCapture(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str)));						
+													document->textCursor().insertText(this->runPipeAndCapture(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str),true));						
 											document->textCursor().endEditBlock();
 											break;
 
 										case TOOL_REPLACE_OP:
 											document->textCursor().beginEditBlock();
 												if(rootrun==false)
-													document->setPlainText(this->runPipeAndCapture(str));
+													document->setPlainText(this->runPipeAndCapture(str,true));
 												else
-													document->setPlainText(this->runPipeAndCapture(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str)));
+													document->setPlainText(this->runPipeAndCapture(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str),true));
 											document->textCursor().endEditBlock();
 											break;
 
@@ -1001,6 +1004,7 @@ void KKEditClass::doTimer(void)
 	while(retcode!=-1)
 		{
 			buffer.mText[0]=0;
+			buffer.mType=0;
 			retcode=msgrcv(this->queueID,&buffer,MAXMSGSIZE,MSGANY,IPC_NOWAIT);
 			buffer.mText[retcode]=0;
 			if(retcode!=-1)

@@ -76,9 +76,14 @@ void tagClass::getTagList(QStringList filepaths,int sorttype)
 	for(int k=0;k<filepaths.count();k++)
 		paths+="'"+filepaths.at(k)+"' ";
 
-	//command=QString("ctags -Gx %1|%2|sed 's@ \\+@ @g'").arg(paths).arg(sort);
-	command=QString("ctags -x %1|%2|sed 's@ \\+@ @g'").arg(paths).arg(sort);
-	results=this->mainKKEditClass->runPipeAndCapture(command);
+	command=QString("ctags -x %1 | %2 | sed 's@ \\+@ @g'").arg(paths).arg(sort);
+
+	if(filepaths.count()>100)
+		{
+			if(this->mainKKEditClass->yesNoDialog(QString("Are you sure you want to search in %1 files?").arg(filepaths.count()),"This may be slow")!=QMessageBox::Yes)
+				return;
+		}
+	results=this->mainKKEditClass->runPipeAndCapture(command,true);
 	lines=results.split("\n",Qt::SkipEmptyParts);
 
 	for(int j=0;j<lines.count();j++)
@@ -107,6 +112,7 @@ void tagClass::getTagList(QStringList filepaths,int sorttype)
 
 			defstring=rep.right(rep.length()-(rep.indexOf(filestring)+filestring.length())).trimmed();
 			tagsStruct ts={tagstring,typestring,linestring,defstring,filestring,linestring.toInt()};
+			//qDebug()<<tagstring <<typestring <<linestring <<defstring << filestring <<linestring.toInt();
 			this->tagList.push_back(ts);
 		}
 }

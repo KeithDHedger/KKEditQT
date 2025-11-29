@@ -18,6 +18,7 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "MainWindow.h"
 #include "docBrowser.h"
 #include "QT_notebook.h"
 #include "QT_toolbar.h"
@@ -102,24 +103,24 @@ static const char *whatIsPrefsInt[MAXPREFSINTWIDGETS]={\
 
 void KKEditClass::buildPrefsWindow(void)
 {
-	QVBoxLayout			*mainvbox=new QVBoxLayout();
-	QHBoxLayout			*hbox=new QHBoxLayout;
-	QTabWidget			*prefsnotebook=new QTabWidget;
-	//QWidget				*button;
+	QVBoxLayout			*mainvbox=new QVBoxLayout;
+	QHBoxLayout			*hbox;//=new QHBoxLayout;
+
+	this->prefsWindow=new QDialog(this->mainWindow);
+	QTabWidget			*prefsnotebook=new QTabWidget(this->prefsWindow);
 	QPushButton			*button;
 	QPushButton			*whatsbutton;
 	QWidget				*tab;
 	QLabel				*widgetlabel;
 	int					posy;
 
-	this->listWidget=new QListWidget;
+	this->listWidget=new QListWidget(this->prefsWindow);
 	fromHBox=new QToolBar;
 
-	this->prefsWindow=new QDialog(this->mainWindow);
 	this->prefsWindow->setWindowTitle("Preferences");
 
 	mainvbox->setContentsMargins(0,0,0,16);
-	hbox->setContentsMargins(0,0,0,0);
+	//hbox->setContentsMargins(0,0,0,0);
 
 	this->populateDnD();
 	this->populateStore();
@@ -143,7 +144,7 @@ void KKEditClass::buildPrefsWindow(void)
 	mainvbox->addWidget(this->fromHBox);
 //pages
 //page1
-	this->table=new QGridLayout;
+	this->table=new QGridLayout(this->prefsWindow);
 	tab=new QWidget();
 
 //appearence 1
@@ -355,10 +356,10 @@ void KKEditClass::buildPrefsWindow(void)
 	table->addWidget(widgetlabel,posy,0);
 	table->addWidget(prefsOtherWidgets[FUNCTIONCOMBO],posy,1,1,-1);
 
-	QSpacerItem *space=new QSpacerItem(0,0,QSizePolicy::Maximum,QSizePolicy::Maximum);
+	//QSpacerItem *space=new QSpacerItem(0,0,QSizePolicy::Maximum,QSizePolicy::Maximum);
 	posy++;
-	table->addItem(space,posy,0,100,-1);
-
+	//table->addItem(space,posy,0,100,-1);
+	//table->addSpacerItem(space);QGridLayout
 	table->setColumnStretch(1,2);
 	tab->setLayout(table);
 
@@ -451,8 +452,7 @@ void KKEditClass::buildPrefsWindow(void)
 //end application
 
 	posy++;
-	table->addItem(space,posy,0,100,-1);
-
+	//table->addItem(space,posy,0,100,-1);
 	table->setColumnStretch(1,1);
 
 	tab->setLayout(this->table);
@@ -530,8 +530,9 @@ void KKEditClass::buildPrefsWindow(void)
 
 void KKEditClass::addIcon(const char* icon,const char* data,int toolnumber,const char* tooltip)
 {
-	QIcon qicon;
-	MenuItemClass* menuitem=new MenuItemClass(icon);
+	QIcon			qicon;
+	MenuItemClass	*menuitem=new MenuItemClass(icon);
+
 	qicon=QIcon::fromTheme(icon);
 	menuitem->setObjectName(data);
 	menuitem->setIcon(qicon);
@@ -696,7 +697,7 @@ void KKEditClass::buildFindReplace(void)
 	label->setAlignment(Qt::AlignCenter);
 	vlayout->addWidget(label);
 
-	this->findDropBox=new QComboBox;
+	this->findDropBox=new QComboBox(this->findReplaceDialog);
 	reinterpret_cast<QComboBox*>(this->findDropBox)->setEditable(true);
 	reinterpret_cast<QComboBox*>(this->findDropBox)->setCompleter(0);
 	reinterpret_cast<QComboBox*>(this->findDropBox)->setInsertPolicy(QComboBox::InsertAtBottom);
@@ -709,7 +710,7 @@ void KKEditClass::buildFindReplace(void)
 	label->setAlignment(Qt::AlignCenter);
 	vlayout->addWidget(label);
 
-	this->replaceDropBox=new QComboBox;
+	this->replaceDropBox=new QComboBox(this->findReplaceDialog);
 	reinterpret_cast<QComboBox*>(this->replaceDropBox)->setEditable(true);
 	reinterpret_cast<QComboBox*>(this->replaceDropBox)->setCompleter(0);
 	reinterpret_cast<QComboBox*>(this->replaceDropBox)->setInsertPolicy(QComboBox::InsertAtBottom);
@@ -724,15 +725,15 @@ void KKEditClass::buildFindReplace(void)
 	hbox->setLayout(hlayout);
 
 //case
-	this->frSwitches[FRCASE]=new QCheckBox("Case insensitive");
+	this->frSwitches[FRCASE]=new QCheckBox("Case insensitive",this->findReplaceDialog);
 	this->frSwitches[FRCASE]->setChecked(this->insensitiveSearch);
 	hlayout->addWidget(this->frSwitches[FRCASE]);
 //use regex
-	this->frSwitches[FRUSEREGEX]=new QCheckBox("Use Regex");
+	this->frSwitches[FRUSEREGEX]=new QCheckBox("Use Regex",this->findReplaceDialog);
 	this->frSwitches[FRUSEREGEX]->setChecked(this->useRegex);
 	hlayout->addWidget(this->frSwitches[FRUSEREGEX]);
 //find after replace
-	this->frSwitches[FRREPLACEFIND]=new QCheckBox("Find After Replace");
+	this->frSwitches[FRREPLACEFIND]=new QCheckBox("Find After Replace",this->findReplaceDialog);
 	this->frSwitches[FRREPLACEFIND]->setChecked(this->findAfterReplace);
 	hlayout->addWidget(this->frSwitches[FRREPLACEFIND]);
 
@@ -744,20 +745,20 @@ void KKEditClass::buildFindReplace(void)
 	hbox=new QWidget;
 	hbox->setLayout(hlayout);
 //wrap
-	this->frSwitches[FRWRAP]=new QCheckBox("Wrap");
+	this->frSwitches[FRWRAP]=new QCheckBox("Wrap",this->findReplaceDialog);
 	this->frSwitches[FRWRAP]->setChecked(this->wrapSearch);
 	hlayout->addWidget(this->frSwitches[FRWRAP]);
 
 //all files
-	this->frSwitches[FRALLFILES]=new QCheckBox("All Files");
+	this->frSwitches[FRALLFILES]=new QCheckBox("All Files",this->findReplaceDialog);
 	this->frSwitches[FRALLFILES]->setChecked(this->findInAllFiles);
 	hlayout->addWidget(this->frSwitches[FRALLFILES]);
 //hilite all
-	this->frSwitches[FRHIGHLIGHTALL]=new QCheckBox("Highlight All");
+	this->frSwitches[FRHIGHLIGHTALL]=new QCheckBox("Highlight All",this->findReplaceDialog);
 	this->frSwitches[FRHIGHLIGHTALL]->setChecked(this->hightlightAll);
 	hlayout->addWidget(this->frSwitches[FRHIGHLIGHTALL]);
 //rep all
-	this->frSwitches[FRREPLACEALL]=new QCheckBox("Replace All");
+	this->frSwitches[FRREPLACEALL]=new QCheckBox("Replace All",this->findReplaceDialog);
 	this->frSwitches[FRREPLACEALL]->setChecked(this->replaceAll);
 
 	QObject::connect(this->frSwitches[FRREPLACEALL],&QCheckBox::checkStateChanged,[this](Qt::CheckState state)
@@ -767,7 +768,7 @@ void KKEditClass::buildFindReplace(void)
 
 	hlayout->addWidget(this->frSwitches[FRREPLACEALL]);
 //search back
-	this->frSwitches[FRSEARCHBACK]=new QCheckBox("Search Backwards");
+	this->frSwitches[FRSEARCHBACK]=new QCheckBox("Search Backwards",this->findReplaceDialog);
 	this->frSwitches[FRSEARCHBACK]->setChecked(this->searchBack);
 
 	QObject::connect(this->frSwitches[FRSEARCHBACK],&QCheckBox::checkStateChanged,[this](Qt::CheckState state)
@@ -785,9 +786,8 @@ void KKEditClass::buildFindReplace(void)
 	hbox=new QWidget;
 	hbox->setLayout(hlayout);
 
-	button=new QPushButton("Find");
+	button=new QPushButton("Find",this->findReplaceDialog);
 	button->setObjectName(FINDNEXTOBJECTNAME);
-
 	QObject::connect(button,&QPushButton::clicked,[this,button]()
 		{
 			this->doFindButton(button);
@@ -798,9 +798,9 @@ void KKEditClass::buildFindReplace(void)
 	hlayout->addWidget(button);
 
 	if(replaceAll==false)
-		this->frReplace=new QPushButton("Replace");
+		this->frReplace=new QPushButton("Replace",this->findReplaceDialog);
 	else
-		this->frReplace=new QPushButton("Replace All");
+		this->frReplace=new QPushButton("Replace All",this->findReplaceDialog);
 	this->frReplace->setObjectName(FINDREPLACEOBJECTNAME);
 
 	QObject::connect(frReplace,&QPushButton::clicked,[this]()
@@ -846,7 +846,7 @@ void KKEditClass::buildMainGui(void)
 	this->toolBar=new ToolBarClass(this);
 
 //file menu
-	this->fileMenu=new QMenu("&File");
+	this->fileMenu=new QMenu("&File",this->menuBar);
 	this->menuBar->addMenu(this->fileMenu);
 
 //new
@@ -883,25 +883,27 @@ void KKEditClass::buildMainGui(void)
 	this->fileMenu->addSeparator();
 
 //save session
-	this->saveSessionsMenu=new QMenu("&Save Session");
+	this->saveSessionsMenu=new QMenu("&Save Session",this->fileMenu);
 	this->fileMenu->addMenu(this->saveSessionsMenu);
 	this->saveCurrentSessionMenuItem=this->makeMenuItemClass(SAVESESSIONSMENU,"Save Current Session",0,NULL,SAVESESSIONMENUNAME,CURRENTSESSION);
 	this->saveSessionsMenu->addSeparator();
+
 	for(int j=1;j<this->maxSessions;j++)
-		{
-			menuItemSink=this->makeMenuItemClass(SAVESESSIONSMENU,this->sessionNames.value(j),0,NULL,SAVESESSIONMENUNAME,j);
+	{
+	//menuItemSink=
+		this->saveSessionMenuItemsList.append(this->makeMenuItemClass(SAVESESSIONSMENU,this->sessionNames.value(j),0,NULL,SAVESESSIONMENUNAME,j));
 		}
 
 //restore session
-	this->restoreSessionsMenu=new QMenu("&Restore Session");
+	this->restoreSessionsMenu=new QMenu("&Restore Session",this->fileMenu);
 	this->fileMenu->addMenu(this->restoreSessionsMenu);
 	this->restoreDefaultSessionMenuItem=this->makeMenuItemClass(RESTORESESSIONSMENU,"Restore Autosave Session",0,NULL,RESTORESESSIONMENUNAME,CURRENTSESSION);
 	this->restoreSessionsMenu->addSeparator();
 	for(int j=1;j<this->maxSessions;j++)
 		{
-			menuItemSink=this->makeMenuItemClass(RESTORESESSIONSMENU,this->sessionNames.value(j),0,NULL,RESTORESESSIONMENUNAME,j);
-			this->restoreSessionMenuItemsList.append(menuItemSink);
+			this->restoreSessionMenuItemsList.append(this->makeMenuItemClass(RESTORESESSIONSMENU,this->sessionNames.value(j),0,NULL,RESTORESESSIONMENUNAME,j));
 		}
+
 	this->fileMenu->addSeparator();
 
 //printfile
@@ -931,7 +933,7 @@ void KKEditClass::buildMainGui(void)
 	menuItemSink=this->makeMenuItemClass(FILEMENU,"Quit",QKeySequence::Quit,"application-exit",QUITMENUNAME,QUITMENUITEM);
 
 //edit menu
-	this->editMenu=new QMenu("&Edit");
+	this->editMenu=new QMenu("&Edit",this->menuBar);
 	this->menuBar->addMenu(this->editMenu);
 
 //undo
@@ -976,7 +978,7 @@ void KKEditClass::buildMainGui(void)
 //show all tabs
 	this->showAllTabsMenuItem=this->makeMenuItemClass(EDITMENU,"Show All Tabs",0,"list-add",SHOWALLTABSMENUNAME,SHOWALLTABSMENUITEM);
 //select tab
-	this->selectTabMenu=new QMenu("Select Tab");
+	this->selectTabMenu=new QMenu("Select Tab",this->editMenu);
 	this->editMenu->addMenu(this->selectTabMenu);
 
 	this->editMenu->addSeparator();
@@ -987,13 +989,13 @@ void KKEditClass::buildMainGui(void)
 	menuItemSink=this->makeMenuItemClass(EDITMENU,"Plugin Prefs",0,"preferences-system",PLUGPREFSMENUNAME,PLUGPREFSMENUITEM);
 
 //view menu
-	this->viewMenu=new QMenu("&View");
+	this->viewMenu=new QMenu("&View",this->menuBar);
 	this->menuBar->addMenu(this->viewMenu);
 
 	if(this->verySafeFlag==false)
 		{
 			QMenu		*thememenu;
-			thememenu=new QMenu("Theme");
+			thememenu=new QMenu("Theme",this->viewMenu);
 			this->viewMenu->addMenu(thememenu);
 //local
 			{
@@ -1002,7 +1004,7 @@ void KKEditClass::buildMainGui(void)
 				while (it.hasNext())
 					{
 						QString s=it.next();
-						QAction *menuitem=new QAction(QFileInfo(s).baseName());
+						QAction *menuitem=new QAction(QFileInfo(s).baseName(),this->menuBar);
 						thememenu->addAction(menuitem);
 						QObject::connect(menuitem,&QAction::triggered,[this,s]()
 							{
@@ -1019,7 +1021,7 @@ void KKEditClass::buildMainGui(void)
 				while (it.hasNext())
 					{
 						QString s=it.next();
-						QAction *menuitem=new QAction(QFileInfo(s).baseName());
+						QAction *menuitem=new QAction(QFileInfo(s).baseName(),this->menuBar);
 						thememenu->addAction(menuitem);
 						QObject::connect(menuitem,&QAction::triggered,[this,s]()
 							{
@@ -1085,7 +1087,7 @@ void KKEditClass::buildMainGui(void)
 	this->toggleCompletionsMenuItem->setChecked(this->showCompletions);
 
 //navigation menu
-	this->navMenu=new QMenu("&Navigation");
+	this->navMenu=new QMenu("&Navigation",this->menuBar);
 	this->menuBar->addMenu(this->navMenu);
 
 //goto define
@@ -1106,25 +1108,25 @@ void KKEditClass::buildMainGui(void)
 	this->navMenu->addSeparator();
 
 //function menu
-	this->funcMenu=new QMenu("Fun&ctions");
+	this->funcMenu=new QMenu("Fun&ctions",this->menuBar);
 	this->menuBar->addMenu(this->funcMenu);
 
 //newbookmarks
-	this->bookMarkMenu=new QMenu("&Bookmarks");
+	this->bookMarkMenu=new QMenu("&Bookmarks",this->menuBar);
 	this->menuBar->addMenu(this->bookMarkMenu);
 	this->rebuildBookMarkMenu();
 
 //external tools	
-	this->toolsMenu=new QMenu("&Tools");
+	this->toolsMenu=new QMenu("&Tools",this->menuBar);
 	this->menuBar->addMenu(this->toolsMenu);
 	this->buildTools();
 
 //plugin menu
-	this->pluginMenu=new QMenu("&Plugins");
+	this->pluginMenu=new QMenu("&Plugins",this->menuBar);
 	this->menuBar->addMenu(this->pluginMenu);
 
 //help
-	this->helpMenu=new QMenu("&Help");
+	this->helpMenu=new QMenu("&Help",this->menuBar);
 	this->menuBar->addMenu(this->helpMenu);
 //
 //about
@@ -1161,8 +1163,11 @@ void KKEditClass::buildTools(void)
 {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsequence-point"
-	QVBoxLayout		*mainvbox=new QVBoxLayout();
-	QHBoxLayout		*hbox=new QHBoxLayout;
+
+	this->toolsWindow=new QDialog(this->mainWindow);
+
+	QVBoxLayout		*mainvbox=new QVBoxLayout(this->toolsWindow);
+	QHBoxLayout		*hbox;//=new QHBoxLayout(this->toolsWindow);
 	QLabel			*widgetlabel;
 	QGridLayout		*grid;
 	QWidget			*tab;
@@ -1173,13 +1178,12 @@ void KKEditClass::buildTools(void)
 	int				posx=0;
 	int				posy=0;
 
-	this->toolsWindow=new QDialog(this->mainWindow);
 	this->toolsWindow->setWindowTitle("External Tools");
 
 	mainvbox->setContentsMargins(0,0,0,16);
-	hbox->setContentsMargins(0,0,0,0);
+	//hbox->setContentsMargins(0,0,0,0);
 
-	tab=new QWidget();
+	tab=new QWidget(this->toolsWindow);
 	grid=new QGridLayout;
 	grid->setColumnStretch(1,1);
 
@@ -1195,28 +1199,28 @@ void KKEditClass::buildTools(void)
 	this->rebuildToolsMenu();
 
 //name
-	widgetlabel=new QLabel("Tool Name:");
+	widgetlabel=new QLabel("Tool Name:",this->toolsWindow);
 	grid->addWidget(widgetlabel,posy,posx,Qt::AlignVCenter);
-	edit=new QLineEdit("New Tool");
+	edit=new QLineEdit("New Tool",this->toolsWindow);
 	edit->setObjectName(TOOLNAME);
 	grid->addWidget(edit,posy++,posx+1,Qt::AlignVCenter);
 
 //command
-	widgetlabel=new QLabel("Command:");
+	widgetlabel=new QLabel("Command:",this->toolsWindow);
 	grid->addWidget(widgetlabel,posy,posx,Qt::AlignVCenter);
-	edit=new QLineEdit("");
+	edit=new QLineEdit("",this->toolsWindow);
 	edit->setObjectName(TOOLCOMMAND);
 	grid->addWidget(edit,posy++,1,Qt::AlignVCenter);
 //shortcut
-	widgetlabel=new QLabel("Shortcut:");
+	widgetlabel=new QLabel("Shortcut:",this->toolsWindow);
 	grid->addWidget(widgetlabel,posy,posx,Qt::AlignVCenter);
-	edit=new QLineEdit("");
+	edit=new QLineEdit("",this->toolsWindow);
 	edit->setObjectName(TOOLKEY);
 	grid->addWidget(edit,posy++,posx+1,Qt::AlignVCenter);
 //comment
-	widgetlabel=new QLabel("Comment:");
+	widgetlabel=new QLabel("Comment:",this->toolsWindow);
 	grid->addWidget(widgetlabel,posy,posx,Qt::AlignVCenter);
-	edit=new QLineEdit("");
+	edit=new QLineEdit("",this->toolsWindow);
 	edit->setObjectName(TOOLCOMMENT);
 	grid->addWidget(edit,posy++,posx+1,Qt::AlignVCenter);
 
@@ -1233,17 +1237,17 @@ void KKEditClass::buildTools(void)
 %i - The location of the globally installed tools. Passed to command as $KKEDIT_DATADIR\n\
 %p - Progress bar control file. Passed to command as $KKEDIT_BAR_CONTROL\n";
 
-	widgetlabel=new QLabel(info);
+	widgetlabel=new QLabel(info,this->toolsWindow);
 	grid->addWidget(widgetlabel,posy,posx,posy++,-1,Qt::AlignVCenter);
 
 	posy+=7;
 //checkboxes
 //run as root
-	check=new QCheckBox("Run Tool As Root");
+	check=new QCheckBox("Run Tool As Root",this->toolsWindow);
 	check->setObjectName(TOOLRUNASROOT);
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 //run in term
-	check=new QCheckBox("Run Tool In Terminal");
+	check=new QCheckBox("Run Tool In Terminal",this->toolsWindow);
 	check->setObjectName(TOOLRUNINTERM);
 
 	QObject::connect(check,&QCheckBox::checkStateChanged,[this,check](Qt::CheckState state)
@@ -1252,7 +1256,7 @@ void KKEditClass::buildTools(void)
 		});
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 //show html doc
-	check=new QCheckBox("Show HTML Doc");
+	check=new QCheckBox("Show HTML Doc",this->toolsWindow);
 	check->setObjectName(TOOLSHOWDOC);
 
 	QObject::connect(check,&QCheckBox::checkStateChanged,[this,check](Qt::CheckState state)
@@ -1262,7 +1266,7 @@ void KKEditClass::buildTools(void)
 
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 //run sync
-	check=new QCheckBox("Run Tool Synchronously");
+	check=new QCheckBox("Run Tool Synchronously",this->toolsWindow);
 	check->setChecked(true);
 
 	QObject::connect(check,&QCheckBox::checkStateChanged,[this,check](Qt::CheckState state)
@@ -1274,39 +1278,39 @@ void KKEditClass::buildTools(void)
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 
 //use pole
-	check=new QCheckBox("Use Progress Bar");
+	check=new QCheckBox("Use Progress Bar",this->toolsWindow);
 	check->setObjectName(TOOLUSEPOLE);
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 
 //show in popup
-	check=new QCheckBox("Show Tool In Pop-Up Menu");
+	check=new QCheckBox("Show Tool In Pop-Up Menu",this->toolsWindow);
 	check->setObjectName(TOOLSHOWINPOPUP);
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 //always show in popup
-	check=new QCheckBox("Always Show Tool In Pop-Up Menu");
+	check=new QCheckBox("Always Show Tool In Pop-Up Menu",this->toolsWindow);
 	check->setObjectName(TOOLALWAYSINPOPUP);
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 //clear tool out
-	check=new QCheckBox("Clear Tool Output First");
+	check=new QCheckBox("Clear Tool Output First",this->toolsWindow);
 	check->setObjectName(TOOLCLEAROP);
 	grid->addWidget(check,posy++,posx,Qt::AlignVCenter);
 
 //radios
 //ignore out
-	radio=new QRadioButton("Ignore Output");
+	radio=new QRadioButton("Ignore Output",this->toolsWindow);
 	radio->setChecked(true);
 	radio->setObjectName(TOOLIGNOREOUT);
 	grid->addWidget(radio,posy++,posx,Qt::AlignVCenter);
 //paste out
-	radio=new QRadioButton("Paste Output");
+	radio=new QRadioButton("Paste Output",this->toolsWindow);
 	radio->setObjectName(TOOLPASTEOUT);
 	grid->addWidget(radio,posy++,posx,Qt::AlignVCenter);
 //replace all
-	radio=new QRadioButton("Replace All Contents");
+	radio=new QRadioButton("Replace All Contents",this->toolsWindow);
 	radio->setObjectName(TOOLREPLACEALL);
 	grid->addWidget(radio,posy++,posx,Qt::AlignVCenter);
 //view out
-	radio=new QRadioButton("View Output");
+	radio=new QRadioButton("View Output",this->toolsWindow);
 	radio->setObjectName(TOOLVIEWOUT);
 	grid->addWidget(radio,posy++,posx,Qt::AlignVCenter);
 
@@ -1314,8 +1318,9 @@ void KKEditClass::buildTools(void)
 	mainvbox->addWidget(tab);
 
 	hbox=new QHBoxLayout;
+	hbox->setContentsMargins(0,0,0,0);
 	hbox->addStretch(1);
-	button=new QPushButton("Save Tool");
+	button=new QPushButton("Save Tool",this->toolsWindow);
 	button->setObjectName(QString("%1").arg(TOOLSSAVE));
 
 	QObject::connect(button,&QPushButton::clicked,[this]()
@@ -1327,7 +1332,7 @@ void KKEditClass::buildTools(void)
 	hbox->addWidget(button);
 
 	hbox->addStretch(1);
-	button=new QPushButton("Save Tool As");
+	button=new QPushButton("Save Tool As",this->toolsWindow);
 	button->setObjectName(QString("%1").arg(TOOLSSAVEAS));
 
 	QObject::connect(button,&QPushButton::clicked,[this]()
@@ -1338,7 +1343,7 @@ void KKEditClass::buildTools(void)
 	hbox->addWidget(button);
 
 	hbox->addStretch(1);
-	button=new QPushButton("Delete Tool");
+	button=new QPushButton("Delete Tool",this->toolsWindow);
 	button->setObjectName(QString("%1").arg(TOOLSDELETE));
 
 	QObject::connect(button,&QPushButton::clicked,[this]()
@@ -1349,7 +1354,7 @@ void KKEditClass::buildTools(void)
 	hbox->addWidget(button);
 
 	hbox->addStretch(1);
-	button=new QPushButton("Edit Tool");
+	button=new QPushButton("Edit Tool",this->toolsWindow);
 	button->setObjectName(QString("%1").arg(TOOLSEDIT));
 
 	QObject::connect(button,&QPushButton::clicked,[this]()
@@ -1360,7 +1365,7 @@ void KKEditClass::buildTools(void)
 	hbox->addWidget(button);
 
 	hbox->addStretch(1);
-	button=new QPushButton("Dismiss");
+	button=new QPushButton("Dismiss",this->toolsWindow);
 	button->setObjectName(QString("%1").arg(TOOLSCANCEL));
 
 	QObject::connect(button,&QPushButton::clicked,[this]()
@@ -1418,6 +1423,7 @@ void KKEditClass::rebuildTabsMenu(void)
 			doc=this->getDocumentForTab(j);
 			menuitem=new MenuItemClass(doc->getFileName());
 			menuitem->setMenuID(j);
+			menuitem->setParent(this->selectTabMenu);
 			this->selectTabMenu->addAction(menuitem);
 			QObject::connect(menuitem,&QAction::triggered,[this,j]()
 				{
@@ -1442,34 +1448,33 @@ void KKEditClass::rebuildTabsMenu(void)
 void KKEditClass::buildSpellCheckerGUI(void)
 {
 #ifdef _ASPELL_
-	QVBoxLayout*	vlayout=new QVBoxLayout;
+	QVBoxLayout	*vlayout=new QVBoxLayout;
 	QWidget*		hbox;
-	QHBoxLayout*	hlayout;
-	QPushButton		*button;
-	QIcon			icon;
+	QHBoxLayout	*hlayout;
+	QPushButton	*button;
+	QIcon		icon;
 
 	this->spellCheckGUI=new QDialog(this->mainWindow);
 	this->spellCheckGUI->setWindowTitle("Spell Check Word");
 	vlayout->setContentsMargins(4,0,4,0);
 
 //find
-	this->infoLabel=new QLabel("Change word to:");
+	this->infoLabel=new QLabel("Change word to:",this->spellCheckGUI);
 	this->infoLabel->setAlignment(Qt::AlignCenter);
 	vlayout->addWidget(this->infoLabel);
 
-	this->wordDropBox=new QComboBox;
+	this->wordDropBox=new QComboBox(this->spellCheckGUI);
 	this->wordDropBox->setEditable(true);
 	vlayout->addWidget(this->wordDropBox);
 
 //switches 3rd row
 	hlayout=new QHBoxLayout;
 	hlayout->setContentsMargins(0,4,0,4);
-	hbox=new QWidget;
+	hbox=new QWidget(this->spellCheckGUI);
 	hbox->setLayout(hlayout);
 
-	button=new QPushButton("Apply");
+	button=new QPushButton("Apply",this->spellCheckGUI);
 	button->setObjectName(QString("%1").arg(APPLYWORDBUTTON));
-
 	QObject::connect(button,&QPushButton::clicked,[this]()
 		{
 			this->doOddButtons(APPLYWORDBUTTON);
@@ -1477,27 +1482,24 @@ void KKEditClass::buildSpellCheckerGUI(void)
 
 	hlayout->addWidget(button);
 
-	button=new QPushButton("Ignore");
+	button=new QPushButton("Ignore",this->spellCheckGUI);
 	button->setObjectName(QString("%1").arg(IGNOREWORDBUTTON));
-
 	QObject::connect(button,&QPushButton::clicked,[this]()
 		{
 			this->doOddButtons(IGNOREWORDBUTTON);
 		});
 	hlayout->addWidget(button);
 
-	button=new QPushButton("Add");
+	button=new QPushButton("Add",this->spellCheckGUI);
 	button->setObjectName(QString("%1").arg(ADDWORDBUTTON));
-
 	QObject::connect(button,&QPushButton::clicked,[this]()
 		{
 			this->doOddButtons(ADDWORDBUTTON);
 		});
 	hlayout->addWidget(button);
 
-	button=new QPushButton("Cancel");
+	button=new QPushButton("Cancel",this->spellCheckGUI);
 	button->setObjectName(QString("%1").arg(CANCELSPELLCHECK));
-
 	QObject::connect(button,&QPushButton::clicked,[this]()
 		{
 			this->doOddButtons(CANCELSPELLCHECK);
@@ -1875,7 +1877,7 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 
 									menuitem->setMenuID(linenumber);
 									menuitem->mainKKEditClass=this;
-									
+									menuitem->setParent(this->funcMenu);
 									QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 										{
 											menuitem->menuClickedGotoLine();
@@ -1885,7 +1887,7 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 										{
 											if(menus.contains(entrytype)==false)
 												{
-													menus[entrytype]=new QMenu(entrytype);
+													menus[entrytype]=new QMenu(entrytype,this->funcMenu);
 													this->funcMenu->addMenu(menus.value(entrytype));
 												}
 											menus.value(entrytype)->addAction(menuitem);

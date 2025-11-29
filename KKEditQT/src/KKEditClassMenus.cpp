@@ -35,64 +35,64 @@ MenuItemClass* KKEditClass::makeMenuItemClass(int mainmenu,const QString name,co
 	switch(mainmenu)
 		{
 			case FILEMENU:
+				menuitem->setParent(this->fileMenu);
 				this->fileMenu->addAction(menuitem);
-			
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doFileMenuItems(menuitem);
 					});
 				break;
 			case EDITMENU:
+				menuitem->setParent(this->editMenu);
 				this->editMenu->addAction(menuitem);
-				
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doEditMenuItems(menuitem);
 					});
 				break;
 			case VIEWMENU:
+				menuitem->setParent(this->viewMenu);
 				this->viewMenu->addAction(menuitem);
-				
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doViewMenuItems(menuitem);
 					});
 				break;
 			case NAVMENU:
+				menuitem->setParent(this->navMenu);
 				this->navMenu->addAction(menuitem);
-				
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doNavMenuItems(menuitem);
 					});
 				break;
 			case BOOKMARKSMENU:
+				menuitem->setParent(this->bookMarkMenu);
 				this->bookMarkMenu->addAction(menuitem);
-				
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doBookmarkMenuItems(menuitem);
 					});
 				break;
 			case HELPMENU:
+				menuitem->setParent(this->helpMenu);
 				this->helpMenu->addAction(menuitem);
-				
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doHelpMenuItems(menuitem);
 					});
 				break;
 			case TOOLSMENU:
+				menuitem->setParent(this->toolsMenu);
 				this->toolsMenu->addAction(menuitem);
-			
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doToolsMenuItems(menuitem);
 					});
 				break;
 			case SAVESESSIONSMENU:
+				menuitem->setParent(this->saveSessionsMenu);
 				this->saveSessionsMenu->addAction(menuitem);
-				
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doSessionsMenuItems(menuitem);
@@ -100,8 +100,8 @@ MenuItemClass* KKEditClass::makeMenuItemClass(int mainmenu,const QString name,co
 
 				break;
 			case RESTORESESSIONSMENU:
+				menuitem->setParent(this->restoreSessionsMenu);
 				this->restoreSessionsMenu->addAction(menuitem);
-				
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doSessionsMenuItems(menuitem);
@@ -109,7 +109,6 @@ MenuItemClass* KKEditClass::makeMenuItemClass(int mainmenu,const QString name,co
 				break;
 
 			case NOMENU:
-				
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doOddMenuItems(menuitem);

@@ -42,49 +42,51 @@ struct langPluginStruct
 
 class Highlighter : public QSyntaxHighlighter
 {
-public:
-	Highlighter(QTextDocument *parent,QPlainTextEdit *doc,KKEditClass *kk=NULL);
-	bool							setLanguage(QString lang);
-	void							setTheme(void);
-	KKEditClass					*mainKKEditClass;
+	public:
+		Highlighter(QTextDocument *parent,QPlainTextEdit *doc,KKEditClass *kk=NULL);
+		~Highlighter();
+
+		bool							setLanguage(QString lang);
+		void							setTheme(void);
+		KKEditClass					*mainKKEditClass;
 //plugins
 //vars
-	QHash<int,langPluginStruct>	langPlugins;
-	QHash<int,langPluginStruct>	toolkitPlugins;
+		QHash<int,langPluginStruct>	langPlugins;
+		QHash<int,langPluginStruct>	toolkitPlugins;
 
-	QString						docBackgroundCSS;
-	QString						documentBackground;
-	QString						documentForeground;
-	QString						lineNumbersBackground;
-	QString						lineNumbersForeground;
-	QString						bookMarkBGColour;
-	QString						bookMarkFGColour;
-	QString						findFGColour;
-	QString						findBGColour;
+		QString						docBackgroundCSS;
+		QString						documentBackground;
+		QString						documentForeground;
+		QString						lineNumbersBackground;
+		QString						lineNumbersForeground;
+		QString						bookMarkBGColour;
+		QString						bookMarkFGColour;
+		QString						findFGColour;
+		QString						findBGColour;
 
-	bool							syntaxHighlighting=true;
+		bool							syntaxHighlighting=true;
 protected:
-	void							highlightBlock(const QString &text);
+		void							highlightBlock(const QString &text);
 
 private:
+		QVector<highLightingRule>	highlightingRules;
+		QPlainTextEdit				*document;
+		QTextCharFormat				resetformat;
+		QVector<highLightingRule>	multiLineCommentRules;
 
-	QVector<highLightingRule>	highlightingRules;
-	QPlainTextEdit				*document;
-	QTextCharFormat				resetformat;
-	QVector<highLightingRule>	multiLineCommentRules;
-
-	int							currentPlug=-1;
+		int							currentPlug=-1;
 //functions
-	void							loadLangPlugins(void);
-	bool							loadLangPlug(langPluginStruct *ps);
-	void							loadToolkitPlugins(void);
-	bool							loadToolkitPlug(langPluginStruct *ps);
-	void							resetRules(void);
+		void							loadLangPlugins(void);
+		//bool							loadLangPlug(langPluginStruct *ps);
+		bool							loadLangPlug(int plugnum,QString s);
+		void							loadToolkitPlugins(void);
+		//bool							loadToolkitPlug(langPluginStruct *ps);
+		bool							loadToolkitPlug(int plugnum,QString s);
+		void							resetRules(void);
 
-	void							setBit(int *data,int bit);
-	void							resetBit(int *data,int bit);
-	int							getBit(int data,int bit);
-
+		void							setBit(int *data,int bit);
+		void							resetBit(int *data,int bit);
+		int							getBit(int data,int bit);
 };
 
 #endif // HIGHLIGHTER_H

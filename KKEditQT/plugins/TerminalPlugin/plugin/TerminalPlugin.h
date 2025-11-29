@@ -22,6 +22,7 @@
 #define TerminalPluginPLUG_H
 
 #include "../../../src/kkeditqtPluginInterface.h"
+#include "../../../src/MainWindow.h"
 
 #include <qtermwidget6/qtermwidget.h>
 #include <QSettings>

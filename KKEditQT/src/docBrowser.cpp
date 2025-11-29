@@ -117,7 +117,14 @@ void docBrowserClass::openSrcFile(QString path)
 	if(this->mainKKEditClass->goToDefinition(contents)==true)
 		return;
 	else
-		this->mainKKEditClass->openFile("../"+contents,anchor.mid(1).toInt());
+		{
+			if(this->mainKKEditClass->openFile("../"+contents,anchor.mid(1).toInt())==false)
+				{
+					DocumentClass *doc=this->mainKKEditClass->getDocumentForTab(-1);
+					QString dp=doc->getDirPath();
+					this->mainKKEditClass->openFile(dp+"/"+contents,anchor.mid(1).toInt());
+				}
+		}
 }
 
 void docBrowserClass::createNewWindow(QString path1)
