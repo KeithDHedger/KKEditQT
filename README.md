@@ -1,7 +1,7 @@
-**KKEditQT Source Code Editor.**<br>
+**KKEditQT Source Code Editor.**  
 
-<br>
-![KKEditQT](screenshots/main.jpg?raw=true "KKEdit")<br>
+![KKEditQT](screenshots/main.jpg)
+
 <br>
 [Full details and screenshots:](https://keithdhedger.github.io/KKEditQT/)<br>
 <br>
