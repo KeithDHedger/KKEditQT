@@ -1,4 +1,5 @@
 2.0.0
+fixed 'Open in src file' in doc viewer.
 Fixed occasional crash when repeatedly restoring sessions with large files >~4000.
 Fixed segfault when saving session.
 Fixed memory leaks.
