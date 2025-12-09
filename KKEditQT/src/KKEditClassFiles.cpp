@@ -53,7 +53,6 @@ void KKEditClass::runPipeAndCaptureToToolOP(QString command)
 	this->application->processEvents();
 }
 
-#if 1
 QString KKEditClass::runPipeAndCapture(QString command,bool inshell)
 {
 	QString				results="";
@@ -62,21 +61,13 @@ QString KKEditClass::runPipeAndCapture(QString command,bool inshell)
 
 	if(inshell==true)
 		com="sh -c \""+command.toStdString()+"\"";
+	else
+		com=command.toStdString();
+	
 	results=QString::fromStdString(rp.runExternalCommands(com,true));
 	return(results);
 }
-#else
-QString KKEditClass::runPipeAndCapture(QString command)
-{
-	QString				results="";
-	runExternalProcClass	rp;
-	std::string			com="";
 
-	com=command.toStdString();
-	results=QString::fromStdString(rp.runExternalCommands(com,true,"",false));
-	return(results);
-}
-#endif
 void KKEditClass::openAsHexDump(void)
 {
 	QString				dump;

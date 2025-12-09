@@ -20,5 +20,3 @@ INSTALLS += documentation
 INSTALLS += image
 
 CONFIG += install_ok
-
-unix:!macx: LIBS += -lqtermwidget6

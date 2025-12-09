@@ -1,5 +1,11 @@
 2.0.0
-fixed 'Open in src file' in doc viewer.
+Fixed not showing completions.
+Removed unneeded terminal plugin menu items.
+Moved from using 3rd party qtermwidget to xterm.
+Fixed trying to go foward with nothing to go forward to.
+Fixed importing from PDF.
+Fixed replacing text when running external tool.
+Fixed 'Open in src file' in doc viewer.
 Fixed occasional crash when repeatedly restoring sessions with large files >~4000.
 Fixed segfault when saving session.
 Fixed memory leaks.

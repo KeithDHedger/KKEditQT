@@ -24,12 +24,92 @@
 #include "../../../src/kkeditqtPluginInterface.h"
 #include "../../../src/MainWindow.h"
 
-#include <qtermwidget6/qtermwidget.h>
+//#include <qtermwidget6/qtermwidget.h>
 #include <QSettings>
+
+
+class TerminalWidget : public QWidget
+{
+	public:
+		QString				termName="";
+		QString				xtermWinID="";
+		QPointer<QProcess>	process=NULL;
+		QWidget				*parentWidget=NULL;
+		int					windowid=0;
+		qint64				xtermPID=0;
+
+		TerminalWidget(QString termname,QWidget *parent = nullptr) : QWidget(parent)
+			{
+				this->termName=termname;
+				this->resize(parent->size());
+				this->parentWidget=parent;
+			}
+
+		void startXTerm(void)
+			{
+				process=new QProcess(this);
+				QStringList arguments;
+				//arguments<<"-T"<<this->termName<<"-into" << QString::number(this->winId())<<"-geometry"<<"500x100"<<"/bin/bash";
+				arguments<<"-T"<<this->termName<<"-into" << QString::number(this->winId())<<"-xrm"<<"*allowSendEvents:true"<<"-xrm"<< "xterm*VT100.Translations: #override  Ctrl Shift <Key>V:insert-selection(CLIPBOARD)\\nCtrl Shift <Key>C:copy-selection(CLIPBOARD)"<<"-xrm"<<"xterm*ScrollBar: true"<<"-xrm"<<"xterm*rightScrollBar: true";
+
+
+				//arguments<<"-T"<<this->termName<<"-into" << QString::number(this->winId())<<"-xrm"<<"*allowSendEvents:true"<<"-xrm"<< "xterm*VT100.Translations: #override  Ctrl Shift <Key>V:insert-selection(CLIPBOARD)\\nCtrl Shift <Key>C:copy-selection(CLIPBOARD)"<<"-xrm"<<"xterm*ScrollBar: true"<<"-xrm"<<"xterm*rightScrollBar: true"<<"-xrm"<<"xterm*VT100.scrollbar.translations:  #override \n<Btn1Down>:     StartScroll(Continuous) MoveThumb() NotifyThumb() \n<Btn1Motion>: MoveThumb() NotifyThumb() \n<BtnUp>: NotifyScroll(Proportional) EndScroll()";
+				process->start("xterm",arguments);
+				process->waitForStarted();
+				this->xtermPID=process->processId();
+				this->windowid=this->winId();
+				this->getXTermData();
+				this->resize(this->parentWidget->size());
+			}
+
+		bool getXTermData(void)
+			{
+				QProcess		pr;
+				QByteArray	result;
+
+				pr.start("xdotool", QStringList() << "search"<<"-name"<<"^"+this->termName+"$");
+				pr.waitForStarted();
+				pr.waitForReadyRead();
+				result=pr.readAll().trimmed();
+				pr.waitForFinished(); 
+				if(result.isEmpty()==true)
+					return(false);
+				if(result.contains('\n'))
+					return(false);
+
+				this->xtermWinID=result;
+				//qDebug()<<"this->xtermWinID"<<this->xtermWinID;
+				//qDebug()<<"this->windowid"<<this->windowid;
+				//qDebug()<<"this->xtermPID"<<this->xtermPID;
+				return(true);
+			}
+
+	protected:
+		void resizeEvent(QResizeEvent *event) override
+			{
+				QWidget::resizeEvent(event);
+				if(this->process==NULL)
+					return;
+				if(this->xtermWinID.isEmpty()==true)
+					{
+						if(this->getXTermData()==false)
+							return;
+					}
+				if(process->state() == QProcess::Running)
+					{
+						QString s;
+						int h=event->size().height();
+						int w=event->size().width();
+						s=QString("xdotool >/dev/null 2>/dev/null windowsize %1 %2 %3").arg(this->xtermWinID).arg(w).arg(h);
+						system(s.toStdString().c_str());
+					}
+			}
+	private:
+};
 
 struct termDataStruct
 {
-	QTermWidget	*console;
+	TerminalWidget *console;
 	QDockWidget	*dockWidget;
 	QAction		*toggleTerm;
 };
@@ -50,26 +130,23 @@ class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 		void						plugRun(plugData *data) override;
 #pragma GCC diagnostic pop
 		unsigned int				plugWants(void) override;
-
 	private:
 		KKEditClass				*mainKKEditClass;
 		QString					plugPath;
 		QMenu					*TerminalPluginMenu;
 		QMenu					*terminalsMenu;
-		QAction					*cdToAct;
 		QAction					*toggleViewAct;
 		QAction					*newAct;
 		QAction					*toggleTabsAct;
-
-		QTermWidget				*console;
-		QDockWidget				*dw;
-
 		QVector<termDataStruct>	terminals;
-		int						currentTerminal=0;
+		QDockWidget				*dw;
+		QString					baseName="";
 
-		int						cbnum=0;
+		int						currentTerminal=0;
+		int						namenum=0;
 		bool						openOnStart=false;
-		bool						saveCurrentVis=false;
+		int						currentHeight=-1;
+		int						openAtWidth=600;
 
 		QString					filePath;
 		QString					folderPath;

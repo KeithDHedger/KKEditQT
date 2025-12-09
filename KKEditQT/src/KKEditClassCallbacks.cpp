@@ -462,6 +462,7 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 								switch(viewflags)
 									{
 										case TOOL_PASTE_OP:
+										//qDebug()<<"TOOL_PASTE_OP";
 											document->textCursor().beginEditBlock();
 												document->textCursor().removeSelectedText();
 												if(rootrun==false)
@@ -958,7 +959,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 							else
 								fn=chooser.selectedFileName;
 							QString command=QString("pdftotext -nopgbrk -q -layout -nodiag -eol unix '%1' -|sed 'N;/\\n.*[0-9][0-9]*/d;P;D'|sed '$d'| unexpand --tabs=%4 >'/%2/%3'").arg(chooser.selectedFilePath).arg(this->tmpFolderName).arg(fn).arg(this->prefsTabWidth);
-							this->runPipeAndCapture(command);
+							this->runPipeAndCapture(command,true);
 							this->openFile(QString("/%1/%2").arg(this->tmpFolderName).arg(fn));										
 						}
 				}

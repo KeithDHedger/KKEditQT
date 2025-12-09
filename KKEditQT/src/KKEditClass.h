@@ -173,6 +173,8 @@ class KKEditClass : public QObject
 		bool							prefsNagScreen=false;
 		bool							onExitSaveSession=false;
 
+int saved_stdout;
+
 //editor vars
 		QStatusBar					*statusBar;
 		QLabel						*statusText;

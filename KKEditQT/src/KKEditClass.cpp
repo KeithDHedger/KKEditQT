@@ -63,11 +63,11 @@ KKEditClass::~KKEditClass()
 		{
 			if(this->plugins[j].loaded==true)
 			{
-			//	this->unloadPlug(&this->plugins[j]);
-			if(this->plugins[j].instance!=NULL)
-				delete this->plugins[j].instance;
-			if(this->plugins[j].pluginLoader!=NULL)
-				delete this->plugins[j].pluginLoader;
+				this->unloadPlug(&this->plugins[j]);
+			//if(this->plugins[j].instance!=NULL)
+			//	delete this->plugins[j].instance;
+			//if(this->plugins[j].pluginLoader!=NULL)
+			//	delete this->plugins[j].pluginLoader;
 				}
 		}
 
@@ -505,7 +505,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->buildMainGui();
 	this->buildPrefsWindow();
 	this->buildToolOutputWindow();
-	this->loadPlugins();
+	//this->loadPlugins();
 
 	this->buildDocViewer();
 	this->buildFindReplace();
@@ -543,8 +543,9 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->mainWindow->setGeometry(r);
  
 //this->onExitSaveSession //TODO//
-	this->setToolbarSensitive();
 	this->mainWindow->show();
+	this->loadPlugins();
+	this->setToolbarSensitive();
 }
 
 QString KKEditClass::randomName(int len)
@@ -711,6 +712,7 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 						});
 				}
 //plugins
+//this->saved_stdout = dup(fileno(stdout));
 			pd.menu=&menu;
 			pd.tabNumber=tabIndex;
 			pd.userStrData1=this->homeDataFolder;
@@ -719,6 +721,8 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 			pd.what=DOTABPOPUP;
 			this->runAllPlugs(pd);
 			menu.exec(this->mainNotebook->mapToGlobal(pt));
+//dup2(this->saved_stdout, fileno(stdout));
+ //   close(this->saved_stdout); 
 		}
 }
 

@@ -84,6 +84,9 @@ void HistoryClass::goForward(void)
 	DocumentClass	*doc;
 	historyData		fromherethisline;
 
+	if(this->oneList.isEmpty()==true)
+		return;
+
 	doc=this->mainKKEditClass->getDocumentForTab(-1);
 	fromherethisline.line=doc->getCurrentLineNumber();
 	fromherethisline.documentPath=doc->getFilePath();

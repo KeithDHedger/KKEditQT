@@ -101,19 +101,21 @@ this->mainKKEditClass->currentURL="file://"+ts;
 
 	return(false);
 }
+#include "runExternalProc.h"
 
 void docBrowserClass::openSrcFile(QString path)
 {
 	QString	str=path;
 	QString	anchor;
+	QString	contents;
 
 	str.remove(QRegularExpression("file:\\/\\/"));
 	anchor=QRegularExpression(R"RX(.*#(.*))RX").match(str).captured(1);
 	str.remove(QRegularExpression(R"RX(#.*$)RX"));
 
-	QString contents=this->mainKKEditClass->runPipeAndCapture(QString("sed -n '/<title>/p' '%1'").arg(str),true).simplified();
-
+	contents=this->mainKKEditClass->runPipeAndCapture(QString("sed -n '/<title>/p' '%1'").arg(str));
 	contents=QRegularExpression(R"RX(\b([[:alnum:]\._]*)( (Struct|Class|File) Reference| Source File)?</title>)RX").match(contents).captured(1);
+
 	if(this->mainKKEditClass->goToDefinition(contents)==true)
 		return;
 	else

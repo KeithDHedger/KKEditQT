@@ -29,6 +29,8 @@ tagClass::tagClass(KKEditClass *mainKKEditClass)
 	this->mainKKEditClass=mainKKEditClass;
 }
 
+#include "runExternalProc.h"
+
 void tagClass::getTagList(QStringList filepaths,int sorttype)
 {
 	QString					sort;
@@ -78,12 +80,14 @@ void tagClass::getTagList(QStringList filepaths,int sorttype)
 
 	command=QString("ctags -x %1 | %2 | sed 's@ \\+@ @g'").arg(paths).arg(sort);
 
-	if(filepaths.count()>100)
+	if(filepaths.count()>200)
 		{
 			if(this->mainKKEditClass->yesNoDialog(QString("Are you sure you want to search in %1 files?").arg(filepaths.count()),"This may be slow")!=QMessageBox::Yes)
 				return;
 		}
-	results=this->mainKKEditClass->runPipeAndCapture(command,true);
+
+	//results=this->mainKKEditClass->runPipeAndCapture(command,true);
+	results=this->mainKKEditClass->runPipeAndCapture(command);
 	lines=results.split("\n",Qt::SkipEmptyParts);
 
 	for(int j=0;j<lines.count();j++)

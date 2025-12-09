@@ -75,7 +75,6 @@ std::string runExternalProcClass::runExternalCommands(std::string str,bool captu
 		{
 			int pipe_position=-1;
 			int i=0;
-			//for(i=0;data[i]!='\0';i++)
 			for(i=0;data[i]!=0;i++)
 				{
 					if(data[i]=='\'')
@@ -173,6 +172,9 @@ std::string runExternalProcClass::runExternalCommands(std::string str,bool captu
 						close(pipe_fds[j]);
 
 					execvp(this->commandsVar[i].we_wordv[0],this->commandsVar[i].we_wordv);
+					//extern char **environ;
+//
+					//execvpe(this->commandsVar[i].we_wordv[0],this->commandsVar[i].we_wordv,environ);
 					perror("execlp");
 					exit(EXIT_FAILURE);
 				}

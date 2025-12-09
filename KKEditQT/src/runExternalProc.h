@@ -60,7 +60,6 @@ class runExternalProcClass
 * Trim output when capturing.
 */
 		bool			trimOP=false;
-
 //funcs
 		std::string	runExternalCommands(std::string str,bool capture=false,std::string tofile="",bool append=false);
 /**
