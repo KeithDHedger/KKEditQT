@@ -31,15 +31,6 @@ PKG_CHECK_MODULES(QTPRINTSUPPORT, $QTPRINTSUPPORT_MODULES)
 AC_SUBST(QTPRINTSUPPORT_CFLAGS)
 AC_SUBST(QTPRINTSUPPORT_LIBS)
 
-#QTTERM_MODULES="qtermwidget6 >= 2.0.0"
-#PKG_CHECK_MODULES(QTTERM, $QTTERM_MODULES, [gotterm=yes], [:])
-#if test "$gotterm" = "yes"; then
-#	rm -f KKEditQT/plugins/TerminalPlugin/pass
-#else
-#	touch KKEditQT/plugins/TerminalPlugin/pass
-#	AC_MSG_NOTICE([No QTermWidget, not building TerminalPlugin])
-#fi
-
 AC_MSG_CHECKING(whether to include spell checker (aspell))
 AC_ARG_ENABLE(aspell,AS_HELP_STRING([--enable-aspell],[Include spellchecker]),
     [enable_aspell=$enableval],

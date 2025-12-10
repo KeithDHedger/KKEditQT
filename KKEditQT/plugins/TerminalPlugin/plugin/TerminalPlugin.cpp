@@ -56,7 +56,7 @@ void TerminalPluginPlug::addTerminal(void)
 	newdw->setStyleSheet(dwss);
 	newdw->setFloating(false);
 	newdw->setContextMenuPolicy(Qt::CustomContextMenu);
-	newdw->setFeatures(QDockWidget::DockWidgetClosable);
+	//newdw->setFeatures(QDockWidget::DockWidgetClosable);//TODO
 	newdw->setVisible(false);
 
     newconsole=new TerminalWidget(QString("%1%2").arg(this->baseName).arg(this->namenum++),newdw);
@@ -244,15 +244,28 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 void TerminalPluginPlug::unloadPlug(void)
 {
+qDebug()<<"unloadPlug";
 	for(int j=0;j<this->terminals.size();j++)
 		{
 			if(this->terminals.at(j).console->process->state()==QProcess::Running)
+			{
+			//qDebug()<<this->terminals.at(j).console->termName<<this->terminals.at(j).console->xtermPID;
+			//	this->terminals.at(j).dockWidget->setFloating(false);
+			//	qApp->processEvents();
+
 				this->terminals.at(j).console->process->kill();
+				//system(QString("kill -9 %1").arg(this->terminals.at(j).console->xtermPID).toStdString().c_str());
+				//system(QString("killall %1").arg(this->terminals.at(j).console->termName).toStdString().c_str());
+				this->terminals.at(j).console->process->waitForFinished();
+				//this->terminals.at(j).dockWidget
+				}
 		}
+				//system("killall xterm");
+				//sleep(4);
 	delete this->TerminalPluginMenu;
-	
-//	for(int j=0;j<this->terminals.size();j++)
-//		delete this->terminals.at(j).dockWidget;
+	//
+	for(int j=0;j<this->terminals.size();j++)
+		delete this->terminals.at(j).dockWidget;
 }
 
 void TerminalPluginPlug::plugAbout(void)
@@ -372,6 +385,7 @@ void TerminalPluginPlug::plugRun(plugData *data)
 		return;
 	if(data->what==DOSHUTDOWN)
 		{	
+		qDebug()<<"DOSHUTDOWN";
  			plugprefs.setValue("floating",this->dw->isFloating());
  			plugprefs.setValue("geom",this->dw->geometry());
  			plugprefs.setValue("currentstate",this->dw->isVisible());
