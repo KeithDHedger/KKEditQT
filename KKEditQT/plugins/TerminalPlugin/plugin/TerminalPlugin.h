@@ -35,6 +35,8 @@ class TerminalWidget : public QWidget
 		QString				xtermWinID="";
 		QPointer<QProcess>	process=NULL;
 		QWidget				*parentWidget=NULL;
+		QString				backCol="white";
+		QString				foreCol="black";
 		int					windowid=0;
 		qint64				xtermPID=0;
 
@@ -50,7 +52,7 @@ class TerminalWidget : public QWidget
 				process=new QProcess(this);
 				QStringList arguments;
 				//arguments<<"-T"<<this->termName<<"-into" << QString::number(this->winId())<<"-geometry"<<"500x100"<<"/bin/bash";
-				arguments<<"-T"<<this->termName<<"-into" << QString::number(this->winId())<<"-xrm"<<"*allowSendEvents:true"<<"-xrm"<< "xterm*VT100.Translations: #override  Ctrl Shift <Key>V:insert-selection(CLIPBOARD)\\nCtrl Shift <Key>C:copy-selection(CLIPBOARD)"<<"-xrm"<<"xterm*ScrollBar: true"<<"-xrm"<<"xterm*rightScrollBar: true";
+				arguments<<"-T"<<this->termName<<"-into" << QString::number(this->winId())<<"-xrm"<<"*allowSendEvents:true"<<"-xrm"<< "xterm*VT100.Translations: #override  Ctrl Shift <Key>V:insert-selection(CLIPBOARD)\\nCtrl Shift <Key>C:copy-selection(CLIPBOARD)"<<"-xrm"<<"xterm*ScrollBar: true"<<"-xrm"<<"xterm*rightScrollBar: true"<<"-bg"<<this->backCol<<"-fg"<<this->foreCol;
 
 
 				//arguments<<"-T"<<this->termName<<"-into" << QString::number(this->winId())<<"-xrm"<<"*allowSendEvents:true"<<"-xrm"<< "xterm*VT100.Translations: #override  Ctrl Shift <Key>V:insert-selection(CLIPBOARD)\\nCtrl Shift <Key>C:copy-selection(CLIPBOARD)"<<"-xrm"<<"xterm*ScrollBar: true"<<"-xrm"<<"xterm*rightScrollBar: true"<<"-xrm"<<"xterm*VT100.scrollbar.translations:  #override \n<Btn1Down>:     StartScroll(Continuous) MoveThumb() NotifyThumb() \n<Btn1Motion>: MoveThumb() NotifyThumb() \n<BtnUp>: NotifyScroll(Proportional) EndScroll()";

@@ -1,4 +1,5 @@
 2.0.0
+Added back/fore colours to terminal plug settings.
 Fixed not showing completions.
 Removed unneeded terminal plugin menu items.
 Moved from using 3rd party qtermwidget to xterm.

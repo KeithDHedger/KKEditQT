@@ -56,9 +56,12 @@ void TerminalPluginPlug::addTerminal(void)
 	newdw->setStyleSheet(dwss);
 	newdw->setFloating(false);
 	newdw->setContextMenuPolicy(Qt::CustomContextMenu);
+	newdw->setFeatures(QDockWidget::DockWidgetClosable);
 	newdw->setVisible(false);
 
     newconsole=new TerminalWidget(QString("%1%2").arg(this->baseName).arg(this->namenum++),newdw);
+	newconsole->backCol=plugprefs.value("backcol","white").toString();
+	newconsole->foreCol=plugprefs.value("forecol","black").toString();
 	newconsole->startXTerm();
 	newdw->setWidget(newconsole);
 	this->mainKKEditClass->mainWindow->addDockWidget(Qt::BottomDockWidgetArea,newdw);
@@ -274,15 +277,56 @@ void TerminalPluginPlug::plugSettings(void)
 	QCheckBox	*openonstart;
 	QCheckBox	*usetabs;
 	QSettings	plugprefs("KDHedger","TerminalPlugin");
+	QColorDialog	forecolour;
+	QPushButton	*button=NULL;
+	QLineEdit	*editbox[2]={NULL,NULL};
+	QLabel		*label=NULL;
 
 	settings.setWindowTitle("TerminalPlugin Settings");
 
 	vlayout=new QVBoxLayout(&settings);
 
+//back col
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	label=new QLabel("Back Colour",&settings);	
+	hlayout	->addWidget(label);
+	hlayout->addStretch();
+	button=new QPushButton(QIcon::fromTheme("preferences-desktop-theme"),"",&settings);	
+	hlayout	->addWidget(button);
+	editbox[0]=new QLineEdit(plugprefs.value("backcol","white").toString(),&settings);
+	hlayout->addWidget(editbox[0]);	
+	vlayout->addLayout(hlayout);
+	QObject::connect(button,&QPushButton::clicked,[this,editbox]()
+		{
+			QColor colour;
+			colour=QColorDialog::getColor(editbox[0]->text(),nullptr,"Select Colour");
+			if(colour.isValid()==true)
+				editbox[0]->setText(colour.name(QColor::HexRgb));
+		});
+
+//fore col
+	hlayout=new QHBoxLayout;
+	hlayout->setContentsMargins(0,0,0,0);
+	label=new QLabel("Fore Colour",&settings);	
+	hlayout	->addWidget(label);
+	hlayout->addStretch();
+	button=new QPushButton(QIcon::fromTheme("preferences-desktop-theme"),"",&settings);	
+	hlayout	->addWidget(button);
+	editbox[1]=new QLineEdit(plugprefs.value("forecol","black").toString(),&settings);
+	hlayout->addWidget(editbox[1]);	
+	vlayout->addLayout(hlayout);
+	QObject::connect(button,&QPushButton::clicked,[this,editbox]()
+		{
+			QColor colour;
+			colour=QColorDialog::getColor(editbox[1]->text(),nullptr,"Select Colour");
+			if(colour.isValid()==true)
+				editbox[1]->setText(colour.name(QColor::HexRgb));
+		});
+
 	openonstart=new QCheckBox("Open On Start",this->mainKKEditClass->pluginPrefsWindow);
 	openonstart->setChecked(this->openOnStart);
 	QObject::connect(openonstart,&QCheckBox::checkStateChanged,[this](Qt::CheckState state) { this->openOnStart=(bool)state; });
-
 	vlayout->addWidget(openonstart);
 
 	usetabs=new QCheckBox("Open In Tabs",this->mainKKEditClass->pluginPrefsWindow);
@@ -310,6 +354,8 @@ void TerminalPluginPlug::plugSettings(void)
 				this->toggleTabsAct->setText("Opening In Tabs ...");
 			else
 				this->toggleTabsAct->setText("Opening In Window ...");
+			plugprefs.setValue("backcol",editbox[0]->text());
+			plugprefs.setValue("forecol",editbox[1]->text());
 		}
 }
 
