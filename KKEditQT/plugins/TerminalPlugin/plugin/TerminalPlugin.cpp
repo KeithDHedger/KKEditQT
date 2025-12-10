@@ -405,6 +405,7 @@ void TerminalPluginPlug::plugRun(plugData *data)
 
 	if(data->what==DOSHUTDOWN)
 		{	
+		qDebug()<<"DOSHUTDOWN";
  			plugprefs.setValue("floating",this->dw->isFloating());
  			plugprefs.setValue("geom",this->dw->geometry());
  			plugprefs.setValue("currentstate",this->dw->isVisible());
