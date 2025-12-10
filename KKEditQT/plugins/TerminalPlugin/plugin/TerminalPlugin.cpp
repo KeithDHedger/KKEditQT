@@ -56,7 +56,7 @@ void TerminalPluginPlug::addTerminal(void)
 	newdw->setStyleSheet(dwss);
 	newdw->setFloating(false);
 	newdw->setContextMenuPolicy(Qt::CustomContextMenu);
-	newdw->setFeatures(QDockWidget::DockWidgetClosable);
+	//newdw->setFeatures(QDockWidget::DockWidgetClosable);//TODO
 	newdw->setVisible(false);
 
     newconsole=new TerminalWidget(QString("%1%2").arg(this->baseName).arg(this->namenum++),newdw);
@@ -196,6 +196,17 @@ void TerminalPluginPlug::addTerminal(void)
 	qApp->processEvents();
 }
 
+void TerminalPluginPlug::showDocs(void)
+{
+	if(this->data!=NULL)
+		{
+			QString		comm;
+			QDir::setCurrent(this->folderPath);
+			comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(QString("'%1/%2'").arg(this->folderPath).arg("html/index.html"));
+			system(comm.toStdString().c_str());		
+		}
+}
+
 void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 {
 	QSettings	plugprefs("KDHedger","TerminalPlugin");
@@ -247,25 +258,43 @@ void TerminalPluginPlug::unloadPlug(void)
 	for(int j=0;j<this->terminals.size();j++)
 		{
 			if(this->terminals.at(j).console->process->state()==QProcess::Running)
-				this->terminals.at(j).console->process->kill();
+				{
+					this->terminals.at(j).console->process->kill();
+					this->terminals.at(j).console->process->waitForFinished();
+				}
 		}
 	delete this->TerminalPluginMenu;
-	
-//	for(int j=0;j<this->terminals.size();j++)
-//		delete this->terminals.at(j).dockWidget;
+	for(int j=0;j<this->terminals.size();j++)
+		delete this->terminals.at(j).dockWidget;
 }
 
 void TerminalPluginPlug::plugAbout(void)
 {
 	QMessageBox msgBox;
-
+	QFileInfo	fileinfo(this->plugPath);
 	QString txt="KKEditQT TerminalPlugin Plugin\n\n©K.D.Hedger 2024\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
 	msgBox.setText(txt);
 	msgBox.setIconPixmap(QPixmap("/usr/share/KKEditQT/pixmaps/KKEditQTPlug.png"));
 	msgBox.setWindowTitle("Plugin About");
 	msgBox.setTextFormat(Qt::MarkdownText);
-	msgBox.exec();
-}
+	msgBox.setStandardButtons(QMessageBox::Help|QMessageBox::Close);
+	int ret=msgBox.exec();
+	switch(ret)
+		{
+			case QMessageBox::Close:
+				break;
+			case QMessageBox::Help:
+				{
+					QStringList args;
+					args<<"-k";
+					args<<QString("%1").arg(this->mainKKEditClass->sessionID);
+					args<<"-c"<<"openindocview";
+					args<<"-d"<<fileinfo.canonicalPath()+"/docs/help.html";
+					QProcess::startDetached("kkeditqtmsg",args);
+					this->mainKKEditClass->pluginPrefsWindow->hide();
+				}
+				break;
+		}}
 
 void TerminalPluginPlug::plugSettings(void)
 {
@@ -361,7 +390,7 @@ void TerminalPluginPlug::plugSettings(void)
 
 unsigned int TerminalPluginPlug::plugWants(void)
 {
-	return(DOABOUT|DOSETTINGS|DOSWITCHPAGE|DOSHUTDOWN);
+	return(DOABOUT|DOSETTINGS|DOSWITCHPAGE|DOSHUTDOWN|DOSETSENSITVE);
 }
 
 void TerminalPluginPlug::plugRun(plugData *data)
@@ -370,6 +399,10 @@ void TerminalPluginPlug::plugRun(plugData *data)
 
 	if(data==NULL)
 		return;
+
+	if(data->what==DOSETSENSITVE)
+		this->data=data;
+
 	if(data->what==DOSHUTDOWN)
 		{	
  			plugprefs.setValue("floating",this->dw->isFloating());
@@ -379,6 +412,7 @@ void TerminalPluginPlug::plugRun(plugData *data)
 		
 	if(data->what==DOSWITCHPAGE)
 		{
+			this->data=data;
 			this->filePath=data->userStrData1;
 			this->folderPath=data->userStrData3;
 		}
