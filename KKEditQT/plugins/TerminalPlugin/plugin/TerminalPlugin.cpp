@@ -244,26 +244,15 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 void TerminalPluginPlug::unloadPlug(void)
 {
-qDebug()<<"unloadPlug";
 	for(int j=0;j<this->terminals.size();j++)
 		{
 			if(this->terminals.at(j).console->process->state()==QProcess::Running)
-			{
-			//qDebug()<<this->terminals.at(j).console->termName<<this->terminals.at(j).console->xtermPID;
-			//	this->terminals.at(j).dockWidget->setFloating(false);
-			//	qApp->processEvents();
-
-				this->terminals.at(j).console->process->kill();
-				//system(QString("kill -9 %1").arg(this->terminals.at(j).console->xtermPID).toStdString().c_str());
-				//system(QString("killall %1").arg(this->terminals.at(j).console->termName).toStdString().c_str());
-				this->terminals.at(j).console->process->waitForFinished();
-				//this->terminals.at(j).dockWidget
+				{
+					this->terminals.at(j).console->process->kill();
+					this->terminals.at(j).console->process->waitForFinished();
 				}
 		}
-				//system("killall xterm");
-				//sleep(4);
 	delete this->TerminalPluginMenu;
-	//
 	for(int j=0;j<this->terminals.size();j++)
 		delete this->terminals.at(j).dockWidget;
 }
