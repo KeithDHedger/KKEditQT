@@ -406,9 +406,7 @@ void TerminalPluginPlug::plugRun(plugData *data)
 
 	if(data->what==DOSHUTDOWN)
 		{	
- 			plugprefs.setValue("floating",this->dw->isFloating());
  			plugprefs.setValue("geom",this->dw->geometry());
- 			plugprefs.setValue("currentstate",this->dw->isVisible());
 		}
 		
 	if(data->what==DOSWITCHPAGE)
@@ -426,7 +424,6 @@ void TerminalPluginPlug::doMenuItem(int what,int whome)
 		{
 			case VISCHANGED:
 				this->terminals.at(whome).toggleTerm->setText(QString("Terminal %1").arg(whome+1));
-				plugprefs.setValue("currentstate",this->terminals.at(0).dockWidget->isVisible());
 				break;
 			case NEWTERM:
 				this->addTerminal();

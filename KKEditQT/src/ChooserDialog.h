@@ -46,7 +46,7 @@ class chooserDialogClass
 		LFSTK_findClass		*gFind;
 		bool					fileExists=false;
 		bool					useMulti=false;
-		bool					valid=true;
+		bool					valid=false;
 
 		void					setSideListMode(QListView::ViewMode mode);
 		void					setFileListMode(QListView::ViewMode mode);

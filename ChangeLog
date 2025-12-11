@@ -1,4 +1,6 @@
 2.0.0
+Fixed segfault when closing open file dialog from wm.
+Removed unneeded prefs from term plug.
 Fixed term plug open file with spaces.
 Term plug scroll bar can now be dragged/scrolled with left button.
 Added back/fore colours to terminal plug settings.

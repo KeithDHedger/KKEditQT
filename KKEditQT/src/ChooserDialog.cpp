@@ -473,6 +473,7 @@ void chooserDialogClass::setFileData(void)
 		prefs.setValue("lastloadfolder",this->localWD);
 
 	this->setFavs();
+	this->valid=true;
 }
 
 void chooserDialogClass::setOverwriteWarning(bool warn)
