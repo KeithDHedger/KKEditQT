@@ -8,6 +8,7 @@ DESTDIR         = plugins
 
 documentation.files = docs/*
 image.files = TerminalPlugin.png
+data.files = *.tpxrc
 
 target.path = ../build/plugins
 data.path = $${target.path}

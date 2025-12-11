@@ -1,0 +1,7 @@
+xterm*ScrollBar: true
+xterm*rightScrollBar: true
+xterm*VT100.scrollbar.translations: #override \n<Btn1Down>: StartScroll(Continuous) MoveThumb() NotifyThumb() \n<Btn1Motion>: MoveThumb() NotifyThumb() \n<BtnUp>: NotifyScroll(Proportional) EndScroll()
+
+xterm*clickToFocus: true
+xterm*allowSendEvents:true
+xterm*VT100.Translations: #override Ctrl Shift <Key>V:insert-selection(CLIPBOARD)\nCtrl Shift <Key>C:copy-selection(CLIPBOARD)

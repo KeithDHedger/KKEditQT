@@ -1,4 +1,6 @@
 2.0.0
+Fixed term plug open file with spaces.
+Term plug scroll bar can now be dragged/scrolled with left button.
 Added back/fore colours to terminal plug settings.
 Fixed not showing completions.
 Removed unneeded terminal plugin menu items.

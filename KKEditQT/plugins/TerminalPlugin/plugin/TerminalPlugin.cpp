@@ -62,6 +62,7 @@ void TerminalPluginPlug::addTerminal(void)
     newconsole=new TerminalWidget(QString("%1%2").arg(this->baseName).arg(this->namenum++),newdw);
 	newconsole->backCol=plugprefs.value("backcol","white").toString();
 	newconsole->foreCol=plugprefs.value("forecol","black").toString();
+	newconsole->plugPath=QFileInfo(this->plugPath).absolutePath();
 	newconsole->startXTerm();
 	newdw->setWidget(newconsole);
 	this->mainKKEditClass->mainWindow->addDockWidget(Qt::BottomDockWidgetArea,newdw);
@@ -159,7 +160,7 @@ void TerminalPluginPlug::addTerminal(void)
 									filepath=QFileDialog::getOpenFileName(nullptr,"Open File",cwd,"",nullptr,QFileDialog::HideNameFilterDetails);
 									if(filepath.isEmpty()==false)
 										{
-											QString comm=QString("kkeditqtmsg -k %1 -c openfile -d %2").arg(this->mainKKEditClass->sessionID).arg(filepath);
+											QString comm=QString("kkeditqtmsg -k %1 -c openfile -d '%2'").arg(this->mainKKEditClass->sessionID).arg(filepath);
 											system(comm.toStdString().c_str());
 										}
 									qApp->clipboard()->setText(ht);
