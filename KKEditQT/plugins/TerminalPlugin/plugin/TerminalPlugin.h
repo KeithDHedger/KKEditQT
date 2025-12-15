@@ -23,10 +23,9 @@
 
 #include "../../../src/kkeditqtPluginInterface.h"
 #include "../../../src/MainWindow.h"
+#include "QT_prefsWidgets.h"
 
-//#include <qtermwidget6/qtermwidget.h>
 #include <QSettings>
-
 
 class TerminalWidget : public QWidget
 {

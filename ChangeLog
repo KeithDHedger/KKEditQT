@@ -1,4 +1,5 @@
 2.0.0
+Redone term plug settings.
 Fixed segfault when closing open file dialog from wm.
 Removed unneeded prefs from term plug.
 Fixed term plug open file with spaces.
