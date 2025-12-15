@@ -23,10 +23,9 @@
 
 #include "../../../src/kkeditqtPluginInterface.h"
 #include "../../../src/MainWindow.h"
+#include "QT_prefsWidgets.h"
 
-//#include <qtermwidget6/qtermwidget.h>
 #include <QSettings>
-
 
 class TerminalWidget : public QWidget
 {
@@ -136,14 +135,14 @@ class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 
 	private:
 		KKEditClass				*mainKKEditClass;
-		QString					plugPath;
-		QMenu					*TerminalPluginMenu;
-		QMenu					*terminalsMenu;
-		QAction					*toggleViewAct;
-		QAction					*newAct;
-		QAction					*toggleTabsAct;
+		QString					plugPath="";
+		QMenu					*TerminalPluginMenu=NULL;
+		QMenu					*terminalsMenu=NULL;
+		QAction					*toggleViewAct=NULL;
+		QAction					*newAct=NULL;
+		QAction					*toggleTabsAct=NULL;
 		QVector<termDataStruct>	terminals;
-		QDockWidget				*dw;
+		QDockWidget				*dw=NULL;
 		QString					baseName="";
 		plugData					*data=NULL;
 
@@ -153,8 +152,8 @@ class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 		int						currentHeight=-1;
 		int						openAtWidth=600;
 
-		QString					filePath;
-		QString					folderPath;
+		QString					filePath="";
+		QString					folderPath="";
 		void						doMenuItem(int what,int whome);
 		void						addTerminal(void);
 };

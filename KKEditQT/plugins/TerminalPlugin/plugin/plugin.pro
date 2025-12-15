@@ -1,8 +1,8 @@
 TEMPLATE        = lib
 CONFIG         += plugin
 QT             += widgets printsupport
-HEADERS         = TerminalPlugin.h
-SOURCES         = TerminalPlugin.cpp
+HEADERS         = TerminalPlugin.h QT_prefsWidgets.h
+SOURCES         = TerminalPlugin.cpp QT_prefsWidgets.cpp
 TARGET          = $$qtLibraryTarget(TerminalPlugin)
 DESTDIR         = plugins
 

@@ -56,12 +56,11 @@ void TerminalPluginPlug::addTerminal(void)
 	newdw->setStyleSheet(dwss);
 	newdw->setFloating(false);
 	newdw->setContextMenuPolicy(Qt::CustomContextMenu);
-	//newdw->setFeatures(QDockWidget::DockWidgetClosable);//TODO
 	newdw->setVisible(false);
 
     newconsole=new TerminalWidget(QString("%1%2").arg(this->baseName).arg(this->namenum++),newdw);
-	newconsole->backCol=plugprefs.value("backcol","white").toString();
-	newconsole->foreCol=plugprefs.value("forecol","black").toString();
+	newconsole->backCol=plugprefs.value("Back Colour","white").toString();
+	newconsole->foreCol=plugprefs.value("Fore Colour","black").toString();
 	newconsole->plugPath=QFileInfo(this->plugPath).absolutePath();
 	newconsole->startXTerm();
 	newdw->setWidget(newconsole);
@@ -299,94 +298,19 @@ void TerminalPluginPlug::plugAbout(void)
 
 void TerminalPluginPlug::plugSettings(void)
 {
-	QDialog		settings(this->mainKKEditClass->pluginPrefsWindow);
-	QComboBox	themebox(this->mainKKEditClass->pluginPrefsWindow);
-	QVBoxLayout	*vlayout;
-	QHBoxLayout	*hlayout;
-	QPushButton	*btn;
-	QCheckBox	*openonstart;
-	QCheckBox	*usetabs;
-	QSettings	plugprefs("KDHedger","TerminalPlugin");
-	QColorDialog	forecolour;
-	QPushButton	*button=NULL;
-	QLineEdit	*editbox[2]={NULL,NULL};
-	QLabel		*label=NULL;
+	QString	prefsname="TerminalPlugin";
+	prefsWidgetsClass	pw(prefsname);
 
-	settings.setWindowTitle("TerminalPlugin Settings");
-
-	vlayout=new QVBoxLayout(&settings);
+	pw.startWindow("TerminalPlugin Settings");
 
 //back col
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	label=new QLabel("Back Colour",&settings);	
-	hlayout	->addWidget(label);
-	hlayout->addStretch();
-	button=new QPushButton(QIcon::fromTheme("preferences-desktop-theme"),"",&settings);	
-	hlayout	->addWidget(button);
-	editbox[0]=new QLineEdit(plugprefs.value("backcol","white").toString(),&settings);
-	hlayout->addWidget(editbox[0]);	
-	vlayout->addLayout(hlayout);
-	QObject::connect(button,&QPushButton::clicked,[this,editbox]()
-		{
-			QColor colour;
-			colour=QColorDialog::getColor(editbox[0]->text(),nullptr,"Select Colour");
-			if(colour.isValid()==true)
-				editbox[0]->setText(colour.name(QColor::HexRgb));
-		});
+	pw.addWidgetToWindow(pw.getPrefsColourWidget("Back Colour","white"));
+	pw.addWidgetToWindow(pw.getPrefsColourWidget("Fore Colour","black"));
+	pw.addWidgetToWindow(pw.getPrefsCheckWidget("Open On Start",false));
+	pw.addWidgetToWindow(pw.getPrefsCheckWidget("Open In Tabs",false));
 
-//fore col
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	label=new QLabel("Fore Colour",&settings);	
-	hlayout	->addWidget(label);
-	hlayout->addStretch();
-	button=new QPushButton(QIcon::fromTheme("preferences-desktop-theme"),"",&settings);	
-	hlayout	->addWidget(button);
-	editbox[1]=new QLineEdit(plugprefs.value("forecol","black").toString(),&settings);
-	hlayout->addWidget(editbox[1]);	
-	vlayout->addLayout(hlayout);
-	QObject::connect(button,&QPushButton::clicked,[this,editbox]()
-		{
-			QColor colour;
-			colour=QColorDialog::getColor(editbox[1]->text(),nullptr,"Select Colour");
-			if(colour.isValid()==true)
-				editbox[1]->setText(colour.name(QColor::HexRgb));
-		});
 
-	openonstart=new QCheckBox("Open On Start",this->mainKKEditClass->pluginPrefsWindow);
-	openonstart->setChecked(this->openOnStart);
-	QObject::connect(openonstart,&QCheckBox::checkStateChanged,[this](Qt::CheckState state) { this->openOnStart=(bool)state; });
-	vlayout->addWidget(openonstart);
-
-	usetabs=new QCheckBox("Open In Tabs",this->mainKKEditClass->pluginPrefsWindow);
-	usetabs->setChecked(plugprefs.value("usetabs").toBool());
-	vlayout->addWidget(usetabs);
-
-	hlayout=new QHBoxLayout();
-	btn=new QPushButton("Apply",this->mainKKEditClass->pluginPrefsWindow);
-	QObject::connect(btn,&QPushButton::clicked,[&settings]() { settings.done(1); });
-	hlayout->addWidget(btn);
-
-	btn=new QPushButton("Cancel",this->mainKKEditClass->pluginPrefsWindow);
-	QObject::connect(btn,&QPushButton::clicked,[&settings]() { settings.done(0); });
-	hlayout->addWidget(btn);
-	vlayout->addLayout(hlayout);
-
-	settings.exec();
-
-	if(settings.result()==1)
-		{
-			QSettings	plugprefs("KDHedger","TerminalPlugin");
-			plugprefs.setValue("openonstart",this->openOnStart);
-			plugprefs.setValue("usetabs",usetabs->isChecked());
-			if(usetabs->isChecked()==true)
-				this->toggleTabsAct->setText("Opening In Tabs ...");
-			else
-				this->toggleTabsAct->setText("Opening In Window ...");
-			plugprefs.setValue("backcol",editbox[0]->text());
-			plugprefs.setValue("forecol",editbox[1]->text());
-		}
+	pw.finishWindow(true);
 }
 
 unsigned int TerminalPluginPlug::plugWants(void)
@@ -406,7 +330,8 @@ void TerminalPluginPlug::plugRun(plugData *data)
 
 	if(data->what==DOSHUTDOWN)
 		{	
- 			plugprefs.setValue("geom",this->dw->geometry());
+			if(this->dw!=NULL)
+				plugprefs.setValue("geom",this->dw->geometry());
 		}
 		
 	if(data->what==DOSWITCHPAGE)
