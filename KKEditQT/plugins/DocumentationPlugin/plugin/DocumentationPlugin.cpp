@@ -812,6 +812,11 @@ void DocumentationPlugin::plugSettings(void)
 void DocumentationPlugin::plugRun(plugData *data)
 {
 //settings and about handled seperatly
+	if(data==NULL)
+		return;
+
+	this->data=data;
+
 	switch(data->what)
 		{
 			case DOSETSENSITVE:
@@ -859,5 +864,5 @@ void DocumentationPlugin::plugRun(plugData *data)
 
 unsigned int DocumentationPlugin::plugWants(void)
 {
-	return(DOCONTEXTMENU|DOSETTINGS|DOABOUT|DOSWITCHPAGE|DOSETSENSITVE);
+	return(DOCONTEXTMENU|DOSETTINGS|DOABOUT|DOSWITCHPAGE|DOSETSENSITVE|DOPOSTLOAD);
 }

@@ -44,10 +44,10 @@ class SymbolsMenuPlug : public QObject, kkEditQTPluginInterface
 		unsigned int				plugWants(void) override;
 
 	private:
-		KKEditClass				*mainKKEditClass;
-		QString					plugPath;
-		QMenu					*symbolMenu;
-		QClipboard				*clipboard;
+		KKEditClass				*mainKKEditClass=NULL;
+		QString					plugPath="";
+		QMenu					*symbolMenu=NULL;
+		QClipboard				*clipboard=NULL;
 		QMetaObject::Connection	symbolCon;
 };
 

@@ -46,9 +46,9 @@ class FavouritesPlug : public QObject, kkEditQTPluginInterface
 	private:
 		QString					truncateWithElipses(const QString str);
 		void						doAction(QString data);
-		KKEditClass				*mainKKEditClass;
-		QString					plugPath;
-		QMenu					*favouritesMenu;
+		KKEditClass				*mainKKEditClass=NULL;
+		QString					plugPath="";
+		QMenu					*favouritesMenu=NULL;
 		QHash<int,QAction*>		favourites;
 		QMetaObject::Connection	favCon;
 };

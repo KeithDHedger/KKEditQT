@@ -63,8 +63,14 @@ void kkeditQTexamplePlug::plugSettings(void)
 void kkeditQTexamplePlug::plugRun(plugData *data)
 {
 //settings and about handled seperatly
+	if(data==NULL)
+		return;
+
 	switch(data->what)
 		{
+			case DOPOSTLOAD:
+				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DOPOSTLOAD" << "\nNot using this on " << this->mainKKEditClass->mainNotebook->tabToolTip(data->tabNumber);
+				break;
 			case DOSAVE:
 				qDebug() << "void kkeditQTexamplePlug::plugRun(plugData *data) > DOSAVE" << "\nNot using this on " << this->mainKKEditClass->mainNotebook->tabToolTip(data->tabNumber);
 				break;
@@ -100,5 +106,5 @@ void kkeditQTexamplePlug::plugRun(plugData *data)
 
 unsigned int kkeditQTexamplePlug::plugWants(void)
 {
-	return(DOSAVE|DOLOAD|DOCLOSE|DORESSESSION|DOSAVESESSION|DOCONTEXTMENU|DOTABPOPUP|DOSETSENSITVE|DOSWITCHPAGE|DONEWDOCUMENT|DOABOUT);
+	return(DOSAVE|DOLOAD|DOCLOSE|DORESSESSION|DOSAVESESSION|DOCONTEXTMENU|DOTABPOPUP|DOSETSENSITVE|DOSWITCHPAGE|DONEWDOCUMENT|DOABOUT|DOPOSTLOAD);
 }

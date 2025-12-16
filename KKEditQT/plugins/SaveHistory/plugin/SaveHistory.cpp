@@ -46,6 +46,11 @@ void SaveHistory::initPlug(KKEditClass *kk,QString pathtoplug)//TODO//init more 
 
 void SaveHistory::plugRun(plugData *data)
 {
+	if(data==NULL)
+		return;
+
+	this->data=data;
+
 	if(data->what==DOTABPOPUP)
 		{
 			data->menu->addAction(this->openHistoryMenuitem);
@@ -144,7 +149,7 @@ void SaveHistory::plugAbout(void)
 
 unsigned int SaveHistory::plugWants(void)
 {
-	return(DOTABPOPUP|DOSAVE|DOABOUT);
+	return(DOTABPOPUP|DOSAVE|DOABOUT|DOPOSTLOAD);
 }
 
 void SaveHistory::unloadPlug(void)

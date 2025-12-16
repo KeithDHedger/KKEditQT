@@ -45,12 +45,12 @@ class ClipboardPlug : public QObject, kkEditQTPluginInterface
 
 	private:
 		QString					truncateWithElipses(const QString str);
-		KKEditClass				*mainKKEditClass;
-		QString					plugPath;
-		QMenu					*cliboardMenu;
+		KKEditClass				*mainKKEditClass=NULL;
+		QString					plugPath="";
+		QMenu					*cliboardMenu=NULL;
 		int						currentClip=0;
 		QHash<int,QAction*>		clips;
-		QClipboard				*clipboard;
+		QClipboard				*clipboard=NULL;
 		QMetaObject::Connection	clipCon;
 };
 

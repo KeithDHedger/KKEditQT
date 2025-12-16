@@ -545,6 +545,13 @@ void KKEditClass::initApp(int argc,char** argv)
 //this->onExitSaveSession //TODO//
 	this->mainWindow->show();
 	this->loadPlugins();
+
+	plugData		pd;
+	pd.userStrData1=this->tmpFolderName;
+	pd.userIntData1=this->sessionID;
+	pd.what=DOPOSTLOAD;
+	this->runAllPlugs(pd);
+
 	this->setToolbarSensitive();
 }
 

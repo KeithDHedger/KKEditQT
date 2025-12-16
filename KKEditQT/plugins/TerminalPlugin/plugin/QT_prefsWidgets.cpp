@@ -50,17 +50,28 @@ void prefsWidgetsClass::finishWindow(bool addclear)
 	QDialogButtonBox::StandardButton retbutton;
 	QEventLoop		ev;
 	QFrame			*line=new QFrame(this->window);
-	QDialogButtonBox::StandardButtons addbtns=(QDialogButtonBox::Apply|QDialogButtonBox::Discard);
-	if(addclear==true)
-		addbtns|=QDialogButtonBox::Reset;
+	QDialogButtonBox::StandardButtons addbtns=(QDialogButtonBox::Apply|QDialogButtonBox::Discard|QDialogButtonBox::Reset);
 
 	dbb=new  QDialogButtonBox(addbtns,Qt::Horizontal,this->window);
+	if(addclear==true)
+		{
+			QPushButton *customButton=new QPushButton(QIcon::fromTheme("edit-delete"),"Clear Prefs File",this->window);
+			dbb->addButton(customButton,QDialogButtonBox::ActionRole);
+		}
+
+	QPushButton* defbtn=dbb->button(QDialogButtonBox::Discard); 
+	defbtn->setDefault(true);
+
 	QObject::connect(dbb,&QDialogButtonBox::clicked,[this,dbb,&retbutton,&ev](QAbstractButton *button)
 		{
 			retbutton=dbb->standardButton(button);
-
 			switch(retbutton)
 				{
+					case QDialogButtonBox::NoButton:
+						if(this->deletePrefs()==true)
+							this->window->close();
+						break;
+
 					case QDialogButtonBox::Apply:
 						this->setAllColourPrefs();
 						this->setAllCheckPrefs();
@@ -73,9 +84,53 @@ void prefsWidgetsClass::finishWindow(bool addclear)
 						break;
 					case QDialogButtonBox::Reset:
 						{
-							bool ret=this->deletePrefs();
-								if(ret==true)
-									this->window->close();
+							QSettings	plugprefs("KDHedger",this->thePrefsName);
+
+							for(int j=0;j<this->widgets.size();j++)
+								{
+									switch(this->widgets.at(j).what)
+										{
+											case EDITWIDGET:
+											case COLOURWIDGET:
+											qobject_cast<QLineEdit*>(this->widgets.at(j).widget)->setText(plugprefs.value(this->normalizeLabel(this->widgets.at(j).name)).toString());
+												qobject_cast<QLineEdit*>(this->widgets.at(j).widget)->setCursorPosition(0);
+												break;
+
+											case CHECKWIDGET:
+												qobject_cast<QCheckBox*>(this->widgets.at(j).widget)->setChecked(plugprefs.value(this->normalizeLabel(this->widgets.at(j).name)).toBool());
+												break;
+
+											case COMBOWIDGET:
+												{
+													QComboBox *combo=qobject_cast<QComboBox*>(this->widgets.at(j).widget);
+													combo->setCurrentText(plugprefs.value(this->normalizeLabel(this->widgets.at(j).name)).toString());
+													this->combos[this->widgets.at(j).name]=combo->currentText();
+												}
+												break;
+
+											case FONTWIDGET:
+												{
+													QLineEdit *editbox=qobject_cast<QLineEdit*>(this->widgets.at(j).widget);
+													QFont font;
+													editbox->setText(plugprefs.value(this->normalizeLabel(this->widgets.at(j).name)).toString());
+													font.fromString(editbox->text());
+													editbox->setFont(font.family());
+													editbox->setCursorPosition(0);
+													this->fonts[this->widgets.at(j).name]=editbox->text();
+												}
+												break;
+
+											case SPINWIDGET:
+												{
+													QSpinBox *spin=qobject_cast<QSpinBox*>(this->widgets.at(j).widget);
+													this->spins[this->widgets.at(j).name]=plugprefs.value(this->normalizeLabel(this->widgets.at(j).name)).toInt();
+													spin->setValue(this->spins[this->widgets.at(j).name]);
+												}
+												break;
+											default:
+												break;
+										}
+								}
 						}
 						break;
 					default:
@@ -123,6 +178,15 @@ QString prefsWidgetsClass::bestFontColour(QString colour)
 		return("white");
 }
 
+QString prefsWidgetsClass::normalizeLabel(QString label)
+{
+	QString retlabel=label;
+
+	retlabel=retlabel.remove(' ');
+	retlabel=retlabel.toLower();
+	return(retlabel);
+}
+
 //colour
 QWidget* prefsWidgetsClass::getColourWidget(QString label,QString colour)
 {
@@ -145,6 +209,8 @@ QWidget* prefsWidgetsClass::getColourWidget(QString label,QString colour)
 	hlayout->addWidget(button,0);
 
 	editbox=new QLineEdit(colour,newwidg);
+	this->widgets.push_back({COLOURWIDGET,editbox,label});
+
 	hlayout->addWidget(editbox,1);	
 
 	this->colours[label]=colour;
@@ -201,6 +267,8 @@ QWidget* prefsWidgetsClass::getCheckWidget(QString label,bool state)
 	QCheckBox	*newcheck;
 
 	newcheck=new QCheckBox(label,this->theParent);
+	this->widgets.push_back({CHECKWIDGET,newcheck,label});
+
 	newcheck->setChecked(state);
 	this->checks[label]=state;
 	QObject::connect(newcheck,&QCheckBox::checkStateChanged,[this,label](Qt::CheckState state)
@@ -219,7 +287,7 @@ QWidget	*prefsWidgetsClass::getPrefsCheckWidget(QString label,bool defaultstate)
 	QCheckBox	*newcheck;
 	QSettings	plugprefs("KDHedger",this->thePrefsName);
 	bool			prefchk;
-	prefchk=plugprefs.value(label,defaultstate).toBool();
+	prefchk=plugprefs.value(this->normalizeLabel(label),defaultstate).toBool();
 	newcheck=(QCheckBox*)this->getCheckWidget(label,prefchk);
 	return(newcheck);
 }
@@ -232,7 +300,7 @@ bool prefsWidgetsClass::getCheckValue(QString label)
 void prefsWidgetsClass::setCheckPref(QString label)
 {
 	QSettings	plugprefs("KDHedger",this->thePrefsName);
-	plugprefs.setValue(label,this->checks[label]);
+	plugprefs.setValue(this->normalizeLabel(label),this->checks[label]);
 }
 
 void prefsWidgetsClass::setAllCheckPrefs(void)
@@ -242,7 +310,7 @@ void prefsWidgetsClass::setAllCheckPrefs(void)
 	while(i.hasNext())
 		{
 			i.next();
-			plugprefs.setValue(qPrintable(i.key()),i.value());
+			plugprefs.setValue(this->normalizeLabel(qPrintable(i.key())),i.value());
 		}
 }
 
@@ -263,10 +331,12 @@ QWidget* prefsWidgetsClass::getComboWidget(QString label,QStringList data,QStrin
 	hlayout->addWidget(lab,0,Qt::AlignLeft);
 
 	newcombo=new QComboBox(newwidg);
+	this->widgets.push_back({COMBOWIDGET,newcombo,label});
+
 	newcombo->addItems(data);
 	if(item.isEmpty()==false)
 		{
-			newcombo->setCurrentIndex(newcombo->findText(item));
+			newcombo->setCurrentText(item);
 			this->combos[label]=item;
 		}
 	else
@@ -286,7 +356,7 @@ QWidget	*prefsWidgetsClass::getPrefsComboWidget(QString label,QStringList data,Q
 	QWidget		*newwidg;
 	QString 		combodata;
 
-	combodata=plugprefs.value(label,item).toString();
+	combodata=plugprefs.value(this->normalizeLabel(label),item).toString();
 	newwidg=this->getComboWidget(label,data,combodata);
 	return(newwidg);
 }
@@ -327,10 +397,11 @@ QWidget* prefsWidgetsClass::getFontWidget(QString label,QString font)
 	hlayout->addWidget(button,0);
 
 	editbox=new QLineEdit(font,newwidg);
+	this->widgets.push_back({FONTWIDGET,editbox,label});
 	editbox->setCursorPosition(0);
 	hlayout->addWidget(editbox,1);	
 
-	this->colours[label]=font;
+	this->fonts[label]=font;
 	editbox->setFont(QFont(font).family());
 	QObject::connect(button,&QPushButton::clicked,[this,label,editbox]()
 		{
@@ -388,6 +459,7 @@ QWidget* prefsWidgetsClass::getEditWidget(QString label,QString text)
 	lab->setFixedWidth(this->labelWidth);
 
 	editbox=new QLineEdit(text,newwidg);
+	this->widgets.push_back({EDITWIDGET,editbox,label});
 	editbox->setCursorPosition(0);
 	hlayout->addWidget(editbox,0);	
 
@@ -438,6 +510,7 @@ QWidget* prefsWidgetsClass::getSpinWidget(QString label,int min,int max,int val)
 	hlayout->addWidget(lab,0,Qt::AlignLeft);
 
 	spinbox=new QSpinBox(newwidg);
+	this->widgets.push_back({SPINWIDGET,spinbox,label});
 	spinbox->setRange(min,max);
 	spinbox->setValue(val);
 	hlayout->addWidget(spinbox,1);	
@@ -455,7 +528,7 @@ QWidget	*prefsWidgetsClass::getPrefsSpinWidget(QString label,int min,int max,int
 	QWidget		*newwidg;
 	int			prefspin;
 	QSettings	plugprefs("KDHedger",this->thePrefsName);
-	prefspin=plugprefs.value(label,val).toInt();
+	prefspin=plugprefs.value(this->normalizeLabel(label),val).toInt();
 	newwidg=this->getSpinWidget(label,min,max,prefspin);
 	return(newwidg);
 }
@@ -468,7 +541,7 @@ int prefsWidgetsClass::getSpinValue(QString label)
 void prefsWidgetsClass::setSpinPref(QString label)
 {
 	QSettings	plugprefs("KDHedger",this->thePrefsName);
-	plugprefs.setValue(label,this->spins[label]);
+	plugprefs.setValue(this->normalizeLabel(label),this->spins[label]);
 }
 
 void prefsWidgetsClass::setAllSpinPrefs(void)
@@ -478,7 +551,7 @@ void prefsWidgetsClass::setAllSpinPrefs(void)
 	while(i.hasNext())
 		{
 			i.next();
-			plugprefs.setValue(qPrintable(i.key()),i.value());
+			plugprefs.setValue(this->normalizeLabel(qPrintable(i.key())),i.value());
 		}
 }
 
@@ -504,6 +577,7 @@ QWidget* prefsWidgetsClass::getFileWidget(QString label,QString path,QString ope
 	hlayout	->addWidget(button,0);
 
 	editbox=new QLineEdit(path,newwidg);
+	this->widgets.push_back({EDITWIDGET,editbox,label});
 	editbox->setCursorPosition(0);
 	hlayout->addWidget(editbox,1);	
 
@@ -534,7 +608,7 @@ QWidget	*prefsWidgetsClass::getPrefsFileWidget(QString label,QString path,QStrin
 	QWidget		*newwidg;
 	QString		prefpath;
 	QSettings	plugprefs("KDHedger",this->thePrefsName);
-	prefpath=plugprefs.value(label,path).toString();
+	prefpath=plugprefs.value(this->normalizeLabel(label),path).toString();
 	newwidg=this->getFileWidget(label,prefpath,openhere);
 	return(newwidg);
 }
@@ -561,23 +635,23 @@ void prefsWidgetsClass::setAllPrefs(QHash<QString,QString> what)
 	while(i.hasNext())
 		{
 			i.next();
-			plugprefs.setValue(qPrintable(i.key()),qPrintable(i.value()));
+			plugprefs.setValue(this->normalizeLabel(qPrintable(i.key())),qPrintable(i.value()));
 		}
 }
 
 void prefsWidgetsClass::setPref(QHash<QString,QString> what,QString label)
 {
 	QSettings	plugprefs("KDHedger",this->thePrefsName);
-	plugprefs.setValue(label,what[label]);
+	plugprefs.setValue(this->normalizeLabel(label),what[label]);
 }
 
 QWidget	*prefsWidgetsClass::getPrefsWidget(QString label,QString defaulttxt,whatWidget what)
 {
-	QString		preftxt;
-	QWidget		*newwidg;
+	QString		preftxt="";
+	QWidget		*newwidg=NULL;
 	QSettings	plugprefs("KDHedger",this->thePrefsName);
 
-	preftxt=plugprefs.value(label,defaulttxt).toString();
+	preftxt=plugprefs.value(this->normalizeLabel(label),defaulttxt).toString();
 	switch(what)
 		{
 			case EDITWIDGET:
@@ -588,6 +662,8 @@ QWidget	*prefsWidgetsClass::getPrefsWidget(QString label,QString defaulttxt,what
 				break;
 			case FONTWIDGET:
 				newwidg=this->getFontWidget(label,preftxt);
+				break;
+			default:
 				break;
 		}
 

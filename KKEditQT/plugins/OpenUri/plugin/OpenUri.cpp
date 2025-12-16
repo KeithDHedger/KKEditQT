@@ -34,11 +34,19 @@ void OpenUri::initPlug(KKEditClass *kk,QString pathtoplug)
 
 void OpenUri::plugRun(plugData *data)
 {
-	QTextCursor	tc=data->doc->textCursor();
-	if(tc.hasSelection()==true)
+	if(data==NULL)
+		return;
+
+	this->data=data;
+
+	if(data->what==DOCONTEXTMENU)
 		{
-			this->selection=tc.selectedText().trimmed();
-			data->menu->addAction(this->openUriMenuitem);
+			QTextCursor	tc=data->doc->textCursor();
+			if(tc.hasSelection()==true)
+				{
+					this->selection=tc.selectedText().trimmed();
+					data->menu->addAction(this->openUriMenuitem);
+				}
 		}
 }
 
@@ -62,5 +70,5 @@ void OpenUri::plugAbout(void)
 
 unsigned int OpenUri::plugWants(void)
 {
-	return(DOCONTEXTMENU|DOABOUT);
+	return(DOCONTEXTMENU|DOABOUT|DOPOSTLOAD);
 }

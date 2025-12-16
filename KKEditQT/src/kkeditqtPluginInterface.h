@@ -35,6 +35,7 @@
 #define DOSHUTDOWN DONEWDOCUMENT << 1
 #define DOABOUT DOSHUTDOWN << 1
 #define DOSETTINGS DOABOUT << 1
+#define DOPOSTLOAD DOSETTINGS << 1
 
 //show side
 //hide side

@@ -38,14 +38,15 @@ class SaveHistory : public QObject, kkEditQTPluginInterface
 		unsigned int				plugWants(void) override;
 
 	private:
-		QString 					homeDataFolder;
-		QString					docName;
-		QString					docDir;
-		KKEditClass				*mainKKEditClass;
-		QString					plugPath;
-		QAction					*saveHistoryMenuitem;
-		QAction					*openHistoryMenuitem;
-		QMenu					*openHistoryListMenuitem;
+		plugData					*data=NULL;
+		QString 					homeDataFolder="";
+		QString					docName="";
+		QString					docDir="";
+		KKEditClass				*mainKKEditClass=NULL;
+		QString					plugPath="";
+		QAction					*saveHistoryMenuitem=NULL;
+		QAction					*openHistoryMenuitem=NULL;
+		QMenu					*openHistoryListMenuitem=NULL;
 		QMetaObject::Connection	clearMenuCon;
 		QMetaObject::Connection	openMenuCon;
 		QMetaObject::Connection	listMenuCon;

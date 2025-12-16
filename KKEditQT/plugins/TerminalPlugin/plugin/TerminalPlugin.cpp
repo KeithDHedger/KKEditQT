@@ -309,13 +309,12 @@ void TerminalPluginPlug::plugSettings(void)
 	pw.addWidgetToWindow(pw.getPrefsCheckWidget("Open On Start",false));
 	pw.addWidgetToWindow(pw.getPrefsCheckWidget("Open In Tabs",false));
 
-
 	pw.finishWindow(true);
 }
 
 unsigned int TerminalPluginPlug::plugWants(void)
 {
-	return(DOABOUT|DOSETTINGS|DOSWITCHPAGE|DOSHUTDOWN|DOSETSENSITVE);
+	return(DOABOUT|DOSETTINGS|DOSWITCHPAGE|DOSHUTDOWN|DOPOSTLOAD);
 }
 
 void TerminalPluginPlug::plugRun(plugData *data)
@@ -325,8 +324,7 @@ void TerminalPluginPlug::plugRun(plugData *data)
 	if(data==NULL)
 		return;
 
-	if(data->what==DOSETSENSITVE)
-		this->data=data;
+	this->data=data;
 
 	if(data->what==DOSHUTDOWN)
 		{	

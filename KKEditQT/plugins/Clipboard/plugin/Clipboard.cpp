@@ -78,7 +78,7 @@ void ClipboardPlug::plugAbout(void)
 {
 	QMessageBox msgBox;
 
-	QString txt="KKEditQT Clipboard Plugin\n\n©K.D.Hedger 2022\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
+	QString txt="KKEditQT Clipboard Plugin\n\n©K.D.Hedger 2025\n\n<a href=\"" GLOBALWEBSITE "\">Homepage</a>\n\n<a href=\"mailto:" MYEMAIL "\">Email Me</a>";
 	msgBox.setText(txt);
 	msgBox.setIconPixmap(QPixmap("/usr/share/KKEditQT/pixmaps/KKEditQTPlug.png"));
 	msgBox.setWindowTitle("Plugin About");

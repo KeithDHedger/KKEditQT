@@ -127,7 +127,11 @@ void HTMLTags::plugRun(plugData *data)
 {
 	bool breakit=false;
 
+	if(data==NULL)
+		return;
+
 	this->data=data;
+
 	if(data->doc!=NULL)
 		{
 			this->document=data->doc;
@@ -201,5 +205,5 @@ void HTMLTags::plugAbout(void)
 
 unsigned int HTMLTags::plugWants(void)
 {
-	return(DOCONTEXTMENU|DOABOUT|DOSWITCHPAGE|DOSETSENSITVE);
+	return(DOCONTEXTMENU|DOABOUT|DOSWITCHPAGE|DOSETSENSITVE|DOPOSTLOAD);
 }

@@ -1,3 +1,7 @@
+2.0.1
+Redone term plug settings.
+Added post load want to plugins.
+
 2.0.0
 Redone term plug settings.
 Fixed segfault when closing open file dialog from wm.

@@ -38,12 +38,14 @@ class OpenUri : public QObject, kkEditQTPluginInterface
 		unsigned int	plugWants(void) override;
 
 	private:
-		void			openUri(void);
-		DocumentClass 	*document;
-		QString			selection;
-		KKEditClass		*mainKKEditClass;
-		QString			plugPath;
-		QAction			*openUriMenuitem;
+		plugData			*data=NULL;
+		DocumentClass 	*document=NULL;
+		QString			selection="";
+		KKEditClass		*mainKKEditClass=NULL;
+		QString			plugPath="";
+		QAction			*openUriMenuitem=NULL;
+
+		void				openUri(void);
 };
 
 #endif

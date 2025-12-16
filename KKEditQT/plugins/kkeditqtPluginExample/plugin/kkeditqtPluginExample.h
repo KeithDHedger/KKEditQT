@@ -38,9 +38,9 @@ class kkeditQTexamplePlug : public QObject, kkEditQTPluginInterface
 		unsigned int	plugWants(void) override;
 
 	private:
-		KKEditClass		*mainKKEditClass;
-		QString			plugPath;
-		QAction			*exampleMenuitem;
+		KKEditClass		*mainKKEditClass=NULL;
+		QString			plugPath="";
+		QAction			*exampleMenuitem=NULL;
 };
 
 #endif

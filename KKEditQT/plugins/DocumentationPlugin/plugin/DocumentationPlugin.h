@@ -52,9 +52,9 @@ class DocumentationPlugin : public QObject, kkEditQTPluginInterface
 		QAction			*customCommandMenu=NULL;
 		bool				noStatusInfo=true;
 		QStringList		resList;
-		QString			filePath;
-		QString			folderPath;
-		QString			tempFolderPath;
+		QString			filePath="";
+		QString			folderPath="";
+		QString			tempFolderPath="";
 
 		QString					runPipeAndCapture(QString command);
 		void						runSearch(QString command);

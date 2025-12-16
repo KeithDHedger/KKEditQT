@@ -23,9 +23,16 @@
 
 #include "../../../src/qtincs.h"
 
-enum whatWidget{EDITWIDGET,COLOURWIDGET,FONTWIDGET};
+enum whatWidget{EDITWIDGET,COLOURWIDGET,FONTWIDGET,CHECKWIDGET,COMBOWIDGET,SPINWIDGET};
 
-class prefsWidgetsClass
+struct	holdData
+{
+	whatWidget	what=EDITWIDGET;
+	QWidget		*widget=NULL;
+	QString		name="";
+};
+
+class	prefsWidgetsClass
 {
 	public:
 		prefsWidgetsClass(QString prefsname,QWidget *parent=nullptr);
@@ -40,6 +47,8 @@ class prefsWidgetsClass
 
 		bool						deletePrefs(void);
 		void						setLabelWidth(int sze);
+		QString					normalizeLabel(QString label);
+
 //colour
 		QWidget					*getColourWidget(QString label,QString colour);
 		QWidget					*getPrefsColourWidget(QString label,QString defaultcolour);
@@ -97,6 +106,8 @@ class prefsWidgetsClass
 		QHash<QString,QString>	files;
 		QHash<QString,int>		spins;
 		QHash<QString,bool>		checks;
+
+		QVector<holdData>		widgets;
 
 		int						labelWidth=100;
 		QWidget					*theParent=nullptr;
