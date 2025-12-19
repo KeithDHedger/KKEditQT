@@ -596,10 +596,10 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 {
 	this->setPlainText("");
 
-QTextCursor cursor;
-cursor=this->textCursor();
-cursor.setPosition(0);
-this->setTextCursor(cursor);
+	QTextCursor cursor;
+	cursor=this->textCursor();
+	cursor.setPosition(0);
+	this->setTextCursor(cursor);
 	
 	this->doneHighlightAll=false;
 	this->lastFind=NULL;

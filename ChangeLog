@@ -1,4 +1,8 @@
 2.0.1
+Fixed opening C include files.
+Fixed occasional lockup when opening two or more files from file manager if one or more is an executable script.
+Don't open files containing non-printable chars.
+Add libmagic dep.
 Redone term plug settings.
 Added post load want to plugins.
 

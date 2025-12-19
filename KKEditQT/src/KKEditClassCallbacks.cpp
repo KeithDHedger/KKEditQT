@@ -32,6 +32,8 @@
 #include "QT_AboutBox.h"
 #include "ChooserDialog.h"
 
+static msgStruct	staticbuffer={0,0};
+
 void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 {
 	QFile			file;
@@ -991,9 +993,28 @@ void KKEditClass::notDoneYet(QString string)
 
 void KKEditClass::doTimer(void)
 {
-	int			retcode=0;
-	msgStruct	buffer;
+	int			retlen=0;
 
+	staticbuffer.mText[0]=0;
+	staticbuffer.mType=0;
+	retlen=msgrcv(this->queueID,&staticbuffer,MAXMSGSIZE,MSGANY,IPC_NOWAIT);
+	if(retlen>-1)
+		staticbuffer.mText[retlen]=0;
+
+	if((staticbuffer.mType!=0) || (retlen>0))
+		{
+			this->handleMessages();
+		}
+
+	if(this->checkMessages->isActive()==false)
+		{
+			this->checkMessages->setSingleShot(true);
+			this->checkMessages->start(this->prefsMsgTimer);
+		}
+}
+
+void KKEditClass::handleMessages(void)
+{
 	this->setDocMenu();
 
 	this->toolWindowVisible=this->toolOutputWindow->isVisible();
@@ -1002,401 +1023,391 @@ void KKEditClass::doTimer(void)
 	else
 		this->toggleToolWindowMenuItem->setText("Show Tool Output");
 
-	while(retcode!=-1)
+	switch(staticbuffer.mType & ALLMSGTYPES)
 		{
-			buffer.mText[0]=0;
-			buffer.mType=0;
-			retcode=msgrcv(this->queueID,&buffer,MAXMSGSIZE,MSGANY,IPC_NOWAIT);
-			buffer.mText[retcode]=0;
-			if(retcode!=-1)
+			case SENDCURRENTURL:
+				this->sendMessgage(this->currentURL);
+				break;
+			case OPENINDOCVIEWMSG:
+				this->showWebPage("",staticbuffer.mText);
+				break;
+			case GOTOLINEMSG:
+				this->gotoLine(strtol(staticbuffer.mText,NULL,0));
+				break;
+			case SEARCHDEFMSG:
+				this->goToDefinition(staticbuffer.mText);
+				break;
+			case SELECTTABMSG:
 				{
-					switch(buffer.mType & ALLMSGTYPES)
+					long		tabnum=strtol(staticbuffer.mText,NULL,0);
+					QTabBar	*bar=this->mainNotebook->tabBar();
+					if(1+tabnum>bar->count())
+						tabnum=bar->count()-1;
+					if(tabnum<0)
+						tabnum=0;
+					this->setTabVisibilty(tabnum,true);
+				}
+				break;
+			case SELECTTABBYNAMEMSG:
+				{
+					QTabBar	*bar=this->mainNotebook->tabBar();
+					for(int j=0;j<bar->count();j++)
 						{
-							case SENDCURRENTURL:
-								this->sendMessgage(this->currentURL);
-								break;
-							case OPENINDOCVIEWMSG:
-								this->showWebPage("",buffer.mText);
-								break;
-							case GOTOLINEMSG:
-								this->gotoLine(strtol(buffer.mText,NULL,0));
-								break;
-							case SEARCHDEFMSG:
-								this->goToDefinition(buffer.mText);
-								break;
-							case SELECTTABMSG:
+							if(bar->tabText(j).compare(staticbuffer.mText)==0)
 								{
-									long		tabnum=strtol(buffer.mText,NULL,0);
-									QTabBar	*bar=this->mainNotebook->tabBar();
-									if(1+tabnum>bar->count())
-										tabnum=bar->count()-1;
-									if(tabnum<0)
-										tabnum=0;
-									this->setTabVisibilty(tabnum,true);
+									this->setTabVisibilty(j,true);
+									break;
 								}
-								break;
-							case SELECTTABBYNAMEMSG:
-								{
-									QTabBar	*bar=this->mainNotebook->tabBar();
-									for(int j=0;j<bar->count();j++)
-										{
-											if(bar->tabText(j).compare(buffer.mText)==0)
-												{
-													this->setTabVisibilty(j,true);
-													break;
-												}
-										}
-								}
-								break;
-							case SELECTTABBYPATHMSG:
-								{
-									QTabBar	*bar=this->mainNotebook->tabBar();
-									for(int j=0;j<bar->count();j++)
-										{
-											if(bar->tabToolTip(j).compare(buffer.mText)==0)
-												{
-													this->setTabVisibilty(j,true);
-													break;
-												}
-										}
-								}
-								break;
-							case BOOKMARKMSG:
-								{
-									DocumentClass	*doc=this->getDocumentForTab(-1);
-									if(doc!=NULL)
-										{
-											this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM,QTextCursor());
-											doc->repaint();
-										}
-								}
-								break;
-							case CLOSETABMSG:
-								this->closingAllTabs=false;
-								this->closeTab(atoi(buffer.mText));
-								break;
-							case CLOSEALLTABSMSG:
-								this->closeAllTabs();
-								break;
-							case SETUSERMARKMSG:
-								this->notDoneYet("SETUSERMARKMSG not yet implemented");
-								break;
-							case UNSETUSERMARKMASG:
-								this->notDoneYet("UNSETUSERMARKMASG not yet implemented");
-								break;
-							case MOVETOMSG:
-								{
-									QTabBar			*bar=this->mainNotebook->tabBar();
-									DocumentClass	*doc;
-									QTextCursor		cursor;
-									QTextBlock		blockfrom;
-									QString			str=buffer.mText;
-									QStringList		list1=str.split(QLatin1Char(':'));
-
-									if(list1.count()<3)
-										{
-											qWarning()<<"Move To need 3 values, eg 'TABNUM:LINENUM:COLNUM'";
-											break;
-										}
-									int				tabnum=list1.at(0).toInt();
-									int				linefrom=list1.at(1).toInt();
-									int				colfrom=list1.at(2).toInt();
-									int				blockfromstart;
-
-									if(bar->count()==0)
-										break;
-
-									if(tabnum>bar->count()-1)
-										tabnum=bar->count()-1;
-									if(tabnum<0)
-										tabnum=0;
-
-									colfrom--;
-									if(colfrom<0)
-										colfrom=0;
-
-									linefrom--;
-									if(linefrom<0)
-										linefrom=0;
-									this->setTabVisibilty(tabnum,true);
-									doc=this->getDocumentForTab(-1);
-									if(doc!=NULL)
-										{
-											cursor=doc->textCursor();
-
-											blockfrom=doc->document()->findBlockByNumber(linefrom);
-											blockfromstart=blockfrom.position();
-											if((colfrom)>blockfrom.length()-1)
-												colfrom=blockfrom.length()-1;
-
-											cursor.setPosition(blockfromstart+colfrom);
-											doc->setTextCursor(cursor);
-										}
-								}
-								break;
-							case SELECTBETWEENMSG:
-								{
-									QTabBar			*bar=this->mainNotebook->tabBar();
-									DocumentClass	*doc;
-									QTextCursor		cursor;
-									QTextBlock		blockfrom;
-									QTextBlock		blockto;
-									QString			str=buffer.mText;
-									QStringList		list1=str.split(QLatin1Char(':'));
-									if(list1.count()<3)
-										{
-											qWarning()<<"Move To need 5 values, eg 'TABNUM:LINEFROM:COLFROM:LINETO:COLTO'";
-											break;
-										}
-
-									int				tabnum=list1.at(0).toInt();
-									int				linefrom=list1.at(1).toInt();
-									int				lineto=list1.at(3).toInt();
-									int				colfrom=list1.at(2).toInt();
-									int				colto=list1.at(4).toInt();
-									int				blockfromstart;
-									int				blocktostart;
-
-									if(bar->count()==0)
-										break;
-
-									if(lineto<linefrom)
-										break;
-									if((lineto==linefrom) && (colto<=colfrom))
-										break;
-									if(tabnum>bar->count()-1)
-										tabnum=bar->count()-1;
-									if(tabnum<0)
-										tabnum=0;
-
-									colfrom--;
-									colto--;
-									if(colto<0)
-										colto=0;
-									if(colfrom<0)
-										colfrom=0;
-
-									linefrom--;
-									lineto--;
-									if(lineto<0)
-										lineto=0;
-									if(linefrom<0)
-										linefrom=0;
-									this->setTabVisibilty(tabnum,true);
-									doc=this->getDocumentForTab(-1);
-									if(doc!=NULL)
-										{
-//from
-											cursor=doc->textCursor();
-
-											blockfrom=doc->document()->findBlockByNumber(linefrom);
-											blockfromstart=blockfrom.position();
-											if((colfrom)>blockfrom.length()-1)
-												colfrom=blockfrom.length();
-
-											cursor.setPosition(blockfromstart+colfrom);
-//to
-											blockto=doc->document()->findBlockByNumber(lineto);											
-											if(blockto.isValid()==false)
-												blockto=doc->document()->lastBlock();
-											blocktostart=blockto.position();
-											if((colto)>blockto.length()-1)
-												colto=blockto.length();
-
-											cursor.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,blocktostart-blockfromstart+(colto-colfrom));
-											doc->setTextCursor(cursor);
-										}
-								}
-								break;
-							case PASTEMSG:
-								{
-									DocumentClass	*doc=this->getDocumentForTab(-1);
-									if(doc!=NULL)
-										doc->paste();
-								}
-								break;
-							case COPYMSG:
-								{
-									DocumentClass	*doc=this->getDocumentForTab(-1);
-									if(doc!=NULL)
-										doc->copy();
-								}
-								break;
-							case CUTMSG:
-								{
-									DocumentClass	*doc=this->getDocumentForTab(-1);
-									if(doc!=NULL)
-										doc->cut();
-								}
-								break;
-							case INSERTTEXTMSG:
-								{
-									DocumentClass	*doc=this->getDocumentForTab(-1);
-									if(doc!=NULL)
-										{
-											QTextCursor	cursor=doc->textCursor();
-											QString		txt=buffer.mText;
-
-											cursor.clearSelection();
-											cursor.insertText(txt);
-											doc->setTextCursor(cursor);
-										}
-								}
-								break;
-							case INSERTNLMSG:
-								{
-									DocumentClass	*doc=this->getDocumentForTab(-1);
-									QTextCursor		cursor;
-									if(doc!=NULL)
-										{
-											cursor=doc->textCursor();
-											cursor.clearSelection();
-											cursor.insertText("\n");
-											doc->setTextCursor(cursor);
-										}
-								}
-								break;
-							case INSERTFILEMSG:
-								{
-									bool				retval=false;
-									QFile			file(buffer.mText);
-									DocumentClass	*doc=this->getDocumentForTab(-1);
-									QTextCursor		cursor;
-									QString			content;
-									if(doc!=NULL)
-										{
-											cursor=doc->textCursor();
-
-											retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
-											if(retval==true)
-												{
-													content=QString::fromUtf8(file.readAll());
-													cursor.beginEditBlock();
-														cursor.insertText(content);
-														doc->highlighter->rehighlight();
-														doc->dirty=true;
-													cursor.endEditBlock();
-													doc->state=DIRTYTAB;
-													doc->setTabColourType(DIRTYTAB);
-													this->setToolbarSensitive();
-												}
-										}
-								}
-								break;
-							case PRINTFILESMSG://TODO//just print with defaults//TODO//
-								emit this->printMenuItem->triggered();
-								break;
-							case RUNTOOLMSG:
-								this->clickMenu(this->toolsMenu,QString(buffer.mText));
-								break;
-							case ACTIVATEMENUBYLABELEDMSG:
-								foreach(QAction *action,this->menuBar->actions())
-									{
-										if(action->menu())
-											{
-												this->clickMenu(action->menu(),QString(buffer.mText));
-											}
-									}
-								break;
-							case SENDPOSDATAMSG:
-								{
-									DocumentClass	*doc=this->getDocumentForTab(-1);
-									QTextCursor		cursor;
-									if(doc!=NULL)
-										{
-											cursor=doc->textCursor();
-											this->sendMessgage(QString("%1:%2:%3").arg(this->mainNotebook->currentIndex()).arg(doc->getCurrentLineNumber()).arg(cursor.positionInBlock()+1));
-										}
-									else
-										this->sendMessgage("");
-								}
-								break;
-							case SENDSELECTEDTEXTMSG:
-								{
-									DocumentClass	*doc=this->getDocumentForTab(-1);
-									QTextCursor		cursor;
-									if(doc!=NULL)
-										{
-											cursor=doc->textCursor();
-											this->sendMessgage(cursor.selection().toPlainText());
-										}
-									else
-										this->sendMessgage("");
-								}
-								break;
-							case OPENFILEMSG:
-								this->openFile(buffer.mText);
-								break;
-							case NEWFILEMSG:
-								emit this->newMenuItem->triggered();
-								break;
-							case SAVEFILEMSG:
-								emit this->saveMenuItem->triggered();
-								break;
-							case SAVEFILEASMSG:
-								{
-									DocumentClass	*doc=this->getDocumentForTab(-1);
-									if(doc!=NULL)
-										{
-											QFile			file(buffer.mText);
-											QMimeType		type;
-											QMimeDatabase	db;
-	
-											this->saveFileAs(-1,buffer.mText);
-											type=db.mimeTypeForFile(buffer.mText);
-											doc->mimeType=type.name();
-											doc->setHiliteLanguage();
-											doc->highlighter->rehighlight();
-											doc->setFilePrefs();
-											doc->dirty=false;
-											doc->setTabColourType(NORMALTAB);
-										}
-								}
-								break;
-							case QUITAPPMSG:
-								this->shutDownApp();
-								break;
-							case ACTIVATEAPPMSG:
-								this->mainWindow->setWindowState((this->mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
-								this->mainWindow->activateWindow();
-								this->mainWindow->raise();
-								break;
-
-							case SAVECURRENTSESSIONMSG:
-								emit this->saveCurrentSessionMenuItem->triggered();
-								break;
-							case RESTORESESSIONMSG:
-								if(QString(buffer.mText).compare("autosave",Qt::CaseInsensitive)==0)
-									{
-										emit this->restoreDefaultSessionMenuItem->triggered();
-										break;
-									}
-								for(int j=0;j<this->restoreSessionMenuItemsList.count();j++)
-									{
-										if(QString(buffer.mText).compare(this->restoreSessionMenuItemsList.at(j)->text())==0)
-											emit this->restoreSessionMenuItemsList.at(j)->triggered();
-									}
-								break;
-
-							case SENDSESSIONNAMEMSG:
-								this->sendMessgage(this->sessionNames.value(currentSessionNumber));
-								break;
-						}
-
-					if((buffer.mType & CONTINUEMSG)==CONTINUEMSG)
-						{			
-							buffer.mText[0]=0;
-							buffer.mType=CONTINUEMSG;
-							msgsnd(this->queueID,&buffer,0,0);
-						}
-
-					if((buffer.mType&RAISEMSG)==RAISEMSG)
-						{
-							this->mainWindow->setWindowState((this->mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
-							this->mainWindow->activateWindow();
-							this->mainWindow->raise();
 						}
 				}
+				break;
+			case SELECTTABBYPATHMSG:
+				{
+					QTabBar	*bar=this->mainNotebook->tabBar();
+					for(int j=0;j<bar->count();j++)
+						{
+							if(bar->tabToolTip(j).compare(staticbuffer.mText)==0)
+								{
+									this->setTabVisibilty(j,true);
+									break;
+								}
+						}
+				}
+				break;
+			case BOOKMARKMSG:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					if(doc!=NULL)
+						{
+							this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM,QTextCursor());
+							doc->repaint();
+						}
+				}
+				break;
+			case CLOSETABMSG:
+				this->closingAllTabs=false;
+				this->closeTab(atoi(staticbuffer.mText));
+				break;
+			case CLOSEALLTABSMSG:
+				this->closeAllTabs();
+				break;
+			case SETUSERMARKMSG:
+				this->notDoneYet("SETUSERMARKMSG not yet implemented");
+				break;
+			case UNSETUSERMARKMASG:
+				this->notDoneYet("UNSETUSERMARKMASG not yet implemented");
+				break;
+			case MOVETOMSG:
+				{
+					QTabBar			*bar=this->mainNotebook->tabBar();
+					DocumentClass	*doc;
+					QTextCursor		cursor;
+					QTextBlock		blockfrom;
+					QString			str=staticbuffer.mText;
+					QStringList		list1=str.split(QLatin1Char(':'));
+
+					if(list1.count()<3)
+						{
+							qWarning()<<"Move To need 3 values, eg 'TABNUM:LINENUM:COLNUM'";
+							break;
+						}
+					int	tabnum=list1.at(0).toInt();
+					int	linefrom=list1.at(1).toInt();
+					int	colfrom=list1.at(2).toInt();
+					int	blockfromstart;
+
+					if(bar->count()==0)
+						break;
+
+					if(tabnum>bar->count()-1)
+						tabnum=bar->count()-1;
+					if(tabnum<0)
+						tabnum=0;
+
+					colfrom--;
+					if(colfrom<0)
+						colfrom=0;
+
+					linefrom--;
+					if(linefrom<0)
+						linefrom=0;
+					this->setTabVisibilty(tabnum,true);
+					doc=this->getDocumentForTab(-1);
+					if(doc!=NULL)
+						{
+							cursor=doc->textCursor();
+
+							blockfrom=doc->document()->findBlockByNumber(linefrom);
+							blockfromstart=blockfrom.position();
+							if((colfrom)>blockfrom.length()-1)
+								colfrom=blockfrom.length()-1;
+
+							cursor.setPosition(blockfromstart+colfrom);
+							doc->setTextCursor(cursor);
+						}
+				}
+				break;
+			case SELECTBETWEENMSG:
+				{
+					QTabBar			*bar=this->mainNotebook->tabBar();
+					DocumentClass	*doc;
+					QTextCursor		cursor;
+					QTextBlock		blockfrom;
+					QTextBlock		blockto;
+					QString			str=staticbuffer.mText;
+					QStringList		list1=str.split(QLatin1Char(':'));
+					if(list1.count()<3)
+						{
+							qWarning()<<"Move To need 5 values, eg 'TABNUM:LINEFROM:COLFROM:LINETO:COLTO'";
+							break;
+						}
+
+					int				tabnum=list1.at(0).toInt();
+					int				linefrom=list1.at(1).toInt();
+					int				lineto=list1.at(3).toInt();
+					int				colfrom=list1.at(2).toInt();
+					int				colto=list1.at(4).toInt();
+					int				blockfromstart;
+					int				blocktostart;
+
+					if(bar->count()==0)
+						break;
+
+					if(lineto<linefrom)
+						break;
+					if((lineto==linefrom) && (colto<=colfrom))
+						break;
+					if(tabnum>bar->count()-1)
+						tabnum=bar->count()-1;
+					if(tabnum<0)
+						tabnum=0;
+
+					colfrom--;
+					colto--;
+					if(colto<0)
+						colto=0;
+					if(colfrom<0)
+						colfrom=0;
+
+					linefrom--;
+					lineto--;
+					if(lineto<0)
+						lineto=0;
+					if(linefrom<0)
+						linefrom=0;
+					this->setTabVisibilty(tabnum,true);
+					doc=this->getDocumentForTab(-1);
+					if(doc!=NULL)
+						{
+//from
+							cursor=doc->textCursor();
+
+							blockfrom=doc->document()->findBlockByNumber(linefrom);
+							blockfromstart=blockfrom.position();
+							if((colfrom)>blockfrom.length()-1)
+								colfrom=blockfrom.length();
+
+							cursor.setPosition(blockfromstart+colfrom);
+//to
+							blockto=doc->document()->findBlockByNumber(lineto);											
+							if(blockto.isValid()==false)
+								blockto=doc->document()->lastBlock();
+							blocktostart=blockto.position();
+							if((colto)>blockto.length()-1)
+								colto=blockto.length();
+
+							cursor.movePosition(QTextCursor::Right,QTextCursor::KeepAnchor,blocktostart-blockfromstart+(colto-colfrom));
+							doc->setTextCursor(cursor);
+						}
+				}
+				break;
+			case PASTEMSG:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					if(doc!=NULL)
+						doc->paste();
+				}
+				break;
+			case COPYMSG:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					if(doc!=NULL)
+						doc->copy();
+				}
+				break;
+			case CUTMSG:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					if(doc!=NULL)
+						doc->cut();
+				}
+				break;
+			case INSERTTEXTMSG:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					if(doc!=NULL)
+						{
+							QTextCursor	cursor=doc->textCursor();
+							QString		txt=staticbuffer.mText;
+
+							cursor.clearSelection();
+							cursor.insertText(txt);
+							doc->setTextCursor(cursor);
+						}
+				}
+				break;
+			case INSERTNLMSG:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					QTextCursor		cursor;
+					if(doc!=NULL)
+						{
+							cursor=doc->textCursor();
+							cursor.clearSelection();
+							cursor.insertText("\n");
+							doc->setTextCursor(cursor);
+						}
+				}
+				break;
+			case INSERTFILEMSG:
+				{
+					bool				retval=false;
+					QFile			file(staticbuffer.mText);
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					QTextCursor		cursor;
+					QString			content;
+					if(doc!=NULL)
+						{
+							cursor=doc->textCursor();
+
+							retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
+							if(retval==true)
+								{
+									content=QString::fromUtf8(file.readAll());
+									cursor.beginEditBlock();
+										cursor.insertText(content);
+										doc->highlighter->rehighlight();
+										doc->dirty=true;
+									cursor.endEditBlock();
+									doc->state=DIRTYTAB;
+									doc->setTabColourType(DIRTYTAB);
+									this->setToolbarSensitive();
+								}
+						}
+				}
+				break;
+			case PRINTFILESMSG://TODO//just print with defaults//TODO//
+				emit this->printMenuItem->triggered();
+				break;
+			case RUNTOOLMSG:
+				this->clickMenu(this->toolsMenu,QString(staticbuffer.mText));
+				break;
+			case ACTIVATEMENUBYLABELEDMSG:
+				foreach(QAction *action,this->menuBar->actions())
+					{
+						if(action->menu())
+							{
+								this->clickMenu(action->menu(),QString(staticbuffer.mText));
+							}
+					}
+				break;
+			case SENDPOSDATAMSG:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					QTextCursor		cursor;
+					if(doc!=NULL)
+						{
+							cursor=doc->textCursor();
+							this->sendMessgage(QString("%1:%2:%3").arg(this->mainNotebook->currentIndex()).arg(doc->getCurrentLineNumber()).arg(cursor.positionInBlock()+1));
+						}
+					else
+						this->sendMessgage("");
+				}
+				break;
+			case SENDSELECTEDTEXTMSG:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					QTextCursor		cursor;
+					if(doc!=NULL)
+						{
+							cursor=doc->textCursor();
+							this->sendMessgage(cursor.selection().toPlainText());
+						}
+					else
+						this->sendMessgage("");
+				}
+				break;
+			case OPENFILEMSG:
+				this->openFile(staticbuffer.mText);
+				break;
+			case NEWFILEMSG:
+				emit this->newMenuItem->triggered();
+				break;
+			case SAVEFILEMSG:
+				emit this->saveMenuItem->triggered();
+				break;
+			case SAVEFILEASMSG:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					if(doc!=NULL)
+						{
+							QFile			file(staticbuffer.mText);
+							QMimeType		type;
+							QMimeDatabase	db;
+
+							this->saveFileAs(-1,staticbuffer.mText);
+							type=db.mimeTypeForFile(staticbuffer.mText);
+							doc->mimeType=type.name();
+							doc->setHiliteLanguage();
+							doc->highlighter->rehighlight();
+							doc->setFilePrefs();
+							doc->dirty=false;
+							doc->setTabColourType(NORMALTAB);
+						}
+				}
+				break;
+			case QUITAPPMSG:
+				this->shutDownApp();
+				break;
+			case ACTIVATEAPPMSG:
+				this->mainWindow->setWindowState((this->mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+				this->mainWindow->activateWindow();
+				this->mainWindow->raise();
+				break;
+
+			case SAVECURRENTSESSIONMSG:
+				emit this->saveCurrentSessionMenuItem->triggered();
+				break;
+			case RESTORESESSIONMSG:
+				if(QString(staticbuffer.mText).compare("autosave",Qt::CaseInsensitive)==0)
+					{
+						emit this->restoreDefaultSessionMenuItem->triggered();
+						break;
+					}
+				for(int j=0;j<this->restoreSessionMenuItemsList.count();j++)
+					{
+						if(QString(staticbuffer.mText).compare(this->restoreSessionMenuItemsList.at(j)->text())==0)
+							emit this->restoreSessionMenuItemsList.at(j)->triggered();
+					}
+				break;
+
+			case SENDSESSIONNAMEMSG:
+				this->sendMessgage(this->sessionNames.value(currentSessionNumber));
+				break;
+		}
+
+	if((staticbuffer.mType & CONTINUEMSG)==CONTINUEMSG)
+		{			
+			staticbuffer.mText[0]=0;
+			staticbuffer.mType=CONTINUEMSG;
+			msgsnd(this->queueID,&staticbuffer,0,0);
+		}
+
+	if((staticbuffer.mType&RAISEMSG)==RAISEMSG)
+		{
+			this->mainWindow->setWindowState((this->mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+			this->mainWindow->activateWindow();
+			this->mainWindow->raise();
 		}
 }
 

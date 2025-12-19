@@ -168,7 +168,7 @@ class KKEditClass : public QObject
 		int							prefsPageSize;
 
 //app
-		int							prefsMsgTimer;
+		int							prefsMsgTimer=1000;
 		bool							prefsUseSingle=true;
 		bool							prefsNagScreen=false;
 		bool							onExitSaveSession=false;
@@ -456,12 +456,16 @@ int saved_stdout;
 	protected:
 	private:
 		int							maxSessions=24;
+//app functions
+		void							handleMessages(void);
 //menu functions
 		void							clickMenu(QMenu *menu,QString name);
 		void							notDoneYet(QString string);
 		void							sendMessgage(QString msg);
 //editor functions
 		void							setTabVisibilty(int tab,bool visible);
+//files
+		bool							possibleNonText(QString filepath);
 };
 
 #endif

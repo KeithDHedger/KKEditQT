@@ -107,7 +107,9 @@ void KKEditClass::handleSignal(int signum)
 	switch(signum)
 		{
 			case SIGUSR1:
+				//this->checkMessages->stop();
 				this->doTimer();
+				//this->checkMessages->start();
 				break;
 			case SIGTERM:
 			case SIGINT:
@@ -500,7 +502,7 @@ void KKEditClass::initApp(int argc,char** argv)
 			this->doTimer();
 		});
 
-	this->checkMessages->start(this->prefsMsgTimer);
+	//////////this->checkMessages->start(this->prefsMsgTimer);
 	this->theme->loadTheme(this->prefStyleName);
 	this->buildMainGui();
 	this->buildPrefsWindow();
@@ -838,10 +840,14 @@ void KKEditClass::findFile(void)
 
 	filename=selection.replace(QRegularExpression(R"RX(#.*include\s*[\"<](.*)[\">].*)RX"),"\\1").trimmed();
 
+	if(filename.startsWith('/'))
+		if(this->openFile(filename)==true)
+			return;
+
 	if(this->openFile(QString("%1/%2").arg(document->getDirPath()).arg(filename))==true)
 		return;
 
-	results=this->runPipeAndCapture(QString("find \"%1\" -iwholename \"%2\" 2>/dev/null").arg(document->getDirPath()).arg(filename));
+	results=this->runPipeAndCapture(QString("find \"/usr/include\" -path \"*%1\"").arg(filename));
 	if(results.isEmpty()==false)
 		{
 			retval=results.split("\n",Qt::SkipEmptyParts);
@@ -849,21 +855,13 @@ void KKEditClass::findFile(void)
 				this->openFile(retval.at(j));
 		}
 
-	results=this->runPipeAndCapture(QString("find \"/usr/include\" -iwholename \"/usr/include/%1\" 2>/dev/null").arg(filename));
+	results=this->runPipeAndCapture(QString("find \"/usr/local/include\" -path \"*%1\"").arg(filename));
 	if(results.isEmpty()==false)
 		{
 			retval=results.split("\n",Qt::SkipEmptyParts);
 			for(int j=0;j<retval.count();j++)
 				this->openFile(retval.at(j));
 		}
-
-	results=this->runPipeAndCapture(QString("find \"/usr/include/\" -name \"%1\" 2>/dev/null").arg(filename));
-	if(results.isEmpty()==true)
-		return;
-
-	retval=results.split("\n",Qt::SkipEmptyParts);
-	for(int j=0;j<retval.count();j++)
-		this->openFile(retval.at(j));
 }
 
 void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile)//TODO//
@@ -1299,6 +1297,7 @@ void KKEditClass::runCLICommands(int quid)
 			list=this->parser.positionalArguments();
 			for(int j=0;j<list.count();j++)
 				{
+				//system(qPrintable(QString("echo \"j=%1 -- --->>>%2<<<--\n\" >> /tmp/log").arg(j).arg(list.at(j))));
 					if(list.at(j).at(0)!='/')
 						msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s/%s",pathtopwd,list.at(j).toStdString().c_str());
 					else
@@ -1306,9 +1305,6 @@ void KKEditClass::runCLICommands(int quid)
 					message.mType=OPENFILEMSG;
 					msgsnd(quid,&message,msglen,0);
 				}
-			msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","ACTIVATE");
-			message.mType=ACTIVATEAPPMSG;
-			msgsnd(quid,&message,msglen,0);
 
 			if(pathtopwd!=NULL)
 				free(pathtopwd);

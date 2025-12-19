@@ -59,6 +59,7 @@ QString KKEditClass::runPipeAndCapture(QString command,bool inshell)
 	runExternalProcClass	rp;
 	std::string			com="";
 
+	//rp.showCli=true;
 	if(inshell==true)
 		com="sh -c \""+command.toStdString()+"\"";
 	else
@@ -358,6 +359,65 @@ bool KKEditClass::checkForOpenFile(QString filepath)
 	return(false);
 }
 
+bool KKEditClass::possibleNonText(QString filepath)
+{
+	QByteArray		buffer;
+	QFile			file(filepath);
+	QString			str;
+	QMimeDatabase	db;
+	QMimeType		type;
+	QString			themimetype="";
+	const int		chunksize=1024;
+
+//check mime types first
+	type=db.mimeTypeForFile(filepath);
+	if(type.name().contains(QRegularExpression(".*text/.*"))==true)
+		{
+			return(true);
+		}
+	else if(type.parentMimeTypes().contains(QRegularExpression(".*text/.*"))==true)
+		{
+			return(true);
+		}
+	else
+		{
+			magic_t magic=magic_open(MAGIC_MIME_TYPE);
+		    magic_load(magic,nullptr);
+			themimetype=magic_file(magic,qPrintable(filepath));
+			if(themimetype.contains(QRegularExpression(".*text/.*"))==true)
+				{
+					magic_close(magic);
+					return(true);
+				}
+		}
+
+//possible bad file
+	if(!file.open(QIODevice::ReadOnly))
+		{
+			qDebug() << "Failed to open file:" << filepath;
+			return(false); // unable to open the file
+		}
+
+    // Read the file content in chunks
+	while(!file.atEnd())
+		{
+			buffer=file.read(chunksize);
+			str=QString::fromUtf8(buffer);
+			for(int j=0;j<str.length();j++)
+				{
+					if(!((str.at(j).isPrint()==true) || (str.at(j)=="\n") || (str.at(j)=="\r")))
+						{
+							qDebug()<<"bad char";//TODO//force open dialog
+							file.close();
+							return(false);
+						}
+				}
+		}
+
+	file.close();
+	return(true);
+}
+
 bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtorecents)//TODO//warn
 {
 	DocumentClass	*doc=NULL;
@@ -369,6 +429,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	QString			content="";
 	plugData			pd;
 	QIcon			tabicon(QString("%1/pixmaps/empty.png").arg(DATADIR));
+	bool				isoktoopen=true;
 
 	QString			corrected=LFSTK_UtilityClass::LFSTK_strStr(filepath.toStdString(),"@").c_str();
 	if(corrected.isEmpty()==false)
@@ -381,7 +442,11 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 		{
 			corrected=filepath;
 		}
-		
+
+	isoktoopen=this->possibleNonText(corrected);
+	if(isoktoopen==false)
+		return(false);
+
 	QFile			file(corrected);
 	QFileInfo		fileinfo(file);
 
@@ -405,10 +470,8 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc->pageIndex=this->newPageIndex;
 			this->newPageIndex++;
 			doc->dirty=false;
-			//content=QString::fromUtf8(file.readAll());
 			type=db.mimeTypeForFile(fileinfo.canonicalFilePath());
 			doc->mimeType=type.name();
-
 			int cnt=0;
 			content=QString::fromUtf8(file.readAll());
 			while(cnt<content.length())//hack to prevent overwhelming qplaintextedit

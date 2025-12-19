@@ -36,10 +36,9 @@ int main (int argc, char **argv)
 	QDir				commsDir;
 	QApplication		*napp=new QApplication(argc,argv);
 
-	signal(SIGUSR1,signalHandler);
-	signal(SIGTERM,signalHandler);
-	signal(SIGINT,signalHandler);
-	
+	//system("touch /tmp/log");
+	//system("echo 'started...' >> /tmp/log");
+
 	napp->setOrganizationName("KDHedger");
 	napp->setApplicationName("KKEditQT");
 	QIcon::setFallbackThemeName("gnome");
@@ -90,33 +89,41 @@ int main (int argc, char **argv)
 
 			kkedit->initApp(argc,argv);
 			kkedit->runCLICommands(siapp->queueID);
-			kill(getpid(),SIGUSR1);
 			kkedit->application->setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));
 			siapp->isMulti=true;
+
+			signal(SIGUSR1,signalHandler);
+			signal(SIGTERM,signalHandler);
+			signal(SIGINT,signalHandler);
+
+			kkedit->checkMessages->setSingleShot(true);
+			kkedit->checkMessages->start(kkedit->prefsMsgTimer);
+
 			status=kkedit->application->exec();
 
 			delete kkedit;
 			delete siapp;
-			return status;
+			return(status);
 		}
 
 	if(siapp->running==true)
 		{
 			msgStruct	message;
 			int			msglen;
-
+//	system("echo 'starting child ...' >> /tmp/log");
 			kkedit->queueID=siapp->queueID;
 			kkedit->sessionID=siapp->key;
-			msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","ACTIVATEAPPMSG");
+			msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","");
 			message.mType=ACTIVATEAPPMSG;
-			msgsnd(siapp->queueID,&message,msglen,0);
+			msgsnd(siapp->queueID,&message,0,0);
 			kkedit->runCLICommands(siapp->queueID);
-			sem_wait(siapp->semid);
-				kill(atoi(siapp->queueAddr),SIGUSR1);
-			sem_post(siapp->semid);
-
+			//sem_wait(siapp->semid);
+			//	kill(atoi(siapp->queueAddr),SIGUSR1);
+			//sem_post(siapp->semid);
+			//kkedit->checkMessages->start();
 			delete kkedit;
 			delete siapp;
+//	system("echo 'stopping child ...' >> /tmp/log");
 			return(0);
 		}
 	else
@@ -151,6 +158,13 @@ int main (int argc, char **argv)
 		kkedit->application->setWindowIcon(QIcon(DATADIR"/pixmaps/KKEditRoot.png"));
 
 	kkedit->splash->finish(kkedit->mainWindow);
+
+	signal(SIGUSR1,signalHandler);
+	signal(SIGTERM,signalHandler);
+	signal(SIGINT,signalHandler);
+
+	kkedit->checkMessages->setSingleShot(true);
+	kkedit->checkMessages->start(kkedit->prefsMsgTimer);
 
 	status=kkedit->application->exec();
 	delete kkedit;

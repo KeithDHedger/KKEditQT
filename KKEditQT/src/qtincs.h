@@ -80,5 +80,6 @@
 #include <unistd.h>
 #include <vector>
 #include <wordexp.h>
+#include <magic.h>
 
 #endif
