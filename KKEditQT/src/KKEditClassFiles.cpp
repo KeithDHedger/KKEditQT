@@ -405,9 +405,9 @@ bool KKEditClass::possibleNonText(QString filepath)
 			str=QString::fromUtf8(buffer);
 			for(int j=0;j<str.length();j++)
 				{
-					if(!((str.at(j).isPrint()==true) || (str.at(j)=="\n") || (str.at(j)=="\r")))
+					if(!((str.at(j).isPrint()==true) || (str.at(j).isSpace()==true)))
 						{
-							qDebug()<<"bad char";//TODO//force open dialog
+							qDebug()<<"bad char"<<str.at(j);//TODO//force open dialog
 							file.close();
 							return(false);
 						}

@@ -1,4 +1,5 @@
 2.0.1
+Better detection of what is a non-printable char.
 Fixed opening C include files.
 Fixed occasional lockup when opening two or more files from file manager if one or more is an executable script.
 Don't open files containing non-printable chars.
