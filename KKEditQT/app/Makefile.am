@@ -18,7 +18,7 @@ scriptfiles_SCRIPTS = ../resources/tools/*
 docfilesdir = $(pkgdatadir)/docs
 docfiles_DATA = ../resources/docs/*
 
-themesfilesdir = $(pkgdatadir)/themes
+themesfilesdir = $(DESTDIR)${prefix}/share/org.kde.syntax-highlighting/themes
 themesfiles_DATA = ../resources/themes/*
 
 bin_PROGRAMS = kkeditqt

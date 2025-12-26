@@ -3,6 +3,7 @@ CONFIG         += plugin
 QT             += widgets printsupport sql
 HEADERS         = DocumentationPlugin.h
 SOURCES         = DocumentationPlugin.cpp
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
 TARGET          = $$qtLibraryTarget(DocumentationPlugin)
 DESTDIR         = .plugins
 

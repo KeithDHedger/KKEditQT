@@ -83,6 +83,7 @@ int main (int argc, char **argv)
 
 	if(kkedit->parser.isSet("multi"))
 		{
+kkedit->sessionBusy=true;
 			kkedit->queueID=siapp->queueID;
 			kkedit->sessionID=siapp->key;
 			kkedit->forceDefaultGeom=!siapp->isOnX11;
@@ -99,7 +100,8 @@ int main (int argc, char **argv)
 			kkedit->checkMessages->setSingleShot(true);
 			kkedit->checkMessages->start(kkedit->prefsMsgTimer);
 
-			status=kkedit->application->exec();
+	kkedit->sessionBusy=false;
+		status=kkedit->application->exec();
 
 			delete kkedit;
 			delete siapp;
@@ -149,6 +151,7 @@ int main (int argc, char **argv)
 #endif
 #endif
 
+kkedit->sessionBusy=true;
 	kkedit->runCLICommands(kkedit->queueID);
 
 	kkedit->setToolbarSensitive();
@@ -165,6 +168,7 @@ int main (int argc, char **argv)
 
 	kkedit->checkMessages->setSingleShot(true);
 	kkedit->checkMessages->start(kkedit->prefsMsgTimer);
+kkedit->sessionBusy=false;
 
 	status=kkedit->application->exec();
 	delete kkedit;

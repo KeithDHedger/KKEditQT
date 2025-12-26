@@ -27,8 +27,6 @@
 #include "QT_menuitem.h"
 #include "QT_document.h"
 #include "QT_ProxyStyle.h"
-#include "QT_themeClass.h"
-#include "QT_highlighter.h"
 #include "KKEditClass.h"
 #include "ChooserDialog.h"
 
@@ -99,7 +97,6 @@ KKEditClass::~KKEditClass()
 
 	delete this->recentFiles;
 	delete this->history;
-	delete this->theme;
 }
 
 void KKEditClass::handleSignal(int signum)
@@ -290,10 +287,12 @@ void KKEditClass::switchPage(int index)
 		return;
 	if(doc==NULL)
 		return;
+//	doc->dirty=false;
 
 	this->mainWindow->setWindowTitle("KKEditQT - "+doc->getFileName());
 	doc->setStatusBarText();
 	doc->clearHilites();
+	doc->dirty=false;
 	if(doc->state==CHANGEDONDISKTAB)
 		{
 			doc->state=NORMALTAB;
@@ -314,6 +313,8 @@ void KKEditClass::switchPage(int index)
 	pd.userStrData2=currentFilename;
 	pd.userStrData3=doc->getDirPath();
 	this->runAllPlugs(pd);
+//		doc->dirty=false;
+
 }
 
 void KKEditClass::rebuildBookMarkMenu()
@@ -391,23 +392,6 @@ void KKEditClass::handleBMMenu(QWidget *widget,int what,QTextCursor curs)
 		}
 }
 
-//#include <QEvent>
-//
-//class EventFilter1 : public QObject
-//{
-//protected:
-//    bool eventFilter(QObject * obj, QEvent * event) override
-//    {
-//    qDebug()<<"closeing ...";
-// //       if (event->type() == QEvent::Close)
-////        {
-////            qDebug() << obj->objectName()<<"closing";
-////        }
-//
-//        return QObject::eventFilter(obj, event);
-//    }
-//};
-
 void KKEditClass::initApp(int argc,char** argv)
 {
 	char		tmpfoldertemplate[]="/tmp/KKEditQT-XXXXXX";
@@ -422,7 +406,8 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->sessionFolder=QString("%1/%2/%3").arg(this->homeFolder).arg(KKEDITFOLDER).arg("sesssions");
 	this->toolsFolder=QString("%1/%2/%3").arg(this->homeFolder).arg(KKEDITFOLDER).arg("tools");
 	this->recentFiles=new RecentMenuClass(this);
-	this->theme=new ThemeClass(this);
+
+	this->repository2.addCustomSearchPath(homeDataFolder);
 
 	QObject::connect(this->fileWatch,&QFileSystemWatcher::fileChanged,[this](const QString &path)
 		{
@@ -502,12 +487,9 @@ void KKEditClass::initApp(int argc,char** argv)
 			this->doTimer();
 		});
 
-	//////////this->checkMessages->start(this->prefsMsgTimer);
-	this->theme->loadTheme(this->prefStyleName);
 	this->buildMainGui();
 	this->buildPrefsWindow();
 	this->buildToolOutputWindow();
-	//this->loadPlugins();
 
 	this->buildDocViewer();
 	this->buildFindReplace();
@@ -597,8 +579,6 @@ void KKEditClass::readConfigs(void)
 //theme
 	this->prefStyleName=this->prefs.value("theme/style","default").toString();
 	this->prefStyleNameHold=this->prefStyleName;
-	this->prefsHiLiteLineColor=this->prefs.value("theme/hilitelinecol",QVariant(QColor(0xff,0xff,0xff,0x40))).value<QColor>();
-	this->prefsBookmarkHiLiteColor=this->prefs.value("theme/bmhilitecol",QVariant(QColor(0,0,0,0x40))).value<QColor>();
 
 //application
 	this->prefsMsgTimer=this->prefs.value("app/msgtimer",1000).toInt();
@@ -634,36 +614,79 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 	MenuItemClass	*menuitem1;
 	int				tabIndex;
 	QIcon			itemicon;
-	DocumentClass	*doc=this->getDocumentForTab(-1);
+	DocumentClass	*doc;
 	plugData			pd;
 
 	if(pt.isNull())
 		return;
 
 	tabIndex=this->mainNotebook->tabBar()->tabAt(pt);
+	doc=this->getDocumentForTab(tabIndex);
+	if(doc==NULL)
+		return;
 
 	if (tabIndex!=-1)
 		{
+			this->mainNotebook->tabBar()->setCurrentIndex(tabIndex);
 			QMenu	menu(this->mainNotebook);
 			QMenu	srcmenu(this->tabContextMenuItems[(SRCHILTIE-COPYFOLDERPATH)/0x100].label);
 			QMenu	filemenu(this->tabContextMenuItems[(OPENFROMHERE-COPYFOLDERPATH)/0x100].label);
 			for(int cnt=0;cnt<TABCONTEXTMENUCNT;cnt++)
 				{
-					if(cnt==(SRCHILTIE-COPYFOLDERPATH)/0x100)
+					if(cnt==(THEME-COPYFOLDERPATH)/0x100)
 						{
-							menu.addMenu(&srcmenu);
-							itemicon=QIcon::fromTheme(this->tabContextMenuItems[cnt].icon);
-							srcmenu.setIcon(itemicon);
-							for(int j=0;j<doc->highlighter->langPlugins.count();j++)
+//syntax selection
+							QActionGroup *hlActionGroup = new QActionGroup(&menu);
+							hlActionGroup->setExclusive(true);
+							QMenu *hlGroupMenu=menu.addMenu(QIcon::fromTheme("preferences-desktop-theme"),QStringLiteral("Syntax"));
+							QMenu *hlSubMenu = hlGroupMenu;
+							QString currentGroup;
+							for(const auto &def : this->repository2.definitions())
 								{
-									menuitem1=new MenuItemClass(doc->highlighter->langPlugins[j].langName);
-									srcmenu.addAction(menuitem1);
-									QObject::connect(menuitem1,&QAction::triggered,[doc,j]()
+									if(def.isHidden())
+										continue;
+									if(currentGroup != def.section())
 										{
-											doc->highlighter->setLanguage(doc->highlighter->langPlugins[j].langName);
-											doc->highlighter->setTheme();
-										});
+											currentGroup=def.section();
+											hlSubMenu=hlGroupMenu->addMenu(def.translatedSection());
+										}
+
+									QAction *action=hlSubMenu->addAction(def.translatedName());
+									action->setCheckable(true);
+									action->setData(def.name());
+									hlActionGroup->addAction(action);
+									if(def.name()==doc->highlighter2->definition().name())
+										action->setChecked(true);
 								}
+							QObject::connect(hlActionGroup, &QActionGroup::triggered,this,[doc,this](QAction *action)
+								{
+									const QString defname=action->data().toString();
+									doc->setHiliteLanguage(defname);
+								});
+
+//theme selection
+							QActionGroup *themeGroup=new QActionGroup(&menu);
+							themeGroup->setExclusive(true);
+							QMenu *themeMenu=menu.addMenu(QIcon::fromTheme("preferences-desktop-theme"),QStringLiteral("Theme"));
+							QAction *reload=themeMenu->addAction("Reload Theme");
+							reload->setData("Reload Theme");
+							themeGroup->addAction(reload);
+							themeMenu->addSeparator();
+							for(const auto &theme : this->repository2.themes())
+								{
+									QAction *action=themeMenu->addAction(theme.translatedName());
+									action->setCheckable(true);
+									action->setData(theme.name());
+									themeGroup->addAction(action);
+									if(theme.name()==doc->highlighter2->theme().name())
+										action->setChecked(true);
+								}
+							QObject::connect(themeGroup,&QActionGroup::triggered,this,[doc,this](QAction *action)
+								{
+									const QString themeName=action->data().toString();
+									doc->setTheme(themeName);
+								});
+
 							continue;
 						}
 
@@ -779,8 +802,6 @@ void KKEditClass::writeExitData(void)
 
 //theme
 	this->prefs.setValue("theme/style",this->prefStyleName);
-	this->prefs.setValue("theme/hilitelinecol",this->prefsHiLiteLineColor);
-	this->prefs.setValue("theme/bmhilitecol",this->prefsBookmarkHiLiteColor);
 
 //application
 	this->prefs.setValue("app/msgtimer",this->prefsMsgTimer);

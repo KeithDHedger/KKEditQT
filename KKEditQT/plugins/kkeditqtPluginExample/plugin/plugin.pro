@@ -3,6 +3,7 @@ CONFIG         += plugin
 QT             += widgets printsupport
 HEADERS         = kkeditqtPluginExample.h
 SOURCES         = kkeditqtPluginExample.cpp
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
 TARGET          = $$qtLibraryTarget(kkeditqtPluginExample)
 DESTDIR         = .plugins
 

@@ -26,8 +26,6 @@
 #include "QT_historyClass.h"
 #include "QT_menuitem.h"
 #include "QT_document.h"
-#include "QT_themeClass.h"
-#include "QT_highlighter.h"
 #include "KKEditClass.h"
 #include "QT_AboutBox.h"
 #include "ChooserDialog.h"
@@ -683,23 +681,38 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 		{
 			case UNDOMENUITEM:
 				if(document!=NULL)
-					document->undo();
+					{
+						document->dirty=true;
+						document->realChange=true;
+						document->undo();
+					}
 				break;
 			case REDOMENUITEM:
 				if(document!=NULL)
-					document->redo();
+					{
+						document->dirty=true;
+						document->realChange=true;
+						document->redo();
+					}
 				break;
 			case UNDOALLMENUITEM:
 				if(document!=NULL)
 					while(document->document()->availableUndoSteps()>0)
-						document->undo();
+						{
+							document->dirty=true;
+							document->realChange=true;
+							document->undo();
+						}
 				break;
 			case REDOALLMENUITEM:
 				if(document!=NULL)
 					{
 						while(document->document()->availableRedoSteps()>0)
-							document->redo();
-						document->redo();
+							{
+								document->dirty=true;
+								document->realChange=true;
+								document->redo();
+							}
 					}
 				break;
 			case CUTMENUITEM:
@@ -711,6 +724,8 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 
 						if(document->textCursor().hasSelection()==true)
 							{
+								document->dirty=true;
+								document->realChange=true;
 								document->cut();
 								cursor.endEditBlock();
 								break;
@@ -721,11 +736,14 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 								this->application->clipboard()->setText(document->verticalText);
 								for(int j=0;j<document->verticalSelectMatch.count();j++)
 									{
+										document->dirty=true;
+										document->realChange=true;
 										QTextCursor tc=document->verticalSelectMatch.at(j).cursor;
 										tc.removeSelectedText();
 									}
 							}
 						cursor.endEditBlock();
+						document->dirty=true;
 					}
 				break;
 			case COPYMENUITEM:
@@ -745,7 +763,7 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 					}
 				break;
 
-			case VERTICALPASTEMENUITEM:
+			case VERTICALPASTEMENUITEM://TODO//
 				if(document!=NULL)
 					{
 						QTextCursor	cursor;
@@ -761,6 +779,8 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 								int			col=cursor.positionInBlock();
 								for(int j=0;j<strings.count();j++)
 									{
+										document->dirty=true;
+										document->realChange=true;
 										block=document->document()->findBlockByNumber(bn);
 										QTextCursor	cursor1(block);
 
@@ -780,12 +800,18 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 									}
 							}
 						cursor.endEditBlock();
+						document->dirty=true;
+						document->realChange=true;
 					}
 				break;
 
 			case PASTEMENUITEM:
 				if(document!=NULL)
-					document->paste();
+					{
+						document->dirty=true;
+						document->realChange=true;
+						document->paste();
+					}
 				break;
 
 			case DELETEMENUITEM:
@@ -798,6 +824,8 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 
 							if(cursor.hasSelection()==true)
 								{
+									document->dirty=true;
+									document->realChange=true;
 									cursor.removeSelectedText();
 									cursor.endEditBlock();
 									break;
@@ -808,6 +836,8 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 									this->application->clipboard()->setText(document->verticalText);
 									for(int j=0;j<document->verticalSelectMatch.count();j++)
 										{
+											document->dirty=true;
+											document->realChange=true;
 											QTextCursor tc=document->verticalSelectMatch.at(j).cursor;
 											tc.removeSelectedText();
 										}
@@ -865,7 +895,9 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 				this->newFile();
 				break;
 			case OPENMENUITEM:
+			this->sessionBusy=true;
 				this->openFileDialog();
+			this->sessionBusy=false;
 				break;
 			case HEXDUMPMENUITEM:
 				this->openAsHexDump();
@@ -994,7 +1026,7 @@ void KKEditClass::notDoneYet(QString string)
 void KKEditClass::doTimer(void)
 {
 	int			retlen=0;
-
+this->sessionBusy=true;
 	staticbuffer.mText[0]=0;
 	staticbuffer.mType=0;
 	retlen=msgrcv(this->queueID,&staticbuffer,MAXMSGSIZE,MSGANY,IPC_NOWAIT);
@@ -1011,6 +1043,7 @@ void KKEditClass::doTimer(void)
 			this->checkMessages->setSingleShot(true);
 			this->checkMessages->start(this->prefsMsgTimer);
 		}
+this->sessionBusy=false;
 }
 
 void KKEditClass::handleMessages(void)
@@ -1286,7 +1319,7 @@ void KKEditClass::handleMessages(void)
 									content=QString::fromUtf8(file.readAll());
 									cursor.beginEditBlock();
 										cursor.insertText(content);
-										doc->highlighter->rehighlight();
+										doc->highlighter2->rehighlight();
 										doc->dirty=true;
 									cursor.endEditBlock();
 									doc->state=DIRTYTAB;
@@ -1358,8 +1391,8 @@ void KKEditClass::handleMessages(void)
 							this->saveFileAs(-1,staticbuffer.mText);
 							type=db.mimeTypeForFile(staticbuffer.mText);
 							doc->mimeType=type.name();
-							doc->setHiliteLanguage();
-							doc->highlighter->rehighlight();
+							//doc->setHiliteLanguage();//TODO//
+							doc->highlighter2->rehighlight();
 							doc->setFilePrefs();
 							doc->dirty=false;
 							doc->setTabColourType(NORMALTAB);
@@ -1495,38 +1528,11 @@ void KKEditClass::setPreferences(void)
 //completions
 	this->showCompletions=this->prefsAutoShowCompletions;
 	this->toggleCompletionsMenuItem->setChecked(this->showCompletions);
-	this->theme->loadTheme(this->prefStyleNameHold);
 	this->resetAllFilePrefs();
 	this->writeExitData();
 	this->setAppShortcuts();
 
 	switchPage(this->mainNotebook->currentIndex());
-}
-
-void KKEditClass::setBMColour(void)
-{
-	QColor	tmpcolour;
-	tmpcolour=QColorDialog::getColor(QColor(this->prefsBookmarkHiLiteColor),0,"Select Color",QColorDialog::ShowAlphaChannel);
-	if(tmpcolour.isValid())
-		{
-			this->prefsOtherWidgets[BMHIGHLIGHTCOLOUR]->setProperty("palette",QPalette(tmpcolour));
-			this->prefsOtherWidgets[BMHIGHLIGHTCOLOUR]->setProperty("autoFillBackground",true);
-			this->prefsOtherWidgets[BMHIGHLIGHTCOLOUR]->setProperty("text",tmpcolour.name());
-			this->prefsBookmarkHiLiteColor=tmpcolour;
-		}
-}
-
-void KKEditClass::setLineColour(void)
-{
-	QColor	tmpcolour;
-	tmpcolour=QColorDialog::getColor(QColor(this->prefsHiLiteLineColor),0,"Select Color",QColorDialog::ShowAlphaChannel);
-	if(tmpcolour.isValid())
-		{
-			this->prefsOtherWidgets[CURRENTLINECOLOUR]->setProperty("palette",QPalette(tmpcolour));
-			this->prefsOtherWidgets[CURRENTLINECOLOUR]->setProperty("autoFillBackground",true);
-			this->prefsOtherWidgets[CURRENTLINECOLOUR]->setProperty("text",tmpcolour.name());
-			this->prefsHiLiteLineColor=tmpcolour;
-		}
 }
 
 void KKEditClass::setFont(void)

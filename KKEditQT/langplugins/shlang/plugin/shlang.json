@@ -1,6 +1,0 @@
-{
-"name" : "Shell Language Plugin",
-"version" : "0.0.2",
-"langname" : "SH",
-"mimetypes" : "application/x-shellscript"
-}

@@ -1,3 +1,27 @@
+2.1.0
+Added custom root theme.
+Fixed enabling save after redoall/undoall.
+Added reload theme to tab->theme context menu.
+Fixed enabling save after redo/undo.
+Added custom spring theme.
+Added custom grey theme.
+Added custom winter theme.
+Added custom wood theme.
+If theme is invalid use the inbuilt default light theme.
+Added search path for user themes ( ie ~/.KKEditQT/themes ).
+Added custom XMas theme.
+Redone theme combo in prefs.
+Switch tabs when right clicking tab for context menu.
+Added syntax hilighting menu to tab context menu.
+Fixed document wrongly marked dirty.
+Fixed open as hexdump.
+Set mime type to plain/text if undetermined.
+Removed toolkit plugins.
+Removed src plugins.
+Updated buildplugs script.
+Removed qt_highlighter files.
+Started moving to KSyntaxHighlighting library ( why re-invent the wheel! ).
+
 2.0.1
 Fixed opening C include files.
 Fixed occasional lockup when opening two or more files from file manager if one or more is an executable script.

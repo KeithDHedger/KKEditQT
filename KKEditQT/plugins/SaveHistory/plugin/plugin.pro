@@ -3,8 +3,10 @@ CONFIG         += plugin
 QT             += widgets printsupport
 HEADERS         = SaveHistory.h
 SOURCES         = SaveHistory.cpp
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
 TARGET          = $$qtLibraryTarget(SaveHistory)
 DESTDIR         = plugins
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
 
 documentation.files = docs/*
 

@@ -48,6 +48,13 @@
 #include <QtCore>
 #include <QtPlugin>
 #include <QtWidgets>
+#include <QActionGroup>
+
+#include <KSyntaxHighlighting/Definition>
+#include <KSyntaxHighlighting/FoldingRegion>
+#include <KSyntaxHighlighting/Repository>
+#include <KSyntaxHighlighting/SyntaxHighlighter>
+#include <KSyntaxHighlighting/Theme>
 
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>

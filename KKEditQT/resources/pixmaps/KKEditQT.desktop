@@ -2,7 +2,7 @@
 Version=1.0
 Encoding=UTF-8
 Name=KKEditQT
-Comment=A QT5 text editor inspired ( but not based on ) BBEdit.
+Comment=A QT6 text editor.
 Terminal=false
 Type=Application
 Categories=Utility;

@@ -3,6 +3,7 @@ CONFIG         += plugin
 QT             += widgets printsupport
 HEADERS         = TerminalPlugin.h QT_prefsWidgets.h
 SOURCES         = TerminalPlugin.cpp QT_prefsWidgets.cpp
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
 TARGET          = $$qtLibraryTarget(TerminalPlugin)
 DESTDIR         = plugins
 

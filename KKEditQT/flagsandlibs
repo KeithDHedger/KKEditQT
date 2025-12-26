@@ -1,6 +1,7 @@
 
 AM_CPPFLAGS =-I$(top_srcdir) \
 			-include ../src/qtincs.h \
+			$(KF6HIGHLIGHTER_CFLAGS) \
 			$(QTWIDGETS_CFLAGS) \
 			$(QTPRINTSUPPORT_CFLAGS) \
 			$(QTCORE_CFLAGS) \
@@ -17,6 +18,7 @@ LIBS =		$(X11_LIBS) \
 			$(QTWIDGETS_LIBS) \
 			$(QTCORE_LIBS) \
 			$(QTPRINTSUPPORT_LIBS) \
+			$(KF6HIGHLIGHTER_LIBS) \
 			$(ASPELL_LIBS) \
 			$(MAGIC_LIBS) \
 			$(SQLITE_LIBS)

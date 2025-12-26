@@ -24,7 +24,6 @@
 #include "QT_recentMenu.h"
 #include "QT_menuitem.h"
 #include "QT_document.h"
-#include "QT_highlighter.h"
 #include "KKEditClass.h"
 #include "ChooserDialog.h"
 
@@ -103,7 +102,6 @@ void KKEditClass::newFile(const QString data,const QString filename)
 	plugData			pd;
 	int				ci=this->mainNotebook->currentIndex()+1;
 
-	this->sessionBusy=true;
 	doc=new DocumentClass(this);
 	doc->setPlainText(data);
 	tabnum=this->mainNotebook->addTab(doc,"");
@@ -113,28 +111,32 @@ void KKEditClass::newFile(const QString data,const QString filename)
 		doc->setFileName(filename);
 	doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
 	this->mainNotebook->setTabToolTip(tabnum,doc->getFileName());
-	doc->setFilePrefs();
 	doc->mimeType="text/plain";
+	doc->setFilePrefs();
 	doc->pageIndex=this->newPageIndex;
 	this->pages[this->newPageIndex++]=doc;
-	doc->setHiliteLanguage();
+	doc->setHiliteLanguage("plain/text");
 	doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 	this->untitledNumber++;
 	this->mainNotebook->setCurrentWidget(doc);
 	this->rebuildTabsMenu();
 	this->sessionBusy=holdsb;
 	this->setToolbarSensitive();
-
-	doc->state=NORMALTAB;
-	doc->setTabColourType(doc->state);
-
 	this->moveTabToRight(ci);
+
+	doc->highlighter2->rehighlight();
+	doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
 
 //plugins
 	pd.doc=doc;
 	pd.tabNumber=this->mainNotebook->currentIndex();
 	pd.what=DONEWDOCUMENT;
 	this->runAllPlugs(pd);
+
+	doc->dirty=false;
+	doc->realChange=false;
+	doc->state=NORMALTAB;
+	doc->setTabColourType(doc->state);
 }
 
 int KKEditClass::askSaveDialog(const QString filename)
@@ -405,9 +407,10 @@ bool KKEditClass::possibleNonText(QString filepath)
 			str=QString::fromUtf8(buffer);
 			for(int j=0;j<str.length();j++)
 				{
-					if(!((str.at(j).isPrint()==true) || (str.at(j)=="\n") || (str.at(j)=="\r")))
+					//if(!((str.at(j).isPrint()==true) || (str.at(j)=="\n") || (str.at(j)=="\r") || (str.at(j)=="\t")))
+					if(!((str.at(j).isPrint()==true) || (str.at(j).isSpace()==true)))
 						{
-							qDebug()<<"bad char";//TODO//force open dialog
+							qDebug()<<"bad char"<<str.at(j);//TODO//force open dialog
 							file.close();
 							return(false);
 						}
@@ -474,13 +477,16 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc->mimeType=type.name();
 			int cnt=0;
 			content=QString::fromUtf8(file.readAll());
+			doc->document()->setModified(false);
 			while(cnt<content.length())//hack to prevent overwhelming qplaintextedit
 				{
 					doc->moveCursor (QTextCursor::End);
 					doc->insertPlainText(content.mid(cnt,3072));
+					doc->document()->setModified(false);
 					cnt+=3072;
 				}
 			tabnum=this->mainNotebook->addTab(doc,tabicon,doc->getTabName());
+			doc->document()->setModified(false);
 			doc->setDirPath(fileinfo.canonicalPath());
 			doc->setFilePath(fileinfo.canonicalFilePath());
 			doc->setFileName(fileinfo.fileName());
@@ -491,6 +497,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			retval=true;
 			if(addtorecents==true)
 				this->recentFiles->addFilePath(doc->getFilePath());
+
 			doc->setFilePrefs();
 			if(this->fileWatch->files().contains(fileinfo.canonicalFilePath())==false)
 				this->fileWatch->addPath(fileinfo.canonicalFilePath());
@@ -506,11 +513,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 #endif
 			return(false);
 		}
-
-	doc->setHiliteLanguage();
-	doc->highlighter->rehighlight();
-	doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
-	doc->dirty=false;
 
 	this->rebuildTabsMenu();
 	if(this->openFromDialog==false)

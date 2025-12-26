@@ -24,7 +24,6 @@
 #include "KKEditClass.h"
 
 class LineNumberArea;
-class Highlighter;
 
 enum {NORMALTAB=0,CHANGEDONDISKTAB,IGNORECHANGEDONDISKTAB,LOCKEDTAB,DIRTYTAB};
 
@@ -36,21 +35,21 @@ class DocumentClass : public QPlainTextEdit
 
 		KKEditClass						*mainKKEditClass=NULL;
 //highlighting
-		Highlighter						*highlighter;
+		KSyntaxHighlighting::SyntaxHighlighter	*highlighter2;
+
 		QList<QTextEdit::ExtraSelection>	extraSelections;
 		QList<QTextEdit::ExtraSelection>	extraBMSelections;
 		QList<QTextEdit::ExtraSelection>	hilightSelections;
 		QList<QTextEdit::ExtraSelection>	bracketMatch;
 		QList<QTextEdit::ExtraSelection>	findMatch;
 		QList<QTextEdit::ExtraSelection>	verticalSelectMatch;
-		
+
 		QTextEdit::ExtraSelection		selection;
 		QTextEdit::ExtraSelection		selectedLine;
-		QColor							prefsHiLiteLineColor;
-		QColor							bookmarkLineColor;
 		int								oldBlockCount=0;
 
-		void								setHiliteLanguage(void);
+		void								setTheme(QString name);
+		void								setHiliteLanguage(QString name);
 		void								lineNumberAreaPaintEvent(QPaintEvent *event);
 		int								lineNumberAreaWidth(void);
 		void								setXtraSelections(void);
@@ -82,6 +81,7 @@ class DocumentClass : public QPlainTextEdit
 		bool								doneHighlightAll;
 		char								*lastFind;
 		bool								dirty=false;
+		bool								realChange=false;
 		QString							mimeType="text/plain";
 		bool								gotUndo=false;
 		bool								gotRedo=false;
@@ -121,7 +121,6 @@ class DocumentClass : public QPlainTextEdit
 		void								dropEvent(QDropEvent* event);
 		void								dragMoveEvent(QDragMoveEvent *event);
 
-
 	private slots:
 		void								highlightCurrentLine();
 		void								updateLineNumberAreaWidth(int newcnt);
@@ -138,6 +137,9 @@ class DocumentClass : public QPlainTextEdit
 		bool								realShowLineNumbers(void);
 		bool								realHiliteLine(void);
 		bool								realSyntaxHighlighting(void);
+		QString							bestFontColour(QString colour);
+		QString							repoColourToHex(KSyntaxHighlighting::Theme::EditorColorRole);
+	
 		QTextCursor						holdCursor;
 		bool								lastCursorPosition=false;
 		int								holdColoumn=0;

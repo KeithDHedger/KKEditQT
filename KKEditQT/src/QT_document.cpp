@@ -20,8 +20,6 @@
 
 #include "QT_notebook.h"
 #include "QT_menuitem.h"
-#include "QT_themeClass.h"
-#include "QT_highlighter.h"
 #include "QT_document.h"
 
 int DocumentClass::getCurrentLineNumber(void)
@@ -44,6 +42,21 @@ bool DocumentClass::realSyntaxHighlighting(void)
 	return(this->mainKKEditClass->showHighLighting);
 }
 
+QString DocumentClass::bestFontColour(QString colour)
+{
+	QColor	cc(colour);
+    int		r=0,g=0,b=0;
+
+	r=cc.red();
+	g=cc.green();
+	b=cc.blue();
+
+	if((r+r+r+b+g+g+g+g)>>3>128)
+		return("black");
+	else
+		return("white");
+}
+
 void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
 	if(this->realShowLineNumbers()==false)
@@ -51,7 +64,7 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 
 	QPainter painter(this->lineNumberArea);
 
-	painter.fillRect(event->rect(),this->highlighter->lineNumbersBackground);
+	painter.fillRect(event->rect(),QColor::fromRgba(this->highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::LineNumbers)));
 	QTextBlock block=this->firstVisibleBlock();
 	int blockNumber=block.blockNumber();
 	int top=(int) blockBoundingGeometry(block).translated(contentOffset()).top();
@@ -61,16 +74,17 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 		{
 			if(block.isVisible() && bottom>=event->rect().top())
 				{
-					painter.setPen(this->highlighter->lineNumbersForeground);
+					QString fore;
+					fore=this->bestFontColour(this->repoColourToHex(KSyntaxHighlighting::Theme::LineNumbers));
 					foreach(bookMarkStruct value,this->mainKKEditClass->bookMarks)
 						{
 							if((value.docIndex==this->pageIndex) && (value.line==blockNumber+1))
 								{
-									painter.fillRect(QRect(0,top,lineNumberArea->width(),fontMetrics().height()),this->highlighter->bookMarkBGColour);
+									painter.fillRect(QRect(0,top,lineNumberArea->width(),fontMetrics().height()),this->repoColourToHex(KSyntaxHighlighting::Theme::MarkBookmark));
 								}
 						}
 
-					QString number=QString::number(blockNumber+1);painter.setPen(this->highlighter->lineNumbersForeground);
+					QString number=QString::number(blockNumber+1);painter.setPen(fore);
 					painter.drawText(0,top,lineNumberArea->width(),fontMetrics().height(),Qt::AlignRight,number);
 				}
 
@@ -108,7 +122,6 @@ void DocumentClass::resizeEvent(QResizeEvent *e)
 
 DocumentClass::~DocumentClass()
 {
-	//delete this->highlighter;
 	this->mainKKEditClass->pages.remove(this->pageIndex);
 	delete this->lineNumberArea;
 }
@@ -162,12 +175,9 @@ void DocumentClass::updateLineNumberAreaWidth(int newcnt)
 
 void DocumentClass::modified()
 {
-	if((this->mainKKEditClass->sessionBusy==true) || (this->dirty==true))
+	if((this->mainKKEditClass->sessionBusy==true) || (this->dirty==false))
 		return;
 
-	this->dirty=true;
-
-	this->mainKKEditClass->mainNotebook->indexOf(this);
 	if(this->modifiedOnDisk==false)
 		this->state=DIRTYTAB;
 	else
@@ -191,13 +201,16 @@ void DocumentClass::highlightCurrentLine()
 
 	this->setStatusBarText();
 	this->extraBMSelections.clear();
+
+//bookmarks
 	foreach(bookMarkStruct value,this->mainKKEditClass->bookMarks)
 		{
 			if(value.docIndex==this->pageIndex)
 				{
 					QTextBlock block=this->document()->findBlockByNumber(value.line-1);
 					QTextCursor cursor1(block);
-					bmselect.format.setBackground(this->bookmarkLineColor);
+
+					bmselect.format.setBackground(QColor::fromRgba(highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::MarkBookmark)));
 					bmselect.format.setProperty(QTextFormat::FullWidthSelection, true);
 					bmselect.cursor=cursor1;
 					bmselect.cursor.movePosition(QTextCursor::StartOfBlock,QTextCursor::MoveAnchor);
@@ -206,12 +219,10 @@ void DocumentClass::highlightCurrentLine()
 				}
 		}
 
-	this->selectedLine.format.setBackground(this->prefsHiLiteLineColor);
+//currentline
+	this->selectedLine.format.setBackground(QColor::fromRgba(highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::CurrentLine)));
 	this->selectedLine.format.setProperty(QTextFormat::FullWidthSelection, true);
-	this->selectedLine.cursor=textCursor();
-
-	this->selectedLine.cursor.movePosition(QTextCursor::StartOfBlock,QTextCursor::MoveAnchor);
-	this->selectedLine.cursor.movePosition(QTextCursor::NextBlock,QTextCursor::KeepAnchor);
+	this->selectedLine.cursor=this->textCursor();
 
 //bracket match
 //forward
@@ -327,12 +338,13 @@ void DocumentClass::highlightCurrentLine()
 						}
 				}
 
+//bracketmatch
 			if(stack==0)
 				{
 					QTextEdit::ExtraSelection	bmselect;
 					bracketcursor.setPosition(pos);
-					bmselect.format.setBackground(QColor(this->highlighter->documentForeground));
-					bmselect.format.setForeground(QColor(this->highlighter->documentBackground));
+					 bmselect.format.setBackground(QColor::fromRgba(highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::BracketMatching)));
+					 bmselect.format.setForeground(QColor::fromRgba(highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::BackgroundColor)));
 					bracketcursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor);
 					bmselect.cursor=bracketcursor;
 					this->bracketMatch.append(bmselect);
@@ -420,6 +432,9 @@ void DocumentClass::mousePressEvent(QMouseEvent *event)
 	if((event->buttons() & Qt::LeftButton)==Qt::LeftButton)
 		this->verticalSelectMatch.clear();
 
+	if((event->buttons() & Qt::MiddleButton)==Qt::MiddleButton)
+		this->realChange=true;
+
 	if((event->modifiers() & Qt::AltModifier)==Qt::AltModifier)
 		{
 			QTextCursor	startcurs=this->cursorForPosition(event->pos());
@@ -433,7 +448,6 @@ void DocumentClass::mousePressEvent(QMouseEvent *event)
 			this->startVLine=startcurs.blockNumber();
 
 		}
-
 	QPlainTextEdit::mousePressEvent(event);
 }
 
@@ -452,6 +466,9 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 
 	if(this->isReadOnly()==true)
 		return;
+
+	this->dirty=true;
+	this->realChange=true;
 
 	if(this->mainKKEditClass->mouseVisible==true)
 		this->mainKKEditClass->setMouseState(false);
@@ -582,6 +599,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 
 	cr=this->cursorRect();
     cr.setWidth(this->mainKKEditClass->completer->popup()->sizeHintForColumn(0)+this->mainKKEditClass->completer->popup()->verticalScrollBar()->sizeHint().width());
+
    	if(this->mainKKEditClass->completer->widget()==this)
 		this->mainKKEditClass->completer->complete(cr);
 }
@@ -606,7 +624,8 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	this->mainKKEditClass=kk;
 	this->setAcceptDrops(true);
 
-	this->highlighter=new Highlighter(this->document(),this,this->mainKKEditClass);
+	this->highlighter2=new KSyntaxHighlighting::SyntaxHighlighter(this->document());
+
 	this->setCenterOnScroll(true);
 	this->lineNumberArea=new LineNumberArea(this);
 
@@ -624,7 +643,12 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 		});
 	QObject::connect(this,&QPlainTextEdit::textChanged,[this]()
 		{
-			this->modified();
+			if(this->realChange==true)
+				{
+					this->dirty=true;
+					this->modified();
+					this->realChange=false;
+				}
 		});
 
 	QObject::connect(this,&QPlainTextEdit::undoAvailable,[this](bool undo)
@@ -676,7 +700,7 @@ void DocumentClass::setTabName(QString tabname)
 	int tabnum=this->mainKKEditClass->mainNotebook->indexOf(this);
 
 	if(this->dirty==false)
-		this->mainKKEditClass->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor(this->highlighter->documentForeground));
+		this->mainKKEditClass->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor("black"));
 
 	if(this->tabName.compare(tabname)==0)
 		return;
@@ -728,7 +752,6 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 	menuactions=this->mainKKEditClass->toolsMenu->actions();
 	for(int j=1;j<menuactions.count();j++)
 		{
-			//mc=qobject_cast<MenuItemClass*>(menuactions.at(j));
 			mc=(MenuItemClass*)menuactions.at(j);
 			if(mc!=NULL)
 				{
@@ -777,19 +800,27 @@ void DocumentClass::setFilePrefs(void)
 {
 	bool			holddirty=this->dirty;
 	QTextOption	opts;
+	KSyntaxHighlighting::Definition def;
 
 	this->setTabStopDistance(1.0);
-	this->dirty=true;
-	this->highlighter->syntaxHighlighting=this->realSyntaxHighlighting();
-	this->highlighter->setTheme();
-	this->setStyleSheet(this->highlighter->docBackgroundCSS);
+
+	def=this->mainKKEditClass->repository2.definitionForFileName(this->filePath);
+	if(def.isValid()==false)
+		{
+			def=this->mainKKEditClass->repository2.definitionForMimeType(this->mimeType);
+			if(def.isValid()==false)
+				def=this->mainKKEditClass->repository2.definitionForMimeType("plain/text");
+		}
+
+	if(this->mainKKEditClass->showHighLighting==false)
+		def=this->mainKKEditClass->repository2.definitionForMimeType("plain/text");
+	this->highlighter2->setDefinition(def);
+	this->setTheme(this->mainKKEditClass->prefStyleName);
 
 	this->dirty=holddirty;
 	this->updateLineNumberAreaWidth(this->oldBlockCount);
 
 	this->setFont(this->mainKKEditClass->prefsDocumentFont);
-	this->prefsHiLiteLineColor=this->mainKKEditClass->prefsHiLiteLineColor;
-	this->bookmarkLineColor=this->mainKKEditClass->prefsBookmarkHiLiteColor;
 	this->highlightCurrentLine();
 
 	this->setLineWrapMode(static_cast<QPlainTextEdit::LineWrapMode>(this->mainKKEditClass->wrapLine));
@@ -811,19 +842,37 @@ void DocumentClass::setFilePrefs(void)
 	this->fromMe=false;
 }
 
-void DocumentClass::setHiliteLanguage(void)
+void DocumentClass::setTheme(QString name)
 {
-	for(int j=0;j<this->highlighter->langPlugins.count();j++)
+	if(name=="Reload Theme")
 		{
-			if(this->highlighter->langPlugins[j].mimeType.contains(this->mimeType)==true)
-				{
-					this->highlighter->setLanguage(this->highlighter->langPlugins[j].langName);
-					this->highlighter->setTheme();
-					return;
-				}
+			this->mainKKEditClass->repository2.reload();
+			this->setTheme(this->mainKKEditClass->prefStyleName);
+			return;
 		}
-	this->highlighter->setLanguage("plaintext");
-	this->highlighter->setTheme();
+	KSyntaxHighlighting::Theme theme=this->mainKKEditClass->repository2.theme(name);
+
+	if(theme.isValid()==false)
+		theme=this->mainKKEditClass->repository2.defaultTheme();
+
+	this->highlighter2->setTheme(theme);
+
+	QPalette pal=qApp->palette();
+	if(theme.isValid())
+		{
+			pal.setColor(QPalette::Base, this->highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::BackgroundColor));
+			pal.setColor(QPalette::Highlight, this->highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::TextSelection));
+		}
+	this->setPalette(pal);
+
+	this->highlighter2->rehighlight();
+	this-> highlightCurrentLine();
+}
+
+void DocumentClass::setHiliteLanguage(QString name)
+{
+	const KSyntaxHighlighting::Definition def=this->mainKKEditClass->repository2.definitionForName(name);
+	this->highlighter2->setDefinition(def);
 }
 
 void DocumentClass::setUndo(bool avail)
@@ -845,7 +894,7 @@ void DocumentClass::paintEvent(QPaintEvent* event)
 			QRect r(this->cursorRect());
 			r.setWidth(r.width()+2);
 			r.translate(-1,0);
-			p.fillRect(r,this->mainKKEditClass->theme->themeParts["insertcolour"].colour);
+			p.fillRect(r,QColor(this->repoColourToHex(KSyntaxHighlighting::Theme::TextSelection)));
 		}
 }
 
@@ -887,6 +936,8 @@ void DocumentClass::dragMoveEvent(QDragMoveEvent *event)
 void DocumentClass::dropEvent(QDropEvent* event)
 {
 	this->inDrag=false;
+	this->dirty=true;
+	this->realChange=true;
 
 	if (event->mimeData()->hasUrls())
 		{
@@ -898,7 +949,6 @@ void DocumentClass::dropEvent(QDropEvent* event)
 					QFile			file(list.at(0).toLocalFile());
 					QFileInfo		fileinfo(file);
 					const QSignalBlocker	blocker(sender());
-
 					retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
 					if(retval==true)
 						{
@@ -909,8 +959,7 @@ void DocumentClass::dropEvent(QDropEvent* event)
 							cursor.beginEditBlock();
 								cursor.insertText(content);
 								this->setFilePrefs();
-								this->highlighter->rehighlight();
-								this->dirty=true;
+								this->highlighter2->rehighlight();
 							cursor.endEditBlock();
 							file.close();
 						}
@@ -1118,8 +1167,7 @@ void DocumentClass::refreshFromDisk(void)
 				cursor.select(QTextCursor::Document);
 				cursor.removeSelectedText ();
 				cursor.insertText(content);
-
-				this->highlighter->rehighlight();
+				this->highlighter2->rehighlight();
 				this->dirty=false;
 				file.close();
 
@@ -1134,6 +1182,7 @@ void DocumentClass::refreshFromDisk(void)
 				this->modifiedOnDisk=false;
 				this->state=NORMALTAB;
 				this->dirty=false;
+				this->realChange=false;
 				this->setTabColourType(NORMALTAB);
 			cursor.endEditBlock();
 		}
@@ -1162,11 +1211,6 @@ bool DocumentClass::findStr(int what)
 
 	if(this->mainKKEditClass->insensitiveSearch==true)
 		pattern.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
-
-	format.setFontItalic(false);
-	format.setFontWeight(0);
-	format.setForeground(QColor(this->highlighter->findFGColour));
-	format.setBackground(QColor(this->highlighter->findBGColour));
 
 	if((this->mainKKEditClass->replaceAll==true) && (what==FINDREPLACE))
 		{
@@ -1306,8 +1350,8 @@ void DocumentClass::setHighlightAll(void)
 
 	format.setFontItalic(false);
 	format.setFontWeight(0);
-	format.setForeground(QColor(this->highlighter->findFGColour));
-	format.setBackground(QColor(this->highlighter->findBGColour));
+	format.setBackground(QColor(this->repoColourToHex(KSyntaxHighlighting::Theme::SearchHighlight)));
+	format.setForeground(QColor(this->bestFontColour(this->repoColourToHex(KSyntaxHighlighting::Theme::SearchHighlight))));
 
 	this->findMatch.clear();
 		
@@ -1351,4 +1395,9 @@ void DocumentClass::setTabColourType(int type)
 
 	this->mainKKEditClass->mainNotebook->setTabIcon(this->mainKKEditClass->mainNotebook->indexOf(this),tabicon);
 	this->mainKKEditClass->mainNotebook->tabBar()->update();
+}
+
+QString DocumentClass::repoColourToHex(KSyntaxHighlighting::Theme::EditorColorRole role)
+{
+	return(QString("#%1").arg(QString::number(this->highlighter2->theme().editorColor(role),16)));
 }

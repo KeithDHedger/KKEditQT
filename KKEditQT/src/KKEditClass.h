@@ -25,7 +25,6 @@
 
 class docBrowserClass;
 class ProxyStyle;
-class ThemeClass;
 class NoteBookClass;
 class MenuItemClass;
 class RecentMenuClass;
@@ -40,15 +39,17 @@ class KKEditClass : public QObject
 		~KKEditClass();
 
 //app vars
-		//QMainWindow					*mainWindow;
 		MainWindowClass				*mainWindow;
 		NoteBookClass				*mainNotebook=NULL;
+
+		KSyntaxHighlighting::Repository	repository2;
 		QApplication					*application=NULL;
 		QTimer 						*checkMessages=NULL;
 		QString						tmpFolderName;
 		QString						htmlFile;
 		QString						htmlURI;
 		QSettings					prefs;
+
 		int							gotManEditor;
 		int							gotPDFToText;
 		int							gotPDFCrop;
@@ -147,11 +148,8 @@ class KKEditClass : public QObject
 		bool							openFirstTabWithSession=true;
 
 //theme
-		QColor						prefsHiLiteLineColor;
-		QColor						prefsBookmarkHiLiteColor;
 		QString						prefStyleName;
 		QString						prefStyleNameHold;
-		ThemeClass					*theme=NULL;
 		ProxyStyle					*mainThemeProxy=NULL;
 
 //editor
@@ -430,8 +428,6 @@ int saved_stdout;
 
 		void							doDoubleClickPrefs(QListWidgetItem *item);
 		void							setPreferences(void);
-		void							setBMColour(void);
-		void							setLineColour(void);
 		void							setFont(void);
 		void							addToToolBar(MenuItemClass *mc);
 		void							buildGetKeyShortCut(int index);

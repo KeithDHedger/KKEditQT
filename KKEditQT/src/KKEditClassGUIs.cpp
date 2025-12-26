@@ -26,8 +26,6 @@
 #include "QT_menuitem.h"
 #include "tagClass.h"
 #include "QT_document.h"
-#include "QT_themeClass.h"
-#include "QT_highlighter.h"
 #include "KKEditClass.h"
 #include "ChooserDialog.h"
 
@@ -85,8 +83,6 @@ static const char *whatIsPrefsOther[MAXPREFSOTHERWIDGETS]={\
 "<html>QT5 does not play well with CUPS ( nothing to do with me! )<br><br>You can set an external program to print your document, just enter the name or full path here, the full path to the current document will be added to the end as the file to print.<br>E.g. lpr to usr the line printer.<br><br>You can also use a gui application e.g. lprgui available here:<br><b>https://github.com/KeithDHedger/LprGUI</b><br><br>Leave this blank to use the built in QT5 print dialog ( but you may only get the native print to pdf option ).</html>",\
 "<html>Enter a command to run a command as root, the command is added to the end of this string.<br><br>Default is '<b>gtksu -- env QTWEBENGINE_DISABLE_SANDBOX=1 env QT_QPA_PLATFORMTHEME=qt5ct </b>'</html>",\
 "<html>Set current font.</html>",\
-"<html>Set bookmark highlight colour.</html>",\
-"<html>Set current line colour.</html>",\
 "<html>Set keyboard shortcuts.</html>"};
 
 //prefs int widgets
@@ -104,7 +100,7 @@ static const char *whatIsPrefsInt[MAXPREFSINTWIDGETS]={\
 void KKEditClass::buildPrefsWindow(void)
 {
 	QVBoxLayout			*mainvbox=new QVBoxLayout;
-	QHBoxLayout			*hbox;//=new QHBoxLayout;
+	QHBoxLayout			*hbox;
 
 	this->prefsWindow=new QDialog(this->mainWindow);
 	QTabWidget			*prefsnotebook=new QTabWidget(this->prefsWindow);
@@ -120,7 +116,6 @@ void KKEditClass::buildPrefsWindow(void)
 	this->prefsWindow->setWindowTitle("Preferences");
 
 	mainvbox->setContentsMargins(0,0,0,16);
-	//hbox->setContentsMargins(0,0,0,0);
 
 	this->populateDnD();
 	this->populateStore();
@@ -227,41 +222,16 @@ void KKEditClass::buildPrefsWindow(void)
 	table->addWidget(widgetlabel,posy,0);
 	table->addWidget(prefsOtherWidgets[THEMECOMBO],posy,1,1,-1);
 
-//local
-{
-	QDir		languagesDir(QString("%1/themes/").arg(this->homeDataFolder));
-	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
-
-	while (it.hasNext())
+//themes
+	for(const auto &theme : this->repository2.themes())
 		{
-			QString	s=it.next();
-			qobject_cast<QComboBox*>(prefsOtherWidgets[THEMECOMBO])->addItem(QFileInfo(s).baseName());
+			qobject_cast<QComboBox*>(prefsOtherWidgets[THEMECOMBO])->addItem(theme.translatedName());
+			QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),&QComboBox::activated,[this](int index)
+				{
+					this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
+					this->prefStyleNameHold=this->prefStyleName;
+				});
 		}
-
-	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),&QComboBox::activated,[this](int index)
-		{
-			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
-			this->prefStyleNameHold=this->prefStyleName;
-		});
-}
-
-//global
-{
-	QDir		languagesDir(QString("%1/themes/").arg(DATADIR));
-	QDirIterator	it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
-
-	while (it.hasNext())
-		{
-			QString	s=it.next();
-			qobject_cast<QComboBox*>(prefsOtherWidgets[THEMECOMBO])->addItem(QFileInfo(s).baseName());
-		}
-
-	QObject::connect(qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO]),&QComboBox::activated,[this](int index)
-		{
-			this->prefStyleName=qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->currentText();
-			this->prefStyleNameHold=this->prefStyleName;
-		});
-}
 	qobject_cast<QComboBox*>(this->prefsOtherWidgets[THEMECOMBO])->setCurrentText(this->prefStyleName);
 
 //shortcuts
@@ -295,46 +265,6 @@ void KKEditClass::buildPrefsWindow(void)
 			this->setFont();
 		});
 
-//current linecol
-	posy++;
-    widgetlabel = new QLabel("Highlight Current Line Colour:");
-	prefsOtherWidgets[CURRENTLINECOLOUR]=new QLabel("LINE");
-	prefsOtherWidgets[CURRENTLINECOLOUR]->setWhatsThis(whatIsPrefsOther[CURRENTLINECOLOUR]);
-    qobject_cast<QLabel*>(prefsOtherWidgets[CURRENTLINECOLOUR])->setFrameStyle(QFrame::Raised | QFrame::Panel);
-    QPushButton *colourButton = new QPushButton("Set Colour");
-	table->addWidget(widgetlabel,posy,0);
-	table->addWidget(prefsOtherWidgets[CURRENTLINECOLOUR],posy,1);
-	table->addWidget(colourButton,posy,2);
-
-	QColor colour=QColor(this->prefsHiLiteLineColor);
-	prefsOtherWidgets[CURRENTLINECOLOUR]->setProperty("palette",QPalette(colour));
-	prefsOtherWidgets[CURRENTLINECOLOUR]->setProperty("autoFillBackground",true);
-
-	QObject::connect(colourButton,&QPushButton::clicked,[this]()
-		{
-			this->setLineColour();
-		});
-
-//bm highlight colour
-	posy++;
-    widgetlabel = new QLabel("Bookmark Highlight Colour:");
-	prefsOtherWidgets[BMHIGHLIGHTCOLOUR]=new QLabel("BOOKMARK");
-	prefsOtherWidgets[BMHIGHLIGHTCOLOUR]->setWhatsThis(whatIsPrefsOther[BMHIGHLIGHTCOLOUR]);
-    qobject_cast<QLabel*>(prefsOtherWidgets[BMHIGHLIGHTCOLOUR])->setFrameStyle(QFrame::Raised | QFrame::Panel);
-    QPushButton *colorButton1 = new QPushButton("Set Colour");
-	table->addWidget(widgetlabel,posy,0);
-	table->addWidget(prefsOtherWidgets[BMHIGHLIGHTCOLOUR],posy,1);
-	table->addWidget(colorButton1,posy,2);
-
-	QColor colour1=QColor(this->prefsBookmarkHiLiteColor);
-	prefsOtherWidgets[BMHIGHLIGHTCOLOUR]->setProperty("palette",QPalette(colour1));
-	prefsOtherWidgets[BMHIGHLIGHTCOLOUR]->setProperty("autoFillBackground",true);
-
-	QObject::connect(colorButton1,&QPushButton::clicked,[this]()
-		{
-			this->setBMColour();
-		});
-
 //autoshow completion
 	posy++;
 	makePrefsDial(COMPLETIONSIZE,"Completion Minimum Word Size:",this->autoShowMinChars,2,20,posy);
@@ -361,6 +291,7 @@ void KKEditClass::buildPrefsWindow(void)
 	//table->addItem(space,posy,0,100,-1);
 	//table->addSpacerItem(space);QGridLayout
 	table->setColumnStretch(1,2);
+	table->setRowStretch(posy,1);
 	tab->setLayout(table);
 
 	prefsnotebook->addTab(tab,"Text Style");
@@ -822,7 +753,6 @@ void KKEditClass::buildMainGui(void)
 	MenuItemClass	*menuItemSink;
 
 	this->mainNotebook=new NoteBookClass(this);
-//this->mainNotebook->setStyleSheet(QString("QTabBar::tab {width: 256;}"));//TODO//
 	this->mainNotebook->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	QObject::connect(this->mainNotebook,&QTabWidget::customContextMenuRequested,[this](const QPoint &pos)
@@ -991,47 +921,6 @@ void KKEditClass::buildMainGui(void)
 //view menu
 	this->viewMenu=new QMenu("&View",this->menuBar);
 	this->menuBar->addMenu(this->viewMenu);
-
-	if(this->verySafeFlag==false)
-		{
-			QMenu		*thememenu;
-			thememenu=new QMenu("Theme",this->viewMenu);
-			this->viewMenu->addMenu(thememenu);
-//local
-			{
-				QDir				languagesDir(QString("%1/themes/").arg(this->homeDataFolder));
-				QDirIterator		it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
-				while (it.hasNext())
-					{
-						QString s=it.next();
-						QAction *menuitem=new QAction(QFileInfo(s).baseName(),this->menuBar);
-						thememenu->addAction(menuitem);
-						QObject::connect(menuitem,&QAction::triggered,[this,s]()
-							{
-								this->prefStyleNameHold=QFileInfo(s).baseName();
-								this->theme->loadTheme(this->prefStyleNameHold);
-								this->resetAllFilePrefs();
-							});
-					}
-			}
-//global
-			{
-				QDir				languagesDir(QString("%1/themes/").arg(DATADIR));
-				QDirIterator		it(languagesDir.canonicalPath(),QStringList("*.json"), QDir::Files,QDirIterator::Subdirectories);
-				while (it.hasNext())
-					{
-						QString s=it.next();
-						QAction *menuitem=new QAction(QFileInfo(s).baseName(),this->menuBar);
-						thememenu->addAction(menuitem);
-						QObject::connect(menuitem,&QAction::triggered,[this,s]()
-							{
-								this->prefStyleNameHold=QFileInfo(s).baseName();
-								this->theme->loadTheme(this->prefStyleNameHold);
-								this->resetAllFilePrefs();
-							});
-					}
-			}
-		}
 
 //toggle toolbar bar
 	if(this->toolbarVisible)
@@ -1528,6 +1417,8 @@ bool KKEditClass::openFileDialog(void)
 
 	if(chooser.valid==false)
 		return(false);
+	this->openFromDialog=true;
+
 	if(chooser.multiFileList.count()>0)
 		{
 			for(int j=0;j<chooser.multiFileList.count();j++)

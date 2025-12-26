@@ -19,9 +19,7 @@ else
 	. ./toolspath
 fi
 
-BUILDLANGPLUGS=${BUILDLANGPLUGS:-1}
 BUILDPLUGS=${BUILDPLUGS:-1}
-BUILDTOOLKITPLUGS=${BUILDTOOLKITPLUGS:-1}
 
 export LOCAL=${LOCAL:-0}
 
@@ -33,9 +31,7 @@ export MAXJOBS
 export INSTALLTO
 
 if [[ "$1" = "clean" ]];then
-	find KKEditQT/langplugins -type d -iname "build" -exec rm -rf '{}' \; 2>/dev/null
 	find KKEditQT/plugins -type d -iname "build" -exec rm -rf '{}' \; 2>/dev/null
-	find KKEditQT/toolkitplugins -type d -iname "build" -exec rm -rf '{}' \; 2>/dev/null
 	exit 0
 fi
 
@@ -86,24 +82,6 @@ buildPlug ()
 	esac
 }
 
-if [ $BUILDLANGPLUGS -eq 1 ];then
-	pushd KKEditQT/langplugins &>/dev/null
-		if [ "X$1" = "Xsingle" ];then
-			pushd "$2" &>/dev/null
-				LOCAL=1 buildPlug "install"
-			popd &>/dev/null
-		else
-			while read
-				do
-					pushd $(dirname $REPLY) &>/dev/null
-						waitforjobs $MAXJOBS
-						( buildPlug "$1" "$2" ) &
-					popd &>/dev/null
-				done < <(find -maxdepth 2 -iname "*.pro")
-		fi
-	popd
-fi
-
 if [ $BUILDPLUGS -eq 1 ];then
 	pushd KKEditQT/plugins &>/dev/null
 		if [ "X$1" = "Xsingle" ];then
@@ -122,22 +100,3 @@ if [ $BUILDPLUGS -eq 1 ];then
 		fi
 	popd
 fi
-
-if [ $BUILDTOOLKITPLUGS -eq 1 ];then
-	pushd KKEditQT/toolkitplugins &>/dev/null
-		if [ "X$1" = "Xsingle" ];then
-			pushd "$2" &>/dev/null
-				LOCAL=1 buildPlug "install"
-			popd &>/dev/null
-		else
-			while read
-				do
-					pushd $(dirname $REPLY) &>/dev/null
-						waitforjobs $MAXJOBS
-						( buildPlug "$1" "$2" ) &
-					popd &>/dev/null
-				done < <(find -maxdepth 2 -iname "*.pro")
-		fi
-	popd
-fi
-

@@ -1,0 +1,219 @@
+{
+    "editor-colors": {
+        "BackgroundColor": "#AED8E5",
+        "BracketMatching": "#4219F3",
+        "CodeFolding": "#363c4a",
+        "CurrentLine": "#20000000",
+        "CurrentLineNumber": "#4C9AFE",
+        "IconBorder": "#282c34",
+        "IndentationLine": "#3a3f44",
+        "LineNumbers": "#4c9afe",
+        "MarkBookmark": "#40003FF5",
+        "MarkBreakpointActive": "#8b0607",
+        "MarkBreakpointDisabled": "#820683",
+        "MarkBreakpointReached": "#6d6e07",
+        "MarkError": "#c24038",
+        "MarkExecution": "#4d4e50",
+        "MarkWarning": "#d19a66",
+        "ModifiedLines": "#e06c75",
+        "ReplaceHighlight": "#a34f56",
+        "SavedLines": "#98c379",
+        "SearchHighlight": "#405a2213",
+        "Separator": "#3f4347",
+        "SpellChecking": "#c24038",
+        "TabMarker": "#21252B",
+        "TemplateBackground": "#31363b",
+        "TemplateFocusedPlaceholder": "#123723",
+        "TemplatePlaceholder": "#123723",
+        "TemplateReadOnlyPlaceholder": "#4d1f24",
+        "TextSelection": "#4219F3",
+        "WordWrapMarker": "#3a3f44"
+    },
+    "metadata": {
+        "copyright": [
+            "SPDX-FileCopyrightText: 2025 K. D. Hedger. <kdhedger68713@gmail.com>"
+        ],
+        "license": "SPDX-License-Identifier: GPL-3.0",
+        "name": "Winter",
+        "revision": 10
+    },
+    "text-styles": {
+        "Alert": {
+            "background-color": "#4d1f24",
+            "bold": true,
+            "selected-text-color": "#95da4c",
+            "text-color": "#ff0000"
+        },
+        "Annotation": {
+            "selected-text-color": "#98c379",
+            "text-color": "#00ffff"
+        },
+        "Attribute": {
+            "selected-text-color": "#c678dd",
+            "text-color": "#ffff00"
+        },
+        "BaseN": {
+            	"_comment":"hex etc",
+           "selected-text-color": "#d19a66",
+            "text-color": "#8C8C8C",
+           "bold":true
+        },
+        "BuiltIn": {
+            	"_comment":"builtins  decs dont work",
+            "selected-text-color": "#ffffff",
+            "text-color": "#183DF6",
+            "bold":true
+        },
+        "Char": {
+        		"_comment_":"strings",
+            "selected-text-color": "#98c379",
+            "text-color": "#AD0400"
+        },
+        "Comment": {
+        		"_comment_":"comments",
+            "selected-text-color": "#5c6370",
+            "text-color": "#0036C6"
+        },
+        "CommentVar": {
+            "italic": true,
+            "selected-text-color": "#e06c75",
+            "text-color": "#0036C6"
+        },
+        "Constant": {
+        		"_comment_":"dec number",
+            "selected-text-color": "#d19a66",
+            "text-color": "#a2160d",
+             "bold":true
+       },
+        "ControlFlow": {
+         	"_comment":"if while etc",
+           "selected-text-color": "#c678dd",
+            "text-color": "#183DF6",
+             "bold":true
+         
+        },
+        "DataType": {
+         	"_comment":"types int void",
+           "selected-text-color": "#c678dd",
+            "text-color": "#376BF2",
+            "bold":true
+        },
+        "DecVal": {
+         		"_comment_":"dec number",
+           "selected-text-color": "#d19a66",
+            "text-color": "#8C8C8C",
+            "bold":true
+        },
+        "Documentation": {
+            "selected-text-color": "#da4453",
+            "text-color": "#a43340"
+        },
+        "Error": {
+            "selected-text-color": "#f44747",
+            "text-color": "#f44747",
+            "underline": true
+        },
+        "Extension": {
+          	"_comment":"lang stuff QString etc",
+           "bold": true,
+            "selected-text-color": "#61afef",
+            "text-color": "#a10a00"
+        },
+        "Float": {
+         		"_comment_":"dec float number",
+            "selected-text-color": "#d19a66",
+            "text-color": "#8C8C8C",
+           "bold":true
+       },
+        "Function": {
+          	"_comment":"function decs dont work",
+           "selected-text-color": "#404040",
+            "text-color": "#0000FE",
+            "bold": false
+        },
+        "Import": {
+         	"_comment":"imports ansd #include string",
+           "selected-text-color": "#98c379",
+            "text-color": "#AD0400",
+            "bold": false
+        },
+        "Information": {
+            "selected-text-color": "#e46700",
+            "text-color": "#000000"
+        },
+        "Keyword": {
+            "selected-text-color": "#c678dd",
+            "text-color": "#183DF6",
+            "bold": true
+       },
+        "Normal": {
+        	"_comment":"normal text",
+            "selected-text-color": "#abb2bf",
+            "text-color": "#4219F3"
+        },
+        "Operator": {
+          	"_comment":"ops == etc",
+           "selected-text-color": "#c678dd",
+            "text-color": "#4219F3"
+        },
+        "Others": {
+            "selected-text-color": "#27ae60",
+            "text-color": "#0000ff"
+        },
+        "Preprocessor": {
+         	"_comment":"#includes etc",
+           "selected-text-color": "#c678dd",
+            "text-color": "#8F24D2",
+           "bold": false
+        },
+        "RegionMarker": {
+            "background-color": "#153042",
+            "selected-text-color": "#3daee9",
+            "text-color": "#00ffff"
+        },
+        "SpecialChar": {
+        		"_comment_":"strings",
+           "selected-text-color": "#56b6c2",
+            "text-color": "#AD0400"
+        },
+        "SpecialString": {
+        		"_comment_":"strings",
+           "selected-text-color": "#da4453",
+            "text-color": "#AD0400"
+        },
+        "String": {
+        		"_comment_":"strings",
+           "selected-text-color": "#00ffff",
+            "text-color": "#AD0400"
+        },
+        "Variable": {
+          		"_comment_":"vars dont work",
+          "selected-text-color": "#e06c75",
+            "text-color": "#1C29A6",
+            "bold": true
+        },
+        "VerbatimString": {
+            "selected-text-color": "#da4453",
+            "text-color": "#AD0400"
+        },
+        "Warning": {
+            "selected-text-color": "#da4453",
+            "text-color": "#ff0000"
+        }
+    },
+    "custom-styles": {
+    "ISO C++": {
+        "Standard Classes": {
+         		"_comment_":"std::string etc",
+           "selected-text-color": "#000000",
+           "text-color": "#5A2213",
+             "bold": true
+      },
+        "Type Modifiers": {
+            "bold": true,
+            "selected-text-color": "#000000",
+            "text-color": "#5A2213"
+        }
+    }
+}
+}

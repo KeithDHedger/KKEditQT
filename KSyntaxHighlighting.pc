@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: KSyntaxHighlighting
+Description: KSyntaxHighlighting
+Version: 6.20.0
+Libs: -lKF6SyntaxHighlighting
+Cflags: -I${includedir}/KF6 -I${includedir}/KF6/KSyntaxHighlighting -I${includedir}

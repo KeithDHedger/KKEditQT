@@ -3,6 +3,7 @@ CONFIG         += plugin
 QT             += widgets printsupport
 HEADERS         = OpenUri.h
 SOURCES         = OpenUri.cpp
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
 TARGET          = $$qtLibraryTarget(OpenUri)
 DESTDIR         = plugins
 
