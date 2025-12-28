@@ -407,7 +407,6 @@ bool KKEditClass::possibleNonText(QString filepath)
 			str=QString::fromUtf8(buffer);
 			for(int j=0;j<str.length();j++)
 				{
-					//if(!((str.at(j).isPrint()==true) || (str.at(j)=="\n") || (str.at(j)=="\r") || (str.at(j)=="\t")))
 					if(!((str.at(j).isPrint()==true) || (str.at(j).isSpace()==true)))
 						{
 							qDebug()<<"bad char"<<str.at(j);//TODO//force open dialog
@@ -531,5 +530,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	if(this->sessionBusy==false)
 		this->activateMainWindow();
 
+	doc->makeClean();
 	return(retval);
 }

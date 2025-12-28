@@ -65,8 +65,7 @@ class KKEditClass : public QObject
 		bool							sessionBusy=false;
 		bool							mouseVisible=true;
 
-		tabMenuStruct				tabContextMenuItems[TABCONTEXTMENUCNT]={{COPYFOLDERPATH,"Copy Folder Path","edit-copy"},{COPYFILEPATH,"Copy File Path","edit-copy"},{COPYFILENAME,"Copy File Name","edit-copy"},{SPELLCHECKDOC,"Spellcheck Document","tools-check-spelling"},{SRCHILTIE,"Source Hilighting","text-x-script"},{HIDETAB,"Hide Tab","list-remove"},{LOCKCONTENTS,"Lock Contents","emblem-readonly"},{OPENFROMHERE,"Open From Here","document-open"}};
-		const char					*srcMenuNames[20]={"None","C++","C","SH","Python","Go","Lua","YAML","PHP","XML","CSS","Javascript","Make",NULL};
+		tabMenuStruct				tabContextMenuItems[TABCONTEXTMENUCNT]={{COPYFOLDERPATH,"Copy Folder Path","edit-copy"},{COPYFILEPATH,"Copy File Path","edit-copy"},{COPYFILENAME,"Copy File Name","edit-copy"},{SPELLCHECKDOC,"Spellcheck Document","tools-check-spelling"},{SRCHILTIE,"Source Hilighting","text-x-script"},{THEME,"Theme","text-x-script"},{HIDETAB,"Hide Tab","list-remove"},{LOCKCONTENTS,"Lock Contents","emblem-readonly"},{OPENFROMHERE,"Open From Here","document-open"}};
 #ifdef _ASPELL_
 		AspellConfig					*aspellConfig=NULL;
 		AspellSpeller				*spellChecker=0;
@@ -132,6 +131,7 @@ class KKEditClass : public QObject
 		void							setBit(int *data,int bit);
 		void							resetBit(int *data,int bit);
 		int							getBit(int data,int bit);
+
 
 //app prefs
 //document

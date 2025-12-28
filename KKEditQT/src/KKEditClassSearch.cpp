@@ -49,11 +49,12 @@ void KKEditClass::doFindButton(QPushButton *btn)
 			if(document!=NULL)
 				document->setHighlightAll();
 		}
+	this->setToolbarSensitive();
 }
 
 void KKEditClass::doFindReplace(int response_id)
 {
-	bool				retval;
+	bool				retval=false;
 	DocumentClass	*doc=this->getDocumentForTab(this->currentTab);
 
 	if(doc==NULL)
@@ -128,7 +129,7 @@ void KKEditClass::doFindReplace(int response_id)
 					if(retval==true)
 						{
 							this->setTabVisibilty(this->currentTab,true);
-							return;;
+							return;
 						}
 				}
 		}

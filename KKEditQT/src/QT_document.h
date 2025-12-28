@@ -73,6 +73,9 @@ class DocumentClass : public QPlainTextEdit
 		void								refreshFromDisk(void);
 		void								setTabColourType(int type);
 
+		void								makeDirty(void);
+		void								makeClean(void);
+
 //pageStruct
 		QString							fileName;
 		QString							filePath;

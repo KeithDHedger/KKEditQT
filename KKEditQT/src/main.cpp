@@ -36,9 +36,6 @@ int main (int argc, char **argv)
 	QDir				commsDir;
 	QApplication		*napp=new QApplication(argc,argv);
 
-	//system("touch /tmp/log");
-	//system("echo 'started...' >> /tmp/log");
-
 	napp->setOrganizationName("KDHedger");
 	napp->setApplicationName("KKEditQT");
 	QIcon::setFallbackThemeName("gnome");
@@ -83,7 +80,7 @@ int main (int argc, char **argv)
 
 	if(kkedit->parser.isSet("multi"))
 		{
-kkedit->sessionBusy=true;
+			kkedit->sessionBusy=true;
 			kkedit->queueID=siapp->queueID;
 			kkedit->sessionID=siapp->key;
 			kkedit->forceDefaultGeom=!siapp->isOnX11;
@@ -100,9 +97,10 @@ kkedit->sessionBusy=true;
 			kkedit->checkMessages->setSingleShot(true);
 			kkedit->checkMessages->start(kkedit->prefsMsgTimer);
 
-	kkedit->sessionBusy=false;
-		status=kkedit->application->exec();
+			kkedit->sessionBusy=false;
+kkedit->setToolbarSensitive();
 
+			status=kkedit->application->exec();
 			delete kkedit;
 			delete siapp;
 			return(status);

@@ -281,13 +281,11 @@ void KKEditClass::switchPage(int index)
 	if(this->sessionBusy==true)
 		return;
 
-	//doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(index));
 	doc=(DocumentClass*)this->mainNotebook->widget(index);
 	if(doc==0)
 		return;
 	if(doc==NULL)
 		return;
-//	doc->dirty=false;
 
 	this->mainWindow->setWindowTitle("KKEditQT - "+doc->getFileName());
 	doc->setStatusBarText();
@@ -313,8 +311,6 @@ void KKEditClass::switchPage(int index)
 	pd.userStrData2=currentFilename;
 	pd.userStrData3=doc->getDirPath();
 	this->runAllPlugs(pd);
-//		doc->dirty=false;
-
 }
 
 void KKEditClass::rebuildBookMarkMenu()
@@ -629,7 +625,7 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 		{
 			this->mainNotebook->tabBar()->setCurrentIndex(tabIndex);
 			QMenu	menu(this->mainNotebook);
-			QMenu	srcmenu(this->tabContextMenuItems[(SRCHILTIE-COPYFOLDERPATH)/0x100].label);
+			//QMenu	srcmenu(this->tabContextMenuItems[(SRCHILTIE-COPYFOLDERPATH)/0x100].label);
 			QMenu	filemenu(this->tabContextMenuItems[(OPENFROMHERE-COPYFOLDERPATH)/0x100].label);
 			for(int cnt=0;cnt<TABCONTEXTMENUCNT;cnt++)
 				{
@@ -663,7 +659,11 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 									const QString defname=action->data().toString();
 									doc->setHiliteLanguage(defname);
 								});
+							continue;
+						}
 
+					if(cnt==(SRCHILTIE-COPYFOLDERPATH)/0x100)
+						{
 //theme selection
 							QActionGroup *themeGroup=new QActionGroup(&menu);
 							themeGroup->setExclusive(true);

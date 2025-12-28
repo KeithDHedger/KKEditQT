@@ -173,6 +173,22 @@ void DocumentClass::updateLineNumberAreaWidth(int newcnt)
 	this->oldBlockCount=newcnt;
 }
 
+void DocumentClass::makeDirty()
+{
+	this->dirty=true;
+	this->realChange=true;
+	this->state=DIRTYTAB;
+	this->setTabColourType(this->state);
+}
+
+void DocumentClass::makeClean()
+{
+	this->dirty=false;
+	this->realChange=false;
+	this->state=NORMALTAB;
+	this->setTabColourType(this->state);
+}
+
 void DocumentClass::modified()
 {
 	if((this->mainKKEditClass->sessionBusy==true) || (this->dirty==false))
@@ -663,6 +679,7 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	this->updateLineNumberAreaWidth(this->oldBlockCount);
 	this->highlightCurrentLine();
 	this->setMouseTracking(true);
+	this->makeClean();
 }
 
 void DocumentClass::setFileName(const QString filename)
@@ -1200,6 +1217,7 @@ bool DocumentClass::findStr(int what)
 	QRegularExpressionMatchIterator	it;
 	QRegularExpressionMatch			match;
 	QTextCursor						thiscursor;
+	bool								didreplace=false;
 
 	this->mainKKEditClass->setSearchPrefs();
 	doctext=this->toPlainText();
@@ -1214,7 +1232,9 @@ bool DocumentClass::findStr(int what)
 
 	if((this->mainKKEditClass->replaceAll==true) && (what==FINDREPLACE))
 		{
-			this->totalMatches=doctext.count(pattern);
+			if(doctext.count(pattern)==0)
+				return(false);
+			this->totalMatches=doctext.count(pattern);			
 			doctext.replace(pattern,this->mainKKEditClass->correctedReplace);
 			thiscursor=this->textCursor();
 			thiscursor.beginEditBlock();
@@ -1222,13 +1242,15 @@ bool DocumentClass::findStr(int what)
 				thiscursor.removeSelectedText();
 				thiscursor.insertText(doctext);
 			thiscursor.endEditBlock();
+			this->makeDirty();
 			this->mainKKEditClass->statusText->setText(QString("Replaced %1 occurences ...").arg(this->totalMatches));
-			return(true);
+			return(didreplace);
 		}
 
 	if(what==FINDREPLACE)
 		{
 			QString	selection;
+			didreplace=false;
 			thiscursor=this->textCursor();
 			if(thiscursor.hasSelection()==true)
 				{
@@ -1243,14 +1265,17 @@ bool DocumentClass::findStr(int what)
 								thiscursor.insertText(selection);
 							thiscursor.endEditBlock();
 							doctext=this->toPlainText();
+							didreplace=true;
+							this->makeDirty();
 						}
 					if(this->mainKKEditClass->findAfterReplace==false)
-						return(true);
+						return(didreplace);
 				}
 		}
 
 	if(this->mainKKEditClass->searchBack==false)
 		{
+			didreplace=false;
 			it=pattern.globalMatch(doctext,(qsizetype)this->searchPos);
 			if(it.hasNext())
 				{

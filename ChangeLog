@@ -1,4 +1,6 @@
 2.1.0
+Fixed pages marked erroneously as dirty when doinf multi file find/replace.
+Fixed setting toolbar/menus sensitive after doing find/replace.
 Added custom root theme.
 Fixed enabling save after redoall/undoall.
 Added reload theme to tab->theme context menu.
