@@ -84,7 +84,6 @@ class DocumentClass : public QPlainTextEdit
 		bool								doneHighlightAll;
 		char								*lastFind;
 		bool								dirty=false;
-		bool								realChange=false;
 		QString							mimeType="text/plain";
 		bool								gotUndo=false;
 		bool								gotRedo=false;

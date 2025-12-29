@@ -683,7 +683,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 				if(document!=NULL)
 					{
 						document->dirty=true;
-						document->realChange=true;
 						document->undo();
 					}
 				break;
@@ -691,7 +690,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 				if(document!=NULL)
 					{
 						document->dirty=true;
-						document->realChange=true;
 						document->redo();
 					}
 				break;
@@ -700,7 +698,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 					while(document->document()->availableUndoSteps()>0)
 						{
 							document->dirty=true;
-							document->realChange=true;
 							document->undo();
 						}
 				break;
@@ -710,7 +707,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 						while(document->document()->availableRedoSteps()>0)
 							{
 								document->dirty=true;
-								document->realChange=true;
 								document->redo();
 							}
 					}
@@ -725,7 +721,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 						if(document->textCursor().hasSelection()==true)
 							{
 								document->dirty=true;
-								document->realChange=true;
 								document->cut();
 								cursor.endEditBlock();
 								break;
@@ -737,7 +732,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 								for(int j=0;j<document->verticalSelectMatch.count();j++)
 									{
 										document->dirty=true;
-										document->realChange=true;
 										QTextCursor tc=document->verticalSelectMatch.at(j).cursor;
 										tc.removeSelectedText();
 									}
@@ -780,7 +774,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 								for(int j=0;j<strings.count();j++)
 									{
 										document->dirty=true;
-										document->realChange=true;
 										block=document->document()->findBlockByNumber(bn);
 										QTextCursor	cursor1(block);
 
@@ -801,7 +794,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 							}
 						cursor.endEditBlock();
 						document->dirty=true;
-						document->realChange=true;
 					}
 				break;
 
@@ -809,7 +801,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 				if(document!=NULL)
 					{
 						document->dirty=true;
-						document->realChange=true;
 						document->paste();
 					}
 				break;
@@ -825,7 +816,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 							if(cursor.hasSelection()==true)
 								{
 									document->dirty=true;
-									document->realChange=true;
 									cursor.removeSelectedText();
 									cursor.endEditBlock();
 									break;
@@ -837,7 +827,6 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 									for(int j=0;j<document->verticalSelectMatch.count();j++)
 										{
 											document->dirty=true;
-											document->realChange=true;
 											QTextCursor tc=document->verticalSelectMatch.at(j).cursor;
 											tc.removeSelectedText();
 										}
@@ -1781,13 +1770,16 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 									if(doc->fromMe==false)
 										{
 											doc->fromMe=true;
-											if(this->prefsNoWarnings==false)
+											if((this->prefsNoWarnings==false) || (doc->dirty==true))
 												{
 													QMessageBox msgBox;
 													int			retval;
 
 													msgBox.setIcon(QMessageBox::Warning);
-													msgBox.setText(doc->getFilePath()+" has been modified on disk");
+													if(doc->dirty==true)
+														msgBox.setText(doc->getFilePath()+" has been modified on disk AND has been modified in the editor");
+													else
+														msgBox.setText(doc->getFilePath()+" has been modified on disk");
 													msgBox.setInformativeText("Do you want to refresh document from disk?");
 													msgBox.setStandardButtons(QMessageBox::Apply | QMessageBox::Ignore);
 													msgBox.setDefaultButton(QMessageBox::Apply);
@@ -1796,15 +1788,13 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 														{
 															doc->refreshFromDisk();
 															doc->modifiedOnDisk=false;
-															doc->dirty=false;
+															doc->makeClean();
 															doc->fromMe=false;
-															doc->state=NORMALTAB;
 														}
 													else
 														{
 															doc->modifiedOnDisk=true;
-															doc->dirty=true;
-															this->setToolbarSensitive();
+															doc->makeDirty();
 															doc->state=IGNORECHANGEDONDISKTAB;
 														}
 												}
@@ -1813,7 +1803,7 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 													doc->refreshFromDisk();
 													doc->fromMe=false;
 													doc->modifiedOnDisk=false;
-													doc->dirty=false;
+													doc->makeClean();
 													doc->state=CHANGEDONDISKTAB;
 												}
 										}

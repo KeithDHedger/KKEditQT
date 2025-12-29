@@ -176,7 +176,6 @@ void DocumentClass::updateLineNumberAreaWidth(int newcnt)
 void DocumentClass::makeDirty()
 {
 	this->dirty=true;
-	this->realChange=true;
 	this->state=DIRTYTAB;
 	this->setTabColourType(this->state);
 }
@@ -184,7 +183,6 @@ void DocumentClass::makeDirty()
 void DocumentClass::makeClean()
 {
 	this->dirty=false;
-	this->realChange=false;
 	this->state=NORMALTAB;
 	this->setTabColourType(this->state);
 }
@@ -449,7 +447,7 @@ void DocumentClass::mousePressEvent(QMouseEvent *event)
 		this->verticalSelectMatch.clear();
 
 	if((event->buttons() & Qt::MiddleButton)==Qt::MiddleButton)
-		this->realChange=true;
+		this->dirty=true;
 
 	if((event->modifiers() & Qt::AltModifier)==Qt::AltModifier)
 		{
@@ -484,7 +482,6 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 		return;
 
 	this->dirty=true;
-	this->realChange=true;
 
 	if(this->mainKKEditClass->mouseVisible==true)
 		this->mainKKEditClass->setMouseState(false);
@@ -659,12 +656,8 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 		});
 	QObject::connect(this,&QPlainTextEdit::textChanged,[this]()
 		{
-			if(this->realChange==true)
-				{
-					this->dirty=true;
-					this->modified();
-					this->realChange=false;
-				}
+			if(this->dirty==true)
+				this->modified();
 		});
 
 	QObject::connect(this,&QPlainTextEdit::undoAvailable,[this](bool undo)
@@ -954,7 +947,6 @@ void DocumentClass::dropEvent(QDropEvent* event)
 {
 	this->inDrag=false;
 	this->dirty=true;
-	this->realChange=true;
 
 	if (event->mimeData()->hasUrls())
 		{
@@ -1199,7 +1191,6 @@ void DocumentClass::refreshFromDisk(void)
 				this->modifiedOnDisk=false;
 				this->state=NORMALTAB;
 				this->dirty=false;
-				this->realChange=false;
 				this->setTabColourType(NORMALTAB);
 			cursor.endEditBlock();
 		}

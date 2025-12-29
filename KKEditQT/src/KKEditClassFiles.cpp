@@ -134,7 +134,6 @@ void KKEditClass::newFile(const QString data,const QString filename)
 	this->runAllPlugs(pd);
 
 	doc->dirty=false;
-	doc->realChange=false;
 	doc->state=NORMALTAB;
 	doc->setTabColourType(doc->state);
 }

@@ -290,8 +290,8 @@ void KKEditClass::switchPage(int index)
 	this->mainWindow->setWindowTitle("KKEditQT - "+doc->getFileName());
 	doc->setStatusBarText();
 	doc->clearHilites();
-	doc->dirty=false;
-	if(doc->state==CHANGEDONDISKTAB)
+	//doc->dirty=false;
+	if((doc->state==CHANGEDONDISKTAB) && (doc->dirty==false))
 		{
 			doc->state=NORMALTAB;
 			doc->setTabColourType(NORMALTAB);

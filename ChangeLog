@@ -1,5 +1,6 @@
 2.1.0
-Fixed pages marked erroneously as dirty when doinf multi file find/replace.
+Now show dialog when file has been changed on disk AND in editor.
+Fixed pages marked erroneously as dirty when doing multi file find/replace.
 Fixed setting toolbar/menus sensitive after doing find/replace.
 Added custom root theme.
 Fixed enabling save after redoall/undoall.
