@@ -3,7 +3,7 @@ CONFIG         += plugin
 QT             += widgets printsupport
 HEADERS         = HTMLTags.h
 SOURCES         = HTMLTags.cpp
-INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting ../../../src 
 TARGET          = $$qtLibraryTarget(HTMLTags)
 DESTDIR         = plugins
 

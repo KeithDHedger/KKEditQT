@@ -18,7 +18,6 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _QT_ABOUTBOX_
 #define _QT_ABOUTBOX_
 

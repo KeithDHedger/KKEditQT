@@ -470,6 +470,7 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 												else
 													document->textCursor().insertText(this->runPipeAndCapture(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str),true));						
 											document->textCursor().endEditBlock();
+											document->makeDirty();
 											break;
 
 										case TOOL_REPLACE_OP:
@@ -479,6 +480,7 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 												else
 													document->setPlainText(this->runPipeAndCapture(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str),true));
 											document->textCursor().endEditBlock();
+											document->makeDirty();
 											break;
 
 										case TOOL_VIEW_OP:
@@ -513,6 +515,7 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 					}
 			 	break;
 		}
+	this->setToolbarSensitive();
 }
 
 void KKEditClass::doHelpMenuItems(MenuItemClass *mc)

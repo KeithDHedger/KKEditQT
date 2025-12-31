@@ -3,7 +3,7 @@ CONFIG         += plugin
 QT             += widgets printsupport
 HEADERS         = SymbolsMenu.h
 SOURCES         = SymbolsMenu.cpp
-INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting ../../../src 
 TARGET          = $$qtLibraryTarget(SymbolsMenu)
 DESTDIR         = plugins
 

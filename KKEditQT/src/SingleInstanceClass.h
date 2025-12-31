@@ -18,6 +18,7 @@
  * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 #ifndef _SINGLEINSTANCECLASS_
 #define _SINGLEINSTANCECLASS_
 

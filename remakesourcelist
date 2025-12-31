@@ -11,8 +11,8 @@ fi
 if [[ $RECOMPILEHEADER -eq 1 ]];then
 	pushd KKEditQT/src
 		echo "Compiling headers ..."
-		echo g++ -c $(pkg-config --cflags Qt6Core Qt6Widgets Qt6Gui Qt6PrintSupport sqlite3) -fPIC -x  c++-header qtincs.h -o qtincs.h.gch
-		g++ -c $(pkg-config --cflags Qt6Core Qt6Widgets Qt6Gui  Qt6PrintSupport sqlite3) -fPIC -x  c++-header qtincs.h -o qtincs.h.gch
+		echo g++ -v -c $(pkg-config --cflags Qt6Core Qt6Widgets Qt6Gui Qt6PrintSupport sqlite3 ../../KSyntaxHighlighting.pc) -fPIC -x  c++-header qtincs.h -o qtincs.h.gch
+		g++ -v -c $(pkg-config --cflags Qt6Core Qt6Widgets Qt6Gui  Qt6PrintSupport sqlite3 ../../KSyntaxHighlighting.pc) -fPIC -x  c++-header qtincs.h -o qtincs.h.gch
 	popd
 fi
 

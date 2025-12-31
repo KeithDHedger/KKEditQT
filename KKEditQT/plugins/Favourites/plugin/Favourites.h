@@ -21,7 +21,7 @@
 #ifndef FAVOURITESPLUG_H
 #define FAVOURITESPLUG_H
 
-#include "../../../src/kkeditqtPluginInterface.h"
+#include "globalincludes.h"
 
 #define MAXFAVMENULEN 48
 #define MAXFAVS 32

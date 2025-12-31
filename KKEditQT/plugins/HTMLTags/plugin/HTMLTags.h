@@ -21,7 +21,7 @@
 #ifndef HTMLTAGSPLUG_H
 #define HTMLTAGSPLUG_H
 
-#include "../../../src/kkeditqtPluginInterface.h"
+#include "globalincludes.h"
 
 class HTMLTags : public QObject, kkEditQTPluginInterface
 {

@@ -2,7 +2,7 @@
 
 #©keithhedger Sat 12 Mar 19:03:19 GMT 2022 kdhedger68713@gmail.com
 
-#MAXJOBS=12 BUILDPLUGS=1 BUILDTOOLKITPLUGS=1 BUILDLANGPLUGS=1 LOCAL=1 ./buildplugs.sh install
+#MAXJOBS=12 BUILDPLUGS=1 LOCAL=1 ./buildplugs.sh install
 
 NORMAL='\e[0m'
 RED='\e[1;31m'

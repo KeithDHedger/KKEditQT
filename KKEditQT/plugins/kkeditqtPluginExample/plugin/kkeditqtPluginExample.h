@@ -21,7 +21,7 @@
 #ifndef KKEDITQTEXAMPLEPLUG_H
 #define KKEDITQTEXAMPLEPLUG_H
 
-#include "../../../src/kkeditqtPluginInterface.h"
+#include "globalincludes.h"
 
 class kkeditQTexamplePlug : public QObject, kkEditQTPluginInterface
 {

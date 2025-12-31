@@ -137,6 +137,7 @@ void docBrowserClass::createNewWindow(QString path1)
 	QSettings	prefs;
 	QRect		rg;
 	QString		path=path1;
+	QLineEdit	*le;
 
 //	if(QFileInfo(path1).exists()==false)
 //		{
@@ -190,7 +191,7 @@ void docBrowserClass::createNewWindow(QString path1)
 					if(txt.hasSelection()==true)
 						{
 							gotsel=true;
-							QAction	*copyText=menu->addAction("Copy Text");
+							QAction	*copyText=menu->addAction(QIcon::fromTheme("edit-copy"),"Copy Text");
 							QObject::connect(copyText, &QAction::triggered, [this,txt]()
 								{
 									QGuiApplication::clipboard()->setText(txt.selectedText());
@@ -200,10 +201,10 @@ void docBrowserClass::createNewWindow(QString path1)
 			        // Add custom actions
 					if(linkUrl.isValid())
 						{
-							QAction	*copyAction=menu->addAction("Copy Link Address");
+							QAction	*copyAction=menu->addAction(QIcon::fromTheme("edit-copy"),"Copy Link Address");
 
-							QAction	*openAction=menu->addAction("Open Link In External App");
-							QAction	*openInSrcAction=menu->addAction("Open Link In Source File");
+							QAction	*openAction=menu->addAction(QIcon::fromTheme("web-browser"),"Open Link In External Browser");
+							QAction	*openInSrcAction=menu->addAction(QIcon::fromTheme("text-editor"),"Open Link In Source File");
 
 							// Connect the actions
 							QObject::connect(copyAction, &QAction::triggered, [this,te,linkUrl]()
@@ -311,7 +312,7 @@ void docBrowserClass::createNewWindow(QString path1)
 				});
 
 //home
-			button=new QPushButton("&Home");
+			button=new QPushButton(QIcon::fromTheme("go-home"),"&Home");
 			QObject::connect(button,&QPushButton::clicked,[this,te]()
 				{
 					this->setToPathOrHTML(QUrl(this->homePath));
@@ -319,10 +320,9 @@ void docBrowserClass::createNewWindow(QString path1)
 					this->baseDir=this->homeDir;
 				});
 			hlayout->addWidget(button);
-			hlayout->addStretch();
 
 //back
-			button=new QPushButton("&Back");//CRAPPY!!!
+			button=new QPushButton(QIcon::fromTheme("go-previous"),"&Back");//CRAPPY!!!
 			QObject::connect(button,&QPushButton::clicked,[this,te]()
 				{
 					if(te->isBackwardAvailable()==false)
@@ -350,7 +350,7 @@ void docBrowserClass::createNewWindow(QString path1)
 			hlayout->addWidget(button);
 
 //forward
-			button=new QPushButton("&Forward");
+			button=new QPushButton(QIcon::fromTheme("go-next"),"&Forward");
 			QObject::connect(button,&QPushButton::clicked,[this,te]()
 				{
 					if(te->isForwardAvailable()==false)
@@ -372,9 +372,27 @@ void docBrowserClass::createNewWindow(QString path1)
 			hlayout->addWidget(button);
 			hlayout->addStretch();
 
+//find in page
+			le=new QLineEdit("");
+			button=new QPushButton(QIcon::fromTheme("go-up"),"&Find Prev");
+			QObject::connect(button,&QPushButton::clicked,[this,le]()
+				{
+					this->te->find(le->text(),QTextDocument::FindBackward);
+				});
+			hlayout->addWidget(button);
+
+			hlayout->addWidget(le);
+
+			button=new QPushButton(QIcon::fromTheme("go-down"),"&Find Next");
+			QObject::connect(button,&QPushButton::clicked,[this,le]()
+				{
+					this->te->find(le->text());
+				});
+			hlayout->addWidget(button);
+			hlayout->addStretch();
+
 //close
-			button=new QPushButton("&Hide");
-			button->setIcon(QIcon::fromTheme("window-close"));
+			button=new QPushButton(QIcon::fromTheme("window-close"),"&Hide");
 			QObject::connect(button,&QPushButton::clicked,[this]()
 				{
 					QSettings	prefs;

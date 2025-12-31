@@ -198,6 +198,8 @@ void DocumentClass::modified()
 		this->state=IGNORECHANGEDONDISKTAB;
 
 	this->setTabColourType(state);
+
+	this->mainKKEditClass->setToolbarSensitive();
 }
 
 void DocumentClass::setStatusBarText(void)
@@ -1191,6 +1193,7 @@ void DocumentClass::refreshFromDisk(void)
 				this->modifiedOnDisk=false;
 				this->state=NORMALTAB;
 				this->dirty=false;
+				//this->document()->clearUndoRedoStacks();
 				this->setTabColourType(NORMALTAB);
 			cursor.endEditBlock();
 		}

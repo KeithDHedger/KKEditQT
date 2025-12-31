@@ -1,4 +1,10 @@
 2.1.0
+Plugin code clean.
+Fixed setting doc dirty from html plug.
+Fixed too many undo's/redo's.
+Fixed setting doc dirty when running external tool that mods doc.
+Added icons to buttons and menu items in doc browser.
+Added find next/prev to doc browser.
 Now show dialog when file has been changed on disk AND in editor.
 Fixed pages marked erroneously as dirty when doing multi file find/replace.
 Fixed setting toolbar/menus sensitive after doing find/replace.

@@ -3,7 +3,7 @@ CONFIG         += plugin
 QT             += widgets printsupport
 HEADERS         = Clipboard.h
 SOURCES         = Clipboard.cpp
-INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting ../../../src 
 TARGET          = $$qtLibraryTarget(Clipboard)
 DESTDIR         = plugins
 

@@ -21,7 +21,7 @@
 #ifndef SYMOLSPLUG_H
 #define SYMOLSPLUG_H
 
-#include "../../../src/kkeditqtPluginInterface.h"
+#include "globalincludes.h"
 
 #define MAXCLIPMENULEN 48
 #define MAXCLIPS 32

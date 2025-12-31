@@ -21,11 +21,9 @@
 #ifndef TerminalPluginPLUG_H
 #define TerminalPluginPLUG_H
 
-#include "../../../src/kkeditqtPluginInterface.h"
-#include "../../../src/MainWindow.h"
+#include "globalincludes.h"
+#include "MainWindow.h"
 #include "QT_prefsWidgets.h"
-
-#include <QSettings>
 
 class TerminalWidget : public QWidget
 {

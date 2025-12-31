@@ -3,7 +3,7 @@ CONFIG         += plugin
 QT             += widgets printsupport
 HEADERS         = Favourites.h
 SOURCES         = Favourites.cpp
-INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting ../../../src 
 TARGET          = $$qtLibraryTarget(Favourites)
 DESTDIR         = plugins
 

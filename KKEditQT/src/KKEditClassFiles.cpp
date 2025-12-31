@@ -503,6 +503,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc->setTabColourType(doc->state);
 			doc->oldBlockCount=doc->blockCount();
 			file.close();
+			doc->document()->clearUndoRedoStacks();
 		}
 	else
 		{

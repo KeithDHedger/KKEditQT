@@ -1,8 +1,9 @@
+
+
 #ifndef _GLOBALINCS_
 #define _GLOBALINCS_
 
 #include "qtincs.h"
-
 struct pluginStruct;
 
 #define MAXMSGSIZE 4096

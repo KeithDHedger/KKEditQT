@@ -21,7 +21,7 @@
 #ifndef OPENURIPLUG_H
 #define OPENURIPLUG_H
 
-#include "../../../src/kkeditqtPluginInterface.h"
+#include "globalincludes.h"
 
 class SaveHistory : public QObject, kkEditQTPluginInterface
 {

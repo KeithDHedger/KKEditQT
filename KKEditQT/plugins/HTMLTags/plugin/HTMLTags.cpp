@@ -97,12 +97,14 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 			usingmenu->addAction(tagaction);
 			QObject::connect(tagaction,&QAction::triggered,[this,taglist,j]()
 				{
+							//this->document->dirty=true;
 					if(this->mainKKEditClass->mainNotebook->currentWidget()==NULL)
 						return;
 					if(this->document!=NULL)
 						{	
 							this->tc=this->document->textCursor();
 							this->selection=this->tc.selectedText().replace(QChar(0x2029),'\n');
+							this->document->dirty=true;
 						}
 
 					QProcess		script;
@@ -117,6 +119,7 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 						{
 							this->tc.removeSelectedText();
 							this->tc.insertText(res);
+							this->document->dirty=true;
 						}
 				});
 			this->mainKKEditClass->pluginMenu->addMenu(htmlContextMenu);
@@ -137,6 +140,7 @@ void HTMLTags::plugRun(plugData *data)
 			this->document=data->doc;
 			this->tc=data->doc->textCursor();
 			this->selection=this->tc.selectedText().replace(QChar(0x2029),'\n');
+			//data->doc->dirty=true;
 		}
 
 	switch(data->what)
