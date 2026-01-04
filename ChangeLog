@@ -1,4 +1,5 @@
 2.1.0
+Fixed setting back/fore colours in terminal plug.
 Plugin code clean.
 Fixed setting doc dirty from html plug.
 Fixed too many undo's/redo's.

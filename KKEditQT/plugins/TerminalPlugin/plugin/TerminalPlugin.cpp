@@ -59,8 +59,8 @@ void TerminalPluginPlug::addTerminal(void)
 	newdw->setVisible(false);
 
     newconsole=new TerminalWidget(QString("%1%2").arg(this->baseName).arg(this->namenum++),newdw);
-	newconsole->backCol=plugprefs.value("Back Colour","white").toString();
-	newconsole->foreCol=plugprefs.value("Fore Colour","black").toString();
+	newconsole->backCol=plugprefs.value("backcolour","white").toString();
+	newconsole->foreCol=plugprefs.value("forecolour","black").toString();
 	newconsole->plugPath=QFileInfo(this->plugPath).absolutePath();
 	newconsole->startXTerm();
 	newdw->setWidget(newconsole);
