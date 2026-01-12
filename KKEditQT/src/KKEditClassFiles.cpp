@@ -195,11 +195,18 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
 				{
+					QMimeType		type;
+					QMimeDatabase	db;
+
 					doc->setDirPath(fileinfo.canonicalPath());
 					doc->setFilePath(fileinfo.canonicalFilePath());
 					doc->setFileName(fileinfo.fileName());
 					this->mainNotebook->setTabToolTip(calctabnum,doc->getFilePath());
 					QTextStream(&file) << doc->toPlainText() << Qt::endl;
+					type=db.mimeTypeForFile(doc->getFilePath());
+					doc->mimeType=type.name();
+					doc->setHiliteLanguage(doc->mimeType,true);
+					doc->highlighter2->rehighlight();
 					doc->dirty=false;
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
 					this->recentFiles->addFilePath(doc->getFilePath());

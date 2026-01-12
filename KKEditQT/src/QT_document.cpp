@@ -881,9 +881,14 @@ void DocumentClass::setTheme(QString name)
 	this-> highlightCurrentLine();
 }
 
-void DocumentClass::setHiliteLanguage(QString name)
+void DocumentClass::setHiliteLanguage(QString name,bool nameistype)
 {
-	const KSyntaxHighlighting::Definition def=this->mainKKEditClass->repository2.definitionForName(name);
+	KSyntaxHighlighting::Definition def;
+
+	if(nameistype==false)
+		def=this->mainKKEditClass->repository2.definitionForName(name);
+	else
+		def=this->mainKKEditClass->repository2.definitionForMimeType(name);
 	this->highlighter2->setDefinition(def);
 }
 

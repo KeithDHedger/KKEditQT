@@ -1080,7 +1080,9 @@ void KKEditClass::handleMessages(void)
 						{
 							if(bar->tabText(j).compare(staticbuffer.mText)==0)
 								{
+									this->sessionBusy=false;
 									this->setTabVisibilty(j,true);
+									this->switchPage(j);
 									break;
 								}
 						}
@@ -1363,6 +1365,7 @@ void KKEditClass::handleMessages(void)
 				}
 				break;
 			case OPENFILEMSG:
+				this->sessionBusy=false;
 				this->openFile(staticbuffer.mText);
 				break;
 			case NEWFILEMSG:
@@ -1377,14 +1380,8 @@ void KKEditClass::handleMessages(void)
 					if(doc!=NULL)
 						{
 							QFile			file(staticbuffer.mText);
-							QMimeType		type;
-							QMimeDatabase	db;
 
 							this->saveFileAs(-1,staticbuffer.mText);
-							type=db.mimeTypeForFile(staticbuffer.mText);
-							doc->mimeType=type.name();
-							//doc->setHiliteLanguage();//TODO//
-							doc->highlighter2->rehighlight();
 							doc->setFilePrefs();
 							doc->dirty=false;
 							doc->setTabColourType(NORMALTAB);

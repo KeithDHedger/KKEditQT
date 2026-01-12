@@ -294,7 +294,8 @@ void TerminalPluginPlug::plugAbout(void)
 					this->mainKKEditClass->pluginPrefsWindow->hide();
 				}
 				break;
-		}}
+		}
+}
 
 void TerminalPluginPlug::plugSettings(void)
 {

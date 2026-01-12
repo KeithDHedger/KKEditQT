@@ -49,7 +49,7 @@ class DocumentClass : public QPlainTextEdit
 		int								oldBlockCount=0;
 
 		void								setTheme(QString name);
-		void								setHiliteLanguage(QString name);
+		void								setHiliteLanguage(QString name,bool nameistype=false);
 		void								lineNumberAreaPaintEvent(QPaintEvent *event);
 		int								lineNumberAreaWidth(void);
 		void								setXtraSelections(void);

@@ -1,4 +1,7 @@
 2.1.0
+Reset function menu, toolbar sensitivity etc when using "selecttabbyname" message.
+Reset syntax type on saveas.
+Rebuild function menu on open file.
 Fixed setting back/fore colours in terminal plug.
 Plugin code clean.
 Fixed setting doc dirty from html plug.
