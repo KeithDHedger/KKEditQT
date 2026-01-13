@@ -111,16 +111,16 @@ SingleInstanceClass::SingleInstanceClass(QString name,int suppliedkey)
 	this->shmKey=hashFromKey(QString("%1%2").arg(keystr).arg("sharedmem"));
 	this->shmQueueID=shmget(this->shmKey,SHAREDMEMSIZE,0);
 
+//clean up defunct shared mem.
 	if(this->shmQueueID!=-1)
 		{
 			int				maxid;
-			struct shmid_ds	dummy;
-		
-			maxid=shmctl(0,SHM_INFO,&dummy);
+			struct shmid_ds	shmseg;
+	
+			maxid=shmctl(0,SHM_INFO,&shmseg);
 			for(int j=0;j<=maxid;j++)
 				{
 					int				shmid;
-					struct shmid_ds	shmseg;
 					struct ipc_perm	*ipcp=&shmseg.shm_perm;
 
 					shmid=shmctl(j,SHM_STAT,&shmseg);
@@ -130,13 +130,16 @@ SingleInstanceClass::SingleInstanceClass(QString name,int suppliedkey)
 					//printf("Key=0x%x UID=%i Perms=%o PID=%i\n",ipcp->__key,ipcp->uid,ipcp->mode,shmseg.shm_cpid);
 					if(kill(shmseg.shm_cpid,0)!=0)
 						{
-							system(qPrintable(QString("ipcrm -M %1").arg(ipcp->__key)));
-							shmid=shmctl(j,IPC_RMID,&shmseg);
+							int id=shmget(ipcp->__key,0,0);
+							int ret=shmctl(id,IPC_RMID,NULL);
+						
+							id=msgget(ipcp->__key,0);
+							ret=msgctl(id,IPC_RMID,NULL);
 							reget=true;
 						}
 				}
-		
 		}
+
 	if(reget==true)
 		{
 			this->queueID=msgget(this->key,IPC_CREAT|0660);
