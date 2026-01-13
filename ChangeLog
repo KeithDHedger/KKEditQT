@@ -1,4 +1,6 @@
 2.1.0
+Reset function menu, toolbar sensitivity etc when using restoring session and select 1st tab is set in prefs.
+Fixed starting up in same workspace after force quit ( kill -SIGKILL pid ).
 Reset function menu, toolbar sensitivity etc when using "selecttabbyname" message.
 Reset syntax type on saveas.
 Rebuild function menu on open file.

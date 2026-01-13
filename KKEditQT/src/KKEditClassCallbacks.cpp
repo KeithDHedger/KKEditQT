@@ -198,7 +198,11 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 
 					if(in.atEnd()==true)
 						{
-							this->currentSessionNumber=sessionnumber;
+						qDebug()<<"here";
+							this->currentSessionNumber=sessionnumber;	
+							this->sessionBusy=false;
+							if(this->openFirstTabWithSession==true)
+								this->mainNotebook->setCurrentIndex(0);
 							file.close();
 							this->mainWindow->setGeometry(x,y,w,h);
 							this->rebuildTabsMenu();
@@ -240,8 +244,6 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 					this->runNoOutput(QString("echo -e quit>\"%1/session\"").arg(this->tmpFolderName));
 
 					this->currentSessionNumber=sessionnumber;
-					if(this->openFirstTabWithSession==true)
-						this->mainNotebook->setCurrentIndex(0);
 					file.close();
 					this->mainWindow->setGeometry(x,y,w,h);
 //plugins
@@ -260,17 +262,23 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 				}
 		
 
-	this->sessionBusy=false;
-	this->setCompWordList();
-	for(int j=this->mainNotebook->count()-1;j>-1;j--)
-		{
-			if(this->mainNotebook->isTabVisible(j)==true)
+			this->sessionBusy=false;
+			this->setCompWordList();
+			for(int j=this->mainNotebook->count()-1;j>-1;j--)
 				{
-					this->switchPage(j);
-					break;
+					if(this->mainNotebook->isTabVisible(j)==true)
+						{
+							this->mainNotebook->setCurrentIndex(0);
+							this->switchPage(j);
+							break;
+						}
+				}
+			if(this->openFirstTabWithSession==true)
+				{
+					this->switchPage(0);
 				}
 		}
-		}
+
 	this->rebuildTabsMenu();
 	this->setToolbarSensitive();
 	this->mainWindow->repaint();
@@ -1401,6 +1409,7 @@ void KKEditClass::handleMessages(void)
 				emit this->saveCurrentSessionMenuItem->triggered();
 				break;
 			case RESTORESESSIONMSG:
+				//this->sessionBusy=false;
 				if(QString(staticbuffer.mText).compare("autosave",Qt::CaseInsensitive)==0)
 					{
 						emit this->restoreDefaultSessionMenuItem->triggered();

@@ -104,9 +104,7 @@ void KKEditClass::handleSignal(int signum)
 	switch(signum)
 		{
 			case SIGUSR1:
-				//this->checkMessages->stop();
 				this->doTimer();
-				//this->checkMessages->start();
 				break;
 			case SIGTERM:
 			case SIGINT:
@@ -261,12 +259,6 @@ void KKEditClass::setUpToolBar(void)
     							hbox->addStretch(1);
     							widg->setLayout(hbox);
     							this->toolBar->addWidget(widg);
-
-//							QHBoxLayout hbox;
-//							QWidget		*widg=new QWidget(this->toolBar);
-//    							hbox.addStretch(1);
-//    							widg->setLayout(hbox);
-//    							this->toolBar->addWidget(widg);
     						}
 						break;
 				}
@@ -1072,10 +1064,10 @@ void KKEditClass::shutDownApp()
 //			delete_aspell_speller(this->spellChecker);
 //#endif
 		}
-					plugData pd;
-					pd.what=DOSHUTDOWN;
-					this->runAllPlugs(pd);
-			QApplication::quit();
+	plugData pd;
+	pd.what=DOSHUTDOWN;
+	this->runAllPlugs(pd);
+	QApplication::quit();
 }
 
 QString KKEditClass::truncateWithElipses(const QString str,int maxlen)
