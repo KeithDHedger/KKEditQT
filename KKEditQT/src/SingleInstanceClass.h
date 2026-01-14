@@ -23,6 +23,12 @@
 #define _SINGLEINSTANCECLASS_
 
 #include "globalincludes.h"
+#include <QSharedMemory>
+#include <QDataStream>
+#include <QString>
+#include <QBuffer>
+#include <QDebug>
+#include <QNativeIpcKey>
 
 #define SHAREDMEMSIZE 128
 
