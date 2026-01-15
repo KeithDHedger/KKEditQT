@@ -1,4 +1,5 @@
 2.1.0
+Startup code tweaks.
 Code clean.
 Reset function menu, toolbar sensitivity etc when using restoring session and select 1st tab is set in prefs.
 Fixed starting up in same workspace after force quit ( kill -SIGKILL pid ).

@@ -76,6 +76,8 @@ unsigned long SingleInstanceClass::hashFromKey(QString key)
 
 	return(hash);
 }
+#include <QNativeIpcKey>
+#include <QSharedMemory>
 
 SingleInstanceClass::SingleInstanceClass(QString name,int suppliedkey)
 {
@@ -129,19 +131,11 @@ SingleInstanceClass::SingleInstanceClass(QString name,int suppliedkey)
 						continue;
 
 					//printf("Key=0x%x UID=%i Perms=%o PID=%i Size=%i\n\n",ipcp->__key,ipcp->uid,ipcp->mode,shmseg.shm_cpid,shmseg.shm_segsz);
-					shmidint=shmget(ipcp->__key, SHAREDMEMSIZE,0666);
+					shmidint=shmget(ipcp->__key,SHAREDMEMSIZE,0666);
 					char *shared_memory=(char*)shmat(shmidint,NULL,0);
-					char *shared_memorycopy=strdup(shared_memory);
-					char *line=strtok(shared_memorycopy,"\n"); // Split by newline
-					while(line != NULL)
-						{
-							if(strcmp(line,"KKEditOrKKTerminal")==0)
-								ismine=true;
-       						// printf("%s\n", line); // Print the line
-       						line=strtok(NULL,"\n"); // Get the next line
-						}
-					shmdt(shared_memory);
-					free(shared_memorycopy);
+					QString s(shared_memory);
+					if(s.contains("\nKKEditOrKKTerminal\n")==true)
+						ismine=true;
 
 					if((ismine==true) && (kill(shmseg.shm_cpid,0)!=0))
 						{
