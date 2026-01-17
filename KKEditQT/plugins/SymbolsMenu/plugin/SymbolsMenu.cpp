@@ -44,7 +44,7 @@ void SymbolsMenuPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 			while(in.atEnd()==false)
 				{
 					menustring=in.readLine();
-					submenu=new QMenu(menustring.left(menustring.indexOf("<<--")));
+					submenu=new QMenu(menustring.left(menustring.indexOf("<<--")),this->symbolMenu);
 					this->symbolMenu->addMenu(submenu);
 
 					QTextBoundaryFinder bf2(QTextBoundaryFinder::Grapheme,menustring);
@@ -55,7 +55,7 @@ void SymbolsMenuPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 							int	dne=bf2.toNextBoundary();
 							if(dne!=-1)
 								{
-									symact=new  QAction(QString(menustring.mid(st,dne-st)));
+									symact=new  QAction(QString(menustring.mid(st,dne-st)),submenu);
 									symact->setObjectName(QString(menustring.mid(st,dne-st)));
 									submenu->addAction(symact);
 									QObject::connect(symact,&QAction::triggered,[this,symact]()

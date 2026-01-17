@@ -27,7 +27,7 @@ MenuItemClass::~MenuItemClass()
 {
 }
 
-MenuItemClass::MenuItemClass(const QString &text, QWidget *parent): QAction(parent)
+MenuItemClass::MenuItemClass(const QString &text, QObject *parent): QAction(parent)
 {
 	this->menuID=0;
 	this->menuString=nullptr;

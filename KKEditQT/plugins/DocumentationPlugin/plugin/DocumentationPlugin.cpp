@@ -686,7 +686,7 @@ void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)
 		{
 			if(this->resList.at(j+SHOWITEM).compare("show")==0)
 				{
-					QAction	*menuitem=new QAction(this->resList.at(j+MENUNAME));
+					QAction	*menuitem=new QAction(this->resList.at(j+MENUNAME),this->apiMenu);
 					this->apiMenu->addAction(menuitem);
 					QObject::connect(menuitem,&QAction::triggered,[this,j]()
 						{
@@ -696,14 +696,14 @@ void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)
 		}
 
 	this->apiMenu->addSeparator();
-	QAction	*menuitem=new QAction("Run All Searches");
+	QAction	*menuitem=new QAction("Run All Searches",this->apiMenu);
 	this->apiMenu->addAction(menuitem);
 	QObject::connect(menuitem,&QAction::triggered,[this]()
 		{
 			this->runAllSearchs();
 		});
 
-	menuitem=new QAction("Find In Documentation");
+	menuitem=new QAction("Find In Documentation",this->apiMenu);
 	this->apiMenu->addAction(menuitem);
 	QObject::connect(menuitem,&QAction::triggered,[this]()
 		{
@@ -713,7 +713,7 @@ void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)
 	if(this->customCommand.isEmpty()==false)
 		{
 			this->apiMenu->addSeparator();
-			this->customCommandMenu=new QAction("Custom Command");
+			this->customCommandMenu=new QAction("Custom Command",this->apiMenu);
 			this->apiMenu->addAction(this->customCommandMenu);
 			QObject::connect(this->customCommandMenu,&QAction::triggered,[this]()
 				{

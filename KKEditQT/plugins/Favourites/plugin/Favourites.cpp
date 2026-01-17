@@ -48,7 +48,7 @@ void FavouritesPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->favouritesMenu->setIcon(QIcon(QString("%1/Favorite.png").arg(QFileInfo(pathtoplug).absolutePath())));
 	this->mainKKEditClass->pluginMenu->addMenu(favouritesMenu);
 
-	adddoc=new QAction(QString("Add Current Document"));
+	adddoc=new QAction(QString("Add Current Document"),this->favouritesMenu);
 	this->favouritesMenu->addAction(adddoc);
 	QObject::connect(adddoc,&QAction::triggered,[this]()
 		{
@@ -60,7 +60,7 @@ void FavouritesPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 					data=QString("echo '%1' >> '%2/favs'").arg(this->mainKKEditClass->currentFilepath).arg(this->mainKKEditClass->homeDataFolder);
 					system(data.toStdString().c_str());
 
-					addfile=new QAction(QString(this->mainKKEditClass->currentFilepath));
+					addfile=new QAction(QString(this->mainKKEditClass->currentFilepath),this->favouritesMenu);
 					this->favouritesMenu->addAction(addfile);
 					QObject::connect(addfile,&QAction::triggered,[this,addfile]()
 						{
@@ -76,7 +76,7 @@ void FavouritesPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 				}
 		});
 
-	adddoc=new QAction(QString("Add Current DocView URL"));
+	adddoc=new QAction(QString("Add Current DocView URL"),this->favouritesMenu);
 	this->favouritesMenu->addAction(adddoc);
 	QObject::connect(adddoc,&QAction::triggered,[this]()
 		{
@@ -87,7 +87,7 @@ void FavouritesPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 					data=QString("echo '%1' >> '%2/favs'").arg(this->mainKKEditClass->currentURL).arg(this->mainKKEditClass->homeDataFolder);
 					system(data.toStdString().c_str());
 
-					addurl=new QAction(QString(this->mainKKEditClass->currentURL));
+					addurl=new QAction(QString(this->mainKKEditClass->currentURL),this->favouritesMenu);
 					this->favouritesMenu->addAction(addurl);
 					QObject::connect(addurl,&QAction::triggered,[this,addurl]()
 						{
@@ -117,7 +117,7 @@ void FavouritesPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 					flag=stream.readLineInto(&line);
 					if((flag==true) && (line.isEmpty()==false))
 						{
-							addurl=new QAction(line);
+							addurl=new QAction(line,this->favouritesMenu);
 							this->favouritesMenu->addAction(addurl);
 							QObject::connect(addurl,&QAction::triggered,[this,line,addurl]()
 								{

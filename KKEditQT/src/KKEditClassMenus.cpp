@@ -109,6 +109,7 @@ MenuItemClass* KKEditClass::makeMenuItemClass(int mainmenu,const QString name,co
 				break;
 
 			case NOMENU:
+				menuitem->setParent(this);
 				QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 					{
 						this->doOddMenuItems(menuitem);

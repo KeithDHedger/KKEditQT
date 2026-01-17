@@ -44,7 +44,7 @@ void ClipboardPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 
 	for(int j=0;j<MAXCLIPS;j++)
 		{
-			this->clips[j]=new QAction(QString("Clip-%1").arg(j));
+			this->clips[j]=new QAction(QString("Clip-%1").arg(j),this->cliboardMenu);
 			this->clips[j]->setObjectName(QString("Clip-%1").arg(j));
 			this->cliboardMenu->addAction(this->clips[j]);
 			QObject::connect(this->clips[j],&QAction::triggered,[this,j]()

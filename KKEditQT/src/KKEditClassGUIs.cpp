@@ -462,7 +462,7 @@ void KKEditClass::buildPrefsWindow(void)
 void KKEditClass::addIcon(const char* icon,const char* data,int toolnumber,const char* tooltip)
 {
 	QIcon			qicon;
-	MenuItemClass	*menuitem=new MenuItemClass(icon);
+	MenuItemClass	*menuitem=new MenuItemClass(icon,this);
 
 	qicon=QIcon::fromTheme(icon);
 	menuitem->setObjectName(data);
@@ -1310,9 +1310,9 @@ void KKEditClass::rebuildTabsMenu(void)
 	for(int j=0;j<bar->count();j++)
 		{
 			doc=this->getDocumentForTab(j);
-			menuitem=new MenuItemClass(doc->getFileName());
+			menuitem=new MenuItemClass(doc->getFileName(),this->selectTabMenu);
 			menuitem->setMenuID(j);
-			menuitem->setParent(this->selectTabMenu);
+			//menuitem->setParent(this->selectTabMenu);
 			this->selectTabMenu->addAction(menuitem);
 			QObject::connect(menuitem,&QAction::triggered,[this,j]()
 				{
@@ -1756,19 +1756,19 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 													entrytype="Anonymous Functions";
 													label=QString("%1 Line %2").arg(doc->getFileName()).arg(linenumber);
 												}
-											menuitem=new MenuItemClass(this->truncateWithElipses(label,this->prefsMaxMenuChars));
+											menuitem=new MenuItemClass(this->truncateWithElipses(label,this->prefsMaxMenuChars),this->funcMenu);
 										}
 									else
 										{
 											if(label.length()<2)
-												menuitem=new MenuItemClass(QString("ANONYMOUS %1 Line %2").arg(doc->getFileName()).arg(linenumber));
+												menuitem=new MenuItemClass(QString("ANONYMOUS %1 Line %2").arg(doc->getFileName()).arg(linenumber),this->funcMenu);
 											else
-												menuitem=new MenuItemClass(this->truncateWithElipses(entrytype.toUpper() + " " +label,this->prefsMaxMenuChars));
+												menuitem=new MenuItemClass(this->truncateWithElipses(entrytype.toUpper() + " " +label,this->prefsMaxMenuChars),this->funcMenu);
 										}
 
 									menuitem->setMenuID(linenumber);
 									menuitem->mainKKEditClass=this;
-									menuitem->setParent(this->funcMenu);
+									//menuitem->setParent(this->funcMenu);
 									QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 										{
 											menuitem->menuClickedGotoLine();

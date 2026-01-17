@@ -1,4 +1,6 @@
 2.1.0
+Fixed mem leaks.
+Force root theme when starting editor as root ( regardless of prefs, this is a visual warning only ).
 Startup code tweaks.
 Code clean.
 Reset function menu, toolbar sensitivity etc when using restoring session and select 1st tab is set in prefs.

@@ -60,13 +60,15 @@ KKEditClass::~KKEditClass()
 	for(int j=0;j<this->plugins.count();j++)
 		{
 			if(this->plugins[j].loaded==true)
-			{
-				this->unloadPlug(&this->plugins[j]);
+				{
+					this->unloadPlug(&this->plugins[j]);
 			//if(this->plugins[j].instance!=NULL)
 			//	delete this->plugins[j].instance;
 			//if(this->plugins[j].pluginLoader!=NULL)
 			//	delete this->plugins[j].pluginLoader;
 				}
+			if(this->plugins[j].pluginLoader!=NULL)
+				delete this->plugins[j].pluginLoader;
 		}
 
 	system(QString("rm %1/* 2>/dev/null").arg(this->tmpFolderName).toStdString().c_str());/**/
@@ -448,13 +450,6 @@ void KKEditClass::initApp(int argc,char** argv)
 // take ownership to avoid memleak
 	this->mainThemeProxy->setParent(this->application);
 	this->application->setStyle(this->mainThemeProxy);
-
-//	if(getuid()!=0)
-//		styleName="classic";
-//	else
-//		styleName="Root Source";
-
-//
 	this->mainWindow=new MainWindowClass(this);
 
 	for(int j=0;j<NOMORESHORTCUT;j++)
@@ -491,7 +486,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	else
 		this->spellChecker=to_aspell_speller(possible_err);
 
-	this->spellCheckMenuItem=new MenuItemClass("Spell Check");
+	this->spellCheckMenuItem=new MenuItemClass("Spell Check",this);
 	QIcon	itemicon=QIcon::fromTheme("tools-check-spelling");
 	this->spellCheckMenuItem->setMenuID(SPELLCHECKMENUITEM);
 	this->spellCheckMenuItem->setIcon(itemicon);
@@ -565,6 +560,9 @@ void KKEditClass::readConfigs(void)
 
 //theme
 	this->prefStyleName=this->prefs.value("theme/style","default").toString();
+	if(getuid()==0)
+		this->prefStyleName="Root";
+
 	this->prefStyleNameHold=this->prefStyleName;
 
 //application
@@ -694,7 +692,7 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 								{
 									if(flist.at(k).endsWith(".o")==false)
 										{
-											menuitem1=new MenuItemClass(flist.at(k));
+											menuitem1=new MenuItemClass(flist.at(k),&filemenu);
 											menuitem1->setMenuID(OPENFROMHERE+tabIndex);
 											filemenu.addAction(menuitem1);
 											
@@ -707,7 +705,7 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 							continue;
 						}
 			
-					menuitem=new MenuItemClass(this->tabContextMenuItems[cnt].label);
+					menuitem=new MenuItemClass(this->tabContextMenuItems[cnt].label,&menu);
 					menuitem->setMenuID(this->tabContextMenuItems[cnt].what+tabIndex);
 					menu.addAction(menuitem);
 

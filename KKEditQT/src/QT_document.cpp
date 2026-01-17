@@ -124,6 +124,7 @@ DocumentClass::~DocumentClass()
 {
 	this->mainKKEditClass->pages.remove(this->pageIndex);
 	delete this->lineNumberArea;
+	//delete this->highlighter2;
 }
 
 void DocumentClass::updateLineNumberAreaWidth(int newcnt)
@@ -635,7 +636,6 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	this->setTextCursor(cursor);
 	
 	this->doneHighlightAll=false;
-	this->lastFind=NULL;
 	this->mainKKEditClass=kk;
 	this->setAcceptDrops(true);
 

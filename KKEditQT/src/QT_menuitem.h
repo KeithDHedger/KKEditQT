@@ -26,7 +26,7 @@
 class MenuItemClass : public QAction
 {
 	public:
-		explicit MenuItemClass(const QString &text, QWidget *parent = 0);
+		explicit MenuItemClass(const QString &text, QObject *parent=nullptr);
 		~MenuItemClass();
 		KKEditClass		*mainKKEditClass=NULL;
 

@@ -82,7 +82,7 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 			if(str.startsWith("menu-")==true)
 				{
 					str.remove(0,5);
-					submenu=new QMenu(str);
+					submenu=new QMenu(str,usingmenu);
 					usingmenu->addMenu(submenu);
 					usingmenu=submenu;
 					continue;
@@ -93,11 +93,10 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 					continue;
 				}
 			
-			tagaction=new  QAction(str);
+			tagaction=new  QAction(str,usingmenu);
 			usingmenu->addAction(tagaction);
 			QObject::connect(tagaction,&QAction::triggered,[this,taglist,j]()
 				{
-							//this->document->dirty=true;
 					if(this->mainKKEditClass->mainNotebook->currentWidget()==NULL)
 						return;
 					if(this->document!=NULL)

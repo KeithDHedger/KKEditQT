@@ -84,7 +84,7 @@ void SaveHistory::showHistoryList(void)
 	this->openHistoryListMenuitem->clear();
 	for(int k=0;k<flist.count();k++)
 		{
-			menuitem=new QAction(flist.at(k));
+			menuitem=new QAction(flist.at(k),this->openHistoryListMenuitem);
 			this->openHistoryListMenuitem->addAction(menuitem);
 			QObject::connect(menuitem,&QAction::triggered,[this,menuitem,k,dir]()
 				{

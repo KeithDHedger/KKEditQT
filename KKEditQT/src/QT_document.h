@@ -82,7 +82,6 @@ class DocumentClass : public QPlainTextEdit
 		QString							dirPath;
 		QString							tabName;
 		bool								doneHighlightAll;
-		char								*lastFind;
 		bool								dirty=false;
 		QString							mimeType="text/plain";
 		bool								gotUndo=false;

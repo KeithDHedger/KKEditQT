@@ -32,6 +32,11 @@ void OpenUri::initPlug(KKEditClass *kk,QString pathtoplug)
 		});
 }
 
+void OpenUri::unloadPlug(void)
+{
+	delete this->openUriMenuitem;
+}
+
 void OpenUri::plugRun(plugData *data)
 {
 	if(data==NULL)

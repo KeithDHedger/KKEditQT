@@ -68,7 +68,7 @@ class KKEditClass : public QObject
 		tabMenuStruct				tabContextMenuItems[TABCONTEXTMENUCNT]={{COPYFOLDERPATH,"Copy Folder Path","edit-copy"},{COPYFILEPATH,"Copy File Path","edit-copy"},{COPYFILENAME,"Copy File Name","edit-copy"},{SPELLCHECKDOC,"Spellcheck Document","tools-check-spelling"},{SRCHILTIE,"Source Hilighting","text-x-script"},{THEME,"Theme","text-x-script"},{HIDETAB,"Hide Tab","list-remove"},{LOCKCONTENTS,"Lock Contents","emblem-readonly"},{OPENFROMHERE,"Open From Here","document-open"}};
 #ifdef _ASPELL_
 		AspellConfig					*aspellConfig=NULL;
-		AspellSpeller				*spellChecker=0;
+		AspellSpeller				*spellChecker=NULL;
 
 		QDialog						*spellCheckGUI=NULL;
 		QComboBox					*wordDropBox;
