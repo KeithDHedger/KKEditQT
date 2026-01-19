@@ -1,4 +1,5 @@
 2.1.1
+Fixed setting visibilty on loading session.
 Visual changes to restore session.
 Fixed reseting status bar after close/closeall.
 Fixed reseting status bar after saveas.

@@ -237,11 +237,6 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 												}
 										}
 									while(linenumber!=-1);
-
-									doc=this->getDocumentForTab(-1);
-									doc->visible=visible;
-									doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
-									doc->dirty=false;
 								}
 							else
 								{
@@ -269,15 +264,14 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 
 			this->sessionBusy=false;
 			this->setCompWordList();
-			for(int j=this->mainNotebook->count()-1;j>-1;j--)
+			this->mainNotebook->setTabVisible(this->mainNotebook->count()-1,true);
+			for(int j=0;j<this->mainNotebook->count();j++)
 				{
 					doc=this->getDocumentForTab(j);
-					qDebug()<<doc->filePath<<doc->visible;
-					if(doc->visible==true)
-						{
-							this->mainNotebook->setTabVisible(j,true);
-							break;
-						}
+					doc->visible=this->mainNotebook->isTabVisible(j);
+					doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
+					doc->dirty=false;
+					//qDebug()<<j<<doc->filePath<<doc->visible<<this->mainNotebook->isTabVisible(j);
 				}
 
 			if(this->openFirstTabWithSession==true)
