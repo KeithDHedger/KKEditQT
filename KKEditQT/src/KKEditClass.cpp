@@ -826,7 +826,7 @@ void KKEditClass::writeExitData(void)
 			for(int j=0;j<this->plugins.count();j++)
 				{
 					if(this->plugins[j].loaded==false)
-						this->disabledPlugins<<this->plugins[j].plugPath;
+						this->disabledPlugins<<this->plugins[j].plugName+"-"+this->plugins[j].plugVersion;
 				}
 		}
 	this->prefs.setValue("app/disabledplugins",this->disabledPlugins);
@@ -1485,7 +1485,9 @@ bool KKEditClass::loadPlug(pluginStruct *ps,bool force)
 	if(plugininst!=nullptr)
 		{
 			ps->instance=qobject_cast<kkEditQTPluginInterface*>(plugininst);
-			if((this->disabledPlugins.contains(ps->plugPath)==false) || (force==true))
+			ps->plugName=ps->pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
+			ps->plugVersion=ps->pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
+			if((this->disabledPlugins.contains(ps->plugName+"-"+ps->plugVersion)==false) || (force==true))
 				{
 					if((this->safeFlag==false)||(force==true))
 						{
@@ -1504,9 +1506,6 @@ bool KKEditClass::loadPlug(pluginStruct *ps,bool force)
 					ps->loaded=false;
 					ps->wants=DONONE;
 				}
-					
-			ps->plugName=ps->pluginLoader->metaData().value("MetaData").toObject().value("name").toString();
-			ps->plugVersion=ps->pluginLoader->metaData().value("MetaData").toObject().value("version").toString();
 		}
 	else
 		{

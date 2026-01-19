@@ -1632,15 +1632,15 @@ void KKEditClass::buildPlugPrefs(void)
 						{
 							if(this->plugins[j].loaded==true)
 								{
-									this->unloadPlug(&this->plugins[j]);
 									if(this->safeFlag==false)
-										this->disabledPlugins<<this->plugins[j].plugPath;
+										this->disabledPlugins<<this->plugins[j].plugName+"-"+this->plugins[j].plugVersion;
+									this->unloadPlug(&this->plugins[j]);
 								}
 							else
 								{
-									if(this->safeFlag==false)
-										this->disabledPlugins.replaceInStrings(this->plugins[j].plugPath,"");
 									this->loadPlug(&this->plugins[j],true);
+									if(this->safeFlag==false)
+										this->disabledPlugins.replaceInStrings(this->plugins[j].plugName+"-"+this->plugins[j].plugVersion,"");
 								}
 							aboutbutton.at(j)->setEnabled((bool)(this->plugins[j].wants & DOABOUT) && (this->plugins[j].loaded));
 							settingsbutton.at(j)->setEnabled((bool)(this->plugins[j].wants & DOSETTINGS) && (this->plugins[j].loaded));

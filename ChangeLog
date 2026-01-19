@@ -1,4 +1,5 @@
 2.1.1
+Plugins now disabled by name+version.
 Fixed setting visibilty of tab on loading session.
 Visual changes to restore session.
 Fixed reseting status bar after close/closeall.
