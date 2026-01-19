@@ -76,8 +76,6 @@ unsigned long SingleInstanceClass::hashFromKey(QString key)
 
 	return(hash);
 }
-#include <QNativeIpcKey>
-#include <QSharedMemory>
 
 SingleInstanceClass::SingleInstanceClass(QString name,int suppliedkey)
 {

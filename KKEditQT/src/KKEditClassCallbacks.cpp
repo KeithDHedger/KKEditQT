@@ -157,9 +157,9 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 
 	if(mc->objectName().compare(RESTORESESSIONMENUNAME)==0)
 		{
+
 			if(mc->text().isEmpty()==true)//TODO//
 				return;
-			this->sessionBusy=true;
 			sessionnumber=mc->getMenuID();
 //autosave session
 			if(sessionnumber==CURRENTSESSION)
@@ -177,16 +177,16 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 					this->splash->finish(this->mainWindow);
 					int		linenumber=999;
 					int		visible=666;
-					int		mainline;
+					int		mainline=1;
 					QTextStream	in(&file);
 					QString sessionname;
 					QString filename;
 					QString bookmark;
 					bool gotafile=false;
-
-					sessionname=in.readLine();//sessionname
 					int		x,y,w,h;//geometry
 					QString unused;//reserved
+
+					sessionname=in.readLine();//sessionname
 					in >> x;
 					in >> y;
 					in >> w;
@@ -196,13 +196,12 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 					unused=in.readLine().trimmed();
 					unused=in.readLine().trimmed();
 
+					this->mainWindow->setGeometry(x,y,w,h);
+
 					if(in.atEnd()==true)
 						{
-						qDebug()<<"here";
 							this->currentSessionNumber=sessionnumber;	
 							this->sessionBusy=false;
-							if(this->openFirstTabWithSession==true)
-								this->mainNotebook->setCurrentIndex(0);
 							file.close();
 							this->mainWindow->setGeometry(x,y,w,h);
 							this->rebuildTabsMenu();
@@ -218,34 +217,49 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 							filename=in.readLine().trimmed();
 							linenumber=-1;
 							this->runNoOutput(QString("echo -e \"Opening %1 ...\n%3\">\"%2/session\" &").arg(filename.trimmed()).arg(this->tmpFolderName).arg(cntfiles++));
-							gotafile=this->openFile(filename,0,false,false);
-							do
+							gotafile=this->openFile(filename,mainline,false,false);
+							if(gotafile==true)
 								{
-									in >> linenumber;
-									bookmark=in.readLine().trimmed();
-									if(gotafile==false)
-										continue;
-									if(linenumber>0)
+									this->mainNotebook->setTabVisible(this->mainNotebook->currentIndex(),visible);
+									do
 										{
-											if(this->gotoLine(linenumber)==true)
+											in >> linenumber;
+											bookmark=in.readLine().trimmed();
+											if(gotafile==false)
+												continue;
+											if(linenumber>0)
 												{
-													QTextCursor tc;
-													this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM,tc);
+													if(this->gotoLine(linenumber)==true)
+														{
+															QTextCursor tc;
+															this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM,tc);
+														}
 												}
 										}
+									while(linenumber!=-1);
+
+									doc=this->getDocumentForTab(-1);
+									doc->visible=visible;
+									doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
+									doc->dirty=false;
 								}
-							while(linenumber!=-1);
-							this->setTabVisibilty(this->mainNotebook->currentIndex(),visible);
-							this->gotoLine(mainline);
+							else
+								{
+									linenumber=0;
+									bookmark="";
+									do
+										{
+											bookmark=in.readLine().trimmed();;
+										}
+									while((in.atEnd()==false) && (bookmark!="-1 endmarks"));
+								}
+							qApp->processEvents();//TODO//
 						}
 
 					this->runNoOutput(QString("echo -ne \"Finishing ...\n%1\">\"%2/session\"").arg(retdata).arg(this->tmpFolderName));
-					sleep(1);
-					this->runNoOutput(QString("echo -e quit>\"%1/session\"").arg(this->tmpFolderName));
 
 					this->currentSessionNumber=sessionnumber;
 					file.close();
-					this->mainWindow->setGeometry(x,y,w,h);
 //plugins
 					pd.userStrData1=sessionname;
 					pd.userIntData1=sessionnumber;
@@ -253,35 +267,38 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 					this->runAllPlugs(pd);
 				}
 
-			for(int j=0;j<this->mainNotebook->count();j++)
-				{
-					doc=this->getDocumentForTab(j);
-					doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
-					doc->dirty=false;
-					doc->visible=this->mainNotebook->isTabVisible(j);
-				}
-		
-
 			this->sessionBusy=false;
 			this->setCompWordList();
 			for(int j=this->mainNotebook->count()-1;j>-1;j--)
 				{
-					if(this->mainNotebook->isTabVisible(j)==true)
+					doc=this->getDocumentForTab(j);
+					qDebug()<<doc->filePath<<doc->visible;
+					if(doc->visible==true)
 						{
-							this->mainNotebook->setCurrentIndex(0);
-							this->switchPage(j);
+							this->mainNotebook->setTabVisible(j,true);
 							break;
 						}
 				}
+
 			if(this->openFirstTabWithSession==true)
-				{
-					this->switchPage(0);
-				}
+				this->mainNotebook->setCurrentIndex(0);
+			else
+				this->mainNotebook->setCurrentIndex(this->mainNotebook->count()-1);
 		}
 
 	this->rebuildTabsMenu();
+	this->rebuildFunctionMenu(this->mainNotebook->currentIndex());
+	doc=this->getDocumentForTab(-1);
+	if(doc!=NULL)
+		doc->setStatusBarText();
+	else
+		{
+			QString text=QString("Line 0\tCol 0\tSessionId 0x%1").arg(this->sessionID,0,16);
+			this->statusText->setText(text);
+		}
 	this->setToolbarSensitive();
-	this->mainWindow->repaint();
+	this->mainWindow->update();
+	this->runNoOutput(QString("echo -e quit>\"%1/session\"").arg(this->tmpFolderName));
 }
 
 void KKEditClass::doBookmarkMenuItems(MenuItemClass *mc)

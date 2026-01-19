@@ -48,6 +48,7 @@
 #include <QVariant>
 #include <QWidget>
 #include <QtCore>
+#include <QtGui>
 #include <QtPlugin>
 #include <QtWidgets>
 #include <QActionGroup>

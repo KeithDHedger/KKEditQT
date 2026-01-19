@@ -224,7 +224,11 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 					delete msg;
 				}
 		}
-	this->setToolbarSensitive();
+
+	this->setToolbarSensitive();	
+	if(doc!=NULL)
+		doc->setStatusBarText();
+
 	return(retval);
 }
 

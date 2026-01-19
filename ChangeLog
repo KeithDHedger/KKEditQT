@@ -1,3 +1,9 @@
+2.1.1
+Visual changes to restore session.
+Fixed reseting status bar after close/closeall.
+Fixed reseting status bar after saveas.
+Fixed opening bad session file.
+
 2.1.0
 Fixed mem leaks.
 Force root theme when starting editor as root ( regardless of prefs, this is a visual warning only ).

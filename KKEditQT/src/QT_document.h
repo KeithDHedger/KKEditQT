@@ -168,6 +168,7 @@ class LineNumberArea : public QWidget
 		void paintEvent(QPaintEvent *event)
 			{
 				codeEditor->lineNumberAreaPaintEvent(event);
+				QWidget::paintEvent(event);
 			}
 
 		void mouseReleaseEvent(QMouseEvent *event)

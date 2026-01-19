@@ -951,6 +951,7 @@ void KKEditClass::closeAllTabs(void)
 	bool retval;
 	this->sessionBusy=true;
 	int	numtabs=(this->mainNotebook)->count();
+
 	for(int loop=0; loop<numtabs; loop++)
 		{
 			closingAllTabs=true;
@@ -970,6 +971,8 @@ void KKEditClass::closeAllTabs(void)
 	this->pages.clear();
 	this->newPageIndex=1;
 	this->rebuildFunctionMenu(-1);
+	QString text=QString("Line 0\tCol 0\tSessionId 0x%1").arg(this->sessionID,0,16);
+	this->statusText->setText(text);
 }
 
 bool KKEditClass::closeTab(int index)
@@ -1042,9 +1045,19 @@ bool KKEditClass::closeTab(int index)
 			this->rebuildTabsMenu();
 			this->setToolbarSensitive();
 			this->rebuildFunctionMenu(-1);
+
+			doc=this->getDocumentForTab(-1);
+			if(doc!=NULL)
+				doc->setStatusBarText();
+			else
+				{
+					QString text=QString("Line 0\tCol 0\tSessionId 0x%1").arg(this->sessionID,0,16);
+					this->statusText->setText(text);
+				}
 		}
 
 	this->mainNotebook->setCurrentIndex(ci);
+
 	return(true);
 }
 

@@ -1031,8 +1031,8 @@ void KKEditClass::buildMainGui(void)
 	this->mainWindow->addToolBar(this->toolBar);
 	this->mainWindow->setCentralWidget(this->mainNotebook);
 
-	this->statusText=new QLabel;	
-	this->statusText->setText("Line 0\tCol 0");
+	this->statusText=new QLabel;
+	this->statusText->setText(QString("Line 0\tCol 0\tSessionId 0x%1").arg(this->sessionID,0,16));
  	this->statusBar=this->mainWindow->statusBar();
  	this->statusBar->addWidget(this->statusText);
 }
