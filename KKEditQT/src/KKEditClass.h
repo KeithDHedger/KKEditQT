@@ -453,6 +453,7 @@ int saved_stdout;
 	private:
 		int							maxSessions=24;
 //app functions
+		void							restoreSession(int what);
 		void							handleMessages(void);
 //menu functions
 		void							clickMenu(QMenu *menu,QString name);
