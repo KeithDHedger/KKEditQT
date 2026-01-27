@@ -272,7 +272,7 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 		doc->setStatusBarText();
 	else
 		{
-			QString text=QString("Line 0\tCol 0\tSessionId 0x%1").arg(this->sessionID,0,16);
+			QString text=QString("Line 0\tCol 0\tMsgKey 0x%1 ShmKey 0x%2").arg(this->msgKey,0,16).arg(this->sharedMemKey,0,16);
 			this->statusText->setText(text);
 		}
 	this->setToolbarSensitive();
@@ -1022,7 +1022,8 @@ void KKEditClass::notDoneYet(QString string)
 void KKEditClass::doTimer(void)
 {
 	int			retlen=0;
-this->sessionBusy=true;
+
+	this->sessionBusy=true;
 	staticbuffer.mText[0]=0;
 	staticbuffer.mType=0;
 	retlen=msgrcv(this->queueID,&staticbuffer,MAXMSGSIZE,MSGANY,IPC_NOWAIT);
@@ -1039,7 +1040,7 @@ this->sessionBusy=true;
 			this->checkMessages->setSingleShot(true);
 			this->checkMessages->start(this->prefsMsgTimer);
 		}
-this->sessionBusy=false;
+	this->sessionBusy=false;
 }
 
 void KKEditClass::handleMessages(void)
@@ -1054,6 +1055,27 @@ void KKEditClass::handleMessages(void)
 
 	switch(staticbuffer.mType & ALLMSGTYPES)
 		{
+			case RELOADPREFSMSG:
+				this->prefs.sync();
+				this->readConfigs();
+				this->showHighLighting=this->prefsSyntaxHilighting;
+				this->lineNumbersVisible=this->prefsShowLineNumbers;
+				this->toggleLineNumbersMenuItem->setChecked(this->lineNumbersVisible);
+//wrap lines
+				this->wrapLine=this->prefsLineWrap;
+				this->toggleWrapLineMenuItem->setChecked(this->wrapLine);
+//hilite current line
+				this->hiliteCurrentLine=this->prefsHighLightline;
+				this->toggleHiliteCurrentLineMenuItem->setChecked(this->hiliteCurrentLine);
+//syntax hiliting
+				this->showHighLighting=this->prefsSyntaxHilighting;
+				this->toggleSyntaxHilightingMenuItem->setChecked(this->showHighLighting);
+//completions
+				this->showCompletions=this->prefsAutoShowCompletions;
+				this->toggleCompletionsMenuItem->setChecked(this->showCompletions);
+
+				this->resetAllFilePrefs();
+				break;
 			case SENDCURRENTURL:
 				this->sendMessgage(this->currentURL);
 				break;
@@ -1522,10 +1544,12 @@ void KKEditClass::setPreferences(void)
 //completions
 	this->showCompletions=this->prefsAutoShowCompletions;
 	this->toggleCompletionsMenuItem->setChecked(this->showCompletions);
+
 	this->resetAllFilePrefs();
 	this->writeExitData();
 	this->setAppShortcuts();
 
+//this->mainNotebook->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 0px;}"));
 	switchPage(this->mainNotebook->currentIndex());
 }
 
@@ -1576,7 +1600,7 @@ void KKEditClass::doTabBarContextMenu(MenuItemClass *mc)
 				}				
 				break;
 			case HIDETAB:
-				this->setTabVisibilty(mc->getMenuID() & 0xff,false);
+				this->hideTab(this->mainNotebook->currentIndex());
 				break;
 			case LOCKCONTENTS:
 				{
@@ -1821,6 +1845,37 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 		}
 }
 
+void KKEditClass::hideTab(int tabnum)
+{
+	int tab=tabnum;
+	if(tab==this->mainNotebook->count()-1)
+		return;
+
+	this->setTabVisibilty(tab,false);
+	tab++;
+	while(tab<this->mainNotebook->count())
+		{
+			if(this->mainNotebook->tabBar()->isTabVisible(tab)==true)
+				{
+					this->setTabVisibilty(tab,true);
+					return;
+				}
+			tab++;
+		}
+
+	while(tab>0)
+		{
+			if(this->mainNotebook->tabBar()->isTabVisible(tab)==true)
+				{
+					this->setTabVisibilty(tab,true);
+					return;
+				}
+			tab--;
+		}
+							
+	this->setTabVisibilty(0,true);
+}
+
 void KKEditClass::doAppShortCuts(QShortcut *sc)
 {
 	DocumentClass	*doc=this->getDocumentForTab(-1);
@@ -1833,7 +1888,8 @@ void KKEditClass::doAppShortCuts(QShortcut *sc)
 
 	if(sc->objectName().toInt()==HIDETABSHORTCUT)
 		{
-			this->setTabVisibilty(this->mainNotebook->currentIndex(),false);
+			this->hideTab(this->mainNotebook->currentIndex());
+			//this->setTabVisibilty(this->mainNotebook->currentIndex(),false);
 			return;
 		}
 

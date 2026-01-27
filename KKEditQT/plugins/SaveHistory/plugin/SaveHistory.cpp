@@ -90,7 +90,7 @@ void SaveHistory::showHistoryList(void)
 				{
 					QStringList args;
 
-					args<<"-k"<<QString("%1").arg(this->mainKKEditClass->sessionID);
+					args<<"-k"<<QString("%1").arg(this->mainKKEditClass->msgKey);
 					args<<"-c"<<"openfile";
 					args<<"-d"<<QString("%2/%3").arg(dir.canonicalPath()).arg(menuitem->text());
 					QProcess::execute("kkeditqtmsg",args);
@@ -137,7 +137,7 @@ void SaveHistory::plugAbout(void)
 				{
 					QStringList args;
 					args<<"-k";
-					args<<QString("%1").arg(this->mainKKEditClass->sessionID);
+					args<<QString("%1").arg(this->mainKKEditClass->msgKey);
 					args<<"-c"<<"openindocview";
 					args<<"-d"<<fileinfo.canonicalPath()+"/docs/help.html";
 					QProcess::startDetached("kkeditqtmsg",args);

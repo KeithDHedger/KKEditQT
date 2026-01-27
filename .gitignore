@@ -30,9 +30,10 @@ Doxyfile
 */plugins/*-NOGIT
 pass
 toolspath
-KKEditQT/helpers/kkeditqtmsg
-KKEditQT/helpers/kkeditqtprogressbar
-KKEditQT/helpers/kkeditqttagreader
+kkeditqtmsg
+kkeditqtprogressbar
+kkeditqttagreader
 KKEditQT/src/qtincs.h.gch
 KKEditQT/app/ignorelibleaks
 KKEditQT/app/supps.txt
+setlinks

@@ -38,10 +38,10 @@ struct msgStruct
 	char mText[MAXMSGSIZE];
 };
 
-enum msgActions {ACTIVATEAPPMSG=100,NEWFILEMSG,SAVEFILEMSG,SAVEFILEASMSG,QUITAPPMSG,SAVECURRENTSESSIONMSG,RESTORESESSIONMSG,GOTOLINEMSG,SEARCHDEFMSG,SELECTTABMSG,SELECTTABBYNAMEMSG,SELECTTABBYPATHMSG,BOOKMARKMSG,CLOSETABMSG,CLOSEALLTABSMSG,SETUSERMARKMSG,UNSETUSERMARKMASG,MOVETOMSG,PASTEMSG,COPYMSG,CUTMSG,INSERTTEXTMSG,INSERTNLMSG,SELECTBETWEENMSG,INSERTFILEMSG,PRINTFILESMSG,RUNTOOLMSG,ACTIVATEMENUBYLABELEDMSG,OPENINDOCVIEWMSG,SENDPOSDATAMSG,SENDSELECTEDTEXTMSG,SENDCURRENTURL,SENDSESSIONNAMEMSG,LASTMSG};//TODO//seperate info comands etc
+enum msgActions {ACTIVATEAPPMSG=100,NEWFILEMSG,SAVEFILEMSG,SAVEFILEASMSG,QUITAPPMSG,SAVECURRENTSESSIONMSG,RESTORESESSIONMSG,GOTOLINEMSG,SEARCHDEFMSG,SELECTTABMSG,SELECTTABBYNAMEMSG,SELECTTABBYPATHMSG,BOOKMARKMSG,CLOSETABMSG,CLOSEALLTABSMSG,SETUSERMARKMSG,UNSETUSERMARKMASG,MOVETOMSG,PASTEMSG,COPYMSG,CUTMSG,INSERTTEXTMSG,INSERTNLMSG,SELECTBETWEENMSG,INSERTFILEMSG,PRINTFILESMSG,RUNTOOLMSG,ACTIVATEMENUBYLABELEDMSG,OPENINDOCVIEWMSG,SENDPOSDATAMSG,SENDSELECTEDTEXTMSG,SENDCURRENTURL,SENDSESSIONNAMEMSG,RELOADPREFSMSG,LASTMSG};//TODO//seperate info comands etc
 
 #define APPNAME "kkedtqtmsg"
-#define MSGVERSION "0.7.0"
+#define MSGVERSION "0.7.2"
 
 #define ALLOK 0
 #define UNKNOWNARG 1
@@ -75,7 +75,7 @@ int			sinkReturn;
 bool			waitForMsg=false;
 bool			waitContinue=false;
 
-const char	*commandList[]={"activate","openfile","newfile","savefile","savefileas","quit","savesession","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","togglebookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","selectbetween","insertfile","printfile","runtool","activatemenubylabel","openindocview",NULL};
+const char	*commandList[]={"activate","openfile","newfile","savefile","savefileas","quit","savesession","restoresession","gotoline","searchdefine","selecttab","selecttabbyname","selecttabbypath","togglebookmark","closetab","closealltabs","setusermark","unsetusermark","moveto","paste","copy","cut","inserttext","insertnl","selectbetween","insertfile","printfile","runtool","activatemenubylabel","openindocview","reloadprefs",NULL};
 
 const char	*infoList[]={"sendposdata","sendselectedtext","sendcurrenturl","sendsessionname",NULL};
 

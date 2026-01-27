@@ -101,7 +101,7 @@ void DocumentationPlugin::runAllSearchs(void)
 					out << "</html>" << Qt::endl;
 					html.close();
 					this->mainKKEditClass->htmlURI="file://"+this->mainKKEditClass->htmlFile;
-					comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(this->mainKKEditClass->htmlFile);
+					comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile);
 					system(comm.toStdString().c_str());
 				}
 		}
@@ -127,7 +127,7 @@ void DocumentationPlugin::runSearch(QString command)
 
 			if(results.startsWith("Just Open\n")==true)
 				{
-					comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(this->mainKKEditClass->htmlFile);
+					comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile);
 					system(comm.toStdString().c_str());
 					return;
 				}
@@ -137,14 +137,14 @@ void DocumentationPlugin::runSearch(QString command)
 				{
 					if(QString(reslist.at(0)).startsWith("Just Open\n")==true)
 						{
-							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(this->mainKKEditClass->htmlFile);
+							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile);
 							system(comm.toStdString().c_str());
 							return;
 						}
 
 					if(reslist.size()==3)
 						{
-							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(reslist.at(1));
+							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(reslist.at(1));
 							system(comm.toStdString().c_str());
 							return;
 						}
@@ -170,7 +170,7 @@ void DocumentationPlugin::runSearch(QString command)
 							out << "</html>" << Qt::endl;
 							html.close();
 							this->mainKKEditClass->htmlURI="file://"+this->mainKKEditClass->htmlFile;
-							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(this->mainKKEditClass->htmlFile);
+							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile);
 							system(comm.toStdString().c_str());
 						}
 				}
@@ -246,7 +246,7 @@ void DocumentationPlugin::showDocs(void)
 		{
 			QString		comm;
 			QDir::setCurrent(this->folderPath);
-			comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(QString("'%1/%2'").arg(this->folderPath).arg("html/index.html"));
+			comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(QString("'%1/%2'").arg(this->folderPath).arg("html/index.html"));
 			system(comm.toStdString().c_str());		
 		}
 }
@@ -609,7 +609,7 @@ void DocumentationPlugin::searchDoxyDocs(const QString txt)
 					out << "</body>" << Qt::endl;
 					out << "</html>" << Qt::endl;
 					html.close();
-					QString comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(this->mainKKEditClass->htmlFile);
+					QString comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile);
 					system(comm.toStdString().c_str());
 				}
 			}
@@ -766,7 +766,7 @@ void DocumentationPlugin::plugAbout(void)
 				{
 					QStringList args;
 					args<<"-k";
-					args<<QString("%1").arg(this->mainKKEditClass->sessionID);
+					args<<QString("%1").arg(this->mainKKEditClass->msgKey);
 					args<<"-c"<<"openindocview";
 					args<<"-d"<<fileinfo.canonicalPath()+"/docs/help.html";
 					QProcess::startDetached("kkeditqtmsg",args);

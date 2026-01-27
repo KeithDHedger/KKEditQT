@@ -174,8 +174,8 @@ void FavouritesPlug::doAction(QString data)
 		{
 			if(data.startsWith("file://"))
 				{
-					//command=QString("kkeditqtmsg -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->sessionID).arg(data.mid(7));
-					command=QString("kkeditqtmsg -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->sessionID).arg(data);
+					//command=QString("kkeditqtmsg -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->msgKey).arg(data.mid(7));
+					command=QString("kkeditqtmsg -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->msgKey).arg(data);
 					system(command.toStdString().c_str());
 				}
 			else
@@ -185,7 +185,7 @@ void FavouritesPlug::doAction(QString data)
 		}
 	else
 		{
-			command=QString("kkeditqtmsg -k %1 -c 'openfile' -d '%2'").arg(this->mainKKEditClass->sessionID).arg(data);
+			command=QString("kkeditqtmsg -k %1 -c 'openfile' -d '%2'").arg(this->mainKKEditClass->msgKey).arg(data);
 			system(command.toStdString().c_str());
 		}
 }

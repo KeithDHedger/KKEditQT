@@ -1,4 +1,12 @@
 2.1.1
+Changed 'SessionID' in status bar to 'MsgKey'.
+Added shared memory key to status bar.
+Fixed moving last tab from Edit->Select Tab.
+Fixed selecting tab to right when hiding tab.
+Fixed tab visibility.
+Fixed changing notebook colours via 3rd party app ( eg qt6ct ).
+Cleaned start code.
+Added trapping SIGUSR2 to output msg key and shared mem key to stderr.
 Cleaned up restore session code.
 Plugins now disabled by name+version.
 Fixed setting visibilty of tab on loading session.

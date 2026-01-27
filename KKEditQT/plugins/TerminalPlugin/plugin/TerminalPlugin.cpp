@@ -159,7 +159,7 @@ void TerminalPluginPlug::addTerminal(void)
 									filepath=QFileDialog::getOpenFileName(nullptr,"Open File",cwd,"",nullptr,QFileDialog::HideNameFilterDetails);
 									if(filepath.isEmpty()==false)
 										{
-											QString comm=QString("kkeditqtmsg -k %1 -c openfile -d '%2'").arg(this->mainKKEditClass->sessionID).arg(filepath);
+											QString comm=QString("kkeditqtmsg -k %1 -c openfile -d '%2'").arg(this->mainKKEditClass->msgKey).arg(filepath);
 											system(comm.toStdString().c_str());
 										}
 									qApp->clipboard()->setText(ht);
@@ -202,7 +202,7 @@ void TerminalPluginPlug::showDocs(void)
 		{
 			QString		comm;
 			QDir::setCurrent(this->folderPath);
-			comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->sessionID).arg(QString("'%1/%2'").arg(this->folderPath).arg("html/index.html"));
+			comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(QString("'%1/%2'").arg(this->folderPath).arg("html/index.html"));
 			system(comm.toStdString().c_str());		
 		}
 }
@@ -287,7 +287,7 @@ void TerminalPluginPlug::plugAbout(void)
 				{
 					QStringList args;
 					args<<"-k";
-					args<<QString("%1").arg(this->mainKKEditClass->sessionID);
+					args<<QString("%1").arg(this->mainKKEditClass->msgKey);
 					args<<"-c"<<"openindocview";
 					args<<"-d"<<fileinfo.canonicalPath()+"/docs/help.html";
 					QProcess::startDetached("kkeditqtmsg",args);

@@ -105,6 +105,11 @@ void KKEditClass::handleSignal(int signum)
 {
 	switch(signum)
 		{
+			case SIGUSR2:
+				fprintf(stderr,"msgKey=0x%x shmKey=0x%x\n",this->msgKey,this->sharedMemKey);
+
+				//qDebug()<<Qt::hex<<Qt::showbase<<Qt::ws<<"msgKey"<<this->msgKey<<" shmKey"<<this->sharedMemKey;
+				break;
 			case SIGUSR1:
 				this->doTimer();
 				break;
@@ -459,7 +464,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->readConfigs();
 	if(this->queueID==-1)
 		{
-			if((this->queueID=msgget(this->sessionID,IPC_CREAT|0660))==-1)
+			if((this->queueID=msgget(this->msgKey,IPC_CREAT|0660))==-1)
 				fprintf(stderr,"Can't create message queue, scripting wont work :( ...\n");
 		}
 
@@ -514,7 +519,7 @@ void KKEditClass::initApp(int argc,char** argv)
 
 	plugData		pd;
 	pd.userStrData1=this->tmpFolderName;
-	pd.userIntData1=this->sessionID;
+	pd.userIntData1=this->msgKey;
 	pd.what=DOPOSTLOAD;
 	this->runAllPlugs(pd);
 
@@ -971,7 +976,7 @@ void KKEditClass::closeAllTabs(void)
 	this->pages.clear();
 	this->newPageIndex=1;
 	this->rebuildFunctionMenu(-1);
-	QString text=QString("Line 0\tCol 0\tSessionId 0x%1").arg(this->sessionID,0,16);
+	QString text=QString("Line 0\tCol 0\tMsgKey 0x%1 ShmKey 0x%2").arg(this->msgKey,0,16).arg(this->sharedMemKey,0,16);
 	this->statusText->setText(text);
 }
 
@@ -1051,7 +1056,7 @@ bool KKEditClass::closeTab(int index)
 				doc->setStatusBarText();
 			else
 				{
-					QString text=QString("Line 0\tCol 0\tSessionId 0x%1").arg(this->sessionID,0,16);
+					QString text=QString("Line 0\tCol 0\tMsgKey 0x%1 ShmKey 0x%2").arg(this->msgKey,0,16).arg(this->sharedMemKey,0,16);
 					this->statusText->setText(text);
 				}
 		}
@@ -1537,33 +1542,15 @@ bool KKEditClass::unloadPlug(pluginStruct *ps)
 void KKEditClass::setTabVisibilty(int tab,bool visible)
 {
 	DocumentClass	*doc;
-	int				tabnum=tab;
-	bool				vis=visible;
 
-	if(this->sessionBusy==false)
-		if(tabnum==this->mainNotebook->count()-1)//ui bug fix no last tab invisible
-			vis=true;
-
-	this->mainNotebook->setTabVisible(tabnum,vis);
-	doc=this->getDocumentForTab(tabnum);
+	doc=this->getDocumentForTab(tab);
 	if(doc==NULL)
 		return;
 
-	doc->visible=vis;
-
-	if(vis==false)//hacks for tab gliches
-		{
-			if(this->mainNotebook->currentIndex()==tabnum)
-				this->mainNotebook->scrollTabsLeft();
-			tabnum=this->mainNotebook->currentIndex();
-			this->mainNotebook->setCurrentIndex(0);
-			this->mainNotebook->setCurrentIndex(tabnum);
-		}
-	else
-		{
-			this->mainNotebook->setCurrentIndex(0);
-			this->mainNotebook->setCurrentIndex(tabnum);
-		}
+	this->mainNotebook->setTabVisible(tab,visible);
+	doc->visible=visible;
+	this->mainNotebook->setCurrentIndex(0);
+	this->mainNotebook->setCurrentIndex(tab);
 }
 
 void KKEditClass::runAllPlugs(plugData pd)

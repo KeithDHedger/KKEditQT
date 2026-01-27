@@ -205,7 +205,7 @@ void DocumentClass::modified()
 
 void DocumentClass::setStatusBarText(void)
 {
-	QString text=QString("Line %1\tCol %2\tSessionId 0x%3\t\tFilePath %4").arg(this->getCurrentLineNumber()).arg(this->textCursor().positionInBlock()+1).arg(this->mainKKEditClass->sessionID,0,16).arg(this->filePath);
+	QString text=QString("Line %1\tCol %2\tMsgKey 0x%3 ShmKey 0x%5\t\tFilePath %4").arg(this->getCurrentLineNumber()).arg(this->textCursor().positionInBlock()+1).arg(this->mainKKEditClass->msgKey,0,16).arg(this->filePath).arg(this->mainKKEditClass->sharedMemKey,0,16);
 	this->mainKKEditClass->statusText->setText(text);
 	this->mainKKEditClass->setToolbarSensitive();
 }

@@ -56,7 +56,8 @@ class KKEditClass : public QObject
 
 		QHash<int,DocumentClass*>	pages;
 		int							newPageIndex=1;
-		int							sessionID=-1;
+		int							msgKey=-1;
+		unsigned						sharedMemKey=0;
 		int							queueID=-1;
 		bool							safeFlag=false;
 		bool							verySafeFlag=false;
@@ -461,6 +462,7 @@ int saved_stdout;
 		void							sendMessgage(QString msg);
 //editor functions
 		void							setTabVisibilty(int tab,bool visible);
+		void							hideTab(int tabnum);
 //files
 		bool							possibleNonText(QString filepath);
 };

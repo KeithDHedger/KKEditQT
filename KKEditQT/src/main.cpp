@@ -57,7 +57,7 @@ int main (int argc, char **argv)
 	kkedit->parser.process(kkedit->application->arguments());
 
 	if(kkedit->parser.isSet("key"))
-		kkedit->sessionID=kkedit->parser.value("key").toInt(nullptr,0);
+		kkedit->msgKey=kkedit->parser.value("key").toInt(nullptr,0);
 
 	if(kkedit->parser.isSet("safe"))
 		kkedit->safeFlag=true;
@@ -71,28 +71,34 @@ int main (int argc, char **argv)
 	if(kkedit->parser.isSet("multi"))
 		{
 			srandom(time(NULL));
-			kkedit->sessionID=random();
+			kkedit->msgKey=random();
 		}
 
-	SingleInstanceClass *siapp=new SingleInstanceClass("KKEditQT",kkedit->sessionID);
+	SingleInstanceClass *siapp=new SingleInstanceClass("KKEditQT",kkedit->msgKey);
 
-	fprintf(stderr,"queueAddr=0x%x shmQueueID=0x%x msgKey=0x%x\n",siapp->queueAddr,siapp->shmQueueID,siapp->key);
+	signal(SIGUSR1,signalHandler);
+	signal(SIGUSR2,signalHandler);
+	signal(SIGTERM,signalHandler);
+	signal(SIGINT,signalHandler);
+
+	fprintf(stderr,"msgKey=0x%x shmKey=0x%x\n",siapp->key,siapp->shmKey);
+
+	kkedit->sharedMemKey=siapp->shmKey;
+	kkedit->queueID=siapp->queueID;
+	kkedit->msgKey=siapp->key;
+	kkedit->forceDefaultGeom=!siapp->isOnX11;
 
 	if(kkedit->parser.isSet("multi"))
 		{
 			kkedit->sessionBusy=true;
-			kkedit->queueID=siapp->queueID;
-			kkedit->sessionID=siapp->key;
-			kkedit->forceDefaultGeom=!siapp->isOnX11;
+			//kkedit->queueID=siapp->queueID;
+//			kkedit->msgKey=siapp->key;
+//			kkedit->forceDefaultGeom=!siapp->isOnX11;
 
 			kkedit->initApp(argc,argv);
 			kkedit->runCLICommands(siapp->queueID);
 			kkedit->application->setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));
 			siapp->isMulti=true;
-
-			signal(SIGUSR1,signalHandler);
-			signal(SIGTERM,signalHandler);
-			signal(SIGINT,signalHandler);
 
 			kkedit->checkMessages->setSingleShot(true);
 			kkedit->checkMessages->start(kkedit->prefsMsgTimer);
@@ -110,33 +116,28 @@ kkedit->setToolbarSensitive();
 		{
 			msgStruct	message;
 			int			msglen;
-//	system("echo 'starting child ...' >> /tmp/log");
-			kkedit->queueID=siapp->queueID;
-			kkedit->sessionID=siapp->key;
+			//kkedit->queueID=siapp->queueID;
+//			kkedit->msgKey=siapp->key;
 			msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","");
 			message.mType=ACTIVATEAPPMSG;
 			msgsnd(siapp->queueID,&message,0,0);
 			kkedit->runCLICommands(siapp->queueID);
-			//sem_wait(siapp->semid);
-			//	kill(atoi(siapp->queueAddr),SIGUSR1);
-			//sem_post(siapp->semid);
-			//kkedit->checkMessages->start();
+
 			delete kkedit;
 			delete siapp;
-//	system("echo 'stopping child ...' >> /tmp/log");
 			return(0);
 		}
 	else
 		{
-			kkedit->queueID=siapp->queueID;
-			kkedit->sessionID=siapp->key;
+			//kkedit->queueID=siapp->queueID;
+			//kkedit->msgKey=siapp->key;
 		}
 
 	kkedit->splash->show();
-	kkedit->queueID=siapp->queueID;
+	//kkedit->queueID=siapp->queueID;
 	kkedit->forcedMultInst=kkedit->parser.isSet("multi");
-	kkedit->sessionID=siapp->key;;
-	kkedit->forceDefaultGeom=!siapp->isOnX11;
+	//kkedit->msgKey=siapp->key;;
+	//kkedit->forceDefaultGeom=!siapp->isOnX11;
 
 	kkedit->initApp(argc,argv);
 
@@ -149,7 +150,7 @@ kkedit->setToolbarSensitive();
 #endif
 #endif
 
-kkedit->sessionBusy=true;
+	kkedit->sessionBusy=true;
 	kkedit->runCLICommands(kkedit->queueID);
 
 	kkedit->setToolbarSensitive();
@@ -160,13 +161,9 @@ kkedit->sessionBusy=true;
 
 	kkedit->splash->finish(kkedit->mainWindow);
 
-	signal(SIGUSR1,signalHandler);
-	signal(SIGTERM,signalHandler);
-	signal(SIGINT,signalHandler);
-
 	kkedit->checkMessages->setSingleShot(true);
 	kkedit->checkMessages->start(kkedit->prefsMsgTimer);
-kkedit->sessionBusy=false;
+	kkedit->sessionBusy=false;
 
 	status=kkedit->application->exec();
 	delete kkedit;

@@ -166,9 +166,9 @@ std::string LFSTK_UtilityClass::LFSTK_strReplaceAllChar(std::string haystack,std
 * \param std::string str key.
 * \return unsigned long hashed key string.
 */
-unsigned long LFSTK_UtilityClass::LFSTK_hashFromKey(std::string key)
+unsigned LFSTK_UtilityClass::LFSTK_hashFromKey(std::string key)
 {
-	unsigned long hash=0;
+	unsigned hash=0;
 
 	for(unsigned i=0;i<key.length();i++)
 		hash=31*hash+key.at(i);

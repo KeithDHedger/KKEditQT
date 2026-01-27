@@ -1032,7 +1032,7 @@ void KKEditClass::buildMainGui(void)
 	this->mainWindow->setCentralWidget(this->mainNotebook);
 
 	this->statusText=new QLabel;
-	this->statusText->setText(QString("Line 0\tCol 0\tSessionId 0x%1").arg(this->sessionID,0,16));
+	this->statusText->setText(QString("Line 0\tCol 0\tMsgKey 0x%1 ShmKey 0x%2").arg(this->msgKey,0,16).arg(this->sharedMemKey,0,16));
  	this->statusBar=this->mainWindow->statusBar();
  	this->statusBar->addWidget(this->statusText);
 }
@@ -1312,7 +1312,6 @@ void KKEditClass::rebuildTabsMenu(void)
 			doc=this->getDocumentForTab(j);
 			menuitem=new MenuItemClass(doc->getFileName(),this->selectTabMenu);
 			menuitem->setMenuID(j);
-			//menuitem->setParent(this->selectTabMenu);
 			this->selectTabMenu->addAction(menuitem);
 			QObject::connect(menuitem,&QAction::triggered,[this,j]()
 				{
@@ -1323,12 +1322,22 @@ void KKEditClass::rebuildTabsMenu(void)
 							int adj=1;
 							if(j<cur)
 								adj=0;
+							this->setTabVisibilty(j,true);
 							this->mainNotebook->tabBar()->moveTab(j,cur+adj);
-							this->setTabVisibilty(cur+adj,true);
+							if(this->mainNotebook->tabBar()->isTabVisible(cur+adj+1)==false)
+								{
+									this->mainNotebook->setTabVisible(cur+adj+1,true);
+									this->mainNotebook->setTabVisible(cur+adj+1,false);
+								}
+							this->mainNotebook->tabBar()->setTabVisible(this->mainNotebook->count()-1,true);
+							this->mainNotebook->setCurrentIndex(0);
+							this->mainNotebook->setCurrentIndex(cur+adj);
 						}
 					else
 						{
 							this->setTabVisibilty(j,true);
+							this->mainNotebook->setCurrentIndex(0);
+							this->mainNotebook->setCurrentIndex(j);
 						}
 				});
 		}

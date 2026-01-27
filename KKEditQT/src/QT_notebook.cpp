@@ -96,10 +96,12 @@ NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent
 			this->scrollTabsRight();
 		});
 
-	this->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 0px;}"));
+	this->setUsesScrollButtons(false);
+	//this->tabBar()->setStyleSheet(QString("QTabBar::scroller{top: -100;}"));
 	this->setDocumentMode(true);
 	this->setTabsClosable(true);
 	this->setMovable(true);
+	this->setMinimumWidth(400);
 }
 
 void NoteBookClass::dragMoveEvent(QDragMoveEvent *event)

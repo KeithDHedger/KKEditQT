@@ -40,7 +40,7 @@ class SingleInstanceClass
 		int				key;
 		int				queueID=-1;
 		int				shmQueueID=-1;
-		unsigned long	shmKey=0;
+		unsigned 		shmKey=0;
 		char				*queueAddr=NULL;
 		bool				running=false;
 		bool				isMulti=false;

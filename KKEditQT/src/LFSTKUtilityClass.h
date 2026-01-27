@@ -35,7 +35,7 @@ class LFSTK_UtilityClass
 		static std::string				LFSTK_strStrip(std::string haystack,std::string whitespace="\t \r\n");
 		static std::string				LFSTK_strReplaceAllStr(std::string haystack,std::string needle,std::string newneedle,bool erase=false);
 		static std::string				LFSTK_strReplaceAllChar(std::string haystack,std::string needle,std::string newneedle,bool erase=false);
-		static unsigned long				LFSTK_hashFromKey(std::string key);
+		static unsigned					LFSTK_hashFromKey(std::string key);
 //desktop files
 		static std::map<unsigned long,std::vector<std::string>>	LFSTK_readFullDesktopFile(std::string filepath);
 		static std::string				LFSTK_getFullEntry(std::string entryname,std::string keyname,std::map<unsigned long,std::vector<std::string>> maplines,bool fallback=false,std::string fallbackgroup="Desktop Entry");
