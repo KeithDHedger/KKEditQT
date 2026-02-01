@@ -1889,7 +1889,6 @@ void KKEditClass::doAppShortCuts(QShortcut *sc)
 	if(sc->objectName().toInt()==HIDETABSHORTCUT)
 		{
 			this->hideTab(this->mainNotebook->currentIndex());
-			//this->setTabVisibilty(this->mainNotebook->currentIndex(),false);
 			return;
 		}
 

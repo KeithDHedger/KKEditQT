@@ -51,7 +51,10 @@ class TerminalWidget : public QWidget
 				process=new QProcess(this);
 				QStringList arguments;
 
-				arguments<<"-T"<<this->termName<<"-xrm"<<"*clickToFocus: true"<<"-into"<<QString::number(this->winId())<<"-xrm"<<QString("#include \"%1/xinst.tpxrc\"").arg(this->plugPath)<<"-bg"<<this->backCol<<"-fg"<<this->foreCol;
+				if(this->backCol.isEmpty()==true || this->foreCol.isEmpty()==true)
+					arguments<<"-T"<<this->termName<<"-xrm"<<"*clickToFocus: true"<<"-into"<<QString::number(this->winId())<<"-xrm"<<QString("#include \"%1/xinst.tpxrc\"").arg(this->plugPath);
+				else
+					arguments<<"-T"<<this->termName<<"-xrm"<<"*clickToFocus: true"<<"-into"<<QString::number(this->winId())<<"-xrm"<<QString("#include \"%1/xinst.tpxrc\"").arg(this->plugPath)<<"-bg"<<this->backCol<<"-fg"<<this->foreCol;
 
 				process->start("xterm",arguments);
 				process->waitForStarted();
