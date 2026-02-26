@@ -1,4 +1,5 @@
 2.1.1
+Fixed desktop file.
 Minor theme tweak.
 If either the background or foreground colours are set in the terminal plugin prefs the default fore/back colours are used.
 Changed 'SessionID' in status bar to 'MsgKey'.
