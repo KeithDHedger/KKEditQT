@@ -1674,7 +1674,6 @@ void KKEditClass::setTabsizeMenu(void)
 	tab=new QAction(tabsizes);
 	tab->setSeparator(true);
 
-	this->tabSizeDropMenu->addSeparator();
 	tab=new QAction("1 Space",tabsizes);
 	tab->setCheckable(true);
 	for(int j=2;j<13;j++)
