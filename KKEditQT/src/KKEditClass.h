@@ -133,7 +133,6 @@ class KKEditClass : public QObject
 		void							resetBit(int *data,int bit);
 		int							getBit(int data,int bit);
 
-
 //app prefs
 //document
 		bool							prefsIndent=true;
@@ -171,8 +170,6 @@ class KKEditClass : public QObject
 		bool							prefsUseSingle=true;
 		bool							prefsNagScreen=false;
 		bool							onExitSaveSession=false;
-
-int saved_stdout;
 
 //editor vars
 		QStatusBar					*statusBar;
@@ -264,6 +261,11 @@ int saved_stdout;
 		MenuItemClass				*toggleToolBarMenuItem;
 		MenuItemClass				*toggleToolWindowMenuItem;
 		MenuItemClass				*toggleStatusBarMenuItem;
+
+//int tabSize=4;
+//QMenu	*tabSizeDropMenu;
+//QActionGroup *tabsizes;
+
 
 //nav menu
 		QMenu						*navMenu;
@@ -453,6 +455,8 @@ int saved_stdout;
 	protected:
 	private:
 		int							maxSessions=24;
+		int							tabSize=-1;
+		QMenu						*tabSizeDropMenu=NULL;
 //app functions
 		void							restoreSession(int what);
 		void							handleMessages(void);
@@ -460,6 +464,8 @@ int saved_stdout;
 		void							clickMenu(QMenu *menu,QString name);
 		void							notDoneYet(QString string);
 		void							sendMessgage(QString msg);
+		void							setTabsizeMenu(void);
+
 //editor functions
 		void							setTabVisibilty(int tab,bool visible);
 		void							hideTab(int tabnum);

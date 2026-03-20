@@ -769,6 +769,8 @@ void KKEditClass::writeExitData(void)
 			this->prefs.setValue("app/geometry",rf);
 		}
 
+	if(this->tabSize!=-1)
+		this->prefsTabWidth=this->tabSize;
 	this->prefs.setValue("editor/funcsort",this->prefsFunctionMenuLayout);
 	this->prefs.setValue("editor/prefsdepth",this->prefsDepth);
 	this->prefs.setValue("editor/toolbarlayout",this->prefsToolBarLayout);
@@ -1652,3 +1654,49 @@ void KKEditClass::setMouseState(bool mouseon)
 		}
 }
 
+void KKEditClass::setTabsizeMenu(void)
+{
+	QActionGroup		*tabsizes;
+	QAction			*tab;
+
+	delete this->tabSizeDropMenu;
+
+	this->tabSizeDropMenu=new QMenu("Tab size",this->menuBar);
+	this->tabSizeDropMenu->setIcon(QIcon::fromTheme("format-indent-more"));
+
+	this->viewMenu->addMenu(this->tabSizeDropMenu);
+	tabsizes=new QActionGroup(this->tabSizeDropMenu);
+	tabsizes->setExclusive(true);
+	tab=new QAction(QString("%1 Spaces (prefs)").arg(this->prefsTabWidth),tabsizes);
+	tab->setChecked(true);
+	tab->setCheckable(true);
+
+	tab=new QAction(tabsizes);
+	tab->setSeparator(true);
+
+	this->tabSizeDropMenu->addSeparator();
+	tab=new QAction("1 Space",tabsizes);
+	tab->setCheckable(true);
+	for(int j=2;j<13;j++)
+		{
+			tab=new QAction(QString("%1 Spaces").arg(j),tabsizes);
+			tab->setCheckable(true);
+		}
+	this->tabSizeDropMenu->addActions(tabsizes->actions());
+
+	QObject::connect(tabsizes,&QActionGroup::triggered,this,[this](QAction *action)
+		{
+			const QString acttext=action->text();
+
+			if(this->tabSize==-1)
+				this->tabSize=this->prefsTabWidth;
+
+			this->prefsTabWidth=atoi(qPrintable(acttext));
+			for(int j=0;j<this->mainNotebook->count();j++)
+				{
+					DocumentClass *doc=this->getDocumentForTab(j);
+					QFontMetrics	fm(this->prefsDocumentFont);
+					doc->setTabStopDistance(fm.horizontalAdvance(" ")*this->prefsTabWidth);
+				}
+		});
+}

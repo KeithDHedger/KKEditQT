@@ -974,6 +974,8 @@ void KKEditClass::buildMainGui(void)
 	this->toggleCompletionsMenuItem=this->makeMenuItemClass(VIEWMENU,"Show Completions",0,NULL,"NOTNEEDED",TOGGLECOMPLETIONSMENUITEM);
 	this->toggleCompletionsMenuItem->setCheckable(true);
 	this->toggleCompletionsMenuItem->setChecked(this->showCompletions);
+//tab size
+	this->setTabsizeMenu();
 
 //navigation menu
 	this->navMenu=new QMenu("&Navigation",this->menuBar);

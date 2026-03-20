@@ -1545,6 +1545,9 @@ void KKEditClass::setPreferences(void)
 	this->showCompletions=this->prefsAutoShowCompletions;
 	this->toggleCompletionsMenuItem->setChecked(this->showCompletions);
 
+	this->tabSize=-1;
+	this->setTabsizeMenu();
+
 	this->resetAllFilePrefs();
 	this->writeExitData();
 	this->setAppShortcuts();
