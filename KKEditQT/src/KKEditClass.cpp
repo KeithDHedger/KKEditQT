@@ -1661,7 +1661,7 @@ void KKEditClass::setTabsizeMenu(void)
 
 	delete this->tabSizeDropMenu;
 
-	this->tabSizeDropMenu=new QMenu("Tab size",this->menuBar);
+	this->tabSizeDropMenu=new QMenu("Tab Size",this->menuBar);
 	this->tabSizeDropMenu->setIcon(QIcon::fromTheme("format-indent-more"));
 
 	this->viewMenu->addMenu(this->tabSizeDropMenu);
