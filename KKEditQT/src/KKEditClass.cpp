@@ -319,7 +319,7 @@ void KKEditClass::rebuildBookMarkMenu()
 
 	this->bookMarkMenu->clear();
 	menuItemSink=this->makeMenuItemClass(BOOKMARKSMENU,"Remove All Bookmarks",0,"list-remove",REMOVEALLBOOKMARKS,REMOVEALLBOOKMARKSMENUITEM);
-	menuItemSink=this->makeMenuItemClass(BOOKMARKSMENU,"Toggle Bookmark",QKeySequence::fromString("Ctrl+T"),DATADIR"/pixmaps/BookMark.png",TOGGLEBOOKMARK,TOGGLEBOOKMARKMENUITEM);
+	menuItemSink=this->makeMenuItemClass(BOOKMARKSMENU,"Toggle Bookmark",QKeySequence::fromString("Ctrl+T"),this->realDataDir+"/pixmaps/BookMark.png",TOGGLEBOOKMARK,TOGGLEBOOKMARKMENUITEM);
 
 	this->bookMarkMenu->addSeparator();
 	this->bookMarks.clear();
@@ -400,8 +400,12 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->sessionFolder=QString("%1/%2/%3").arg(this->homeFolder).arg(KKEDITFOLDER).arg("sesssions");
 	this->toolsFolder=QString("%1/%2/%3").arg(this->homeFolder).arg(KKEDITFOLDER).arg("tools");
 	this->recentFiles=new RecentMenuClass(this);
+	this->realDataDir=QString("%1%2").arg(getenv("APPDIR")).arg(DATADIR);
+	this->realBinDir=QString("%1%2").arg(getenv("APPDIR")).arg(BINDIR);
 
-	this->repository2.addCustomSearchPath(homeDataFolder);
+//qDebug()<<this->realDataDir<<this->realBinDir;
+
+	this->repository2.addCustomSearchPath(this->homeDataFolder);
 
 	QObject::connect(this->fileWatch,&QFileSystemWatcher::fileChanged,[this](const QString &path)
 		{
@@ -888,8 +892,9 @@ void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString c
 #ifdef _DEBUGCODE_
 	QString		app="KKEditQT/app/kkeditqtprogressbar";
 #else
-	QString		app="kkeditqtprogressbar";
+	QString		app=this->realBinDir+"/kkeditqtprogressbar";
 #endif
+
 	arguments<<"-c"<<QString("\"%6\" \"%1\" \"%2\" \"%3\" \"%4\" \"%5\"").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(maxitems).arg(controlfile).arg(app);
 	QProcess::startDetached("sh",arguments);
 }
@@ -1462,8 +1467,12 @@ void KKEditClass::loadPlugins(void)
 		}
 
 //global plugins
-	pluginsDir.setPath(QString("%1/plugins/").arg(DATADIR));
+	pluginsDir.setPath(QString("%1/plugins/").arg(this->realDataDir));
+	pluginsDir.setPath(this->realDataDir);
+
+
 	QDirIterator git(pluginsDir.canonicalPath(),QStringList("*.so"), QDir::Files,QDirIterator::Subdirectories);
+
 	while (git.hasNext())
 		{
 			QString			s=git.next();

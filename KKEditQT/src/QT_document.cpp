@@ -1401,19 +1401,19 @@ void DocumentClass::setTabColourType(int type)
 	switch(type)
 		{
 			case CHANGEDONDISKTAB:
-				tabicon=QIcon(QString("%1/pixmaps/changed.png").arg(DATADIR));
+				tabicon=QIcon(QString("%1/pixmaps/changed.png").arg(this->mainKKEditClass->realDataDir));
 				break;
 			case IGNORECHANGEDONDISKTAB:
-				tabicon=QIcon(QString("%1/pixmaps/ignore.png").arg(DATADIR));
+				tabicon=QIcon(QString("%1/pixmaps/ignore.png").arg(this->mainKKEditClass->realDataDir));
 				break;
 			case LOCKEDTAB:
-				tabicon=QIcon(QString("%1/pixmaps/locked.png").arg(DATADIR));
+				tabicon=QIcon(QString("%1/pixmaps/locked.png").arg(this->mainKKEditClass->realDataDir));
 				break;
 			case DIRTYTAB:
-				tabicon=QIcon(QString("%1/pixmaps/dirty.png").arg(DATADIR));
+				tabicon=QIcon(QString("%1/pixmaps/dirty.png").arg(this->mainKKEditClass->realDataDir));
 				break;
 			default:
-				tabicon=QIcon(QString("%1/pixmaps/empty.png").arg(DATADIR));
+				tabicon=QIcon(QString("%1/pixmaps/empty.png").arg(this->mainKKEditClass->realDataDir));
 				break;
 		}
 

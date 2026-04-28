@@ -1,3 +1,11 @@
+2.1.2
+Buildplugs script tweak.
+Removed unneeded script and file for qt5.
+Strip uinstalled helpers.
+Removed unneeded compile defines.
+Fixed doc plug missing file.
+Fixed install locations when creating appimage.
+
 2.1.1
 Added Tab size menu to View menu.
 Fixed desktop file.
@@ -927,7 +935,7 @@ Added plugin icon.
 Plugins can now be enabled/disabled without restart.
 
 0.2.0
-Installed example plugin to DATADIR/plugins.
+Installed example plugin to this->realDataDir/plugins.
 Plugins can now be enabled and disabled from the plug prefs.
 Moved plug code to PluginClass;
 Fixed not finding more than one plugin.

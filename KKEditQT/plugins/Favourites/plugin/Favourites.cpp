@@ -39,6 +39,7 @@ void FavouritesPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	QString	data;
 
 	this->mainKKEditClass=kk;
+	this->msgPath=QString("%1/kkeditqtmsg").arg(this->mainKKEditClass->realBinDir);
 	this->plugPath=pathtoplug;
 
 	data=QString("tail -n%1 '%2/favs' > /tmp/favs;cp /tmp/favs '%3/favs'").arg(MAXFAVS).arg(this->mainKKEditClass->homeDataFolder).arg(this->mainKKEditClass->homeDataFolder);
@@ -157,10 +158,6 @@ void FavouritesPlug::plugAbout(void)
 	msgBox.exec();
 }
 
-void FavouritesPlug::plugSettings(void)
-{
-}
-
 unsigned int FavouritesPlug::plugWants(void)
 {
 	return(DOABOUT);
@@ -174,8 +171,7 @@ void FavouritesPlug::doAction(QString data)
 		{
 			if(data.startsWith("file://"))
 				{
-					//command=QString("kkeditqtmsg -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->msgKey).arg(data.mid(7));
-					command=QString("kkeditqtmsg -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->msgKey).arg(data);
+					command=QString("%3 -k %1 -c 'openindocview' -d '%2'").arg(this->mainKKEditClass->msgKey).arg(data).arg(this->msgPath);
 					system(command.toStdString().c_str());
 				}
 			else
@@ -185,7 +181,7 @@ void FavouritesPlug::doAction(QString data)
 		}
 	else
 		{
-			command=QString("kkeditqtmsg -k %1 -c 'openfile' -d '%2'").arg(this->mainKKEditClass->msgKey).arg(data);
+			command=QString("%3 -k %1 -c 'openfile' -d '%2'").arg(this->mainKKEditClass->msgKey).arg(data).arg(this->msgPath);
 			system(command.toStdString().c_str());
 		}
 }

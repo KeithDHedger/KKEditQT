@@ -49,6 +49,8 @@ class KKEditClass : public QObject
 		QString						htmlFile;
 		QString						htmlURI;
 		QSettings					prefs;
+		QString						realDataDir;
+		QString						realBinDir;
 
 		int							gotManEditor;
 		int							gotPDFToText;
@@ -375,11 +377,11 @@ class KKEditClass : public QObject
 //prefswindow functions
 		void							makePrefsCheck(int widgnum,const QString label,bool onoff,int posx,int posy);
 		void							makePrefsDial(int widgnum,const QString label,int value,int minvalue,int maxvalue,int posy);
-		void							addIcon(const char* icon,const char* data,int toolnumber,const char* tooltip);
+		void							addIcon(QString icon,const char* data,int toolnumber,const char* tooltip);
 		void							populateDnD(void);
 		void							buildPrefsWindow(void);
 		void							doPrefs(void);
-		void							addIconToList(const char* name,int type);
+		void							addIconToList(QString name,int type);
 		void							populateStore(void);
 		void							resetKeyCombo(void);
 
@@ -457,6 +459,7 @@ class KKEditClass : public QObject
 		int							maxSessions=24;
 		int							tabSize=-1;
 		QMenu						*tabSizeDropMenu=NULL;
+
 //app functions
 		void							restoreSession(int what);
 		void							handleMessages(void);

@@ -369,8 +369,8 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 						setenv("KKEDIT_HTMLFILE",this->htmlFile.toStdString().c_str(),1);
 						command.replace("%h",this->htmlFile);
 						//%i
-						setenv("KKEDIT_DATADIR",DATADIR,1);
-						command.replace("%i",DATADIR);
+						setenv("KKEDIT_DATADIR",qPrintable(this->realDataDir),1);
+						command.replace("%i",this->realDataDir);
 
 						if(sl.at(TOOL_USE_BAR).section(TOOLUSEPOLE,1,1).trimmed().toInt()==1)
 							usebar=true;
@@ -529,9 +529,9 @@ void KKEditClass::doHelpMenuItems(MenuItemClass *mc)
 			 case ABOUTMENUITEM:
 			 	{
 					QString			content;
-					QFile			licencefile(DATADIR "/docs/gpl-3.0.txt");
+					QFile			licencefile(this->realDataDir+"/docs/gpl-3.0.txt");
 					bool			retval;
-					AboutBoxClass	*about=new AboutBoxClass(this->mainWindow,DATADIR "/pixmaps/" PACKAGE ".png");
+					AboutBoxClass	*about=new AboutBoxClass(this->mainWindow,this->realDataDir+"/pixmaps/" PACKAGE ".png");
 
 					retval=licencefile.open(QIODevice::Text | QIODevice::ReadOnly);
 					if(retval==true)
@@ -548,7 +548,7 @@ void KKEditClass::doHelpMenuItems(MenuItemClass *mc)
 			 	this->application->aboutQt();
 			 	break;
 			 case HELPMENUITEM:
-			 	AboutBoxClass	about;
+			 	AboutBoxClass	about(this);
 				about.showHelp();
 			 	break;
 		}

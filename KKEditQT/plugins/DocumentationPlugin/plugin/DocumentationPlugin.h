@@ -42,6 +42,9 @@ class DocumentationPlugin : public QObject, kkEditQTPluginInterface
 	private:
 		KKEditClass		*mainKKEditClass=NULL;
 		QString			plugPath;
+		QString			msgPath;
+		QString			readerPath;
+		
 		plugData			*data=NULL;
 		DocumentClass	*doc=NULL;
 		QMenu			*apiMenu=NULL;

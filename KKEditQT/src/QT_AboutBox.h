@@ -22,12 +22,13 @@
 #define _QT_ABOUTBOX_
 
 #include "internet.h"
+#include "KKEditClass.h"
 
 class AboutBoxClass : public QObject
 {
 	public:
 		AboutBoxClass(QWidget* window,QString pixpath);
-		AboutBoxClass(void);
+		AboutBoxClass(KKEditClass *kk);
 		~AboutBoxClass();
 
 		void		runAbout(void);
@@ -39,11 +40,12 @@ class AboutBoxClass : public QObject
 		void		showHelp(void);
 
 	private:
-		QDialog	*aboutDialog;
-		QDialog	*licenceDialog;
-		QDialog	*creditsDialog;
-		QString	licence;
-		QString	authors;
+		QDialog		*aboutDialog;
+		QDialog		*licenceDialog;
+		QDialog		*creditsDialog;
+		QString		licence;
+		QString		authors;
+		KKEditClass	*mainKKEditClass=NULL;
 };
 
 #endif

@@ -30,12 +30,12 @@ class OpenUri : public QObject, kkEditQTPluginInterface
 	Q_INTERFACES(kkEditQTPluginInterface)
 
 	public:
-		void			initPlug(KKEditClass *kk,QString pathtoplug) override;
-		void			unloadPlug(void) override;
-		void			plugAbout(void) override;
-		void			plugSettings(void) override {};
-		void			plugRun(plugData *data) override;
-		unsigned int	plugWants(void) override;
+		void				initPlug(KKEditClass *kk,QString pathtoplug) override;
+		void				unloadPlug(void) override;
+		void				plugAbout(void) override;
+		void				plugSettings(void) {};
+		void				plugRun(plugData *data) override;
+		unsigned int		plugWants(void) override;
 
 	private:
 		plugData			*data=NULL;

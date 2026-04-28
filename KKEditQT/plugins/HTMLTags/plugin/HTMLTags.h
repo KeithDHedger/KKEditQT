@@ -33,7 +33,7 @@ class HTMLTags : public QObject, kkEditQTPluginInterface
 		void				initPlug(KKEditClass *kk,QString pathtoplug) override;
 		void				unloadPlug(void) override;
 		void				plugAbout(void) override;
-		void				plugSettings(void) override {};
+		void				plugSettings(void) {};
 		void				plugRun(plugData *data) override;
 		unsigned int		plugWants(void) override;
 
@@ -45,6 +45,7 @@ class HTMLTags : public QObject, kkEditQTPluginInterface
 		QTextCursor		tc;
 		KKEditClass		*mainKKEditClass=NULL;
 		QString			plugPath="";
+		QString			msgPath;
 		plugData			*data=NULL;
 
 		QString			runPipeAndCapture(QString command);

@@ -27,6 +27,7 @@ void SymbolsMenuPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	QString	menustring;
 
 	this->mainKKEditClass=kk;
+	this->msgPath=QString("%1/kkeditqtmsg").arg(this->mainKKEditClass->realBinDir);
 	this->plugPath=pathtoplug;
 
 	this->symbolMenu=new QMenu("Symbols");
@@ -98,16 +99,11 @@ void SymbolsMenuPlug::plugAbout(void)
 					args<<QString("%1").arg(this->mainKKEditClass->msgKey);
 					args<<"-c"<<"openindocview";
 					args<<"-d"<<fileinfo.canonicalPath()+"/docs/help.html";
-					QProcess::startDetached("kkeditqtmsg",args);
+					QProcess::startDetached(this->msgPath,args);
 					this->mainKKEditClass->pluginPrefsWindow->hide();
 				}
 				break;
 		}
-}
-
-void SymbolsMenuPlug::plugSettings(void)
-{
-	//TODO//
 }
 
 unsigned int SymbolsMenuPlug::plugWants(void)

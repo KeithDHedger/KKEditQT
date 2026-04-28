@@ -5,7 +5,8 @@ HEADERS         = DocumentationPlugin.h
 SOURCES         = DocumentationPlugin.cpp
 INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting ../../../src 
 TARGET          = $$qtLibraryTarget(DocumentationPlugin)
-DESTDIR         = .plugins
+DESTDIR         = plugins
+INCLUDEPATH += /usr/include/KF6/KSyntaxHighlighting
 
 documentation.files = docs/*
 actions.files = actions/*
@@ -17,8 +18,6 @@ target.path = ../build/plugins
 data.path = $${target.path}
 documentation.path = $${target.path}/docs
 actions.path = $${target.path}/actions
-image.path = $${target.path}
-
 image.path = $${target.path}
 
 INSTALLS += target

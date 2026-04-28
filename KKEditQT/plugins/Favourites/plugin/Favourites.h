@@ -36,7 +36,7 @@ class FavouritesPlug : public QObject, kkEditQTPluginInterface
 		void						initPlug(KKEditClass *kk,QString pathtoplug) override;
 		void						unloadPlug(void) override;
 		void						plugAbout(void) override;
-		void						plugSettings(void) override;
+		void						plugSettings(void) {};
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 		void						plugRun(plugData *data) override {};
@@ -48,6 +48,7 @@ class FavouritesPlug : public QObject, kkEditQTPluginInterface
 		void						doAction(QString data);
 		KKEditClass				*mainKKEditClass=NULL;
 		QString					plugPath="";
+		QString					msgPath;
 		QMenu					*favouritesMenu=NULL;
 		QHash<int,QAction*>		favourites;
 		QMetaObject::Connection	favCon;

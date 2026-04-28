@@ -159,7 +159,7 @@ void TerminalPluginPlug::addTerminal(void)
 									filepath=QFileDialog::getOpenFileName(nullptr,"Open File",cwd,"",nullptr,QFileDialog::HideNameFilterDetails);
 									if(filepath.isEmpty()==false)
 										{
-											QString comm=QString("kkeditqtmsg -k %1 -c openfile -d '%2'").arg(this->mainKKEditClass->msgKey).arg(filepath);
+											QString comm=QString("%3 -k %1 -c openfile -d '%2'").arg(this->mainKKEditClass->msgKey).arg(filepath).arg(this->msgPath);
 											system(comm.toStdString().c_str());
 										}
 									qApp->clipboard()->setText(ht);
@@ -202,7 +202,7 @@ void TerminalPluginPlug::showDocs(void)
 		{
 			QString		comm;
 			QDir::setCurrent(this->folderPath);
-			comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(QString("'%1/%2'").arg(this->folderPath).arg("html/index.html"));
+			comm=QString("%3 -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(QString("'%1/%2'").arg(this->folderPath).arg("html/index.html")).arg(this->msgPath);
 			system(comm.toStdString().c_str());		
 		}
 }
@@ -212,6 +212,7 @@ void TerminalPluginPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	QSettings	plugprefs("KDHedger","TerminalPlugin");
 
 	this->mainKKEditClass=kk;
+	this->msgPath=QString("%1/kkeditqtmsg").arg(this->mainKKEditClass->realBinDir);
 	this->plugPath=pathtoplug;
 
 	srand(static_cast<unsigned int>(time(0)));
@@ -290,7 +291,7 @@ void TerminalPluginPlug::plugAbout(void)
 					args<<QString("%1").arg(this->mainKKEditClass->msgKey);
 					args<<"-c"<<"openindocview";
 					args<<"-d"<<fileinfo.canonicalPath()+"/docs/help.html";
-					QProcess::startDetached("kkeditqtmsg",args);
+					QProcess::startDetached(this->msgPath,args);
 					this->mainKKEditClass->pluginPrefsWindow->hide();
 				}
 				break;

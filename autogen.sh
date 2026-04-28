@@ -1,12 +1,5 @@
 #!/bin/bash
 
-if [ -e ./toolspath ];then
-	. ./toolspath
-else
-	./setuptools
-	. ./toolspath
-fi
-
 ./remakesourcelist
 
 aclocal

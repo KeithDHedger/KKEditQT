@@ -136,6 +136,7 @@ class TerminalPluginPlug : public QObject, kkEditQTPluginInterface
 
 	private:
 		KKEditClass				*mainKKEditClass;
+		QString					msgPath;
 		QString					plugPath="";
 		QMenu					*TerminalPluginMenu=NULL;
 		QMenu					*terminalsMenu=NULL;

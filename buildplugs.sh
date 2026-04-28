@@ -12,12 +12,7 @@ HILITE='\e[1;37;41m'
 
 echo -e "${RED}Running buildplugs.sh ...${NORMAL}"
 
-if [ -e ./toolspath ];then
-	. ./toolspath
-else
-	./setuptools
-	. ./toolspath
-fi
+QMAKEPATH="$(qtchooser -run-tool=qmake -qt=$(qtchooser -l|/usr/bin/grep 6) -query QT_INSTALL_BINS)/qmake"
 
 BUILDPLUGS=${BUILDPLUGS:-1}
 
@@ -63,6 +58,7 @@ buildPlug ()
 		"build")
 			mkdir -p build &>/dev/null
 			cd build &>/dev/null
+			rm .qmake.stash &>/dev/null||true
 			$QMAKEPATH .. &>/dev/null
 			make||exit 100
 			;;

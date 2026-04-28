@@ -459,7 +459,7 @@ void KKEditClass::buildPrefsWindow(void)
 	this->prefsWindow->setWindowModality(Qt::WindowModal);
 }
 
-void KKEditClass::addIcon(const char* icon,const char* data,int toolnumber,const char* tooltip)
+void KKEditClass::addIcon(QString icon,const char* data,int toolnumber,const char* tooltip)
 {
 	QIcon			qicon;
 	MenuItemClass	*menuitem=new MenuItemClass(icon,this);
@@ -494,14 +494,14 @@ void KKEditClass::populateDnD(void)
 	this->addIcon("dialog-question","G",9,"Go To Definition");
 	this->addIcon("go-previous","B",17,"Go Back");
 	this->addIcon("go-next","W",18,"Go Forward");
-	this->addIcon(DATADIR"/pixmaps/num.png","9",10,"Go To Line");
-	this->addIcon(DATADIR"/pixmaps/finddef.png","D",12,"Search For Define");
-	this->addIcon(DATADIR"/pixmaps/live.png","L",13,"Live Search");
-	this->addIcon(DATADIR"/pixmaps/sep.png","s",14,"Separator");
-	this->addIcon(DATADIR"/pixmaps/expand.png","E",15,"Expander");
+	this->addIcon(this->realDataDir+"/pixmaps/num.png","9",10,"Go To Line");
+	this->addIcon(this->realDataDir+"/pixmaps/finddef.png","D",12,"Search For Define");
+	this->addIcon(this->realDataDir+"/pixmaps/live.png","L",13,"Live Search");
+	this->addIcon(this->realDataDir+"/pixmaps/sep.png","s",14,"Separator");
+	this->addIcon(this->realDataDir+"/pixmaps/expand.png","E",15,"Expander");
 }
 
-void KKEditClass::addIconToList(const char* name,int type)
+void KKEditClass::addIconToList(QString name,int type)
 {
 	QIcon icon;
 	QListWidgetItem *iconw;
@@ -585,26 +585,26 @@ void KKEditClass::populateStore(void)
 						break;
 //go to line
 					case '9':
-						this->addIconToList(DATADIR"/pixmaps/num.png",'9');
+						this->addIconToList(this->realDataDir+"/pixmaps/num.png",'9');
 						this->tool[10]->setEnabled(false);
 						break;
 //find def
 					case 'D':
-						this->addIconToList(DATADIR"/pixmaps/finddef.png",'D');
+						this->addIconToList(this->realDataDir+"/pixmaps/finddef.png",'D');
 						this->tool[12]->setEnabled(false);
 						break;
 //live search
 					case 'L':
-						this->addIconToList(DATADIR"/pixmaps/live.png",'L');
+						this->addIconToList(this->realDataDir+"/pixmaps/live.png",'L');
 						this->tool[13]->setEnabled(false);
 						break;
 //seperator
 					case 's':
-						this->addIconToList(DATADIR"/pixmaps/sep.png",'s');
+						this->addIconToList(this->realDataDir+"/pixmaps/sep.png",'s');
 						break;
 //expander
 					case 'E':
-						this->addIconToList(DATADIR"/pixmaps/expand.png",'E');
+						this->addIconToList(this->realDataDir+"/pixmaps/expand.png",'E');
 						break;
 				}
 		}
@@ -794,11 +794,11 @@ void KKEditClass::buildMainGui(void)
 	this->fileMenu->addSeparator();
 
 //extras
-	menuItemSink=this->makeMenuItemClass(FILEMENU,"New Admin Editor",0,DATADIR"/pixmaps/ROOTKKEditQT.png",NEWADMINMENUNAME,NEWADMINEDMENUITEM);
-	menuItemSink=this->makeMenuItemClass(FILEMENU,"New Editor",0,DATADIR"/pixmaps/MenuKKEditQT.png",NEWEDITORMENUNAME,NEWEDMENUITEM);
+	menuItemSink=this->makeMenuItemClass(FILEMENU,"New Admin Editor",0,this->realDataDir+"/pixmaps/ROOTKKEditQT.png",NEWADMINMENUNAME,NEWADMINEDMENUITEM);
+	menuItemSink=this->makeMenuItemClass(FILEMENU,"New Editor",0,this->realDataDir+"/pixmaps/MenuKKEditQT.png",NEWEDITORMENUNAME,NEWEDMENUITEM);
 
 	if(gotManEditor==0)
-		menuItemSink=this->makeMenuItemClass(FILEMENU,"Manpage Editor QT",0,DATADIR"/pixmaps/ManPageEditorQT.png",MANEDITORMENUNAME,MANPAGEEDMENUITEM);
+		menuItemSink=this->makeMenuItemClass(FILEMENU,"Manpage Editor QT",0,this->realDataDir+"/pixmaps/ManPageEditorQT.png",MANEDITORMENUNAME,MANPAGEEDMENUITEM);
 
 	this->fileMenu->addSeparator();
 
@@ -1125,7 +1125,7 @@ void KKEditClass::buildTools(void)
 %m - Mime type of file. Passed to command as $KKEDIT_MIMETYPE\n\
 %s - Currnt session name. Passed to command as $KKEDIT_CURRENT_SESSION, may be empty\n\
 %h - Tempory file for displaying html in doc viewer. Passed to command as $KKEDIT_HTMLFILE\n\
-%i - The location of the globally installed tools. Passed to command as $KKEDIT_DATADIR\n\
+%i - The location of the globally installed tools. Passed to command as $KKEDIT_this->realDataDir\n\
 %p - Progress bar control file. Passed to command as $KKEDIT_BAR_CONTROL\n";
 
 	widgetlabel=new QLabel(info,this->toolsWindow);

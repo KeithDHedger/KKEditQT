@@ -440,7 +440,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	QMimeType		type;
 	QString			content="";
 	plugData			pd;
-	QIcon			tabicon(QString("%1/pixmaps/empty.png").arg(DATADIR));
+	QIcon			tabicon(QString("%1/pixmaps/empty.png").arg(this->realDataDir));
 	bool				isoktoopen=true;
 
 	QString			corrected=LFSTK_UtilityClass::LFSTK_strStr(filepath.toStdString(),"@").c_str();

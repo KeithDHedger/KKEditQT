@@ -27,6 +27,7 @@ void SaveHistory::initPlug(KKEditClass *kk,QString pathtoplug)//TODO//init more 
 	QIcon	itemicon3(QIcon::fromTheme("document-revert"));
 
 	this->mainKKEditClass=kk;
+	this->msgPath=QString("%1/kkeditqtmsg").arg(this->mainKKEditClass->realBinDir);
 	this->plugPath=pathtoplug;
 	this->saveHistoryMenuitem=new QAction("Clear Document History");
 	this->saveHistoryMenuitem->setIcon(itemicon);
@@ -93,7 +94,7 @@ void SaveHistory::showHistoryList(void)
 					args<<"-k"<<QString("%1").arg(this->mainKKEditClass->msgKey);
 					args<<"-c"<<"openfile";
 					args<<"-d"<<QString("%2/%3").arg(dir.canonicalPath()).arg(menuitem->text());
-					QProcess::execute("kkeditqtmsg",args);
+					QProcess::execute(this->msgPath,args);
 				});
 		}
 }
@@ -140,7 +141,7 @@ void SaveHistory::plugAbout(void)
 					args<<QString("%1").arg(this->mainKKEditClass->msgKey);
 					args<<"-c"<<"openindocview";
 					args<<"-d"<<fileinfo.canonicalPath()+"/docs/help.html";
-					QProcess::startDetached("kkeditqtmsg",args);
+					QProcess::startDetached(this->msgPath,args);
 					this->mainKKEditClass->pluginPrefsWindow->hide();
 				}
 				break;

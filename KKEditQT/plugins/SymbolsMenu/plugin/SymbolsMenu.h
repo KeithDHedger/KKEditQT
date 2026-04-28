@@ -36,7 +36,7 @@ class SymbolsMenuPlug : public QObject, kkEditQTPluginInterface
 		void						initPlug(KKEditClass *kk,QString pathtoplug) override;
 		void						unloadPlug(void) override;
 		void						plugAbout(void) override;
-		void						plugSettings(void) override;
+		void						plugSettings(void) {};
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 		void						plugRun(plugData *data) override {};
@@ -45,6 +45,7 @@ class SymbolsMenuPlug : public QObject, kkEditQTPluginInterface
 
 	private:
 		KKEditClass				*mainKKEditClass=NULL;
+		QString					msgPath;
 		QString					plugPath="";
 		QMenu					*symbolMenu=NULL;
 		QClipboard				*clipboard=NULL;

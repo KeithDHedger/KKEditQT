@@ -41,7 +41,7 @@ int main (int argc, char **argv)
 	QIcon::setFallbackThemeName("gnome");
 
 	kkedit=new KKEditClass(napp);
-    kkedit->splash=new QSplashScreen(QString(DATADIR)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
+    kkedit->splash=new QSplashScreen(QString(kkedit->realDataDir)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
 
 	kkedit->parser.addHelpOption();
 	kkedit->parser.addOptions(
@@ -91,20 +91,16 @@ int main (int argc, char **argv)
 	if(kkedit->parser.isSet("multi"))
 		{
 			kkedit->sessionBusy=true;
-			//kkedit->queueID=siapp->queueID;
-//			kkedit->msgKey=siapp->key;
-//			kkedit->forceDefaultGeom=!siapp->isOnX11;
-
 			kkedit->initApp(argc,argv);
 			kkedit->runCLICommands(siapp->queueID);
-			kkedit->application->setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));
+			kkedit->application->setWindowIcon(QIcon(kkedit->realDataDir+"/pixmaps/" PACKAGE ".png"));
 			siapp->isMulti=true;
 
 			kkedit->checkMessages->setSingleShot(true);
 			kkedit->checkMessages->start(kkedit->prefsMsgTimer);
 
 			kkedit->sessionBusy=false;
-kkedit->setToolbarSensitive();
+			kkedit->setToolbarSensitive();
 
 			status=kkedit->application->exec();
 			delete kkedit;
@@ -116,8 +112,6 @@ kkedit->setToolbarSensitive();
 		{
 			msgStruct	message;
 			int			msglen;
-			//kkedit->queueID=siapp->queueID;
-//			kkedit->msgKey=siapp->key;
 			msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s","");
 			message.mType=ACTIVATEAPPMSG;
 			msgsnd(siapp->queueID,&message,0,0);
@@ -127,18 +121,9 @@ kkedit->setToolbarSensitive();
 			delete siapp;
 			return(0);
 		}
-	else
-		{
-			//kkedit->queueID=siapp->queueID;
-			//kkedit->msgKey=siapp->key;
-		}
 
 	kkedit->splash->show();
-	//kkedit->queueID=siapp->queueID;
 	kkedit->forcedMultInst=kkedit->parser.isSet("multi");
-	//kkedit->msgKey=siapp->key;;
-	//kkedit->forceDefaultGeom=!siapp->isOnX11;
-
 	kkedit->initApp(argc,argv);
 
 //test plugs
@@ -155,9 +140,9 @@ kkedit->setToolbarSensitive();
 
 	kkedit->setToolbarSensitive();
 	if(getuid()!=0)
-		kkedit->application->setWindowIcon(QIcon(DATADIR "/pixmaps/" PACKAGE ".png"));
+		kkedit->application->setWindowIcon(QIcon(kkedit->realDataDir+"/pixmaps/" PACKAGE ".png"));
 	else
-		kkedit->application->setWindowIcon(QIcon(DATADIR"/pixmaps/KKEditRoot.png"));
+		kkedit->application->setWindowIcon(QIcon(kkedit->realDataDir+"/pixmaps/KKEditRoot.png"));
 
 	kkedit->splash->finish(kkedit->mainWindow);
 

@@ -2,12 +2,6 @@
 
 shopt -s nullglob
 
-if [ -e ./toolspath ];then
-	. ./toolspath
-else
-	./setuptools
-fi
-
 if [[ $RECOMPILEHEADER -eq 1 ]];then
 	pushd KKEditQT/src
 		echo "Compiling headers ..."

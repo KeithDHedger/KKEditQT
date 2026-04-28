@@ -135,8 +135,9 @@ void AboutBoxClass::showLicence(void)
 	delete this->licenceDialog;
 }
 
-AboutBoxClass::AboutBoxClass(void)
+AboutBoxClass::AboutBoxClass(KKEditClass *kk)
 {
+ 	this->mainKKEditClass=kk;
 }
 
 AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
@@ -215,7 +216,7 @@ void AboutBoxClass::showHelp(void)
 	docvlayout->setContentsMargins(MARGINS,MARGINS,MARGINS,MARGINS);
 	docvlayout->addWidget(te);
 
-	te->setSource(QUrl::fromLocalFile(QString("%1/%2").arg(DATADIR).arg("help/index.html")),QTextDocument::HtmlResource);
+	te->setSource(QUrl::fromLocalFile(QString("%1/%2").arg(mainKKEditClass->realDataDir).arg("help/index.html")),QTextDocument::HtmlResource);
 	te->setOpenExternalLinks(true);
 	hlayout=new QHBoxLayout;
 //back

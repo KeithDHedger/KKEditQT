@@ -101,7 +101,7 @@ void DocumentationPlugin::runAllSearchs(void)
 					out << "</html>" << Qt::endl;
 					html.close();
 					this->mainKKEditClass->htmlURI="file://"+this->mainKKEditClass->htmlFile;
-					comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile);
+					comm=QString("%3 -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile).arg(this->msgPath);
 					system(comm.toStdString().c_str());
 				}
 		}
@@ -127,7 +127,7 @@ void DocumentationPlugin::runSearch(QString command)
 
 			if(results.startsWith("Just Open\n")==true)
 				{
-					comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile);
+					comm=QString("%3 -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile).arg(this->msgPath);
 					system(comm.toStdString().c_str());
 					return;
 				}
@@ -137,14 +137,14 @@ void DocumentationPlugin::runSearch(QString command)
 				{
 					if(QString(reslist.at(0)).startsWith("Just Open\n")==true)
 						{
-							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile);
+							comm=QString("%3 -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile).arg(this->msgPath);
 							system(comm.toStdString().c_str());
 							return;
 						}
 
 					if(reslist.size()==3)
 						{
-							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(reslist.at(1));
+							comm=QString("%3 -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(reslist.at(1)).arg(this->msgPath);
 							system(comm.toStdString().c_str());
 							return;
 						}
@@ -170,7 +170,7 @@ void DocumentationPlugin::runSearch(QString command)
 							out << "</html>" << Qt::endl;
 							html.close();
 							this->mainKKEditClass->htmlURI="file://"+this->mainKKEditClass->htmlFile;
-							comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile);
+							comm=QString("%3 -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile).arg(this->msgPath);
 							system(comm.toStdString().c_str());
 						}
 				}
@@ -246,11 +246,10 @@ void DocumentationPlugin::showDocs(void)
 		{
 			QString		comm;
 			QDir::setCurrent(this->folderPath);
-			comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(QString("'%1/%2'").arg(this->folderPath).arg("html/index.html"));
+			comm=QString("%3 -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(QString("'%1/%2'").arg(this->folderPath).arg("html/index.html")).arg(this->msgPath);
 			system(comm.toStdString().c_str());		
 		}
 }
-
 
 void DocumentationPlugin::buildDocset(void)
 {
@@ -358,7 +357,7 @@ void DocumentationPlugin::buildDocset(void)
 					this->runPipeAndCapture(QString("cp '%1/html/Info.plist' '%2'").arg(this->tempFolderPath).arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset/Contents/"));
 					this->runPipeAndCapture(QString("convert '%1' -resize 16x16 '%2/icon.png'").arg(myprefs.boxes[2]->text()).arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset"));
 					this->runPipeAndCapture(QString("convert '%1' -resize 32x32 '%2/icon@2x.png'").arg(myprefs.boxes[2]->text()).arg(myprefs.boxes[3]->text()+"/"+myprefs.boxes[0]->text()+".docset"));
-					fp=popen("kkeditqttagreader Tokens.xml Token Name Type Path Anchor","r");
+					fp=popen(qPrintable(QString("%1 Tokens.xml Token Name Type Path Anchor").arg(this->readerPath)),"r");
 					if(fp!=NULL)
 						{
 							while(fgets(line,4095,fp))
@@ -400,7 +399,8 @@ void DocumentationPlugin::buildDocset(void)
 void DocumentationPlugin::showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile)//TODO//
 {
 	QStringList	arguments;
-	QString		app="kkeditqtprogressbar";
+	QString		app=QString("%1/kkeditqtprogressbar").arg(this->mainKKEditClass->realBinDir);
+//	this->msgPath=QString("%1/kkeditqtmsg").arg(this->mainKKEditClass->realBinDir);
 
 	arguments<<"-c"<<QString("\"%6\" \"%1\" \"%2\" \"%3\" \"%4\" \"%5\"").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(maxitems).arg(controlfile).arg(app);
 	QProcess::startDetached("sh",arguments);
@@ -609,7 +609,7 @@ void DocumentationPlugin::searchDoxyDocs(const QString txt)
 					out << "</body>" << Qt::endl;
 					out << "</html>" << Qt::endl;
 					html.close();
-					QString comm=QString("kkeditqtmsg -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile);
+					QString comm=QString("%3 -k %1 -c openindocview -d %2").arg(this->mainKKEditClass->msgKey).arg(this->mainKKEditClass->htmlFile).arg(this->msgPath);
 					system(comm.toStdString().c_str());
 				}
 			}
@@ -639,7 +639,8 @@ void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)
 
 	this->mainKKEditClass=kk;
 	this->plugPath=pathtoplug;
-
+	this->msgPath=QString("%1/kkeditqtmsg").arg(this->mainKKEditClass->realBinDir);
+	this->readerPath=QString("%1/kkeditqttagreader").arg(this->mainKKEditClass->realBinDir);
 	this->doxyMenu=new QAction("Build Documentation");
 	this->doxyMenu->setIcon(QIcon::fromTheme("edit-copy"));
 	QObject::connect(this->doxyMenu,&QAction::triggered,[this]()
@@ -769,7 +770,7 @@ void DocumentationPlugin::plugAbout(void)
 					args<<QString("%1").arg(this->mainKKEditClass->msgKey);
 					args<<"-c"<<"openindocview";
 					args<<"-d"<<fileinfo.canonicalPath()+"/docs/help.html";
-					QProcess::startDetached("kkeditqtmsg",args);
+					QProcess::startDetached(this->msgPath,args);
 					this->mainKKEditClass->pluginPrefsWindow->hide();
 				}
 				break;

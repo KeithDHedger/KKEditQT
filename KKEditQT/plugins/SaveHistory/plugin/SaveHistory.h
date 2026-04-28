@@ -33,12 +33,13 @@ class SaveHistory : public QObject, kkEditQTPluginInterface
 		void						initPlug(KKEditClass *kk,QString pathtoplug) override;
 		void						unloadPlug(void) override;
 		void						plugAbout(void) override;
-		void						plugSettings(void) override {};
+		void						plugSettings(void) {};
 		void						plugRun(plugData *data) override;
 		unsigned int				plugWants(void) override;
 
 	private:
 		plugData					*data=NULL;
+		QString					msgPath;
 		QString 					homeDataFolder="";
 		QString					docName="";
 		QString					docDir="";

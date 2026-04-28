@@ -1,31 +1,16 @@
 
 include ../flagsandlibs
 
-MSGAPP=kkeditqtmsg
-TAGREADERAPP=kkeditqttagreader
-BARAPP=kkeditqtprogressbar
+#libexecdir = $(exec_prefix)/libexec/KKEditQT
+
+bin_PROGRAMS = kkeditqtmsg kkeditqttagreader kkeditqtprogressbar
+
+kkeditqtmsg_SOURCES = kkeditqtmsg.cpp
+kkeditqttagreader_SOURCES = kkeditqttagreader.cpp
+kkeditqtprogressbar_SOURCES = kkeditqtprogressbar.cpp
 
 all:
-	g++ $(MSGAPP).cpp -o $(MSGAPP)
-	g++ $(TAGREADERAPP).cpp $(QTCORE_CFLAGS) $(QTCORE_LIBS) -fPIC -o $(TAGREADERAPP)
-	g++ $(BARAPP).cpp $(QTWIDGETS_CFLAGS) $(QTWIDGETS_LIBS) -fPIC -o $(BARAPP)
+	strip --strip-all kkeditqtmsg
+	strip --strip-all kkeditqttagreader
+	strip --strip-all kkeditqtprogressbar
 
-install:
-	mkdir -p $(DESTDIR)$(prefix)/bin
-	cp $(MSGAPP) $(TAGREADERAPP) $(BARAPP) $(DESTDIR)${prefix}/bin/
-	strip --strip-all $(DESTDIR)${prefix}/bin/$(MSGAPP)
-	strip --strip-all $(DESTDIR)${prefix}/bin/$(TAGREADERAPP)
-	strip --strip-all $(DESTDIR)${prefix}/bin/$(BARAPP)
-
-uninstall:
-	rm $(DESTDIR)${prefix}/bin/$(MSGAPP)
-	rm $(DESTDIR)${prefix}/bin/$(TAGREADERAPP)
-	rm $(DESTDIR)${prefix}/bin/$(BARAPP)
-
-clean:
-	rm -f $(MSGAPP)
-	rm -f $(TAGREADERAPP)
-	rm -f $(BARAPP)
-
-distclean: clean
-	rm Makefile

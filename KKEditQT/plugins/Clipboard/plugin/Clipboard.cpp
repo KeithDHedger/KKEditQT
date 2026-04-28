@@ -86,11 +86,6 @@ void ClipboardPlug::plugAbout(void)
 	msgBox.exec();
 }
 
-void ClipboardPlug::plugSettings(void)
-{
-	//TODO//
-}
-
 unsigned int ClipboardPlug::plugWants(void)
 {
 	return(DOABOUT);

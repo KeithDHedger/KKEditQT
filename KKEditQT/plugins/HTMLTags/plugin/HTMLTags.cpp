@@ -53,6 +53,7 @@ void HTMLTags::initPlug(KKEditClass *kk,QString pathtoplug)
 	QMenu		*usingmenu=NULL;
 
 	this->mainKKEditClass=kk;
+	this->msgPath=QString("%1/kkeditqtmsg").arg(this->mainKKEditClass->realBinDir);
 	this->plugPath=pathtoplug;
 
 	command=QString("find '%1/actions' -mindepth 1 -iname '*' -exec basename '{}' \\; |sort -V").arg(QFileInfo(this->plugPath).absolutePath());
@@ -199,7 +200,7 @@ void HTMLTags::plugAbout(void)
 					args<<QString("%1").arg(this->mainKKEditClass->msgKey);
 					args<<"-c"<<"openindocview";
 					args<<"-d"<<fileinfo.canonicalPath()+"/docs/help.html";
-					QProcess::startDetached("kkeditqtmsg",args);
+					QProcess::startDetached(this->msgPath,args);
 					this->mainKKEditClass->pluginPrefsWindow->hide();
 				}
 				break;
