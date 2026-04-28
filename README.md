@@ -28,12 +28,12 @@ The usual source view options, line wrap, line numbers etc.<br>
 <br>
 Ported to QT5/6.<br>
 <br>
-+ When building from a fesh clone for the first time, please use ./autogen.sh, args passed to autogen.sh are the same for configure, this only needs to be done on a fresh clone<br>
++ When building from a fresh clone for the first time, please use ./autogen.sh, args passed to autogen.sh are the same for configure, this only needs to be done on a fresh clone<br>
 
-This is the QT5/6 version of KKEdit.<br>
+This is the QT6 version of KKEdit.<br>
 I now consider this version to be fully functional.<br>
 
-If updating please run the 'setuptools' script FIRST!<br>
+There is an experimental appimage in releases, this is supplied 'as is'.
 
 BUGS etc.
 kdhedger68713@gmail.com
@@ -45,6 +45,5 @@ Scripting ( Major, mostly done )<br>
 
 Documentation :(<br>
 
-More themes<br>
-More filetypes syntax highlighting<br>
+
 
