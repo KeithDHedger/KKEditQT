@@ -338,10 +338,13 @@ void KKEditClass::moveTabToRight(int newpos)
 		{
 			int tabnum=this->mainNotebook->currentIndex();
 			DocumentClass *doc=this->getDocumentForTab(tabnum);
-			this->mainNotebook->removeTab(tabnum);
-			this->mainNotebook->insertTab(newpos,doc,doc->getFileName());
-			this->mainNotebook->setCurrentIndex(0);
-			this->mainNotebook->setCurrentIndex(newpos);
+			if(doc!=NULL)
+				{
+					this->mainNotebook->removeTab(tabnum);
+					this->mainNotebook->insertTab(newpos,doc,doc->getFileName());
+					this->mainNotebook->setCurrentIndex(0);
+					this->mainNotebook->setCurrentIndex(newpos);
+				}
 	}
 }
 

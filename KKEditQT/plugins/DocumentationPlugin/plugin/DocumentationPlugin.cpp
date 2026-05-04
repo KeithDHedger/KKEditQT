@@ -637,6 +637,9 @@ void DocumentationPlugin::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->noStatusInfo=true;
 	this->customCommand=plugprefs.value("customcommand").toString();
 
+	if(this->customCommand.isEmpty()==true)
+		this->customCommand="zeal %p";
+
 	this->mainKKEditClass=kk;
 	this->plugPath=pathtoplug;
 	this->msgPath=QString("%1/kkeditqtmsg").arg(this->mainKKEditClass->realBinDir);

@@ -402,7 +402,6 @@ bool KKEditClass::possibleNonText(QString filepath)
 					return(true);
 				}
 		}
-
 //possible bad file
 	if(!file.open(QIODevice::ReadOnly))
 		{

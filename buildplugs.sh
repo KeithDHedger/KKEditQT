@@ -85,14 +85,19 @@ if [ $BUILDPLUGS -eq 1 ];then
 				LOCAL=1 buildPlug "install"
 			popd &>/dev/null
 		else
-			while read
-				do
-					pushd $(dirname $REPLY) &>/dev/null
-						waitforjobs $MAXJOBS
-						( buildPlug "$1" "$2" ) &
-					popd &>/dev/null
-
-				done < <(find -maxdepth 2 -iname "*.pro")
+			#if [[ "X$2" = "X" ]];then 
+				while read
+					do
+						pushd $(dirname $REPLY) &>/dev/null
+							waitforjobs $MAXJOBS
+							( buildPlug "$1" "$2" ) &
+						popd &>/dev/null
+					done < <(find -maxdepth 2 -iname "*.pro")
+			#else
+			#	pushd $2 &>/dev/null
+			#		buildPlug "$1" "$2"
+			#	popd &>/dev/null	
+			#fi
 		fi
 	popd
 fi

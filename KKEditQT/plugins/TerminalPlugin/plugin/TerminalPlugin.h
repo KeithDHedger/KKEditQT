@@ -38,12 +38,13 @@ class TerminalWidget : public QWidget
 		qint64				xtermPID=0;
 		QString				plugPath="";
 
-		TerminalWidget(QString termname,QWidget *parent = nullptr) : QWidget(parent)
+		TerminalWidget(KKEditClass *kk,QString termname,QWidget *parent = nullptr) : QWidget(parent)
 			{
 				this->termName=termname;
 				this->resize(parent->size());
 				this->parentWidget=parent;
 				this->setFocusPolicy(Qt::NoFocus);
+				this->mainKKEditClass=kk;
 			}
 
 		void startXTerm(void)
@@ -107,6 +108,7 @@ class TerminalWidget : public QWidget
 					}
 			}
 	private:
+		KKEditClass	*mainKKEditClass=NULL;
 };
 
 struct termDataStruct

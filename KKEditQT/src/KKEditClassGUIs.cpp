@@ -1416,6 +1416,7 @@ bool KKEditClass::openFileDialog(void)
 {
 	chooserDialogClass	chooser(chooserDialogType::loadDialog);
 	int					ci=this->mainNotebook->currentIndex()+1;
+	bool					goodfile=false;
 
 	chooser.setMultipleSelect(true);
 	chooser.gFind->LFSTK_sortByTypeAndName();
@@ -1433,7 +1434,11 @@ bool KKEditClass::openFileDialog(void)
 	if(chooser.multiFileList.count()>0)
 		{
 			for(int j=0;j<chooser.multiFileList.count();j++)
-				this->openFile(chooser.multiFileList.at(j).toUtf8().constData(),0,true);
+				{
+					goodfile=this->openFile(chooser.multiFileList.at(j).toUtf8().constData(),0,true);
+					if(goodfile==false)
+						continue;
+				}
 		}
 	this->openFromDialog=false;
 	this->moveTabToRight(ci);

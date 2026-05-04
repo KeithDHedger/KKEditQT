@@ -58,7 +58,7 @@ void TerminalPluginPlug::addTerminal(void)
 	newdw->setContextMenuPolicy(Qt::CustomContextMenu);
 	newdw->setVisible(false);
 
-    newconsole=new TerminalWidget(QString("%1%2").arg(this->baseName).arg(this->namenum++),newdw);
+    newconsole=new TerminalWidget(this->mainKKEditClass,QString("%1%2").arg(this->baseName).arg(this->namenum++),newdw);
 	newconsole->backCol=plugprefs.value("backcolour","white").toString();
 	newconsole->foreCol=plugprefs.value("forecolour","black").toString();
 	newconsole->plugPath=QFileInfo(this->plugPath).absolutePath();
@@ -106,19 +106,19 @@ void TerminalPluginPlug::addTerminal(void)
 						{
 							case 101://copy
 								{
-									QString s=QString("xvkbd -window %1 -text \"\\C\\SC\"").arg(this->terminals.at(whome).console->xtermWinID);
+									QString s=QString("xdotool key -window %1 \"ctrl+shift+c\"").arg(this->terminals.at(whome).console->xtermWinID);
 									system(s.toStdString().c_str());
 								}
-							break;
+								break;
 							case 102://paste
 								{
-									QString s=QString("xvkbd -window %1 -text \"\\C\\SV\"").arg(this->terminals.at(whome).console->xtermWinID);
+									QString s=QString("xdotool key -window %1 \"ctrl+shift+v\"").arg(this->terminals.at(whome).console->xtermWinID);
 									system(s.toStdString().c_str());
 								}
 								break;
 							case 103://paste in "
 								{
-									QString s=QString("xvkbd -window %1 -text \"\\\"\\C\\SV\\\"\"").arg(this->terminals.at(whome).console->xtermWinID);
+									QString s=QString("xdotool key -window %1 quotedbl + \"ctrl+shift+v\" + quotedbl").arg(this->terminals.at(whome).console->xtermWinID);
 									system(s.toStdString().c_str());
 								}
 								break;
@@ -126,8 +126,7 @@ void TerminalPluginPlug::addTerminal(void)
 								{
 									QString	ht=qApp->clipboard()->text();
 									qApp->clipboard()->setText(QString("cd '%1'").arg(this->folderPath));
-
-									QString s=QString("xvkbd -window %1 -no-jump-pointer -xsendevent -text \"\\C\\SV\"").arg(this->terminals.at(whome).console->xtermWinID);
+									QString s=QString("xdotool key -window %1 \"ctrl+shift+v\"").arg(this->terminals.at(whome).console->xtermWinID);
 									system(s.toStdString().c_str());
 									qApp->processEvents();
 									s=QString("xdotool key -window %1 Return").arg(this->terminals.at(whome).console->xtermWinID);
@@ -141,21 +140,15 @@ void TerminalPluginPlug::addTerminal(void)
 									QString	filepath="";
 									QString	cwd="";
 									QString	ht=qApp->clipboard()->text();
-									int		cnt=0;
-
-									QString d=QString("echo 'echo $(pwd)|xclip -selection clipboard -i'|xclip -selection clipboard -i;xvkbd -window %1 -no-jump-pointer -xsendevent -text '\\C\\SV' >/dev/null 2>/dev/null;echo ''|xclip -selection clipboard -i;xvkbd -window %1 -no-jump-pointer -xsendevent -text '\\n' >/dev/null 2>/dev/null").arg(this->terminals.at(whome).console->xtermWinID);
-									system(d.toStdString().c_str());
+								
+									QString s=QString("pwd|xclip -selection clipboard");
+									qApp->clipboard()->setText(s);
+									s=QString("xdotool key -window %1 \"ctrl+shift+v\"").arg(this->terminals.at(whome).console->xtermWinID);
+									system(s.toStdString().c_str());
+									qApp->processEvents();
+									s=QString("xdotool key -window %1 Return").arg(this->terminals.at(whome).console->xtermWinID);
+									system(s.toStdString().c_str());
 									cwd=qApp->clipboard()->text(QClipboard::Clipboard).trimmed();
-									while(cwd.isEmpty()==true && cnt<50)
-										{
-											cwd=qApp->clipboard()->text(QClipboard::Clipboard).trimmed();
-											cnt++;
-										}
-									if(cnt>=50)
-										{
-											qApp->clipboard()->setText(ht);
-											return;
-										}
 									filepath=QFileDialog::getOpenFileName(nullptr,"Open File",cwd,"",nullptr,QFileDialog::HideNameFilterDetails);
 									if(filepath.isEmpty()==false)
 										{

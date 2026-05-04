@@ -65,7 +65,7 @@ QIcon chooserDialogClass::getFileIcon(QString path)
 					if((QFileInfo(path).size()<MAXIMAGESIZETOTHUMB) && (this->showThumbsInList==true))
 						icon=QIcon(path);
 					else
-						icon=QIcon::fromTheme(type.iconName());
+						icon=QIcon::fromTheme(type.iconName(),QIcon::fromTheme("image"));
 				}
 			else
 				{
@@ -212,6 +212,11 @@ void chooserDialogClass::showPreViewData(void)
 	if(type.name().contains("image"))
 		{
 			pixmap=QIcon(this->selectedFilePath).pixmap(QSize(128,128));
+			if(pixmap.isNull()==true)
+				{
+					icon=QIcon::fromTheme(type.iconName(),QIcon::fromTheme("image"));
+					pixmap=icon.pixmap(QSize(128,128));
+				}
 		}
 	else
 		{
@@ -801,8 +806,10 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 	r=prefs.value("size",QVariant(QRect(50,50,800,600))).value<QRect>();
 	this->dialogWindow.setGeometry(r);
 
-	command=QString("pushd %1/ >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd >/dev/null").arg(this->recentFilesPath).arg(this->maxRecents);
+	//command=QString("pushd %1/ >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd >/dev/null").arg(this->recentFilesPath).arg(this->maxRecents);
+	command=QString("cd %1/ >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}'").arg(this->recentFilesPath).arg(this->maxRecents);
 	system(command.toStdString().c_str());
-	command=QString("pushd %1 >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd >/dev/null").arg(this->recentFoldersPath).arg(this->maxRecents);
+	//command=QString("pushd %1 >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}';popd >/dev/null").arg(this->recentFoldersPath).arg(this->maxRecents);
+	command=QString("cd %1 >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}'").arg(this->recentFoldersPath).arg(this->maxRecents);
 	system(command.toStdString().c_str());
 }

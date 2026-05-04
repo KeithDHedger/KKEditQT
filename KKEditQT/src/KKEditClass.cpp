@@ -403,9 +403,8 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->realDataDir=QString("%1%2").arg(getenv("APPDIR")).arg(DATADIR);
 	this->realBinDir=QString("%1%2").arg(getenv("APPDIR")).arg(BINDIR);
 
-//qDebug()<<this->realDataDir<<this->realBinDir;
-
 	this->repository2.addCustomSearchPath(this->homeDataFolder);
+	this->repository2.addCustomSearchPath(QString("%1%2%3").arg(getenv("APPDIR")).arg(DATAROOTDIR).arg("/org.kde.syntax-highlighting"));
 
 	QObject::connect(this->fileWatch,&QFileSystemWatcher::fileChanged,[this](const QString &path)
 		{
@@ -477,6 +476,10 @@ void KKEditClass::initApp(int argc,char** argv)
 		{
 			this->doTimer();
 		});
+
+	QIcon::setThemeSearchPaths(QStringList()<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME")));
+	QIcon::setFallbackSearchPaths(QStringList()<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME")));
+	QIcon::setFallbackThemeName("gnome");
 
 	this->buildMainGui();
 	this->buildPrefsWindow();

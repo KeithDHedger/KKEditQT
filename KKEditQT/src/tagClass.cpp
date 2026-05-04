@@ -78,7 +78,7 @@ void tagClass::getTagList(QStringList filepaths,int sorttype)
 	for(int k=0;k<filepaths.count();k++)
 		paths+="'"+filepaths.at(k)+"' ";
 
-	command=QString("ctags -x %1 | %2 | sed 's@ \\+@ @g'").arg(paths).arg(sort);
+	command=QString("%3/ctags -x %1 | %2 | sed 's@ \\+@ @g'").arg(paths).arg(sort).arg(this->mainKKEditClass->realBinDir);
 
 	if(filepaths.count()>200)
 		{

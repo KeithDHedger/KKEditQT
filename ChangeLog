@@ -1,7 +1,18 @@
+2.1.3
+Removed some non-critical error messages.
+Fixed segfault on trying to open non-text file.
+Set 'gnome' as default fallback theme.
+Added ~/.icons to theme search path.
+Corrected paths in plugins.
+Usue image mime-type in file dialog previes if can't open image file.
+Fixed image mime-type in file dialog list.
+Fixed search paths when creating app image.
+Removed dep on xvkbd in terminal plugin..
+
 2.1.2
 Buildplugs script tweak.
 Removed unneeded script and file for qt5.
-Strip uinstalled helpers.
+Strip installed helpers.
 Removed unneeded compile defines.
 Fixed doc plug missing file.
 Fixed install locations when creating appimage.

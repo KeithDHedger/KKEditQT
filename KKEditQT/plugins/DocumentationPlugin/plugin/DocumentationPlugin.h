@@ -51,7 +51,7 @@ class DocumentationPlugin : public QObject, kkEditQTPluginInterface
 		QAction			*doxyMenu=NULL;
 		QAction			*docsetMenu=NULL;
 		QAction			*showDocsMenu=NULL;
-		QString			customCommand="";
+		QString			customCommand;
 		QAction			*customCommandMenu=NULL;
 		bool				noStatusInfo=true;
 		QStringList		resList;
