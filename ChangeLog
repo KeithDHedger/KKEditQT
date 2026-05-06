@@ -1,4 +1,12 @@
 2.1.3
+Fixed bashism's in doc plugin.
+Fixed some hardcoded paths in doc plugin.
+Fixed button icons on help/about/open.
+Converted help images to pngs from gifs.
+Set help document search paths.
+Fixed some icon names.
+Set installed default icons as default fallback theme.
+Added default icons to install.
 Removed some non-critical error messages.
 Fixed segfault on trying to open non-text file.
 Set 'gnome' as default fallback theme.

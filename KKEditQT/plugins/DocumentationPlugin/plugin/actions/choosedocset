@@ -6,8 +6,6 @@ echo "Just Open"
 
 DOCSETS=~/.local/share/Zeal/Zeal/docsets
 DBNAME=docSet.dsidx
-#basic_string
-#QFileInfo
 
 DOCSET=$(find ~/.local/share/Zeal/Zeal/docsets -mindepth 4 -maxdepth 4 -iname "*.dsidx"|sort|awk -F/ '{print $(NF  -3) }'|sed -n 's/\(.*\)\.docset/\1/p'|yadqt --type=getitem -t "Search docset" -b "Choose set" --fromstdin --ipseparator=newline)
 result=$?
@@ -66,15 +64,6 @@ if [[ $result -eq 0 ]];then
 	echo "</body>">>"$HTMLFILE"
 	echo "</html>">>"$HTMLFILE"
 
-#	if [[ ${foundcnt} -eq 1 ]];then
-#		echo '<!DOCTYPE html>' >"$HTMLFILE"
-#		echo '<html>' >>"$HTMLFILE"
-#		echo '<head>'>>"$HTMLFILE"
-#		echo '<meta http-equiv="refresh" content="0; url='"$holdpath"'" />' >>"$HTMLFILE"
-#		echo '</head>' >>"$HTMLFILE"
-#		echo '</html>' >>"$HTMLFILE"
-#	fi
-
 fi
 
-exit 100
+exit 0

@@ -642,7 +642,7 @@ void chooserDialogClass::buildMainGui(void)
 
 	hlayout=new QHBoxLayout;
 	QPushButton *cancel=new QPushButton("Cancel");
-	cancel->setIcon(QIcon::fromTheme("stock_cancel"));
+	cancel->setIcon(QIcon::fromTheme("dialog-cancel"));
 	QObject::connect(cancel,&QPushButton::clicked,[this]()
 		{
 			this->dialogWindow.hide();
@@ -652,7 +652,7 @@ void chooserDialogClass::buildMainGui(void)
 
 	QPushButton *hidden=new QPushButton("Hidden");
 	hidden->setCheckable(true);
-	hidden->setIcon(QIcon::fromTheme("stock_dialog_question"));
+	hidden->setIcon(QIcon::fromTheme("dialog-question"));
 	QObject::connect(hidden,&QPushButton::clicked,[this]()
 		{
 			this->showHidden=!this->showHidden;
@@ -689,7 +689,7 @@ void chooserDialogClass::buildMainGui(void)
 		apply=new QPushButton("Open");
 	else
 		apply=new QPushButton("Save");
-	apply->setIcon(QIcon::fromTheme("stock_apply"));
+	apply->setIcon(QIcon::fromTheme("dialog-ok"));
 	apply->setDefault(true);
 
 	QObject::connect(apply,&QPushButton::clicked,[this]()

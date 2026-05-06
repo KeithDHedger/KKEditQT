@@ -795,6 +795,7 @@ void KKEditClass::buildMainGui(void)
 
 //extras
 	menuItemSink=this->makeMenuItemClass(FILEMENU,"New Admin Editor",0,this->realDataDir+"/pixmaps/ROOTKKEditQT.png",NEWADMINMENUNAME,NEWADMINEDMENUITEM);
+
 	menuItemSink=this->makeMenuItemClass(FILEMENU,"New Editor",0,this->realDataDir+"/pixmaps/MenuKKEditQT.png",NEWEDITORMENUNAME,NEWEDMENUITEM);
 
 	if(gotManEditor==0)
@@ -840,9 +841,9 @@ void KKEditClass::buildMainGui(void)
 	this->printMenuItem=this->makeMenuItemClass(FILEMENU,"Print",QKeySequence::Print,"document-print",PRINTMENUNAME,PRINTMENUITEM);
 //export/import
 	if(this->gotPDFCrop==0)
-		menuItemSink=this->makeMenuItemClass(FILEMENU,"Export To PDF",0,"stock_export",EXPORTTOPDFMENUNAME,EXPORTTOPDFMENUITEM);
+		menuItemSink=this->makeMenuItemClass(FILEMENU,"Export To PDF",0,"document-export",EXPORTTOPDFMENUNAME,EXPORTTOPDFMENUITEM);
 	if(this->gotPDFToText==0)
-		menuItemSink=this->makeMenuItemClass(FILEMENU,"Import From PDF",0,"stock_export",IMPORTFROMPDFMENUNAME,IMPORTFROMPDFMENUITEM);
+		menuItemSink=this->makeMenuItemClass(FILEMENU,"Import From PDF",0,"document-import",IMPORTFROMPDFMENUNAME,IMPORTFROMPDFMENUITEM);
 
 	this->fileMenu->addSeparator();
 
@@ -983,7 +984,7 @@ void KKEditClass::buildMainGui(void)
 
 //goto define
 	goToDefineMenuItem=this->makeMenuItemClass(NAVMENU,"Go To Definition",0,"dialog-question",GOTODEFMENUNAME,GOTODEFINEMENUITEM);
-	goToDefineMenuSingleItem=this->makeMenuItemClass(NOMENU,"Go To Definition In This Page",0,"stock_info",GOTODEFMENUSINGLENAME,GOTODEFINEMENUSINGLEITEM);
+	goToDefineMenuSingleItem=this->makeMenuItemClass(NOMENU,"Go To Definition In This Page",0,"dialog-information",GOTODEFMENUSINGLENAME,GOTODEFINEMENUSINGLEITEM);
 	
 //open include
 	menuItemSink=this->makeMenuItemClass(NAVMENU,"Open Include File",QKeySequence::fromString("Ctrl+I"),"document-open",OPENINCLUDEMENUNAME,OPENINCLUDEMENUITEM);

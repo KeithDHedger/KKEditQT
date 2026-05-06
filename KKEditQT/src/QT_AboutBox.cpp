@@ -71,7 +71,7 @@ void AboutBoxClass::showCredits(void)
 	QObject::connect(button,&QPushButton::clicked,[=]() {this->creditsDialog->close();});
 	hlayout->addWidget(button);
 
-	button->setIcon(QIcon::fromTheme("window-close"));
+	button->setIcon(QIcon::fromTheme("dialog-cancel"));
 	hlayout->insertStretch(0,1);
 	vlayout->addWidget(hbox);
 
@@ -117,7 +117,7 @@ void AboutBoxClass::showLicence(void)
 
 	button=new QPushButton("&Close");
 	QObject::connect(button,&QPushButton::clicked,[=]() {this->licenceDialog->close();});
-	button->setIcon(QIcon::fromTheme("window-close"));
+	button->setIcon(QIcon::fromTheme("dialog-cancel"));
 	hlayout->addWidget(button);
 
 	hlayout->insertStretch(0,1);
@@ -199,7 +199,7 @@ AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
 	button=new QPushButton("&Close");
 	QObject::connect(button,&QPushButton::clicked,[=]() {this->killAboutBox();});
 	hlayout->addWidget(button);
-	button->setIcon(QIcon::fromTheme("window-close"));
+	button->setIcon(QIcon::fromTheme("dialog-cancel"));
 
 	vlayout->addWidget(hbox);
 	this->aboutDialog->setLayout((QLayout*)vlayout);
@@ -216,12 +216,17 @@ void AboutBoxClass::showHelp(void)
 	docvlayout->setContentsMargins(MARGINS,MARGINS,MARGINS,MARGINS);
 	docvlayout->addWidget(te);
 
+te->setSearchPaths(QStringList()<<QString("%1/help").arg(mainKKEditClass->realDataDir));
 	te->setSource(QUrl::fromLocalFile(QString("%1/%2").arg(mainKKEditClass->realDataDir).arg("help/index.html")),QTextDocument::HtmlResource);
+te->setSearchPaths(QStringList()<<QString("%1/help").arg(mainKKEditClass->realDataDir));
 	te->setOpenExternalLinks(true);
 	hlayout=new QHBoxLayout;
 //back
+qDebug()<<te->searchPaths();
 
 	button=new QPushButton("&Back");
+	button->setIcon(QIcon::fromTheme("go-previous"));
+
 	QObject::connect(button,&QPushButton::clicked,[te]()
 		{
 			te->backward();
@@ -229,6 +234,7 @@ void AboutBoxClass::showHelp(void)
 	hlayout->addWidget(button);
 //forward
 	button=new QPushButton("&Forward");
+	button->setIcon(QIcon::fromTheme("go-next"));
 	QObject::connect(button,&QPushButton::clicked,[te]()
 		{
 			te->forward();
@@ -237,6 +243,8 @@ void AboutBoxClass::showHelp(void)
 	hlayout->addStretch();
 //close
 	button=new QPushButton("&Close");
+	button->setIcon(QIcon::fromTheme("dialog-cancel"));
+
 	QObject::connect(button,&QPushButton::clicked,[&helpdialog]()
 		{
 			helpdialog.close();

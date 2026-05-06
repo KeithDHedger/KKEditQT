@@ -10,5 +10,5 @@ while read
 	do
 		echo "$REPLY"
 		basename "$REPLY" .html
-	done < <(/usr/sbin/find "$DOCSFOLDER" -iname "$1.html"|/usr/sbin/sort)
+	done < <(find "$DOCSFOLDER" -iname "$1.html"|sort)
 

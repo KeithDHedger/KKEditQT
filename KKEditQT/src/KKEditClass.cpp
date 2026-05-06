@@ -477,9 +477,9 @@ void KKEditClass::initApp(int argc,char** argv)
 			this->doTimer();
 		});
 
-	QIcon::setThemeSearchPaths(QStringList()<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME")));
-	QIcon::setFallbackSearchPaths(QStringList()<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME")));
-	QIcon::setFallbackThemeName("gnome");
+	QIcon::setThemeSearchPaths(QStringList()<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME")) <<QString("%1/icons").arg(this->realDataDir) );
+	QIcon::setFallbackSearchPaths(QStringList()<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME"))  <<QString("%1/icons").arg(this->realDataDir));
+	QIcon::setFallbackThemeName("kkeditqticons");
 
 	this->buildMainGui();
 	this->buildPrefsWindow();
@@ -727,7 +727,7 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 							if(doc->isReadOnly()==true)
 								{
 									menuitem->setText("Unlock Contents");
-									itemicon=QIcon::fromTheme("emblem-default");
+									itemicon=QIcon::fromTheme("changes-allow");
 								}
 							else
 								{

@@ -38,7 +38,6 @@ int main (int argc, char **argv)
 
 	napp->setOrganizationName("KDHedger");
 	napp->setApplicationName("KKEditQT");
-	QIcon::setFallbackThemeName("gnome");
 
 	kkedit=new KKEditClass(napp);
     kkedit->splash=new QSplashScreen(QString(kkedit->realDataDir)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);

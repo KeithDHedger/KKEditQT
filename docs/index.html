@@ -11,7 +11,7 @@
 			<span style="font-size:24px;">Source code text editor<br></span>
 			<hr width=100% size="2">
 			<br>
-			<img src="main.gif" alt="main.gif" title="main.gif">
+			<img src="main.png" alt="main.png" title="main.png">
 			<hr width=100% size="2">
 			<span style="font-size:24px;">Why another text editor?<br></span>
 
@@ -45,26 +45,26 @@
 			<a name="Navigation Menu"><span style="font-size:24px;">Navigation Menu</span></a><br>
 			The Navigation menu has five sub-menus - Go To Definition, Open Include File, Go To Line, Search For Define and Search In Gtk-Docs.<br>
 			To go where a function etc is defined, select it and choose 'Go To Definition' KKEditQT will then look in open files for the definition and switch to that page and highlight the appropriate line like so:<br>
-			<img src="gotodefine.gif" alt="gotodefine.gif" title="gotodefine.gif"><br>
-			<img src="founddefine.gif" alt="founddefine.gif" title="founddefine.gif"><br>
+			<img src="gotodefine.png" alt="gotodefine.png" title="gotodefine.png"><br>
+			<img src="founddefine.png" alt="founddefine.png" title="founddefine.png"><br>
 			As you can see as the definition was not in an open file KKEditQT looks for the definition recursively starting from the folder where the file was opened from and if found opening the file and selecting the line with the definition.<br>
 			The search depth for finding a definition is set in the prefs and defaults to 1 i.e. only looks for definitions in files in the same folder as any open documents, be careful about setting this too high as it can cause an unwanted delay when right clicking if it has to look in a lot of sub-folders.<br>
 <br>
 			You can also open an include file just highlight the line and select  Open Include File like so:<br>
-			<img src="openinclude.gif" alt="openinclude.gif" title="openinclude.gif"><br>
+			<img src="openinclude.png" alt="openinclude.png" title="openinclude.png"><br>
 			Include files are looked for in either /usr/include or the directory the current document is in, depending whether the file name is surrounded by '<>' or ' "" '.<br>
 <br>
 			Search for Define will open an entry box and allow you to type in a definition or part of a definition and will try to find it in the usual places opening a file if necessary, the search is case insensitive<br>
 			<hr width=100% size="2">
 			<a name="Functions Menu"><span style="font-size:24px;">Functions Menu</span></a><br>
 			The Functions menu contains a list of all defined functions, variables and defines that are visible in this file, to jump to the appropriate function definition just select it from the menu like so:<br>
-			<img src="functions.gif" alt="functions.gif" title="functions.gif"><br>
+			<img src="functions.png" alt="functions.png" title="functions.png"><br>
 			The Functions menu will be updated after saving a file or switching tabs.
 You can select how the functions menu is displayed/sorted from the preferences.<br>
 			<hr width=100% size="2">
 			<a name="Tools Menu"><span style="font-size:24px;">Tools Menu</span></a><br>
 			The Tools menu allow you to run an external script i.e. to open a terminal with the working directory set to the folder where the current file is open:<br>
-			<img src="toolsmenu.gif" alt="toolsmenu.gif" title="toolsmenu.gif"><br>
+			<img src="toolsmenu.png" alt="toolsmenu.png" title="toolsmenu.png"><br>
 			External tools can either be added globally to /usr/share/KKEditQT/tools (if you have installed with --prefix=/usr) or locally in ~/.KKEditQT/tools.<br>
 			External tools are passed four environment variables:<br>
 			KKEDIT_CURRENTFILE - Path to current document.<br>
@@ -76,7 +76,7 @@ You can select how the functions menu is displayed/sorted from the preferences.<
 <br>
 			External tools are sorted by name in the menu and edit tools dialog.<br><br>
 			External tools can be created by hand or via the 'Tools->New' menu like so:<br><br>
-			<img src="newtool.gif" alt="newtool.gif" title="newtool.gif"><br><br>
+			<img src="newtool.png" alt="newtool.png" title="newtool.png"><br><br>
 			The place holders are:<br>
 			%t - Currently selected text, the same as the $KKEDIT_SELECTION environment variable passed to the command .<br>
 			%f - Filepath of the current document, the same as the $KKEDIT_CURRENTFILE environment variable passed to the command.<br>
@@ -88,7 +88,7 @@ You can select how the functions menu is displayed/sorted from the preferences.<
 			You can also optionally set a keyboard shortcut, just click in the shortcut box, hold CONTROL and press another key with or without SHIFT, to delete the shortcut just press the 'Delete' key.<br>
 <br>
 			The output pane will be shown automatically for any tool that has this option selected, the window title is set to the tool name like so:<br>
-			<img src="outview.gif" alt="outview.gif" title="outview.gif"><br>
+			<img src="outview.png" alt="outview.png" title="outview.png"><br>
 			With no text selected, clicking 'Copy To Clipboard' copies all text to the main clipboard, else only copies selected text.<br>
 			No system wide tools are installed yet TBD.<br>
 			<b><span style="color:#ff0000;">IMPORTANT</span></b><br>
@@ -115,13 +115,13 @@ You can select how the functions menu is displayed/sorted from the preferences.<
 			echo -en "quit\n" > $KKEDIT_BAR_CONTROL<br>
 <br>
 			There is an example of how to control the bar in the example tools in /usr/share/KKEditQT/Example External Tools.<br>
-			<img src="pulsebar.gif" alt="pulsebar.gif" title="pulsebar.gif"><br>
+			<img src="pulsebar.png" alt="pulsebar.png" title="pulsebar.png"><br>
 			The title of the progress bar window is automatically set to the name of your tool.<br>
 			<hr width=100% size="2">
 			<a name="Preferences"><span style="font-size:24px;">Preferences</span></a><br>
-			<img src="prefs.gif" alt="prefs.gif" title="prefs.gif"><br>
-			<img src="prefs2.gif" alt="prefs2.gif" title="prefs2.gif"><br>
-			<img src="prefs3.gif" alt="prefs3.gif" title="prefs3.gif"><br>
+			<img src="prefs.png" alt="prefs.png" title="prefs.png"><br>
+			<img src="prefs2.png" alt="prefs2.png" title="prefs2.png"><br>
+			<img src="prefs3.png" alt="prefs3.png" title="prefs3.png"><br>
 			The Prefs file is created at ~/.config/KDHedger/KKEditQT.conf and will be created/recreated when quitting KKEditQT.<br>
 			Preferences should be set from 'Edit->Preferences'<br>
 			You can set the command to run an external tool in a terminal from here.<br>
@@ -131,7 +131,7 @@ You can select how the functions menu is displayed/sorted from the preferences.<
 			You can also set the highlight colour of bookmarked lines.<br>
 <br>
 			You can also customize the keyboard shortcuts from here, just select from the drop down to get a dialog box like so:<br>
-			<img src="keycuts.gif" alt="keycuts.gif" title="keycuts.gif"><br>
+			<img src="keycuts.png" alt="keycuts.png" title="keycuts.png"><br>
 			Shortcuts MUST use CONTROL.<br>
 			Repeat the above untill you have set all the shortcuts you want and click 'Apply' to keep the changes or 'Cancel' to guess what?<br>
 <br>
@@ -139,15 +139,15 @@ You can select how the functions menu is displayed/sorted from the preferences.<
 			Themes set from the View->themes menu are temporary.<br>
 <br>
 			Global themes are in /usr/share/KKEditQT/themes, you can also use a local theme in ~/.KKEditQT/themes, local themes are listed first and can have the same name as global themes.<br>
-			<img src="style.gif" alt="style.gif" title="style.gif"><br>
+			<img src="style.png" alt="style.png" title="style.png"><br>
 			<hr width=100% size="2">
 			<a name="Customize The Tool Bar"><span style="font-size:24px;">Customize The Tool Bar</span></a><br>
 			You can customize what appears on the tool bar by simply clicking on a button to add it to the menu like so:<br>
-			<img src="addtoolbutton.gif" alt="addtoolbutton.gif" title="addtoolbutton.gif"><br>
+			<img src="addtoolbutton.png" alt="addtoolbutton.png" title="addtoolbutton.png"><br>
 			And then drag it to where you want it to appear on the toolbar like so:<br>
-			<img src="dragtoolbutton.gif" alt="dragtoolbutton.gif" title="dragtoolbutton.gif"><br>
+			<img src="dragtoolbutton.png" alt="dragtoolbutton.png" title="dragtoolbutton.png"><br>
 			To remove an item from the toolbar double click on the item to be removed.<br>
-			<img src="removetoolitem.gif" alt="removetoolitem.gif" title="removetoolitem.gif"><br>
+			<img src="removetoolitem.png" alt="removetoolitem.png" title="removetoolitem.png"><br>
 			Some items can only be added once 'Save', 'Open' etc when they have been added they will be greyed out and can't be added again, removing them makes them available again, the separator and the expander can be used multiple times.<br>
 			You can also choose to hide/show the toolbar from the 'View' menu.<br>
 			<hr width=100% size="2">
@@ -164,47 +164,47 @@ You can select how the functions menu is displayed/sorted from the preferences.<
 			<a name="Copy info from tab menu"></a>
 			Right clicking on a tab allows copying of the document file name, file path, spell check the document, set the source highlighting and quickly open other files in the same directory as the current document ( handy for quickly opening header files ).<br>
 			Lock/Unlock Contents disables/enables editing.<br>
-			<img src="tabmenu.gif" alt="tabmenu.gif" title="tabmenu.gif"><br>
+			<img src="tabmenu.png" alt="tabmenu.png" title="tabmenu.png"><br>
 			<a name="Go to function definition"></a>
 			The document context menu also contains the  'Go To Definition' function for convenience.<br>
 			If there is no valid definition selected the menu item will not be shown.<br>
-			<img src="contextgoto.gif" alt="contextgoto.gif" title="contextgoto.gif"><br>
+			<img src="contextgoto.png" alt="contextgoto.png" title="contextgoto.png"><br>
 			The right click context menu:<br>
-			<img src="popup.gif" alt="popup.gif" title="popup.gif"><br>
+			<img src="popup.png" alt="popup.png" title="popup.png"><br>
 			<br>
 			<a name="Spell check document from tab menu"><span style="font-size:24px;">Spell checker dialog</span></a><br>
-			<img src="spellcheck.gif" alt="spellcheck.gif" title="spellcheck.gif"><br>
+			<img src="spellcheck.png" alt="spellcheck.png" title="spellcheck.png"><br>
 			<br>
 			<a name="Bookmarks"><span style="font-size:24px;">Bookmarks</span></a><br>
 			Any amount of bookmarks can be added, selecting one will switch to that document and line.<br>
 			Bookmarks are stored with the 'Save Session' and will be restored with the 'Restore Session' menu.<br>
 			Bookmarks are now toggled so if you place the cursor on a line with a bookmark it will add it if it's not already bookmarked or remove the bookmark if it is, you can use the 'Toggle Bookmark' menu from the main menu or the main context menu, you can also just click in the bookmarks bar to toggle a mark on or off.<br>
 			You can also remove all bookmarks from all open documents by selecting 'Remove All Bookmarks' from the menu.<br>
-			<img src="bookmark.gif" alt="bookmark.gif" title="bookmark.gif"><br>
+			<img src="bookmark.png" alt="bookmark.png" title="bookmark.png"><br>
 			<a name="Open as hexdump"></a>
 			You can open a file as a hex dump ( this is NOT a hex editor though that may change later ) like so:<br>
-			<img src="hexdump.gif" alt="hexdump.gif" title="hexdump.gif"><br>
+			<img src="hexdump.png" alt="hexdump.png" title="hexdump.png"><br>
 			<a name="Find API definition"></a>
 			<span style="font-size:24px;">Look up Gtk API</span><br>
 			You can look up an API declaration from any installed gtk-doc's installed by selecting all or part of an API name like so:<br>
-			<img src="selectapi.gif" alt="selectapi.gif" title="selectapi.gif"><br>
+			<img src="selectapi.png" alt="selectapi.png" title="selectapi.png"><br>
 			And then selecting 'Search In Gtk-Docs' form the Navigation menu or from the right click pop-up menu like so:<br>
-			<img src="gotoapi.gif" alt="gotoapi.gif" title="gotoapi.gif"><br>
+			<img src="gotoapi.png" alt="gotoapi.png" title="gotoapi.png"><br>
 			And if you have built with the --enable-docviewer option to configure ( the default ) you will get a window pop-up with a list of possible links to the API you want, if there is only one possible link you will go straight to that.<br>
-			<img src="list.gif" alt="list.gif" title="list.gif"><br>
+			<img src="list.png" alt="list.png" title="list.png"><br>
 			Click the Link:<br>
-			<img src="selectedlist.gif" alt="selectedlist.gif" title="selectedlist.gif">
+			<img src="selectedlist.png" alt="selectedlist.png" title="selectedlist.png">
 			Links can be clicked and followed in the Gtk doc viewer, and functions etc can be copied and pasted into your document.<br>
 			If you had selected all of the 'gtk_button_get_use_stock ' API name you would have gone straight to the screen shown.<br>
 			You can also manually enter a search term in the box and press 'enter' or click 'find'.<br>
 			You can search within the displayed page by entering a search term in the box and clicking 'Down' to search forward and 'Up' to search back.<br>
 <br>
 			You can also search the QT5 docs for either a class definition or a function definition like so:<br>
-			<img src="selectapiqt5api.gif" alt="selectapiqt5api.gif" title="selectapiqt5api.gif"><br>
-			<img src="qt5funcsel.gif" alt="qt5funcsel.gif" title="qt5funcsel.gif"><br>
-			<img src="selectapiqt5api.gif" alt="selectapiqt5api.gif" title="selectapiqt5api.gif"><br>
-			<img src="selectedqt5list.gif" alt="selectedqt5list.gif" title="selectedqt5list.gif"><br>
-			<img src="selectedqt5listclicked.gif" alt="selectedqt5listclicked.gif" title="selectedqt5listclicked.gif"><br>
+			<img src="selectapiqt5api.png" alt="selectapiqt5api.png" title="selectapiqt5api.png"><br>
+			<img src="qt5funcsel.png" alt="qt5funcsel.png" title="qt5funcsel.png"><br>
+			<img src="selectapiqt5api.png" alt="selectapiqt5api.png" title="selectapiqt5api.png"><br>
+			<img src="selectedqt5list.png" alt="selectedqt5list.png" title="selectedqt5list.png"><br>
+			<img src="selectedqt5listclicked.png" alt="selectedqt5listclicked.png" title="selectedqt5listclicked.png"><br>
 			<br>
 			<a name="Other"></a>
 			<a name="Other Features include"><span style="font-size:24px;">Other Features include:</span></a>:<br>
@@ -218,10 +218,10 @@ You can select how the functions menu is displayed/sorted from the preferences.<
 			<br><br>
 			<span style="color:#ff0000;"><b><span style="font-size:32px;">!!WARNING!!</span></b></span><br><br>
 			Editing files with admin privileges can seriously damage your system if used incorrectly.<br>
-			<img src="gtksu.gif" alt="gtksu.gif" title="gtksu.gif"><br>
+			<img src="gtksu.png" alt="gtksu.png" title="gtksu.png"><br>
 			<br>
 			<span style="font-size:24px;">Find/Replace</span><br>
-			<img src="find.gif" alt="find.gif" title="find.gif"><br>
+			<img src="find.png" alt="find.png" title="find.png"><br>
 			Search and replace uses regex expressions, the quick search on the toolbar does not.<br>
 			Escaped characters ( <br>
 , 	 etc ) are translated to their 'real' equivalents ie 	 -> 0x9. To search for the string '<br>
@@ -233,29 +233,29 @@ You can select how the functions menu is displayed/sorted from the preferences.<
 			You can also check the 'Find After Replace' box to automaticaly find the next occurence after doing a replace.<br>
 <br>
 			You can jump to a line using the toolbar entry:<br>
-			<img src="gotolinefromtoolbar.gif" alt="gotolinefromtoolbar.gif" title="gotolinefromtoolbar.gif"><br>
+			<img src="gotolinefromtoolbar.png" alt="gotolinefromtoolbar.png" title="gotolinefromtoolbar.png"><br>
 			<br>
 			You can do a 'live' search by just typing into the toobar  search box.<br>
 			Pressing 'RETURN' in the live search box will jump to the next match, 'SHIFT+RETURN' jumps to the previous match.<br>
-			<img src="livesearch.gif" alt="livesearch.gif" title="livesearch.gif"><br>
+			<img src="livesearch.png" alt="livesearch.png" title="livesearch.png"><br>
 			<br>
 			The current source syntax colouring is now selectable via the 'tab' context menu like so:<br>
 			Be aware that the default highlighting for a file is set by the mime-type system and so may change after saving/loading. mime-types for a file can not usually be set manually but depends on system auto magic stuff, file suffix etc.<br>
-			<img src="sourcehilite.gif" alt="sourcehilite.gif" title="sourcehilite.gif"><br>
+			<img src="sourcehilite.png" alt="sourcehilite.png" title="sourcehilite.png"><br>
 			<br>
 			You can also turn on/off various bits and peices from the 'View' menu:<br>
-			<img src="viewmenu.gif" alt="viewmenu.gif" title="viewmenu.gif"><br>
+			<img src="viewmenu.png" alt="viewmenu.png" title="viewmenu.png"><br>
 			<br>
 			Code Completion<br>
 			If you have turned on 'Auto Show Completion' in the prefs then as you type you will be shown various code completion options like so:<br>
-			<img src="autocomp1.gif" alt="autocomp1.gif" title="autocomp1.gif"><br>
+			<img src="autocomp1.png" alt="autocomp1.png" title="autocomp1.png"><br>
 			The amount of letters in word before the pop up appears is set in the prefs.<br>
 <br>
 			You can also force the completion dialog to pop up by using a keyboard shortcut, set via the prefs, forcing the completion pop up ignores the minimum word size from the prefs.<br>
-			<img src="autocomp2.gif" alt="autocomp2.gif" title="autocomp2.gif"><br>
+			<img src="autocomp2.png" alt="autocomp2.png" title="autocomp2.png"><br>
 			<br>
 			<span style="font-size:24px;">Create Documentation with Doxygen</span><br>
-			<img src="docs.gif" alt="docs.gif" title="docs.gif"><br>
+			<img src="docs.png" alt="docs.png" title="docs.png"><br>
 			You can create documentation for your code if you have doxygen installed by selecting "Build Documentation" from the 'File' menu, the documentation will be created in the folder of the current document and displayed with either the built in docviewer or the system browser, the first time you run this there may be a small delay while the initial files are created by doxygen, after that selecting "Build Documentation" again just updates the files, if there is not a file a called 'Doxyfile' in the current folder a default config file is created for you, this file can manually edited to suit your needs, I would recommend that you also install Graphviz for the nice fancy flow charts, most distros will have packages for these two apps.<br>
 			If doxygen is NOT installed you won't have a "Build Documentation" menu, just install it and ( optionally ) Graphviz and restart KKEditQT and the menu will appear.<br>
 			<br>
@@ -274,7 +274,7 @@ You can select how the functions menu is displayed/sorted from the preferences.<
 			KKeditQT supports plugins, an example plugin is available in the KKEditQT/plugins folder along with some usefule ones.<br>
 			Plugins can be enabled/disabled from the 'Plugin Prefs' menu from the 'Edit' menu.<br>
 			Some plugins allow user settable prefs, if they don't the relevent button will be disabled, the same goes for the "About" button for the plugin.<br>
-			<img src="plugprefs.gif" alt="plugprefs.gif" title="plugprefs.gif"><br>
+			<img src="plugprefs.png" alt="plugprefs.png" title="plugprefs.png"><br>
 			There are two plugin folders that will be searched for plugins: /usr/share/KKEditQT/plugins and ~/.KKEditQT/plugins, plugins can be in subfolders and should be named like 'libPLUGNAME.so'<br>
 			See the installed plugins for basic features and a basic Makefile.<br>
 			<hr width=100% size="2">

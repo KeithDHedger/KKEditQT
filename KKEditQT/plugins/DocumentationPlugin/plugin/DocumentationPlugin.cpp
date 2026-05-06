@@ -66,7 +66,8 @@ void DocumentationPlugin::runAllSearchs(void)
 					if((this->resList.at(j+SEARCHALL).compare("inall")!=0) || (this->resList.at(j+SHOWITEM).compare("show")!=0))
 						continue;
 					
-					comm=QString("pushd %1/actions &>/dev/null;%2 %3 %4;popd &>/dev/null").arg(QFileInfo(this->plugPath).absolutePath()).arg(this->resList.at(j+1)).arg(tc.selectedText().trimmed()).arg(this->mainKKEditClass->htmlFile);
+					comm=QString("cd %1/actions  2>&1 >/dev/null;%2 %3 %4;cd - 2>&1 >/dev/null").arg(QFileInfo(this->plugPath).absolutePath()).arg(this->resList.at(j+1)).arg(tc.selectedText().trimmed()).arg(this->mainKKEditClass->htmlFile);
+
 					QStringList	reslist;
 					QString		results=this->runPipeAndCapture(comm);
 					if(results.compare("Just Open\n")!=0)
@@ -120,7 +121,8 @@ void DocumentationPlugin::runSearch(QString command)
 
 	if(tc.hasSelection()==true)
 		{
-			QString		comm=QString("pushd %1/actions &>/dev/null;%2 %3 %4;popd &>/dev/null").arg(QFileInfo(this->plugPath).absolutePath()).arg(command).arg(tc.selectedText().trimmed()).arg(this->mainKKEditClass->htmlFile);
+			QString		comm=QString("cd %1/actions 2>&1 >/dev/null;%2 %3 %4;cd - 2>&1 >/dev/null").arg(QFileInfo(this->plugPath).absolutePath()).arg(command).arg(tc.selectedText().trimmed()).arg(this->mainKKEditClass->htmlFile);
+
 			QFile		html(this->mainKKEditClass->htmlFile);
 			QStringList	reslist;
 			QString		results=this->runPipeAndCapture(comm);
@@ -206,10 +208,7 @@ miniPrefsReturnStruct DocumentationPlugin::miniPrefsDialog(QString prefsname,QSt
 			hlayout->setContentsMargins(0,0,0,0);
 			hbox->setLayout(hlayout);
 			hlayout->addWidget(new QLabel(items.at(j)),0,Qt::AlignLeft);
-			//prefsentry=LFSTK_UtilityClass::LFSTK_strStrip(items.at(j).toStdString());
-			//prefsentry=LFSTK_UtilityClass::LFSTK_strReplaceAllChar(prefsentry," ","",true);
 			prefsentry=items.at(j).toStdString();
-			//prefsentry=LFSTK_UtilityClass::LFSTK_strReplaceAllChar(prefsentry," ","",true);
 
 			prefs.boxes[j]=new QLineEdit(miniprefsname.value(prefsentry.c_str(),"").toString().simplified());	
 			if(liveupdate==true)
@@ -217,9 +216,7 @@ miniPrefsReturnStruct DocumentationPlugin::miniPrefsDialog(QString prefsname,QSt
 					QObject::connect(prefs.boxes[j],&QLineEdit::textEdited,[j,items,prefsname,prefs](const QString)
 						{
 							QSettings	miniprefsname("KDHedger",prefsname);
-							//std::string	prefsentry=LFSTK_UtilityClass::LFSTK_strStrip(items.at(j).toStdString());
 							std::string	prefsentry=items.at(j).toStdString();
-							//prefsentry=LFSTK_UtilityClass::LFSTK_strReplaceAllChar(prefsentry," ","",true);
 							miniprefsname.setValue(prefsentry.c_str(),prefs.boxes[j]->text());
 						});
 				}
@@ -308,7 +305,7 @@ void DocumentationPlugin::buildDocset(void)
 					this->runPipeAndCapture(QString("sed -i 's/^PROJECT_NAME=.*$/PROJECT_NAME=%1/;s/^PROJECT_NUMBER=.*$/PROJECT_NUMBER=%2/;s@^OUTPUT_DIRECTORY.*=.*$@OUTPUT_DIRECTORY=%3@;s/^GENERATE_DOCSET.*=.*$/GENERATE_DOCSET=YES/;s/^SEARCHENGINE.*=.*$/SEARCHENGINE=NO/;s/^DOT_IMAGE_FORMAT.*=.*$/DOT_IMAGE_FORMAT=png/' '%3/Doxyfile'").arg(myprefs.boxes[0]->text()).arg(myprefs.boxes[1]->text()).arg(this->tempFolderPath));
 
 					this->showBarberPole("Building Docset","Please Wait","","0",QString("%1/progress").arg(this->tempFolderPath));
-					fp=popen(QString("pushd '%1'&>/dev/null;doxygen '%2/Doxyfile';popd &>/dev/null").arg(this->folderPath).arg(this->tempFolderPath).toStdString().c_str(),"r");
+					fp=popen(QString("cd  '%1' 2>&1 >/dev/null;doxygen '%2/Doxyfile';cd - 2>&1 >/dev/null").arg(this->folderPath).arg(this->tempFolderPath).toStdString().c_str(),"r");
 					if(fp!=NULL)
 						{
 							while(fgets(line,4095,fp))
@@ -400,7 +397,6 @@ void DocumentationPlugin::showBarberPole(QString windowtitle,QString bodylabel,Q
 {
 	QStringList	arguments;
 	QString		app=QString("%1/kkeditqtprogressbar").arg(this->mainKKEditClass->realBinDir);
-//	this->msgPath=QString("%1/kkeditqtmsg").arg(this->mainKKEditClass->realBinDir);
 
 	arguments<<"-c"<<QString("\"%6\" \"%1\" \"%2\" \"%3\" \"%4\" \"%5\"").arg(windowtitle).arg(bodylabel).arg(cancellabel).arg(maxitems).arg(controlfile).arg(app);
 	QProcess::startDetached("sh",arguments);
@@ -603,7 +599,6 @@ void DocumentationPlugin::searchDoxyDocs(const QString txt)
 					out << "<body>" << Qt::endl;
 
 					for(int loop=0;loop<cnt;loop++)
-						//out <<QString("<div align=\"left\">%3<tab0><a href=\"%1\">%2</a></div>\n").arg(resultmap[loop].tagPath).arg(resultmap[loop].tagName).arg(resultmap[loop].tagType) << Qt::endl;
 						out <<QString("<div align=\"left\">%3&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"%1\">%2</a></div>\n").arg(resultmap[loop].tagPath).arg(resultmap[loop].tagName).arg(resultmap[loop].tagType) << Qt::endl;
 
 					out << "</body>" << Qt::endl;
@@ -843,7 +838,6 @@ void DocumentationPlugin::plugRun(plugData *data)
 					this->filePath=data->userStrData1;
 					this->folderPath=data->userStrData3;
 					this->tempFolderPath=data->tempFolder;
-//qDebug()<<">>>>>>"<<data->userStrData1<<data->userStrData2<<data->userStrData3<<this->data->tempFolder;
 					break;
 				}
 
