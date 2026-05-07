@@ -1,4 +1,5 @@
 2.1.3
+Doc plugin help tweak.
 Fixed bashism's in doc plugin.
 Fixed some hardcoded paths in doc plugin.
 Fixed button icons on help/about/open.

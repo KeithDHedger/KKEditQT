@@ -7,6 +7,10 @@ LIBS=/tmp/libs
 :>$ELFLOG
 :>$LIBS
 
+if [[ ! -e ./runtime-x86_64 ]];then
+	wget "https://github.com/AppImage/type2-runtime/releases/download/continuous/runtime-x86_64"
+fi
+
 rm -r ${WHERE}
 mkdir -p ${WHERE}/usr
 mkdir -p ${WHERE}/lib
@@ -60,10 +64,10 @@ cat $LIBS|while read
 mv ${WHERE}/usr/lib64/libproxy/libpxbackend-1.0.so ${WHERE}/usr/lib
 
 APPIMAGEFOLDER=$WHERE
-APPNAME="kkeditqt"
-ICONPATH="/home/keithhedger/Projects/DevProjects/KKEditQT/KKEditQT/resources/pixmaps/KKEditQT.png"
-ICONNAME=$(basename "${ICONPATH}")
 APPIMAGENAME="KKEditQT"
+APPNAME="${APPIMAGENAME,,}"
+ICONPATH="${PROJECTFOLDER}/KKEditQT/resources/pixmaps/KKEditQT.png"
+ICONNAME=$(basename "${ICONPATH}")
 
 cp "${ICONPATH}" "${APPIMAGEFOLDER}/${ICONNAME}"
 cat >${APPIMAGEFOLDER}/${APPNAME}.desktop <<EOF
@@ -87,4 +91,6 @@ EOF
 
 chmod +x ${APPIMAGEFOLDER}/AppRun
 
-ARCH=x86_64 ~/.local/bin/appimagetool-x86_64.AppImage ${APPIMAGEFOLDER} ${APPIMAGENAME}.AppImage
+ARCH=x86_64 ~/.local/bin/appimagetool-x86_64.AppImage --runtime-file=./runtime-x86_64 ${APPIMAGEFOLDER} ${APPIMAGENAME}.AppImage
+
+rm -rf "${WHERE}" "$ELFLOG" "$LIBS"

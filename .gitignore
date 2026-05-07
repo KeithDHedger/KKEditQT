@@ -37,3 +37,5 @@ KKEditQT/src/qtincs.h.gch
 KKEditQT/app/ignorelibleaks
 KKEditQT/app/supps.txt
 setlinks
+runtime-x86_64
+KKEditQT.AppImage
