@@ -1,0 +1,90 @@
+#!/bin/bash
+
+WHERE=${WHERE:-"/tmp/qtchroot100"}
+PROJECTFOLDER="/home/keithhedger/Projects/DevProjects/KKEditQT"
+ELFLOG=/tmp/linked.log
+LIBS=/tmp/libs
+:>$ELFLOG
+:>$LIBS
+
+rm -r ${WHERE}
+mkdir -p ${WHERE}/usr
+mkdir -p ${WHERE}/lib
+
+ln -sfv ../lib ${WHERE}/usr/lib
+ln -sfv ../lib ${WHERE}/usr/lib32
+ln -sfv ../lib ${WHERE}/usr/lib64
+
+ln -sfv lib ${WHERE}/lib32
+ln -sfv lib ${WHERE}/lib64
+
+ln -sfv usr/bin ${WHERE}/bin
+
+pushd ${PROJECTFOLDER}
+	sudo chown -R $USER:$USER .
+	./autogen.sh --prefix=/usr
+	make
+	make install DESTDIR=$WHERE
+	:>$ELFLOG
+popd
+
+cp /bin/xterm /bin/ctags /bin/xdotool /bin/xclip ${WHERE}/usr/bin
+cp --parents -rp /usr/lib/qt6/plugins/xcbglintegrations ${WHERE}
+cp --parents -rp /usr/lib/qt6/plugins/platforms/libqxcb.so  ${WHERE}
+cp --parents -rp /usr/lib64/qt6/plugins/platformthemes/libqt6ct.so  ${WHERE}
+cp --parents -rp /usr/lib64/qt6/plugins/styles/libqt6ct-style.so  ${WHERE}
+cp --parents -rp /usr/share/org.kde.syntax-highlighting ${WHERE}
+
+while read
+	do
+		if file "$REPLY"|grep --quiet -i "ELF" ;then
+			ldd "$REPLY" |awk -F"=>" '{print $2}'|awk  '{print $1}' >> $ELFLOG
+		fi
+	done< <(find $WHERE -type f)
+
+sort -u $ELFLOG > $LIBS
+mkdir -p ${WHERE}/usr/share/icons/gnome/48x48
+
+sed -i '/^$/d' $LIBS
+sed -i '/^.*ld-linux-x86-64.so.*$/d' $LIBS
+sed -i '/^.*libc.so.*$/d' $LIBS
+
+cat $LIBS|while read
+	do
+		if [[ -h "$REPLY" ]];then
+			link=$(readlink -f "$REPLY"||true)||true
+			cp --parents -P $link ${WHERE}||true
+		fi
+		cp --parents -P "$REPLY" ${WHERE}||true
+	done
+mv ${WHERE}/usr/lib64/libproxy/libpxbackend-1.0.so ${WHERE}/usr/lib
+
+APPIMAGEFOLDER=$WHERE
+APPNAME="kkeditqt"
+ICONPATH="/home/keithhedger/Projects/DevProjects/KKEditQT/KKEditQT/resources/pixmaps/KKEditQT.png"
+ICONNAME=$(basename "${ICONPATH}")
+APPIMAGENAME="KKEditQT"
+
+cp "${ICONPATH}" "${APPIMAGEFOLDER}/${ICONNAME}"
+cat >${APPIMAGEFOLDER}/${APPNAME}.desktop <<EOF
+[Desktop Entry]
+Type=Application
+Name=${APPNAME}
+Exec=${APPNAME}
+Icon=${ICONNAME%.?*}
+Categories=Utility;
+EOF
+
+cat >${APPIMAGEFOLDER}/AppRun <<EOF
+#!/bin/bash
+export LD_LIBRARY_PATH="\$APPDIR/usr/lib:/lib:/usr/lib"
+export PATH="\$APPDIR/usr/bin:\${PATH}"
+export QT_QPA_PLATFORMTHEME=qt6ct
+export QT_PLUGIN_PATH="\$APPDIR/usr/lib/qt6/plugins:\$APPDIR/usr/lib/qt6/:\$APPDIR/usr/lib/qt6/plugins/xcbglintegrations:\$APPDIR/usr/lib/qt6/plugins/platforms:\$APPDIR/usr/lib/qt6/plugins/styles:\$APPDIR/usr/lib/qt6/plugins/platformthemes"
+
+exec \$APPDIR/usr/bin/${APPNAME} \$@
+EOF
+
+chmod +x ${APPIMAGEFOLDER}/AppRun
+
+ARCH=x86_64 ~/.local/bin/appimagetool-x86_64.AppImage ${APPIMAGEFOLDER} ${APPIMAGENAME}.AppImage
