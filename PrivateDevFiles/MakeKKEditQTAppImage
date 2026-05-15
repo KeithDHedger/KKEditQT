@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WHERE=${WHERE:-"/tmp/qtchroot100"}
+WHERE=${WHERE:-"/tmp/qtchroot"}
 PROJECTFOLDER="/home/keithhedger/Projects/DevProjects/KKEditQT"
 ELFLOG=/tmp/linked.log
 LIBS=/tmp/libs
@@ -25,7 +25,7 @@ ln -sfv lib ${WHERE}/lib64
 ln -sfv usr/bin ${WHERE}/bin
 
 pushd ${PROJECTFOLDER}
-	sudo chown -R $USER:$USER .
+	#sudo chown -R $USER:$USER .
 	./autogen.sh --prefix=/usr
 	make
 	make install DESTDIR=$WHERE
@@ -47,7 +47,6 @@ while read
 	done< <(find $WHERE -type f)
 
 sort -u $ELFLOG > $LIBS
-mkdir -p ${WHERE}/usr/share/icons/gnome/48x48
 
 sed -i '/^$/d' $LIBS
 sed -i '/^.*ld-linux-x86-64.so.*$/d' $LIBS
@@ -62,12 +61,21 @@ cat $LIBS|while read
 		cp --parents -P "$REPLY" ${WHERE}||true
 	done
 mv ${WHERE}/usr/lib64/libproxy/libpxbackend-1.0.so ${WHERE}/usr/lib
+rmdir ${WHERE}/usr/lib64/libproxy
 
 APPIMAGEFOLDER=$WHERE
 APPIMAGENAME="KKEditQT"
 APPNAME="${APPIMAGENAME,,}"
 ICONPATH="${PROJECTFOLDER}/KKEditQT/resources/pixmaps/KKEditQT.png"
 ICONNAME=$(basename "${ICONPATH}")
+
+pushd ${WHERE}/bin
+	find|xargs strip  --strip-unneeded
+popd
+
+pushd ${WHERE}/lib
+	find|xargs strip  --strip-unneeded
+popd
 
 cp "${ICONPATH}" "${APPIMAGEFOLDER}/${ICONNAME}"
 cat >${APPIMAGEFOLDER}/${APPNAME}.desktop <<EOF
@@ -81,16 +89,16 @@ EOF
 
 cat >${APPIMAGEFOLDER}/AppRun <<EOF
 #!/bin/bash
-export LD_LIBRARY_PATH="\$APPDIR/usr/lib:/lib:/usr/lib"
-export PATH="\$APPDIR/usr/bin:\${PATH}"
+export LD_LIBRARY_PATH="\${APPDIR}/lib:\${APPDIR}/usr/lib:/lib:/usr/lib"
+export PATH="\${APPDIR}/usr/bin:\${PATH}"
 export QT_QPA_PLATFORMTHEME=qt6ct
-export QT_PLUGIN_PATH="\$APPDIR/usr/lib/qt6/plugins:\$APPDIR/usr/lib/qt6/:\$APPDIR/usr/lib/qt6/plugins/xcbglintegrations:\$APPDIR/usr/lib/qt6/plugins/platforms:\$APPDIR/usr/lib/qt6/plugins/styles:\$APPDIR/usr/lib/qt6/plugins/platformthemes"
+export QT_PLUGIN_PATH="\${APPDIR}/usr/lib/qt6/plugins:\${APPDIR}/usr/lib/qt6/:\${APPDIR}/usr/lib/qt6/plugins/xcbglintegrations:\${APPDIR}/usr/lib/qt6/plugins/platforms:\${APPDIR}/usr/lib/qt6/plugins/styles:\${APPDIR}/usr/lib/qt6/plugins/platformthemes"
 
-exec \$APPDIR/usr/bin/${APPNAME} \$@
+exec \${APPDIR}/usr/bin/${APPNAME} \$@
 EOF
 
 chmod +x ${APPIMAGEFOLDER}/AppRun
 
 ARCH=x86_64 ~/.local/bin/appimagetool-x86_64.AppImage --runtime-file=./runtime-x86_64 ${APPIMAGEFOLDER} ${APPIMAGENAME}.AppImage
 
-rm -rf "${WHERE}" "$ELFLOG" "$LIBS"
+#rm -rf "${WHERE}" "$ELFLOG" "$LIBS"

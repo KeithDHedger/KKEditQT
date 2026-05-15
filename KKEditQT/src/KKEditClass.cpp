@@ -491,12 +491,49 @@ void KKEditClass::initApp(int argc,char** argv)
 #ifdef _ASPELL_
 	AspellCanHaveError	*possible_err;
 	this->aspellConfig=new_aspell_config();
+
+fprintf(stderr,"%s\n",aspell_config_get_default(this->aspellConfig, "dict-dir"));
+
+
+//const AspellStringList *keys = (AspellStringList*)aspell_config_possible_elements(this->aspellConfig, ""); // not documented across all versions
+    // safer approach: query known keys or inspect documentation/files
+    // Example: print some known keys
+    const char *k[] = {"lang","encoding","master","personal","dict-dir","extra-dicts",NULL};
+    for (int i=0; k[i]; ++i)
+    {
+fprintf(stderr,"%s\n",aspell_config_get_default(this->aspellConfig, k[i]));
+     }
+
+
+
+
 	possible_err=new_aspell_speller(this->aspellConfig);
 
+	if(aspell_error_number(possible_err)!=0)
+		{
+			aspell_config_replace(this->aspellConfig,"dict-dir","/lib/aspell");
+			possible_err=new_aspell_speller(this->aspellConfig);
+		}
+
 	if(aspell_error_number(possible_err)!= 0)
-		puts(aspell_error_message(possible_err));
+		{
+			qDebug()<<aspell_error_message(possible_err);
+			qDebug()<<"Install some dictionary's in /lib/aspell ...";
+		}
 	else
+	{
 		this->spellChecker=to_aspell_speller(possible_err);
+
+
+
+//	aspell_config_replace(this->aspellConfig,"dict-dir",qPrintable(QString("%1/lib/aspell-0.60").arg(getenv("APPDIR"))));
+//
+//	possible_err=new_aspell_speller(this->aspellConfig);
+//
+//	if(aspell_error_number(possible_err)!= 0)
+//		puts(aspell_error_message(possible_err));
+//	else
+//		this->spellChecker=to_aspell_speller(possible_err);
 
 	this->spellCheckMenuItem=new MenuItemClass("Spell Check",this);
 	QIcon	itemicon=QIcon::fromTheme("tools-check-spelling");
@@ -508,6 +545,7 @@ void KKEditClass::initApp(int argc,char** argv)
 			this->doOddMenuItems(this->spellCheckMenuItem);
 		});
 	this->buildSpellCheckerGUI();
+	}
 #endif
 
 	this->htmlFile=QString("%1/Docview-%2.html").arg(this->tmpFolderName).arg(this->randomName(6));
@@ -626,10 +664,15 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 		{
 			this->mainNotebook->tabBar()->setCurrentIndex(tabIndex);
 			QMenu	menu(this->mainNotebook);
-			//QMenu	srcmenu(this->tabContextMenuItems[(SRCHILTIE-COPYFOLDERPATH)/0x100].label);
 			QMenu	filemenu(this->tabContextMenuItems[(OPENFROMHERE-COPYFOLDERPATH)/0x100].label);
 			for(int cnt=0;cnt<TABCONTEXTMENUCNT;cnt++)
 				{
+					if(cnt==3)
+						{
+							if(this->spellChecker==NULL)
+								continue;
+						}
+
 					if(cnt==(THEME-COPYFOLDERPATH)/0x100)
 						{
 //syntax selection

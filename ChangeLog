@@ -1,4 +1,6 @@
 2.1.3
+Fixed enabling/disabling delete tool/menu item.
+Fixed no aspell dictionary's found.
 Doc plugin help tweak.
 Fixed bashism's in doc plugin.
 Fixed some hardcoded paths in doc plugin.

@@ -1462,7 +1462,7 @@ void KKEditClass::handleMessages(void)
 
 void KKEditClass::doDoubleClickPrefs(QListWidgetItem *item)
 {
-	const char		*data="NOSXCPURFG9ADLsEQBW";
+	const char		*data="NOSXCPURFG9ADLsEQBWd";
 	int				row=listWidget->currentRow();
 	QListWidgetItem	*titem=this->listWidget->takeItem(row);
 
