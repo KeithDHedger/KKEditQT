@@ -216,14 +216,13 @@ void AboutBoxClass::showHelp(void)
 	docvlayout->setContentsMargins(MARGINS,MARGINS,MARGINS,MARGINS);
 	docvlayout->addWidget(te);
 
-te->setSearchPaths(QStringList()<<QString("%1/help").arg(mainKKEditClass->realDataDir));
+	te->setSearchPaths(QStringList()<<QString("%1/help").arg(mainKKEditClass->realDataDir));
 	te->setSource(QUrl::fromLocalFile(QString("%1/%2").arg(mainKKEditClass->realDataDir).arg("help/index.html")),QTextDocument::HtmlResource);
-te->setSearchPaths(QStringList()<<QString("%1/help").arg(mainKKEditClass->realDataDir));
+	te->setSearchPaths(QStringList()<<QString("%1/help").arg(mainKKEditClass->realDataDir));
 	te->setOpenExternalLinks(true);
 	hlayout=new QHBoxLayout;
-//back
-qDebug()<<te->searchPaths();
 
+//back
 	button=new QPushButton("&Back");
 	button->setIcon(QIcon::fromTheme("go-previous"));
 

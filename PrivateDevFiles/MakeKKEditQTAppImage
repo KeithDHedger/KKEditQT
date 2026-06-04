@@ -99,6 +99,6 @@ EOF
 
 chmod +x ${APPIMAGEFOLDER}/AppRun
 
-ARCH=x86_64 ~/.local/bin/appimagetool-x86_64.AppImage --runtime-file=./runtime-x86_64 ${APPIMAGEFOLDER} ${APPIMAGENAME}.AppImage
+ARCH=x86_64 ~/.local/bin/appimagetool-x86_64.AppImage --no-appstream --runtime-file=./runtime-x86_64 ${APPIMAGEFOLDER} ${APPIMAGENAME}.AppImage
 
 #rm -rf "${WHERE}" "$ELFLOG" "$LIBS"

@@ -492,17 +492,17 @@ void KKEditClass::initApp(int argc,char** argv)
 	AspellCanHaveError	*possible_err;
 	this->aspellConfig=new_aspell_config();
 
-fprintf(stderr,"%s\n",aspell_config_get_default(this->aspellConfig, "dict-dir"));
+//fprintf(stderr,"%s\n",aspell_config_get_default(this->aspellConfig, "dict-dir"));
 
 
 //const AspellStringList *keys = (AspellStringList*)aspell_config_possible_elements(this->aspellConfig, ""); // not documented across all versions
     // safer approach: query known keys or inspect documentation/files
     // Example: print some known keys
-    const char *k[] = {"lang","encoding","master","personal","dict-dir","extra-dicts",NULL};
-    for (int i=0; k[i]; ++i)
-    {
-fprintf(stderr,"%s\n",aspell_config_get_default(this->aspellConfig, k[i]));
-     }
+ //   const char *k[] = {"lang","encoding","master","personal","dict-dir","extra-dicts",NULL};
+//    for (int i=0; k[i]; ++i)
+//    {
+//fprintf(stderr,"%s\n",aspell_config_get_default(this->aspellConfig, k[i]));
+//     }
 
 
 
