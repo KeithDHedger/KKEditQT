@@ -1,4 +1,8 @@
 2.1.3
+Follow symlinks when searching in docsets from documentation plugin.
+Better matching of pdf width to document width ( not quite WYSIWYG ).
+Trim pdf margins when exporting to pdf if pdfcrop installed ( part of texlive ).
+Added export to PDF.
 Fixed enabling/disabling delete tool/menu item.
 Fixed no aspell dictionary's found.
 Doc plugin help tweak.

@@ -881,7 +881,7 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 				break;
 		}
 }
-
+#include <QPagedPaintDevice>
 void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 {
 	switch(mc->getMenuID())
@@ -952,12 +952,18 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 					chooser.dialogWindow.exec();
 					if(chooser.valid==true)
 						{
-							QPrinter printer;
-							printer.setPageSize(QPageSize((QPageSize::PageSizeId)this->prefsPageSize));
-							printer.setFullPage(true);
-							printer.setOutputFormat(QPrinter::PdfFormat);
-							printer.setOutputFileName(chooser.selectedFilePath);
-							doc->print(&printer);
+							QPrinter	pd(QPrinter::ScreenResolution);
+							QSizeF	sz=doc->document()->documentLayout()->documentSize();
+							pd.setOutputFormat(QPrinter::PdfFormat);
+							pd.setOutputFileName(chooser.selectedFilePath);
+							pd.setPageMargins(QMarginsF(0,0,0,0),QPageLayout::Point);
+							sz.setWidth(sz.rwidth()-doc->lineNumberAreaWidth()-(doc->geometry().width()-sz.rwidth())-16);
+							sz.setHeight(this->mainNotebook->currentWidget()->geometry().height()-24);
+							QPageSize	customSize(sz,QPageSize::Unit::Point);
+							pd.setPageSize(customSize);
+							pd.setFullPage(true);
+							doc->print(&pd);
+
 							if(this->gotPDFCrop==0)
 								{
 									this->showBarberPole("Running external tool pdfcrop ...","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));

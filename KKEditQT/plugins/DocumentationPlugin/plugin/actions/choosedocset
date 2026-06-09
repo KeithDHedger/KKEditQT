@@ -7,7 +7,7 @@ echo "Just Open"
 DOCSETS=~/.local/share/Zeal/Zeal/docsets
 DBNAME=docSet.dsidx
 
-DOCSET=$(find ~/.local/share/Zeal/Zeal/docsets -mindepth 4 -maxdepth 4 -iname "*.dsidx"|sort|awk -F/ '{print $(NF  -3) }'|sed -n 's/\(.*\)\.docset/\1/p'|yadqt --type=getitem -t "Search docset" -b "Choose set" --fromstdin --ipseparator=newline)
+DOCSET=$(find -L ~/.local/share/Zeal/Zeal/docsets -mindepth 4 -maxdepth 4 -iname "*.dsidx"|sort|awk -F/ '{print $(NF  -3) }'|sed -n 's/\(.*\)\.docset/\1/p'|yadqt --type=getitem -t "Search docset" -b "Choose set" --fromstdin --ipseparator=newline)
 result=$?
 
 if [[ $result -eq 0 ]];then

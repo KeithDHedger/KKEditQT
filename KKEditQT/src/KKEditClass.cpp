@@ -492,21 +492,6 @@ void KKEditClass::initApp(int argc,char** argv)
 	AspellCanHaveError	*possible_err;
 	this->aspellConfig=new_aspell_config();
 
-//fprintf(stderr,"%s\n",aspell_config_get_default(this->aspellConfig, "dict-dir"));
-
-
-//const AspellStringList *keys = (AspellStringList*)aspell_config_possible_elements(this->aspellConfig, ""); // not documented across all versions
-    // safer approach: query known keys or inspect documentation/files
-    // Example: print some known keys
- //   const char *k[] = {"lang","encoding","master","personal","dict-dir","extra-dicts",NULL};
-//    for (int i=0; k[i]; ++i)
-//    {
-//fprintf(stderr,"%s\n",aspell_config_get_default(this->aspellConfig, k[i]));
-//     }
-
-
-
-
 	possible_err=new_aspell_speller(this->aspellConfig);
 
 	if(aspell_error_number(possible_err)!=0)
@@ -521,30 +506,18 @@ void KKEditClass::initApp(int argc,char** argv)
 			qDebug()<<"Install some dictionary's in /lib/aspell ...";
 		}
 	else
-	{
-		this->spellChecker=to_aspell_speller(possible_err);
-
-
-
-//	aspell_config_replace(this->aspellConfig,"dict-dir",qPrintable(QString("%1/lib/aspell-0.60").arg(getenv("APPDIR"))));
-//
-//	possible_err=new_aspell_speller(this->aspellConfig);
-//
-//	if(aspell_error_number(possible_err)!= 0)
-//		puts(aspell_error_message(possible_err));
-//	else
-//		this->spellChecker=to_aspell_speller(possible_err);
-
-	this->spellCheckMenuItem=new MenuItemClass("Spell Check",this);
-	QIcon	itemicon=QIcon::fromTheme("tools-check-spelling");
-	this->spellCheckMenuItem->setMenuID(SPELLCHECKMENUITEM);
-	this->spellCheckMenuItem->setIcon(itemicon);
-
-	QObject::connect(this->spellCheckMenuItem,&QAction::triggered,[this]()
 		{
-			this->doOddMenuItems(this->spellCheckMenuItem);
-		});
-	this->buildSpellCheckerGUI();
+			this->spellChecker=to_aspell_speller(possible_err);
+			this->spellCheckMenuItem=new MenuItemClass("Spell Check",this);
+			QIcon	itemicon=QIcon::fromTheme("tools-check-spelling");
+			this->spellCheckMenuItem->setMenuID(SPELLCHECKMENUITEM);
+			this->spellCheckMenuItem->setIcon(itemicon);
+
+			QObject::connect(this->spellCheckMenuItem,&QAction::triggered,[this]()
+				{
+					this->doOddMenuItems(this->spellCheckMenuItem);
+				});
+			this->buildSpellCheckerGUI();
 	}
 #endif
 
@@ -1429,10 +1402,11 @@ void KKEditClass::printDocument(void)
 		}
 
 //N.B. CUPS/QT5 has a problem with QT5/CUPS so only print to pdf is available, this aint my fault! 
+	QDir	().mkpath(QString("%1/PDF").arg(this->homeFolder));
 	QPrinter		printer(QPrinter::HighResolution);
-	printer.setOutputFileName(QString("%1/Documents/%2.pdf").arg(this->homeFolder).arg(doc->getFileName()));
- 
-    QPrintDialog	dialog(&printer,this->mainWindow);
+	printer.setOutputFileName(QString("%1/PDF/%2.pdf").arg(this->homeFolder).arg(doc->getFileName()));
+
+	QPrintDialog	dialog(&printer,this->mainWindow);
 	if(dialog.exec()!=QDialog::Accepted)
 		return;
 

@@ -840,8 +840,8 @@ void KKEditClass::buildMainGui(void)
 //printfile
 	this->printMenuItem=this->makeMenuItemClass(FILEMENU,"Print",QKeySequence::Print,"document-print",PRINTMENUNAME,PRINTMENUITEM);
 //export/import
-	if(this->gotPDFCrop==0)
-		menuItemSink=this->makeMenuItemClass(FILEMENU,"Export To PDF",0,"document-export",EXPORTTOPDFMENUNAME,EXPORTTOPDFMENUITEM);
+	//if(this->gotPDFCrop==0)
+	menuItemSink=this->makeMenuItemClass(FILEMENU,"Export To PDF",0,"document-export",EXPORTTOPDFMENUNAME,EXPORTTOPDFMENUITEM);
 	if(this->gotPDFToText==0)
 		menuItemSink=this->makeMenuItemClass(FILEMENU,"Import From PDF",0,"document-import",IMPORTFROMPDFMENUNAME,IMPORTFROMPDFMENUITEM);
 

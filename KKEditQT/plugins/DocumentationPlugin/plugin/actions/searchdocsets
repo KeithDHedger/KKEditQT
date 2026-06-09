@@ -66,7 +66,7 @@ while read
 			else
 				sed -i '$ d' "$HTMLFILE"
 			fi
-	done< <(find "$DOCSETS"  -mindepth 4 -maxdepth 4 -iname docSet.dsidx)
+	done< <(find -L "$DOCSETS"  -mindepth 4 -maxdepth 4 -iname docSet.dsidx)
 
 echo "</body>">>"$HTMLFILE"
 echo "</html>">>"$HTMLFILE"
