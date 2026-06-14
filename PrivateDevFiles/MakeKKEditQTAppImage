@@ -25,9 +25,9 @@ ln -sfv lib ${WHERE}/lib64
 ln -sfv usr/bin ${WHERE}/bin
 
 pushd ${PROJECTFOLDER}
-	#sudo chown -R $USER:$USER .
-	#./autogen.sh --prefix=/usr
-	#make
+#	sudo chown -R $USER:$USER .
+	./autogen.sh --prefix=/usr
+	make
 	make install DESTDIR=$WHERE
 	:>$ELFLOG
 popd
