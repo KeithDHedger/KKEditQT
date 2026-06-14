@@ -26,8 +26,8 @@ ln -sfv usr/bin ${WHERE}/bin
 
 pushd ${PROJECTFOLDER}
 	#sudo chown -R $USER:$USER .
-	./autogen.sh --prefix=/usr
-	make
+	#./autogen.sh --prefix=/usr
+	#make
 	make install DESTDIR=$WHERE
 	:>$ELFLOG
 popd
@@ -38,6 +38,9 @@ cp --parents -rp /usr/lib/qt6/plugins/platforms/libqxcb.so  ${WHERE}
 cp --parents -rp /usr/lib64/qt6/plugins/platformthemes/libqt6ct.so  ${WHERE}
 cp --parents -rp /usr/lib64/qt6/plugins/styles/libqt6ct-style.so  ${WHERE}
 cp --parents -rp /usr/share/org.kde.syntax-highlighting ${WHERE}
+
+cp --parents -rp /usr/lib/qt6/plugins/assetimporters ${WHERE}
+cp --parents -rp /usr/lib/qt6/plugins/sqldrivers ${WHERE}
 
 while read
 	do
