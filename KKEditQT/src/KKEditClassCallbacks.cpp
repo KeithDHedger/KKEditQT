@@ -1433,7 +1433,6 @@ void KKEditClass::handleMessages(void)
 				emit this->saveCurrentSessionMenuItem->triggered();
 				break;
 			case RESTORESESSIONMSG:
-				//this->sessionBusy=false;
 				if(QString(staticbuffer.mText).compare("autosave",Qt::CaseInsensitive)==0)
 					{
 						emit this->restoreDefaultSessionMenuItem->triggered();
@@ -1558,7 +1557,6 @@ void KKEditClass::setPreferences(void)
 	this->writeExitData();
 	this->setAppShortcuts();
 
-//this->mainNotebook->tabBar()->setStyleSheet(QString("QTabBar::scroller{width: 0px;}"));
 	switchPage(this->mainNotebook->currentIndex());
 }
 

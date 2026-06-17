@@ -62,10 +62,6 @@ KKEditClass::~KKEditClass()
 			if(this->plugins[j].loaded==true)
 				{
 					this->unloadPlug(&this->plugins[j]);
-			//if(this->plugins[j].instance!=NULL)
-			//	delete this->plugins[j].instance;
-			//if(this->plugins[j].pluginLoader!=NULL)
-			//	delete this->plugins[j].pluginLoader;
 				}
 			if(this->plugins[j].pluginLoader!=NULL)
 				delete this->plugins[j].pluginLoader;
@@ -107,7 +103,6 @@ void KKEditClass::handleSignal(int signum)
 		{
 			case SIGUSR2:
 				fprintf(stderr,"msgKey=0x%x shmKey=0x%x\n",this->msgKey,this->sharedMemKey);
-
 				//qDebug()<<Qt::hex<<Qt::showbase<<Qt::ws<<"msgKey"<<this->msgKey<<" shmKey"<<this->sharedMemKey;
 				break;
 			case SIGUSR1:
@@ -527,9 +522,12 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->recentFiles->updateRecents();
 
 	if(this->forceDefaultGeom==false)
-		r=this->prefs.value("app/geometry",QVariant(QRect(50,50,1024,768))).value<QRect>();
-
-	this->mainWindow->setGeometry(r);
+		{
+			if(this->prefs.contains("app/geometry")==true)
+				this->mainWindow->restoreGeometry(this->prefs.value("app/geometry").toByteArray());
+			else
+				this->mainWindow->setGeometry(100,100,800,600);
+		}
  
 //this->onExitSaveSession //TODO//
 	this->mainWindow->show();
@@ -761,7 +759,6 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 						});
 				}
 //plugins
-//this->saved_stdout = dup(fileno(stdout));
 			pd.menu=&menu;
 			pd.tabNumber=tabIndex;
 			pd.userStrData1=this->homeDataFolder;
@@ -770,8 +767,6 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 			pd.what=DOTABPOPUP;
 			this->runAllPlugs(pd);
 			menu.exec(this->mainNotebook->mapToGlobal(pt));
-//dup2(this->saved_stdout, fileno(stdout));
- //   close(this->saved_stdout); 
 		}
 }
 
@@ -785,11 +780,7 @@ void KKEditClass::writeExitData(void)
 //editor
 	if(this->forceDefaultGeom==false)
 		{
-			rg=this->mainWindow->geometry();
-			rf=this->mainWindow->frameGeometry();
-			rf.setHeight(rf.height()-(rf.height()-rg.height()));
-			rf.setWidth(rf.width()-(rf.width()-rg.width()));
-			this->prefs.setValue("app/geometry",rf);
+			this->prefs.setValue("app/geometry",this->mainWindow->saveGeometry());
 		}
 
 	if(this->tabSize!=-1)
@@ -826,7 +817,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/msgtimer",this->prefsMsgTimer);
 	this->prefs.setValue("app/usesingle",this->prefsUseSingle);
 	this->prefs.setValue("app/bekind",this->prefsNagScreen);
-	this->prefs.setValue("app/toolsopgeometry",this->toolOutputWindow->geometry());
+	this->prefs.setValue("app/toolsopgeometry",this->toolOutputWindow->saveGeometry());
 	this->prefs.setValue("app/shortcuts",this->defaultShortCutsList);
 	this->prefs.setValue("app/onexitsavesession",this->onExitSaveSession);
 	this->prefs.setValue("app/maxsessions",this->maxSessions);

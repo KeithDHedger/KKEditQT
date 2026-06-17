@@ -1,0 +1,13 @@
+#!/bin/bash
+
+mkdir -vp /tmp/x
+xhost +
+
+if [[ ${1,,} = "mint" ]];then 
+	sudo mount /dev/nvme0n1p4 /tmp/x
+else
+	sudo mount /dev/nvme0n1p2 /tmp/x
+fi
+
+sudo xchroot /tmp/x
+sudo umount -fl /tmp/x/

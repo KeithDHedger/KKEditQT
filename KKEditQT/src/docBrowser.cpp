@@ -21,20 +21,13 @@
 #include "docBrowser.h"
 #include "QT_menuitem.h"
 #include "KKEditClass.h"
+#include "runExternalProc.h"
 
 docBrowserClass::~docBrowserClass()
 {
-	QSettings	prefs;
-	QRect		rg;
-	QRect		rf;
-
 	if(this->winWidget!=NULL)
 		{
-			rg=this->winWidget->geometry();
-			rf=this->winWidget->frameGeometry();
-			rf.setHeight(rf.height()-(rf.height()-rg.height()));
-			rf.setWidth(rf.width()-(rf.width()-rg.width()));
-			prefs.setValue("docClassDocWindow/geometry",rf);
+			this->mainKKEditClass->prefs.setValue("docClassDocWindow/geometry",this->winWidget->saveGeometry());
 			this->winWidget->close();
 			delete this->winWidget;
 		}
@@ -69,7 +62,7 @@ bool docBrowserClass::setToPathOrHTML(QUrl path)
 			te->forward();
 			return(true);
 		}
-this->mainKKEditClass->currentURL="file://"+ts;
+	this->mainKKEditClass->currentURL="file://"+ts;
 
 	if(mime.contains("html")==true)
 		{
@@ -101,7 +94,6 @@ this->mainKKEditClass->currentURL="file://"+ts;
 
 	return(false);
 }
-#include "runExternalProc.h"
 
 void docBrowserClass::openSrcFile(QString path)
 {
@@ -138,19 +130,6 @@ void docBrowserClass::createNewWindow(QString path1)
 	QRect		rg;
 	QString		path=path1;
 	QLineEdit	*le;
-
-//	if(QFileInfo(path1).exists()==false)
-//		{
-//			if(this->winWidget!=NULL)
-//				{
-//					this->winWidget->close();
-//					delete this->te;
-//					delete this->winWidget;
-//					this->te=NULL;
-//					this->winWidget=NULL;
-//				}
-//			return;
-//		}
 
 	if(this->winWidget==NULL)
 		{
@@ -395,23 +374,13 @@ void docBrowserClass::createNewWindow(QString path1)
 			button=new QPushButton(QIcon::fromTheme("window-close"),"&Hide");
 			QObject::connect(button,&QPushButton::clicked,[this]()
 				{
-					QSettings	prefs;
-					QRect		rg;
-					QRect		rf;
-
-					rg=this->winWidget->geometry();
-					rf=this->winWidget->frameGeometry();
-					rf.setHeight(rf.height()-(rf.height()-rg.height()));
-					rf.setWidth(rf.width()-(rf.width()-rg.width()));
-					prefs.setValue("docClassDocWindow/geometry",rf);
+					this->mainKKEditClass->prefs.setValue("docClassDocWindow/geometry",this->winWidget->saveGeometry());
 					this->winWidget->hide();
 					this->mainKKEditClass->docviewerVisible=false;
 					this->mainKKEditClass->toggleDocViewMenuItem->setText("Show Docviewer");
 				});
 			hlayout->addWidget(button);
-
 			docvlayout->addLayout(hlayout);
-
 		}
 	else
 		{
@@ -438,8 +407,12 @@ void docBrowserClass::createNewWindow(QString path1)
 
 	this->winWidget->setWindowTitle(this->windowTitle);
 	this->winWidget->setLayout(docvlayout); 
-	rg=prefs.value("docClassDocWindow/geometry",QVariant(QRect(50,50,1024,768))).value<QRect>();
-	this->winWidget->setGeometry(rg);
+
+	if(this->mainKKEditClass->prefs.contains("docClassDocWindow/geometry")==true)
+		this->winWidget->restoreGeometry(this->mainKKEditClass->prefs.value("docClassDocWindow/geometry").toByteArray());
+	else
+		this->winWidget->setGeometry(100,100,800,600);
+
 	this->winWidget->show();
 	this->winWidget->activateWindow();
 	this->winWidget->raise();

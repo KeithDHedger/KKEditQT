@@ -286,10 +286,7 @@ void KKEditClass::buildPrefsWindow(void)
 	table->addWidget(widgetlabel,posy,0);
 	table->addWidget(prefsOtherWidgets[FUNCTIONCOMBO],posy,1,1,-1);
 
-	//QSpacerItem *space=new QSpacerItem(0,0,QSizePolicy::Maximum,QSizePolicy::Maximum);
 	posy++;
-	//table->addItem(space,posy,0,100,-1);
-	//table->addSpacerItem(space);QGridLayout
 	table->setColumnStretch(1,2);
 	table->setRowStretch(posy,1);
 	tab->setLayout(table);
@@ -383,7 +380,6 @@ void KKEditClass::buildPrefsWindow(void)
 //end application
 
 	posy++;
-	//table->addItem(space,posy,0,100,-1);
 	table->setColumnStretch(1,1);
 
 	tab->setLayout(this->table);
@@ -820,9 +816,8 @@ void KKEditClass::buildMainGui(void)
 	this->saveSessionsMenu->addSeparator();
 
 	for(int j=1;j<this->maxSessions;j++)
-	{
-	//menuItemSink=
-		this->saveSessionMenuItemsList.append(this->makeMenuItemClass(SAVESESSIONSMENU,this->sessionNames.value(j),0,NULL,SAVESESSIONMENUNAME,j));
+		{
+			this->saveSessionMenuItemsList.append(this->makeMenuItemClass(SAVESESSIONSMENU,this->sessionNames.value(j),0,NULL,SAVESESSIONMENUNAME,j));
 		}
 
 //restore session
@@ -840,7 +835,6 @@ void KKEditClass::buildMainGui(void)
 //printfile
 	this->printMenuItem=this->makeMenuItemClass(FILEMENU,"Print",QKeySequence::Print,"document-print",PRINTMENUNAME,PRINTMENUITEM);
 //export/import
-	//if(this->gotPDFCrop==0)
 	menuItemSink=this->makeMenuItemClass(FILEMENU,"Export To PDF",0,"document-export",EXPORTTOPDFMENUNAME,EXPORTTOPDFMENUITEM);
 	if(this->gotPDFToText==0)
 		menuItemSink=this->makeMenuItemClass(FILEMENU,"Import From PDF",0,"document-import",IMPORTFROMPDFMENUNAME,IMPORTFROMPDFMENUITEM);
@@ -1073,7 +1067,6 @@ void KKEditClass::buildTools(void)
 	this->toolsWindow->setWindowTitle("External Tools");
 
 	mainvbox->setContentsMargins(0,0,0,16);
-	//hbox->setContentsMargins(0,0,0,0);
 
 	tab=new QWidget(this->toolsWindow);
 	grid=new QGridLayout;
@@ -1503,12 +1496,9 @@ void KKEditClass::buildToolOutputWindow(void)
 	QHBoxLayout	*dochlayout=new QHBoxLayout;
 	QWidget		*widget;
 	QPushButton	*button;
-	QRect		r;
 
-	this->toolOutputWindow=new QMainWindow(mainWindow);
-
-	r=this->prefs.value("app/toolsopgeometry",QVariant(QRect(100,100,800,600))).value<QRect>();
-	this->toolOutputWindow->setGeometry(r);
+	this->toolOutputWindow=new QMainWindow(mainWindow);//TODO//close from window bar
+	this->toolOutputWindow->restoreGeometry(prefs.value("app/toolsopgeometry").toByteArray());
 
 	docvlayout->setContentsMargins(0,0,0,0);
 	widget=new QWidget;
@@ -1521,15 +1511,15 @@ void KKEditClass::buildToolOutputWindow(void)
 	button=new QPushButton(QIcon::fromTheme("edit-copy"),"Copy To Clipboard");
 	QObject::connect(button,&QPushButton::clicked,[this]()
 		{
-		if(this->toolsOPText->textCursor().hasSelection()==true)
-			this->toolsOPText->copy();
-		else
-			{
-				QTextCursor savetc=this->toolsOPText->textCursor();
-				this->toolsOPText->selectAll();
+			if(this->toolsOPText->textCursor().hasSelection()==true)
 				this->toolsOPText->copy();
-				this->toolsOPText->setTextCursor(savetc);
-			}
+			else
+				{
+					QTextCursor savetc=this->toolsOPText->textCursor();
+					this->toolsOPText->selectAll();
+					this->toolsOPText->copy();
+					this->toolsOPText->setTextCursor(savetc);
+				}
 		});
 	dochlayout->addStretch(1);
 	dochlayout->addWidget(button);
@@ -1537,7 +1527,7 @@ void KKEditClass::buildToolOutputWindow(void)
 	button=new QPushButton(QIcon::fromTheme("window-close"),"Close");
 	QObject::connect(button,&QPushButton::clicked,[this]()
 		{
-			this->toolOutputWindow->hide();
+			this->doViewMenuItems(this->toggleToolWindowMenuItem);
 		});
 	dochlayout->addStretch(1);
 	dochlayout->addWidget(button);

@@ -360,7 +360,6 @@ class KKEditClass : public QObject
 //docviewer functions
 		void							buildDocViewer(void);
 		void							setDocMenu(void);
-//		bool							docViewLinkTrap(const QUrl url);
 
 //prefswindow
 //prefswindow vars
