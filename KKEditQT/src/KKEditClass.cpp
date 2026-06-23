@@ -772,9 +772,6 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 
 void KKEditClass::writeExitData(void)
 {
-	QRect rg;
-	QRect rf;
-
 	if(this->verySafeFlag==true)
 		return;
 //editor

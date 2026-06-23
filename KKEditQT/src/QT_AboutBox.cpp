@@ -186,12 +186,13 @@ AboutBoxClass::AboutBoxClass(QWidget* window,QString pixpath)
 	vlayout->addWidget(label);
 //credits
 	button=new QPushButton("&Credits");
+	button->setIcon(QIcon::fromTheme("help-about"));
 	QObject::connect(button,&QPushButton::clicked,[=]() {this->showCredits();});
 	hlayout->addWidget(button);
-	button->setIcon(QIcon::fromTheme("help-about"));
 
 //licence
 	button=new QPushButton("&Licence");
+	button->setIcon(QIcon::fromTheme("text-x-license"));
 	QObject::connect(button,&QPushButton::clicked,[=]() {this->showLicence();});
 	hlayout->addWidget(button);
 
