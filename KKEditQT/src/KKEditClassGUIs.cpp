@@ -810,6 +810,7 @@ void KKEditClass::buildMainGui(void)
 
 //save session
 	this->saveSessionsMenu=new QMenu("&Save Session",this->fileMenu);
+	this->saveSessionsMenu->setIcon(QIcon::fromTheme("session-properties"));
 	this->fileMenu->addMenu(this->saveSessionsMenu);
 	this->saveCurrentSessionMenuItem=this->makeMenuItemClass(SAVESESSIONSMENU,"Save Current Session",0,NULL,SAVESESSIONMENUNAME,CURRENTSESSION);
 	this->saveSessionsMenu->addSeparator();
@@ -821,6 +822,7 @@ void KKEditClass::buildMainGui(void)
 
 //restore session
 	this->restoreSessionsMenu=new QMenu("&Restore Session",this->fileMenu);
+	this->restoreSessionsMenu->setIcon(QIcon::fromTheme("session-properties"));
 	this->fileMenu->addMenu(this->restoreSessionsMenu);
 	this->restoreDefaultSessionMenuItem=this->makeMenuItemClass(RESTORESESSIONSMENU,"Restore Autosave Session",0,NULL,RESTORESESSIONMENUNAME,CURRENTSESSION);
 	this->restoreSessionsMenu->addSeparator();
