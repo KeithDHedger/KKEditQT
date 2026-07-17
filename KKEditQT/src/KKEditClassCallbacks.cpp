@@ -528,28 +528,30 @@ void KKEditClass::doHelpMenuItems(MenuItemClass *mc)
 		{
 			 case ABOUTMENUITEM:
 			 	{
-					QString			content;
-					QFile			licencefile(this->realDataDir+"/docs/gpl-3.0.txt");
-					bool			retval;
-					AboutBoxClass	*about=new AboutBoxClass(this->mainWindow,this->realDataDir+"/pixmaps/" PACKAGE ".png");
-
-					retval=licencefile.open(QIODevice::Text | QIODevice::ReadOnly);
-					if(retval==true)
+					AboutBoxClass	about(this->mainWindow,QString("%1/pixmaps/%2.png").arg(this->realDataDir).arg(PACKAGE));
+					QFile			file(QString("%1/docs/gpl-3.0.txt").arg(this->realDataDir));
+					if(file.open(QIODevice::ReadOnly | QIODevice::Text))
 						{
-							content=QString::fromUtf8(licencefile.readAll());
-							licencefile.close();
-							about->setLicence(content);
+							QTextStream in(&file);
+							about.licence=in.readAll();
+							file.close();
 						}
-					about->setAuthors(defaultauthors);
-					about->runAbout();
+					about.credits=credits;
+					about.setHomepage("https://keithdhedger.github.io/KKEditQT/index.html","KKEditQT");
+					about.setBodyText("KKEditQT Code Editor");
+					about.showAboutQtButton(true);
+					about.showLicenceButton(true);
+					about.showCreditsButton(true);
+
+					about.runAbout();
 				}
 			 	break;
-			 case ABOUTQTMENUITEM:
-			 	this->application->aboutQt();
-			 	break;
+
 			 case HELPMENUITEM:
-			 	AboutBoxClass	about(this);
-				about.showHelp();
+			 	{
+			 		AboutBoxClass	about(this->mainWindow);
+			 		about.showHelp(QString("%1/help/index.html").arg(this->realDataDir));
+			 	}
 			 	break;
 		}
 }

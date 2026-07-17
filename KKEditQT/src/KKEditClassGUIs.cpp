@@ -521,7 +521,7 @@ void KKEditClass::populateStore(void)
 
 //open+recent
 					case 'O':
-						this->addIconToList("document-open",'O');
+						this->addIconToList("document-open-recent",'O');
 						this->tool[1]->setEnabled(false);
 						break;
 //save
@@ -755,7 +755,6 @@ void KKEditClass::buildMainGui(void)
 		{
 			this->tabContextMenu(pos);
 		});
-
 
 	QObject::connect(this->mainNotebook,&QTabWidget::currentChanged,[this](int index)
 		{
@@ -1017,8 +1016,6 @@ void KKEditClass::buildMainGui(void)
 //
 //about
 	menuItemSink=this->makeMenuItemClass(HELPMENU,"About",0,"help-about",ABOUTMENUNAME,ABOUTMENUITEM);
-//aboutqt
-	menuItemSink=this->makeMenuItemClass(HELPMENU,"About QT",0,"help-about",ABOUTMENUNAME,ABOUTQTMENUITEM);
 
 //help
 	menuItemSink=this->makeMenuItemClass(HELPMENU,"Help",0,"help-contents",HELPMENUNAME,HELPMENUITEM);

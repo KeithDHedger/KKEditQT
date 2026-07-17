@@ -44,7 +44,7 @@
 struct plugData;
 
 #include "globalincludes.h"
-#include "internet.h"
+#include "credits.h"
 #include "QT_document.h"
 #include "QT_notebook.h"
 #include "KKEditClass.h"

@@ -38,6 +38,7 @@ int main (int argc, char **argv)
 
 	napp->setOrganizationName("KDHedger");
 	napp->setApplicationName("KKEditQT");
+	napp->setApplicationVersion(VERSION);
 
 	kkedit=new KKEditClass(napp);
     kkedit->splash=new QSplashScreen(QString(kkedit->realDataDir)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);

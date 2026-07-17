@@ -139,6 +139,7 @@ void KKEditClass::setUpToolBar(void)
 					case 'O':
 						{
 							QPushButton *recent=new QPushButton(NULL,this->toolBar);
+							//QPushButton *recent=new QPushButton(QIcon::fromTheme("document-open-recent"),"",this->toolBar);
 							recent->setMenu(this->recentFiles->recentMenu);
 							recent->setFlat(true);
 							recent->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);	
@@ -472,9 +473,10 @@ void KKEditClass::initApp(int argc,char** argv)
 			this->doTimer();
 		});
 
-	QIcon::setThemeSearchPaths(QStringList()<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME")) <<QString("%1/icons").arg(this->realDataDir) );
-	QIcon::setFallbackSearchPaths(QStringList()<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME"))  <<QString("%1/icons").arg(this->realDataDir));
 	QIcon::setFallbackThemeName("kkeditqticons");
+	QIcon::setThemeSearchPaths(QStringList()<<QString("%1/icons").arg(this->realDataDir)<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME")) );
+
+	QIcon::setFallbackSearchPaths(QStringList()<<QString("%1/icons").arg(this->realDataDir)<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME")));
 
 	this->buildMainGui();
 	this->buildPrefsWindow();

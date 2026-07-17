@@ -1,4 +1,9 @@
 2.2.0
+Fixed recent menu icon.
+Fixed default icons.
+Fixed icon search paths.
+Updated credits text.
+Standardised about class.
 Tweak to brown theme.
 Fixed default size/position of doc viewer.
 Fixed default size/position of main window.

@@ -36,7 +36,7 @@ RecentMenuClass::~RecentMenuClass()
 
 RecentMenuClass::RecentMenuClass(KKEditClass *kk)
 {
-	QIcon	itemicon=QIcon::fromTheme("document-open");
+	QIcon	itemicon=QIcon::fromTheme("document-open-recent");
 	this->mainKKEditClass=kk;
 	this->recentMenu=new QMenu("Open Recent");
 	
