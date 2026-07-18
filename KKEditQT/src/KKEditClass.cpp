@@ -285,7 +285,7 @@ void KKEditClass::switchPage(int index)
 	this->mainWindow->setWindowTitle("KKEditQT - "+doc->getFileName());
 	doc->setStatusBarText();
 	doc->clearHilites();
-	if((doc->state==CHANGEDONDISKTAB) && (doc->dirty==false))
+	if((doc->state==CHANGEDONDISKTAB) && (doc->isDirty()==false))
 		{
 			doc->state=NORMALTAB;
 			doc->setTabColourType(NORMALTAB);
@@ -407,6 +407,8 @@ void KKEditClass::initApp(int argc,char** argv)
 		{
 			this->fileChangedOnDisk(path);
 		});
+
+	this->bookMarkImage.load(QString("%1/pixmaps/BookMark.png").arg(this->realDataDir));
 
 	tdir.mkpath(this->sessionFolder);
 	this->maxSessions=this->prefs.value("app/maxsessions",24).toInt();
@@ -1028,7 +1030,7 @@ bool KKEditClass::closeTab(int index)
 	doc=(DocumentClass*)this->mainNotebook->widget(thispage);
 	if(doc!=0)
 		{
-			if(doc->dirty==true)
+			if(doc->isDirty()==true)
 				{
 					int result=this->askSaveDialog(doc->fileName);
 					switch(result)
@@ -1190,7 +1192,8 @@ void KKEditClass::setToolbarSensitive(void)
 		}
 	else
 		{
-			override=doc->dirty;
+			//override=doc->dirty;
+			override=doc->isDirty();
 			hasselection=doc->textCursor().hasSelection();
 			if(doc->verticalSelectMatch.size()>0)
 				hasselection=true;
@@ -1436,7 +1439,7 @@ void KKEditClass::setCompWordList(void)
 	this->completer->setWrapAround(false);
 	QObject::connect(this->completer,QOverload<const QString &>::of(&QCompleter::activated),[=](const QString &text)
 		{
-			this->insertCompletion(text);
+				this->insertCompletion(text);
 		});
 }
 
@@ -1452,6 +1455,7 @@ void KKEditClass::insertCompletion(const QString& completion)
 	tc.removeSelectedText();
     tc.insertText(completion);
     doc->setTextCursor(tc);
+	doc->makeDirty();
 }
 
 void KKEditClass::loadPlugins(void)

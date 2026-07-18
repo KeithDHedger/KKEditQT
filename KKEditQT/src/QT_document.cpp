@@ -29,6 +29,9 @@ int DocumentClass::getCurrentLineNumber(void)
 
 bool DocumentClass::realShowLineNumbers(void)
 {
+	if(this->mainKKEditClass->lineNumbersVisible==false)
+		lineNumberArea->setGeometry(0,0,0,0);
+
 	return(this->mainKKEditClass->lineNumbersVisible);
 }
 
@@ -64,7 +67,10 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 
 	QPainter painter(this->lineNumberArea);
 
+//QRect r=event->rect();
+//r.setWidth(r.width()-this->mainKKEditClass->bookMarkImage.width());
 	painter.fillRect(event->rect(),QColor::fromRgba(this->highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::LineNumbers)));
+	//painter.fillRect(r,QColor::fromRgba(this->highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::LineNumbers)));
 	QTextBlock block=this->firstVisibleBlock();
 	int blockNumber=block.blockNumber();
 	int top=(int) blockBoundingGeometry(block).translated(contentOffset()).top();
@@ -80,12 +86,17 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 						{
 							if((value.docIndex==this->pageIndex) && (value.line==blockNumber+1))
 								{
+									fore=this->bestFontColour(this->repoColourToHex(KSyntaxHighlighting::Theme::MarkBookmark));
 									painter.fillRect(QRect(0,top,lineNumberArea->width(),fontMetrics().height()),this->repoColourToHex(KSyntaxHighlighting::Theme::MarkBookmark));
+									painter.drawImage(QPointF(lineNumberArea->width()-this->mainKKEditClass->bookMarkImage.width(),top+4),this->mainKKEditClass->bookMarkImage,this->mainKKEditClass->bookMarkImage.rect());
 								}
 						}
 
-					QString number=QString::number(blockNumber+1);painter.setPen(fore);
-					painter.drawText(0,top,lineNumberArea->width(),fontMetrics().height(),Qt::AlignRight,number);
+
+
+					QString number=QString::number(blockNumber+1);
+					painter.setPen(fore);
+					painter.drawText(0,top,lineNumberArea->width()-this->mainKKEditClass->bookMarkImage.width(),fontMetrics().height(),Qt::AlignRight,number);
 				}
 
 			block=block.next();
@@ -97,15 +108,13 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 
 int DocumentClass::lineNumberAreaWidth(void)
 {
-	int digits=1;
-	int max=qMax(1,blockCount());
-	while (max>=10)
-		{
-			max/=10;
-			digits++;
-		}
-	int space=3+fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits;
+	int	digits;
 
+	digits=QString().setNum(qMax(1,blockCount())).length();
+	int	space;
+
+	space=fontMetrics().horizontalAdvance(QLatin1Char('X')) * digits;
+	space+=this->mainKKEditClass->bookMarkImage.width();
 	return space;
 }
 
@@ -124,7 +133,6 @@ DocumentClass::~DocumentClass()
 {
 	this->mainKKEditClass->pages.remove(this->pageIndex);
 	delete this->lineNumberArea;
-	//delete this->highlighter2;
 }
 
 void DocumentClass::updateLineNumberAreaWidth(int newcnt)
@@ -174,11 +182,17 @@ void DocumentClass::updateLineNumberAreaWidth(int newcnt)
 	this->oldBlockCount=newcnt;
 }
 
+bool DocumentClass::isDirty(void)
+{
+	return(this->dirty);
+}
+
 void DocumentClass::makeDirty()
 {
 	this->dirty=true;
 	this->state=DIRTYTAB;
 	this->setTabColourType(this->state);
+	this->mainKKEditClass->setToolbarSensitive();
 }
 
 void DocumentClass::makeClean()
@@ -186,11 +200,12 @@ void DocumentClass::makeClean()
 	this->dirty=false;
 	this->state=NORMALTAB;
 	this->setTabColourType(this->state);
+	this->mainKKEditClass->setToolbarSensitive();
 }
 
 void DocumentClass::modified()
 {
-	if((this->mainKKEditClass->sessionBusy==true) || (this->dirty==false))
+	if((this->mainKKEditClass->sessionBusy==true) || (this->isDirty()==false))
 		return;
 
 	if(this->modifiedOnDisk==false)
@@ -450,7 +465,7 @@ void DocumentClass::mousePressEvent(QMouseEvent *event)
 		this->verticalSelectMatch.clear();
 
 	if((event->buttons() & Qt::MiddleButton)==Qt::MiddleButton)
-		this->dirty=true;
+		this->makeDirty();
 
 	if((event->modifiers() & Qt::AltModifier)==Qt::AltModifier)
 		{
@@ -484,8 +499,6 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 	if(this->isReadOnly()==true)
 		return;
 
-	this->dirty=true;
-
 	if(this->mainKKEditClass->mouseVisible==true)
 		this->mainKKEditClass->setMouseState(false);
 
@@ -494,6 +507,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 		{
 			event->accept();
 			this->insertPlainText("\t");
+			this->makeDirty();
 			return;
 		}
 
@@ -511,13 +525,16 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 			if(this->mainKKEditClass->completer && (this->mainKKEditClass->completer->popup()->isVisible()==false))
 				{
 					cursor.insertText(QString("\n%1").arg(this->indentPad));
+					this->makeDirty();
 					return;
 				}
 		}
+
 	switch (event->key())
 		{
 			case Qt::Key_Backspace:
 				popupflag=false;
+				this->makeDirty();
 				break;
 			case Qt::Key_Tab:
 				{
@@ -527,6 +544,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 					int			posinblock=cursor.positionInBlock();
 					if(data.mid(0,posinblock).simplified().isEmpty())
 						this->lastCursorPosition=true;
+					this->makeDirty();
 				}				
 				break;
 			case Qt::Key_Down:
@@ -551,9 +569,10 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 						}
 				}
 				break;
-
 			default:
 				this->lastCursorPosition=false;
+				if(!(event->key()<0x01000060 && event->key()>0x01000000))
+					this->makeDirty();
 				break;
 		}
 
@@ -587,7 +606,6 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 	if(!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer???
 		QPlainTextEdit::keyPressEvent(event);
 
-
 	ctrlorshift=event->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
 	if(!this->mainKKEditClass->completer || (ctrlorshift && event->text().isEmpty()))
 		return;
@@ -598,15 +616,16 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 		if(popupflag==false)
 			{
       	  		this->mainKKEditClass->completer->popup()->hide();
-      	  		return;
+	    	  		return;
      	  	}
 
     if(!isshortcut && (hasmodifier || event->text().isEmpty()|| completionPrefix.length() < this->mainKKEditClass->autoShowMinChars || eow.contains(event->text().right(1))))//
 		{
       	  	this->mainKKEditClass->completer->popup()->hide();
-      	  	return;
+     	  	return;
 		}
 
+	this->makeDirty();
 	if (completionPrefix!=this->mainKKEditClass->completer->completionPrefix())
 		{
 			this->mainKKEditClass->completer->setCompletionPrefix(completionPrefix);
@@ -617,6 +636,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
     cr.setWidth(this->mainKKEditClass->completer->popup()->sizeHintForColumn(0)+this->mainKKEditClass->completer->popup()->verticalScrollBar()->sizeHint().width());
 
    	if(this->mainKKEditClass->completer->widget()==this)
+   	
 		this->mainKKEditClass->completer->complete(cr);
 }
 
@@ -658,7 +678,7 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 		});
 	QObject::connect(this,&QPlainTextEdit::textChanged,[this]()
 		{
-			if(this->dirty==true)
+			if(this->isDirty()==true)
 				this->modified();
 		});
 
@@ -675,6 +695,11 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	this->highlightCurrentLine();
 	this->setMouseTracking(true);
 	this->makeClean();
+
+	QObject::connect(&this->plugMakeDirty,&QAction::triggered,[this]()
+		{
+			this->makeDirty();
+		});
 }
 
 void DocumentClass::setFileName(const QString filename)
@@ -711,7 +736,7 @@ void DocumentClass::setTabName(QString tabname)
 {
 	int tabnum=this->mainKKEditClass->mainNotebook->indexOf(this);
 
-	if(this->dirty==false)
+	if(this->isDirty()==false)
 		this->mainKKEditClass->mainNotebook->tabBar()->setTabTextColor(tabnum,QColor("black"));
 
 	if(this->tabName.compare(tabname)==0)
@@ -829,7 +854,7 @@ void DocumentClass::setFilePrefs(void)
 	this->highlighter2->setDefinition(def);
 	this->setTheme(this->mainKKEditClass->prefStyleName);
 
-	this->dirty=holddirty;
+	this->dirty=holddirty;//TODO//
 	this->updateLineNumberAreaWidth(this->oldBlockCount);
 
 	this->setFont(this->mainKKEditClass->prefsDocumentFont);
@@ -953,7 +978,7 @@ void DocumentClass::dragMoveEvent(QDragMoveEvent *event)
 void DocumentClass::dropEvent(QDropEvent* event)
 {
 	this->inDrag=false;
-	this->dirty=true;
+	this->makeDirty();
 
 	if (event->mimeData()->hasUrls())
 		{
@@ -1184,7 +1209,7 @@ void DocumentClass::refreshFromDisk(void)
 				cursor.removeSelectedText ();
 				cursor.insertText(content);
 				this->highlighter2->rehighlight();
-				this->dirty=false;
+				this->makeClean();
 				file.close();
 
 				block=this->document()->findBlockByNumber(currentline-1);
@@ -1197,8 +1222,7 @@ void DocumentClass::refreshFromDisk(void)
 				this->fromMe=false;
 				this->modifiedOnDisk=false;
 				this->state=NORMALTAB;
-				this->dirty=false;
-				//this->document()->clearUndoRedoStacks();
+				this->makeClean();
 				this->setTabColourType(NORMALTAB);
 			cursor.endEditBlock();
 		}

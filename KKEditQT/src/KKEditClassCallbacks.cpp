@@ -118,7 +118,7 @@ void KKEditClass::restoreSession(int what)
 			doc=this->getDocumentForTab(j);
 			doc->visible=this->mainNotebook->isTabVisible(j);
 			doc->document()->clearUndoRedoStacks(QTextDocument::UndoAndRedoStacks);
-			doc->dirty=false;
+			doc->makeClean();
 		}
 
 	if(this->openFirstTabWithSession==true)
@@ -298,6 +298,7 @@ void KKEditClass::doBookmarkMenuItems(MenuItemClass *mc)
 				break;
 			case TOGGLEBOOKMARKMENUITEM:
 				this->handleBMMenu(this->mainNotebook->currentWidget(),TOGGLEBOOKMARKMENUITEM,tc);
+				document->highlightCurrentLine();
 				break;
 			default:
 				this->handleBMMenu(this->mainNotebook->currentWidget(),mc->getMenuID(),tc);
@@ -691,14 +692,14 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 			case UNDOMENUITEM:
 				if(document!=NULL)
 					{
-						document->dirty=true;
+						document->makeDirty();
 						document->undo();
 					}
 				break;
 			case REDOMENUITEM:
 				if(document!=NULL)
 					{
-						document->dirty=true;
+						document->makeDirty();
 						document->redo();
 					}
 				break;
@@ -706,7 +707,7 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 				if(document!=NULL)
 					while(document->document()->availableUndoSteps()>0)
 						{
-							document->dirty=true;
+							document->makeDirty();
 							document->undo();
 						}
 				break;
@@ -715,7 +716,7 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 					{
 						while(document->document()->availableRedoSteps()>0)
 							{
-								document->dirty=true;
+								document->makeDirty();
 								document->redo();
 							}
 					}
@@ -729,7 +730,7 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 
 						if(document->textCursor().hasSelection()==true)
 							{
-								document->dirty=true;
+								document->makeDirty();
 								document->cut();
 								cursor.endEditBlock();
 								break;
@@ -740,13 +741,13 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 								this->application->clipboard()->setText(document->verticalText);
 								for(int j=0;j<document->verticalSelectMatch.count();j++)
 									{
-										document->dirty=true;
+										document->makeDirty();
 										QTextCursor tc=document->verticalSelectMatch.at(j).cursor;
 										tc.removeSelectedText();
 									}
 							}
 						cursor.endEditBlock();
-						document->dirty=true;
+						document->makeDirty();
 					}
 				break;
 			case COPYMENUITEM:
@@ -782,7 +783,7 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 								int			col=cursor.positionInBlock();
 								for(int j=0;j<strings.count();j++)
 									{
-										document->dirty=true;
+										document->makeDirty();
 										block=document->document()->findBlockByNumber(bn);
 										QTextCursor	cursor1(block);
 
@@ -802,14 +803,14 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 									}
 							}
 						cursor.endEditBlock();
-						document->dirty=true;
+						document->makeDirty();
 					}
 				break;
 
 			case PASTEMENUITEM:
 				if(document!=NULL)
 					{
-						document->dirty=true;
+						document->makeDirty();
 						document->paste();
 					}
 				break;
@@ -824,7 +825,7 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 
 							if(cursor.hasSelection()==true)
 								{
-									document->dirty=true;
+									document->makeDirty();
 									cursor.removeSelectedText();
 									cursor.endEditBlock();
 									break;
@@ -835,7 +836,7 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 									this->application->clipboard()->setText(document->verticalText);
 									for(int j=0;j<document->verticalSelectMatch.count();j++)
 										{
-											document->dirty=true;
+											document->makeDirty();
 											QTextCursor tc=document->verticalSelectMatch.at(j).cursor;
 											tc.removeSelectedText();
 										}
@@ -1348,7 +1349,7 @@ void KKEditClass::handleMessages(void)
 									cursor.beginEditBlock();
 										cursor.insertText(content);
 										doc->highlighter2->rehighlight();
-										doc->dirty=true;
+										doc->makeDirty();
 									cursor.endEditBlock();
 									doc->state=DIRTYTAB;
 									doc->setTabColourType(DIRTYTAB);
@@ -1417,8 +1418,7 @@ void KKEditClass::handleMessages(void)
 
 							this->saveFileAs(-1,staticbuffer.mText);
 							doc->setFilePrefs();
-							doc->dirty=false;
-							doc->setTabColourType(NORMALTAB);
+							doc->makeClean();
 						}
 				}
 				break;
@@ -1808,13 +1808,13 @@ void KKEditClass::fileChangedOnDisk(const QString &path)
 									if(doc->fromMe==false)
 										{
 											doc->fromMe=true;
-											if((this->prefsNoWarnings==false) || (doc->dirty==true))
+											if((this->prefsNoWarnings==false) || (doc->isDirty()==true))
 												{
 													QMessageBox msgBox;
 													int			retval;
 
 													msgBox.setIcon(QMessageBox::Warning);
-													if(doc->dirty==true)
+													if(doc->isDirty()==true)
 														msgBox.setText(doc->getFilePath()+" has been modified on disk AND has been modified in the editor");
 													else
 														msgBox.setText(doc->getFilePath()+" has been modified on disk");

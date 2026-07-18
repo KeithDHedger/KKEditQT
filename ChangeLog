@@ -1,5 +1,13 @@
+2.2.1
+Fixed HTML plugin segfault.
+Fixed setting doc dirty when using completions.
+Fixed marking document dirty when only cursor has moved.
+
 2.2.0
-Use icon theme bookmark.
+Fixed hiding line numbers.
+Set be best font colour for linenumbers with book mark.
+Added bookmark icon.
+Use icon theme bookmark in menu.
 Added sessions menu icon.
 Fixed recent menu icon.
 Fixed default icons.

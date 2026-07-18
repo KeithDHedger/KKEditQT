@@ -319,6 +319,7 @@ class KKEditClass : public QObject
 		QCompleter					*completer=NULL;
 		QString						currentFilepath;
 		QString						currentFilename;
+		QImage						bookMarkImage;
 
 //document functions
 		DocumentClass				*getDocumentForTab(int tabnum);

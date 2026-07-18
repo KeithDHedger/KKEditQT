@@ -133,9 +133,7 @@ void KKEditClass::newFile(const QString data,const QString filename)
 	pd.what=DONEWDOCUMENT;
 	this->runAllPlugs(pd);
 
-	doc->dirty=false;
-	doc->state=NORMALTAB;
-	doc->setTabColourType(doc->state);
+	doc->makeClean();
 }
 
 int KKEditClass::askSaveDialog(const QString filename)
@@ -207,7 +205,7 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 					doc->mimeType=type.name();
 					doc->setHiliteLanguage(doc->mimeType,true);
 					doc->highlighter2->rehighlight();
-					doc->dirty=false;
+					doc->makeClean();
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
 					this->recentFiles->addFilePath(doc->getFilePath());
 					this->setCompWordList();
@@ -243,7 +241,7 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 	if(doc==NULL)
 		return(false);
 
-	if((doc->dirty==true) && (ask==true))
+	if((doc->isDirty()==true) && (ask==true))
 		{
 			int result=this->askSaveDialog(doc->fileName);
 			switch(result)
@@ -260,11 +258,11 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 				}
 		}
 
-	if((doc->getFilePath().isEmpty()==true) && (doc->dirty==true))
+	if((doc->getFilePath().isEmpty()==true) && (doc->isDirty()==true))
 		return(this->saveFileAs(tabnum));
 	else
 		{
-			if(doc->dirty==false)
+			if(doc->isDirty()==false)
 				return(true);
 
 			doc->fromMe=true;
@@ -288,7 +286,7 @@ bool KKEditClass::saveFile(int tabnum,bool ask)
 				{
 					doc->fromMe=true;
 					QTextStream(&file) << doc->toPlainText();
-					doc->dirty=false;
+					doc->makeClean();
 					doc->setTabName(this->truncateWithElipses(doc->getFileName(),this->prefsMaxTabChars));
 					this->setCompWordList();
 					if(this->fileWatch->files().contains(doc->getFilePath())==false)
@@ -480,7 +478,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc=this->pages[this->newPageIndex];
 			doc->pageIndex=this->newPageIndex;
 			this->newPageIndex++;
-			doc->dirty=false;
+			doc->makeClean();
 			type=db.mimeTypeForFile(fileinfo.canonicalFilePath());
 			doc->mimeType=type.name();
 			int cnt=0;

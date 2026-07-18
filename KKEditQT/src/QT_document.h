@@ -48,6 +48,7 @@ class DocumentClass : public QPlainTextEdit
 		QTextEdit::ExtraSelection		selectedLine;
 		int								oldBlockCount=0;
 
+//graphics
 		void								setTheme(QString name);
 		void								setHiliteLanguage(QString name,bool nameistype=false);
 		void								lineNumberAreaPaintEvent(QPaintEvent *event);
@@ -55,6 +56,8 @@ class DocumentClass : public QPlainTextEdit
 		void								setXtraSelections(void);
 		void								addXtraSelections(void);
 		void								clearHilites(void);
+		bool								realShowLineNumbers(void);
+		void								highlightCurrentLine();
 
 		void								setFileName(const QString filename);
 		const QString					getFileName(void);
@@ -73,8 +76,10 @@ class DocumentClass : public QPlainTextEdit
 		void								refreshFromDisk(void);
 		void								setTabColourType(int type);
 
+		bool								isDirty(void);
 		void								makeDirty(void);
 		void								makeClean(void);
+		QAction							plugMakeDirty;
 
 //pageStruct
 		QString							fileName;
@@ -82,7 +87,6 @@ class DocumentClass : public QPlainTextEdit
 		QString							dirPath;
 		QString							tabName;
 		bool								doneHighlightAll;
-		bool								dirty=false;
 		QString							mimeType="text/plain";
 		bool								gotUndo=false;
 		bool								gotRedo=false;
@@ -123,19 +127,18 @@ class DocumentClass : public QPlainTextEdit
 		void								dragMoveEvent(QDragMoveEvent *event);
 
 	private slots:
-		void								highlightCurrentLine();
 		void								updateLineNumberAreaWidth(int newcnt);
 		void								updateLineNumberArea(const QRect &, int);
 		void								modified();
 		void								setUndo(bool avail);
 		void								setRedo(bool avail);
 
-	private:
+	private:	
+		bool								dirty=false;
 		bool								inDrag=false;
 		QWidget 							*lineNumberArea;
 		QString							indentPad;
 		void								clearXtraSelections(void);
-		bool								realShowLineNumbers(void);
 		bool								realHiliteLine(void);
 		bool								realSyntaxHighlighting(void);
 		QString							bestFontColour(QString colour);
@@ -173,6 +176,8 @@ class LineNumberArea : public QWidget
 
 		void mouseReleaseEvent(QMouseEvent *event)
 			{
+				if(this->codeEditor->realShowLineNumbers()==false)
+					return;
 				this->codeEditor->setBMFromLineBar(event);
 			}
 	private:
