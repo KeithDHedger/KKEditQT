@@ -571,7 +571,7 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 				break;
 			default:
 				this->lastCursorPosition=false;
-				if(!(event->key()<0x01000060 && event->key()>0x01000000))
+				if(!(event->key()<=0x01000060 && event->key()>=0x01000000))
 					this->makeDirty();
 				break;
 		}
