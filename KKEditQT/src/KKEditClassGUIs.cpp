@@ -1338,73 +1338,6 @@ void KKEditClass::rebuildTabsMenu(void)
 		}
 }
 
-void KKEditClass::buildSpellCheckerGUI(void)
-{
-#ifdef _ASPELL_
-	QVBoxLayout	*vlayout=new QVBoxLayout;
-	QWidget*		hbox;
-	QHBoxLayout	*hlayout;
-	QPushButton	*button;
-	QIcon		icon;
-
-	this->spellCheckGUI=new QDialog(this->mainWindow);
-	this->spellCheckGUI->setWindowTitle("Spell Check Word");
-	vlayout->setContentsMargins(4,0,4,0);
-
-//find
-	this->infoLabel=new QLabel("Change word to:",this->spellCheckGUI);
-	this->infoLabel->setAlignment(Qt::AlignCenter);
-	vlayout->addWidget(this->infoLabel);
-
-	this->wordDropBox=new QComboBox(this->spellCheckGUI);
-	this->wordDropBox->setEditable(true);
-	vlayout->addWidget(this->wordDropBox);
-
-//switches 3rd row
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,4,0,4);
-	hbox=new QWidget(this->spellCheckGUI);
-	hbox->setLayout(hlayout);
-
-	button=new QPushButton("Apply",this->spellCheckGUI);
-	button->setObjectName(QString("%1").arg(APPLYWORDBUTTON));
-	QObject::connect(button,&QPushButton::clicked,[this]()
-		{
-			this->doOddButtons(APPLYWORDBUTTON);
-		});
-
-	hlayout->addWidget(button);
-
-	button=new QPushButton("Ignore",this->spellCheckGUI);
-	button->setObjectName(QString("%1").arg(IGNOREWORDBUTTON));
-	QObject::connect(button,&QPushButton::clicked,[this]()
-		{
-			this->doOddButtons(IGNOREWORDBUTTON);
-		});
-	hlayout->addWidget(button);
-
-	button=new QPushButton("Add",this->spellCheckGUI);
-	button->setObjectName(QString("%1").arg(ADDWORDBUTTON));
-	QObject::connect(button,&QPushButton::clicked,[this]()
-		{
-			this->doOddButtons(ADDWORDBUTTON);
-		});
-	hlayout->addWidget(button);
-
-	button=new QPushButton("Cancel",this->spellCheckGUI);
-	button->setObjectName(QString("%1").arg(CANCELSPELLCHECK));
-	QObject::connect(button,&QPushButton::clicked,[this]()
-		{
-			this->doOddButtons(CANCELSPELLCHECK);
-		});
-	hlayout->addWidget(button);
-
-	vlayout->addWidget(hbox);
-
-	this->spellCheckGUI->setLayout(vlayout);
-#endif
-}
-
 bool KKEditClass::openFileDialog(void)
 {
 	chooserDialogClass	chooser(chooserDialogType::loadDialog);
@@ -1774,7 +1707,6 @@ void KKEditClass::rebuildFunctionMenu(int tab)
 
 									menuitem->setMenuID(linenumber);
 									menuitem->mainKKEditClass=this;
-									//menuitem->setParent(this->funcMenu);
 									QObject::connect(menuitem,&QAction::triggered,[this,menuitem]()
 										{
 											menuitem->menuClickedGotoLine();

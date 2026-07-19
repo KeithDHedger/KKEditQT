@@ -1639,7 +1639,7 @@ void KKEditClass::doOddMenuItems(MenuItemClass *mc)
 #ifdef _ASPELL_
 					if(doc->textCursor().selectedText().isEmpty()==false)
 						{
-							this->returnWord=false;
+						//	this->returnWord=false;
 							this->setUpSpellGUI(doc->textCursor().selectedText(),doc);
 						}
 #endif
@@ -1744,36 +1744,6 @@ void KKEditClass::doOddButtons(int what)
 			case TOOLSCANCEL:
 				this->toolsWindow->hide();
 				break;
-#ifdef _ASPELL_
-			case APPLYWORDBUTTON:
-				this->spellCheckGUI->hide();
-				if(this->returnWord==false)
-					{
-						doc->textCursor().removeSelectedText();
-						doc->textCursor().insertText(this->wordDropBox->currentText());
-					}
-				else
-					this->goodWord=this->wordDropBox->currentText();
-				this->returnWord=false;
-				break;
-			case IGNOREWORDBUTTON:
-				if(this->returnWord==false)
-					aspell_speller_add_to_session(this->spellChecker,doc->textCursor().selectedText().toStdString().c_str(),-1);
-				else
-					aspell_speller_add_to_session(this->spellChecker,this->badWord.toStdString().c_str(),-1);
-				this->spellCheckGUI->hide();
-				this->returnWord=false;
-				break;
-			case ADDWORDBUTTON:
-				aspell_speller_add_to_personal(this->spellChecker,this->badWord.toStdString().c_str(),-1);
-				aspell_speller_save_all_word_lists(this->spellChecker);
-				this->spellCheckGUI->hide();
-				break;
-			case CANCELSPELLCHECK:
-				this->cancelCheck=true;
-				this->spellCheckGUI->hide();
-				break;
-#endif
 			case CANCELPREFS:
 				this->prefsWindow->hide();
 				this->readConfigs();

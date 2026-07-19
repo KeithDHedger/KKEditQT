@@ -29,6 +29,7 @@
 #include "QT_ProxyStyle.h"
 #include "KKEditClass.h"
 #include "ChooserDialog.h"
+#include "QT_SpellCheck.h"
 
 static const char			*replacementShorts[]={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"};
 static const QStringList		reservedShortcutKeys={"Ctrl+Shift+C","Ctrl+Shift+V"};
@@ -50,12 +51,7 @@ KKEditClass::~KKEditClass()
 	for(int j=0;j<NOMORESHORTCUT;j++)
 		delete this->appShortcuts[j];
 
-#ifdef _ASPELL_
-	if(this->aspellConfig!=NULL)
-		delete_aspell_config(this->aspellConfig);
-	if(this->spellChecker!=NULL)
-		delete_aspell_speller(this->spellChecker);
-#endif
+
 
 	for(int j=0;j<this->plugins.count();j++)
 		{
@@ -90,9 +86,10 @@ KKEditClass::~KKEditClass()
 	delete this->toolsOPText;
 	delete this->toolOutputWindow;
 	delete this->findReplaceDialog;
-	delete this->spellCheckGUI;
+#ifdef _ASPELL_
+	delete this->spellChecker;
 	delete this->spellCheckMenuItem;
-
+#endif
 	delete this->recentFiles;
 	delete this->history;
 }
@@ -139,7 +136,6 @@ void KKEditClass::setUpToolBar(void)
 					case 'O':
 						{
 							QPushButton *recent=new QPushButton(NULL,this->toolBar);
-							//QPushButton *recent=new QPushButton(QIcon::fromTheme("document-open-recent"),"",this->toolBar);
 							recent->setMenu(this->recentFiles->recentMenu);
 							recent->setFlat(true);
 							recent->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);	
@@ -315,7 +311,6 @@ void KKEditClass::rebuildBookMarkMenu()
 
 	this->bookMarkMenu->clear();
 	menuItemSink=this->makeMenuItemClass(BOOKMARKSMENU,"Remove All Bookmarks",0,"list-remove",REMOVEALLBOOKMARKS,REMOVEALLBOOKMARKSMENUITEM);
-	//menuItemSink=this->makeMenuItemClass(BOOKMARKSMENU,"Toggle Bookmark",QKeySequence::fromString("Ctrl+T"),this->realDataDir+"/pixmaps/BookMark.png",TOGGLEBOOKMARK,TOGGLEBOOKMARKMENUITEM);
 	menuItemSink=this->makeMenuItemClass(BOOKMARKSMENU,"Toggle Bookmark",QKeySequence::fromString("Ctrl+T"),"bookmark-new",TOGGLEBOOKMARK,TOGGLEBOOKMARKMENUITEM);
 
 	this->bookMarkMenu->addSeparator();
@@ -442,12 +437,12 @@ void KKEditClass::initApp(int argc,char** argv)
 				}
 		}
 
-		this->tmpFolderName=mkdtemp(tmpfoldertemplate);
-		if(this->tmpFolderName.isEmpty()==true)
-			{
-				qDebug()<<"Can't create temporary folder, quitting ...";
-				exit (100);
-			}
+	this->tmpFolderName=mkdtemp(tmpfoldertemplate);
+	if(this->tmpFolderName.isEmpty()==true)
+		{
+			qDebug()<<"Can't create temporary folder, quitting ...";
+			exit (100);
+		}
 
 	this->gotManEditor=QStandardPaths::findExecutable("manpageeditorqt").isEmpty();
 	this->gotPDFToText=QStandardPaths::findExecutable("pdftotext").isEmpty();
@@ -489,36 +484,15 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->buildFindReplace();
 
 #ifdef _ASPELL_
-	AspellCanHaveError	*possible_err;
-	this->aspellConfig=new_aspell_config();
-
-	possible_err=new_aspell_speller(this->aspellConfig);
-
-	if(aspell_error_number(possible_err)!=0)
+	this->spellChecker=new QT_SpellCheckClass(this->mainWindow);
+	this->spellCheckMenuItem=new MenuItemClass("Spell Check Word",this);
+	QIcon	itemicon=QIcon::fromTheme("tools-check-spelling");
+	this->spellCheckMenuItem->setMenuID(SPELLCHECKMENUITEM);
+	this->spellCheckMenuItem->setIcon(itemicon);
+	QObject::connect(this->spellCheckMenuItem,&QAction::triggered,[this]()
 		{
-			aspell_config_replace(this->aspellConfig,"dict-dir","/lib/aspell");
-			possible_err=new_aspell_speller(this->aspellConfig);
-		}
-
-	if(aspell_error_number(possible_err)!= 0)
-		{
-			qDebug()<<aspell_error_message(possible_err);
-			qDebug()<<"Install some dictionary's in /lib/aspell ...";
-		}
-	else
-		{
-			this->spellChecker=to_aspell_speller(possible_err);
-			this->spellCheckMenuItem=new MenuItemClass("Spell Check",this);
-			QIcon	itemicon=QIcon::fromTheme("tools-check-spelling");
-			this->spellCheckMenuItem->setMenuID(SPELLCHECKMENUITEM);
-			this->spellCheckMenuItem->setIcon(itemicon);
-
-			QObject::connect(this->spellCheckMenuItem,&QAction::triggered,[this]()
-				{
-					this->doOddMenuItems(this->spellCheckMenuItem);
-				});
-			this->buildSpellCheckerGUI();
-	}
+			this->doOddMenuItems(this->spellCheckMenuItem);
+		});
 #endif
 
 	this->htmlFile=QString("%1/Docview-%2.html").arg(this->tmpFolderName).arg(this->randomName(6));
@@ -643,11 +617,10 @@ void KKEditClass::tabContextMenu(const QPoint &pt)
 			QMenu	filemenu(this->tabContextMenuItems[(OPENFROMHERE-COPYFOLDERPATH)/0x100].label);
 			for(int cnt=0;cnt<TABCONTEXTMENUCNT;cnt++)
 				{
+#ifndef _ASPELL_ 
 					if(cnt==3)
-						{
-							if(this->spellChecker==NULL)
-								continue;
-						}
+						continue;
+#endif
 
 					if(cnt==(THEME-COPYFOLDERPATH)/0x100)
 						{
@@ -911,65 +884,6 @@ void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString c
 	QProcess::startDetached("sh",arguments);
 }
 
-miniPrefsReturnStruct KKEditClass::miniPrefsDialog(QString prefsname,QStringList items,bool liveupdate)
-{
-	miniPrefsReturnStruct	prefs;
-	QSettings				miniprefsname("KDHedger",prefsname);
-	QWidget					*hbox;
-	QVBoxLayout				*docvlayout=new QVBoxLayout;
-	QHBoxLayout				*hlayout;
-	QPushButton				*cancelbutton=new QPushButton("&Cancel");
-	QPushButton				*okbutton=new QPushButton("&Apply");
-	std::string				prefsentry;
-
-	prefs.theDialog=new QDialog();
-
-	QObject::connect(cancelbutton,&QPushButton::clicked,[this,prefs]()
-		{
-			prefs.theDialog->reject();
-		});
-	QObject::connect(okbutton,&QPushButton::clicked,[this,prefs]()
-		{
-			prefs.theDialog->accept();
-		});
-
-	for(int j=0;j<items.size();j++)
-		{
-			hbox=new QWidget;
-			hlayout=new QHBoxLayout;
-			hlayout->setContentsMargins(0,0,0,0);
-			hbox->setLayout(hlayout);
-			hlayout->addWidget(new QLabel(items.at(j)),0,Qt::AlignLeft);
-			prefsentry=LFSTK_UtilityClass::LFSTK_strStrip(items.at(j).toStdString());
-			prefsentry=LFSTK_UtilityClass::LFSTK_strReplaceAllChar(prefsentry," ","",true);
-			prefs.boxes[j]=new QLineEdit(miniprefsname.value(prefsentry.c_str(),"").toString().simplified());	
-			if(liveupdate==true)
-				{
-					QObject::connect(prefs.boxes[j],&QLineEdit::textEdited,[j,items,prefsname,prefs](const QString)
-						{
-							QSettings	miniprefsname("KDHedger",prefsname);
-							std::string	prefsentry=LFSTK_UtilityClass::LFSTK_strStrip(items.at(j).toStdString());
-							prefsentry=LFSTK_UtilityClass::LFSTK_strReplaceAllChar(prefsentry," ","",true);
-							miniprefsname.setValue(prefsentry.c_str(),prefs.boxes[j]->text());
-						});
-				}
-			hlayout->addWidget(prefs.boxes[j],1,Qt::AlignRight);
-			docvlayout->addWidget(hbox);
-		}
-	hbox=new QWidget;
-	hlayout=new QHBoxLayout;
-	hlayout->setContentsMargins(0,0,0,0);
-	hbox->setLayout(hlayout);
-	hlayout->addWidget(cancelbutton);
-	hlayout->addStretch(0);
-	hlayout->addWidget(okbutton);
-
-	docvlayout->addWidget(hbox);
-
-	prefs.theDialog->setLayout(docvlayout);
-	return(prefs);
-}
-
 void KKEditClass::closeAllTabs(void)
 {
 	bool retval;
@@ -1026,7 +940,6 @@ bool KKEditClass::closeTab(int index)
 	pd.what=DOCLOSE;
 	this->runAllPlugs(pd);
 
-	//doc=qobject_cast<DocumentClass*>(this->mainNotebook->widget(thispage));
 	doc=(DocumentClass*)this->mainNotebook->widget(thispage);
 	if(doc!=0)
 		{
@@ -1092,13 +1005,8 @@ void KKEditClass::shutDownApp()
 	if(this->onExitSaveSession==true)
 		this->doSessionsMenuItems(NULL);
 
-	if(this->saveAllFiles(true)==true)
-		{
-//#ifdef _ASPELL_
-//			delete_aspell_config(this->aspellConfig);
-//			delete_aspell_speller(this->spellChecker);
-//#endif
-		}
+	this->saveAllFiles(true);
+
 	plugData pd;
 	pd.what=DOSHUTDOWN;
 	this->runAllPlugs(pd);
@@ -1192,7 +1100,6 @@ void KKEditClass::setToolbarSensitive(void)
 		}
 	else
 		{
-			//override=doc->dirty;
 			override=doc->isDirty();
 			hasselection=doc->textCursor().hasSelection();
 			if(doc->verticalSelectMatch.size()>0)
@@ -1345,7 +1252,6 @@ void KKEditClass::runCLICommands(int quid)
 			list=this->parser.positionalArguments();
 			for(int j=0;j<list.count();j++)
 				{
-				//system(qPrintable(QString("echo \"j=%1 -- --->>>%2<<<--\n\" >> /tmp/log").arg(j).arg(list.at(j))));
 					if(list.at(j).at(0)!='/')
 						msglen=snprintf(message.mText,MAXMSGSIZE-1,"%s/%s",pathtopwd,list.at(j).toStdString().c_str());
 					else

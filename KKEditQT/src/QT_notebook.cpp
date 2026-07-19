@@ -97,7 +97,6 @@ NoteBookClass::NoteBookClass(KKEditClass *kk,QWidget *parent): QTabWidget(parent
 		});
 
 	this->setUsesScrollButtons(false);
-	//this->tabBar()->setStyleSheet(QString("QTabBar::scroller{top: -100;}"));
 	this->setDocumentMode(true);
 	this->setTabsClosable(true);
 	this->setMovable(true);

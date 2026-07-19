@@ -31,6 +31,7 @@ class RecentMenuClass;
 class HistoryClass;
 class ToolBarClass;
 class MainWindowClass;
+class QT_SpellCheckClass;
 
 class KKEditClass : public QObject
 {
@@ -69,18 +70,10 @@ class KKEditClass : public QObject
 		bool							mouseVisible=true;
 
 		tabMenuStruct				tabContextMenuItems[TABCONTEXTMENUCNT]={{COPYFOLDERPATH,"Copy Folder Path","edit-copy"},{COPYFILEPATH,"Copy File Path","edit-copy"},{COPYFILENAME,"Copy File Name","edit-copy"},{SPELLCHECKDOC,"Spellcheck Document","tools-check-spelling"},{SRCHILTIE,"Source Hilighting","text-x-script"},{THEME,"Theme","text-x-script"},{HIDETAB,"Hide Tab","list-remove"},{LOCKCONTENTS,"Lock Contents","changes-prevent"},{OPENFROMHERE,"Open From Here","document-open"}};
-#ifdef _ASPELL_
-		AspellConfig					*aspellConfig=NULL;
-		AspellSpeller				*spellChecker=NULL;
 
-		QDialog						*spellCheckGUI=NULL;
-		QComboBox					*wordDropBox;
-		QLabel						*infoLabel;
-		MenuItemClass				*spellCheckMenuItem;
-		bool							returnWord=false;
-		QString						goodWord;
-		QString						badWord;
-		bool							cancelCheck=false;
+MenuItemClass						*spellCheckMenuItem=NULL;
+#ifdef _ASPELL_
+		QT_SpellCheckClass			*spellChecker=NULL;
 #endif
 		QShortcut					*appShortcuts[NOMORESHORTCUT];
 		QStringList					defaultShortCutsList={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"};
@@ -108,9 +101,7 @@ class KKEditClass : public QObject
 		void							shutDownApp(void);
 		void							setMouseState(bool mouseon);
 
-		void							buildSpellCheckerGUI(void);
 		void							setUpSpellGUI(QString word,DocumentClass *doc);
-		bool							checkSelection(QString selection);
 		void							checkDoc(DocumentClass *doc);
 		void							setAppShortcuts(void);
 		bool							checkShortCuts(void);
@@ -122,7 +113,6 @@ class KKEditClass : public QObject
 
 		void							writeExitData(void);
 		int							yesNoDialog(QString txt,QString info);
-		miniPrefsReturnStruct		miniPrefsDialog(QString prefsname,QStringList items,bool liveupdate=true);
 		void							activateMainWindow(void);
 
 //webpage
@@ -263,11 +253,6 @@ class KKEditClass : public QObject
 		MenuItemClass				*toggleToolBarMenuItem;
 		MenuItemClass				*toggleToolWindowMenuItem;
 		MenuItemClass				*toggleStatusBarMenuItem;
-
-//int tabSize=4;
-//QMenu	*tabSizeDropMenu;
-//QActionGroup *tabsizes;
-
 
 //nav menu
 		QMenu						*navMenu;

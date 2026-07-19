@@ -67,10 +67,8 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 
 	QPainter painter(this->lineNumberArea);
 
-//QRect r=event->rect();
-//r.setWidth(r.width()-this->mainKKEditClass->bookMarkImage.width());
 	painter.fillRect(event->rect(),QColor::fromRgba(this->highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::LineNumbers)));
-	//painter.fillRect(r,QColor::fromRgba(this->highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::LineNumbers)));
+
 	QTextBlock block=this->firstVisibleBlock();
 	int blockNumber=block.blockNumber();
 	int top=(int) blockBoundingGeometry(block).translated(contentOffset()).top();
@@ -91,8 +89,6 @@ void DocumentClass::lineNumberAreaPaintEvent(QPaintEvent *event)
 									painter.drawImage(QPointF(lineNumberArea->width()-this->mainKKEditClass->bookMarkImage.width(),top+4),this->mainKKEditClass->bookMarkImage,this->mainKKEditClass->bookMarkImage.rect());
 								}
 						}
-
-
 
 					QString number=QString::number(blockNumber+1);
 					painter.setPen(fore);
@@ -813,7 +809,7 @@ void DocumentClass::contextMenuEvent(QContextMenuEvent *event)
 		}
 
 	menu.addSeparator();
-	
+
 #ifdef _ASPELL_
 	menu.addAction(this->mainKKEditClass->spellCheckMenuItem);
 #endif

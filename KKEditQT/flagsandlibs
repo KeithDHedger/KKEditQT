@@ -11,6 +11,7 @@ AM_CPPFLAGS =-I$(top_srcdir) \
 			-DDATADIR=\""${pkgdatadir}"\" \
 			-DBINDIR=\""${bindir}"\" \
 			-DDATAROOTDIR=\""${datarootdir}"\" \
+			-DUSEPLAIN \
 			-fPIC
 
 LIBS =		$(X11_LIBS) \

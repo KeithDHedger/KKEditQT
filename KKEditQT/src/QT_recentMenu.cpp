@@ -108,7 +108,6 @@ void RecentMenuClass::updateRecents(void)
 
 void RecentMenuClass::menuClicked(QAction *action)
 {
-//	this->mainKKEditClass->openFile(action->objectName());
 	this->mainKKEditClass->openFile(action->text());
 }
 

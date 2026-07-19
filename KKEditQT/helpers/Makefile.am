@@ -1,8 +1,6 @@
 
 include ../flagsandlibs
 
-#libexecdir = $(exec_prefix)/libexec/KKEditQT
-
 bin_PROGRAMS = kkeditqtmsg kkeditqttagreader kkeditqtprogressbar
 
 kkeditqtmsg_SOURCES = kkeditqtmsg.cpp

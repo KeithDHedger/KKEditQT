@@ -86,7 +86,6 @@ void tagClass::getTagList(QStringList filepaths,int sorttype)
 				return;
 		}
 
-	//results=this->mainKKEditClass->runPipeAndCapture(command,true);
 	results=this->mainKKEditClass->runPipeAndCapture(command);
 	lines=results.split("\n",Qt::SkipEmptyParts);
 
@@ -116,7 +115,6 @@ void tagClass::getTagList(QStringList filepaths,int sorttype)
 
 			defstring=rep.right(rep.length()-(rep.indexOf(filestring)+filestring.length())).trimmed();
 			tagsStruct ts={tagstring,typestring,linestring,defstring,filestring,linestring.toInt()};
-			//qDebug()<<tagstring <<typestring <<linestring <<defstring << filestring <<linestring.toInt();
 			this->tagList.push_back(ts);
 		}
 }

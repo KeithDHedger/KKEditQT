@@ -1,4 +1,7 @@
 2.2.1
+Removed unused code.
+Use global spell checker.
+Mark doc dirty when spell check changes word.
 Fixed HTML plugin segfault.
 Fixed setting doc dirty when using completions.
 Fixed marking document dirty when only cursor has moved.
