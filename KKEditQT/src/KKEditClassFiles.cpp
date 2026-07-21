@@ -74,9 +74,7 @@ void KKEditClass::openAsHexDump(void)
 	chooserDialogClass	chooser(chooserDialogType::loadDialog);
 
 	chooser.setMultipleSelect(true);
-	chooser.gFind->LFSTK_sortByTypeAndName();
 	chooser.setShowImagesInList(false);
-	chooser.gFind->LFSTK_setIgnoreBroken(true);
 	chooser.addFileTypes("All Files");
 	chooser.dialogWindow.exec();
 	if(chooser.valid==false)
@@ -167,12 +165,13 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 				dialogpath=doc->getFilePath();
 
 			chooserDialogClass	chooser(chooserDialogType::saveDialog,doc->getFileName());
-			chooser.gFind->LFSTK_sortByTypeAndName();
-			chooser.gFind->LFSTK_setIgnoreBroken(true);
 			chooser.setShowImagesInList(false);
-			chooser.addFileTypes(".cpp;.c;.h;.hpp;.m;.mm;.py;.go;.java;.js;.rb;.sh;.rs;.tcl;.pl");
-			chooser.addFileTypes(".html;.xml;.css;.php;.pro;.in;.am;.m4;.md;.ac;.json;.class;.sql");
-			chooser.addFileTypes("All Files");
+			for(int j=0;j<this->fileTypeFilters.size();j++)
+				chooser.addFileTypes(this->fileTypeFilters.at(j));
+
+//			chooser.addFileTypes("*.cpp;*.c;*.h;*.hpp;*.m;*.mm;*.py;*.go;*.java;*.js;*.rb;*.sh;*.rs;*.tcl;*.pl");
+//			chooser.addFileTypes("*.html;*.xml;*.css;*.php;*.pro;*.in;*.am;*.m4;*.md;*.ac;*.json;*.class;*.sql");
+//			chooser.addFileTypes("All Files");
 			chooser.dialogWindow.exec();
 			if(chooser.valid==false)
 				return(false);
@@ -429,28 +428,32 @@ bool KKEditClass::possibleNonText(QString filepath)
 
 bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtorecents)//TODO//warn
 {
-	DocumentClass	*doc=NULL;
-	bool				retval=false;
-	int				correctedln=linenumber;
-	int				tabnum;
-	QMimeDatabase	db;
-	QMimeType		type;
-	QString			content="";
-	plugData			pd;
-	QIcon			tabicon(QString("%1/pixmaps/empty.png").arg(this->realDataDir));
-	bool				isoktoopen=true;
+	DocumentClass		*doc=NULL;
+	bool					retval=false;
+	int					correctedln=linenumber;
+	int					tabnum;
+	QMimeDatabase		db;
+	QMimeType			type;
+	QString				content="";
+	plugData				pd;
+	QIcon				tabicon(QString("%1/pixmaps/empty.png").arg(this->realDataDir));
+	bool					isoktoopen=true;
+	QString				fp;
+	QString				corrected;
+	QRegularExpression	re(R"RX((.*)@([[:digit:]]*))RX");
 
-	QString			corrected=LFSTK_UtilityClass::LFSTK_strStr(filepath.toStdString(),"@").c_str();
-	if(corrected.isEmpty()==false)
+	fp=filepath;
+	if(fp.contains(re))
 		{
-			QString line=corrected;
-			corrected=LFSTK_UtilityClass::LFSTK_strReplaceAllStr(filepath.toStdString(),corrected.toStdString(),"",true).c_str();
-			correctedln=QString(LFSTK_UtilityClass::LFSTK_strReplaceAllChar(line.toStdString(),"@","",true).c_str()).toInt();
+			QRegularExpressionMatch match=re.match(fp);
+			if(match.hasMatch())
+				{
+					corrected=match.captured(1);
+					correctedln=match.captured(2).toInt();
+				}
 		}
 	else
-		{
-			corrected=filepath;
-		}
+		corrected=filepath;
 
 	isoktoopen=this->possibleNonText(corrected);
 	if(isoktoopen==false)

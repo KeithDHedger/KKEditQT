@@ -40,11 +40,6 @@ bool DocumentClass::realHiliteLine(void)
 	return(this->mainKKEditClass->hiliteCurrentLine);
 }
 
-bool DocumentClass::realSyntaxHighlighting(void)
-{
-	return(this->mainKKEditClass->showHighLighting);
-}
-
 QString DocumentClass::bestFontColour(QString colour)
 {
 	QColor	cc(colour);
@@ -406,16 +401,6 @@ void DocumentClass::setXtraSelections(void)
 	this->extraSelections.append(this->selectedLine);
 	this->extraSelections.append(this->verticalSelectMatch);
 	this->setExtraSelections(this->extraSelections);
-}
-
-void DocumentClass::addXtraSelections()
-{
-}
-
-void DocumentClass::clearXtraSelections()
-{
-	this->extraSelections.clear();
-	this->setXtraSelections();
 }
 
 void DocumentClass::clearHilites()

@@ -54,7 +54,6 @@ class DocumentClass : public QPlainTextEdit
 		void								lineNumberAreaPaintEvent(QPaintEvent *event);
 		int								lineNumberAreaWidth(void);
 		void								setXtraSelections(void);
-		void								addXtraSelections(void);
 		void								clearHilites(void);
 		bool								realShowLineNumbers(void);
 		void								highlightCurrentLine();
@@ -126,7 +125,6 @@ class DocumentClass : public QPlainTextEdit
 		void								dropEvent(QDropEvent* event);
 		void								dragMoveEvent(QDragMoveEvent *event);
 
-	private slots:
 		void								updateLineNumberAreaWidth(int newcnt);
 		void								updateLineNumberArea(const QRect &, int);
 		void								modified();
@@ -138,9 +136,7 @@ class DocumentClass : public QPlainTextEdit
 		bool								inDrag=false;
 		QWidget 							*lineNumberArea;
 		QString							indentPad;
-		void								clearXtraSelections(void);
 		bool								realHiliteLine(void);
-		bool								realSyntaxHighlighting(void);
 		QString							bestFontColour(QString colour);
 		QString							repoColourToHex(KSyntaxHighlighting::Theme::EditorColorRole);
 	

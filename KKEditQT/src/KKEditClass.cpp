@@ -508,6 +508,16 @@ void KKEditClass::initApp(int argc,char** argv)
 				this->mainWindow->setGeometry(100,100,800,600);
 		}
  
+ /*
+ 	chooser.addFileTypes("*.cpp;*.c;*.h;*.hpp;*.m;*.mm;*.py;*.go;*.java;*.js;*.rb;*.sh;*.rs;*.tcl;*.pl");
+	chooser.addFileTypes("*.html;*.xml;*.css;*.php;*.pro;*.in;*.am;*.m4;*.md;*.ac;*.json;*.class;*.sql");
+	chooser.addFileTypes("All Files");
+
+ */
+	this->fileTypeFilters.append("*.cpp;*.c;*.h;*.hpp;*.m;*.mm;*.py;*.go;*.java;*.js;*.rb;*.sh;*.rs;*.tcl;*.pl");
+	this->fileTypeFilters.append("*.html;*.xml;*.css;*.php;*.pro;*.in;*.am;*.m4;*.md;*.ac;*.json;*.class;*.sql");
+	this->fileTypeFilters.append("All Files");
+
 //this->onExitSaveSession //TODO//
 	this->mainWindow->show();
 	this->loadPlugins();
@@ -1031,7 +1041,7 @@ bool KKEditClass::checkShortCuts(void)
 		{
 			for(int i=0;i<reservedShortcutKeys.size();i++)
 				{
-					if(LFSTK_UtilityClass::LFSTK_strStr(defaultShortCutsList.at(k).toStdString(),reservedShortcutKeys.at(i).toStdString(),true).empty()==false)
+					if(defaultShortCutsList.at(k).contains(reservedShortcutKeys.at(i),Qt::CaseInsensitive)==true)
 						{
 							if(prefsWindow!=NULL)
 								{
@@ -1501,21 +1511,6 @@ void KKEditClass::runAllPlugs(plugData pd)
 					this->plugins[j].instance->plugRun(&pd);
 				}
 		}
-}
-
-void KKEditClass::setBit(int *data,int bit)
-{
-	*data=*data | (1<<bit);
-}
-
-void KKEditClass::resetBit(int *data,int bit)
-{
-	*data=*data & ~(-1 & (1<<bit));
-}
-
-int KKEditClass::getBit(int data,int bit)
-{
-	return((data & (1<<bit)) && true);
 }
 
 QStringList KKEditClass::tailStringList(QStringList list,int maxsize)

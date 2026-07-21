@@ -1,3 +1,11 @@
+2.2.2
+Save file dialog size/pos when canceled.
+Can now drag left side (places) of file dialog.
+Fixed preview of broken link.
+Removed unneeded files.
+Rewrote some legacy code to use qt classes.
+Removed dead code.
+
 2.2.1
 Removed unused code.
 Use global spell checker.

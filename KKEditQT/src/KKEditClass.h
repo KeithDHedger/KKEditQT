@@ -120,10 +120,6 @@ MenuItemClass						*spellCheckMenuItem=NULL;
 //scripting
 		void							runCLICommands(int quid);
 		QCommandLineParser			parser;
-//odds
-		void							setBit(int *data,int bit);
-		void							resetBit(int *data,int bit);
-		int							getBit(int data,int bit);
 
 //app prefs
 //document
@@ -156,6 +152,10 @@ MenuItemClass						*spellCheckMenuItem=NULL;
 		bool							prefsNoWarnings=false;
 		QString						prefsPrintCommand;
 		int							prefsPageSize;
+
+		QVector<QString>				fileTypeFilters;
+
+
 
 //app
 		int							prefsMsgTimer=1000;
@@ -403,7 +403,6 @@ MenuItemClass						*spellCheckMenuItem=NULL;
 		void							buildPlugPrefs(void);
 		void							runAllPlugs(plugData pd);
 
-	public slots:
 		void							doTimer(void);
 		void							doFileMenuItems(MenuItemClass *mc);
 		void							doEditMenuItems(MenuItemClass *mc);

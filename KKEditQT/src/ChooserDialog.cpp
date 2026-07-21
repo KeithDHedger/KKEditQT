@@ -22,7 +22,6 @@
 
 chooserDialogClass::~chooserDialogClass()
 {
-	delete this->gFind;
 }
 
 void chooserDialogClass::setShowImagesInList(bool show)
@@ -45,6 +44,9 @@ void chooserDialogClass::setMultipleSelect(bool select)
 
 QIcon chooserDialogClass::getFileIcon(QString path)
 {
+	if(QFileInfo::exists(path)==false)
+		return(QIcon::fromTheme("application-octet-stream"));
+
 	QIcon				icon;
 	QMimeDatabase		db;
 	QString				realpath(QFileInfo(path).canonicalFilePath());
@@ -53,10 +55,8 @@ QIcon chooserDialogClass::getFileIcon(QString path)
 	if(type.name().compare("application/x-desktop")==0)
 		{
 			QIcon::setFallbackSearchPaths(QIcon::fallbackSearchPaths() << "/usr/share/pixmaps");
-			std::map<unsigned long,std::vector<std::string>> entrys=LFSTK_UtilityClass::LFSTK_readFullDesktopFile(path.toStdString());
-			std::string e;
-			e=LFSTK_UtilityClass::LFSTK_getFullEntry("Desktop Entry","Icon",entrys,true);
-			icon=QIcon::fromTheme(e.c_str());
+			QSettings df(realpath,QSettings::IniFormat);
+			icon=QIcon::fromTheme(df.value("Desktop Entry/Icon").toString());
 		}
 	else
 		{
@@ -77,52 +77,62 @@ QIcon chooserDialogClass::getFileIcon(QString path)
 	return(icon);
 }
 
-void chooserDialogClass::setSideListMode(QListView::ViewMode mode)
-{
-	this->sideList.setViewMode(mode);
-	this->sideList.setGridSize(QSize(96,48));
-	this->sideList.setResizeMode(QListView::Adjust);
-}
-
-void chooserDialogClass::setFileListMode(QListView::ViewMode mode)
-{
-	this->fileList.setViewMode(mode);
-}
-
 void chooserDialogClass::setFileList(void)
 {
-	QStandardItem	*item;
+	QStandardItem	*item=NULL;
+	QStringList		namefilters;
+	QDir				d=this->localWD;
+	QDir::Filters	dfilts=QDir::System|QDir::Dirs|QDir::NoDot;
+	QFileInfoList	fl;
+
+	if(this->showHidden==true)
+		dfilts|=QDir::Hidden;
+
+	if(this->fileTypes.currentText()=="All Files")
+		namefilters.clear();
+	else
+		namefilters=this->fileTypes.currentText().split(';');
+		
+	fl=d.entryInfoList(QStringList(),dfilts,QDir::Name);
+
+	dfilts=QDir::Files|QDir::System|QDir::NoDot;
+	if(this->showHidden==true)
+		dfilts|=QDir::Hidden;
+
+	fl.append(d.entryInfoList(namefilters,dfilts,QDir::Name));
 
 	this->fileListModel->clear();
-	this->gFind->LFSTK_setIncludeHidden(this->showHidden);
-	this->gFind->LFSTK_findFiles(this->localWD.toStdString().c_str());
-	this->gFind->LFSTK_sortByTypeAndName();
-
-	for(int j=0;j<gFind->LFSTK_getDataCount();j++)
+	for(int j=0;j<fl.size();j++)
 		{
-			if((gFind->data.at(j).fileType==FILELINKTYPE) || (gFind->data.at(j).fileType==FOLDERLINKTYPE))
+			item=NULL;
+			if(fl[j].isSymLink() && (fl[j].isFile() || fl[j].isDir()))
 				{
-					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind->data.at(j).name.c_str()),QString("->%1").arg(gFind->data.at(j).name.c_str()));
-					item->setFont(QFont(item->font().family(),-1,QFont::Bold));
+					item=new QStandardItem(this->getFileIcon(fl[j].canonicalFilePath()),QString("%1->%2").arg(fl[j].fileName()).arg(fl[j].symLinkTarget()));
+					item->setFont(QFont(item->font().family(),-1,QFont::Bold));				
 				}
-			else if(gFind->data.at(j).fileType==BROKENLINKTYPE)
+			else if(fl[j].isSymLink() && fl[j].exists()==false)
 				{
-					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind->data.at(j).name.c_str()),QString("%1 - Broken Link").arg(gFind->data.at(j).name.c_str()));
+					item=new QStandardItem(this->getFileIcon(fl[j].canonicalFilePath()),QString("%1 - Broken Link").arg(fl[j].fileName()));
 					item->setFont(QFont(item->font().family(),-1,QFont::Bold));
 				}
 			else
 				{
-					item=new QStandardItem(this->getFileIcon(this->localWD+"/"+gFind->data.at(j).name.c_str()),gFind->data.at(j).name.c_str());
+					item=new QStandardItem(this->getFileIcon(fl[j].canonicalFilePath()),fl[j].fileName());
 				}
-			if((gFind->data.at(j).fileType==FOLDERTYPE) || (gFind->data.at(j).fileType==FOLDERLINKTYPE))
+
+			if((fl[j].isSymLink() && fl[j].isDir()) || (fl[j].isDir()))
 				item->setDragEnabled(true);
 			else
 				item->setDragEnabled(false);
-			
-			item->setData(gFind->data.at(j).name.c_str(),Qt::UserRole);
-			item->setStatusTip(this->localWD+"/"+gFind->data.at(j).name.c_str());
-			this->fileListModel->appendRow(item);
+				
+			if(item!=NULL)
+				{
+					item->setData(fl[j].fileName(),Qt::UserRole);
+					item->setStatusTip(fl[j].canonicalFilePath());
+					this->fileListModel->appendRow(item);
+				}
 		}
+
 	this->fileList.scrollToTop();
 }
 
@@ -196,17 +206,18 @@ void chooserDialogClass::setSideList(void)
 
 void chooserDialogClass::showPreViewData(void)
 {
-	if(this->selectedFilePath.isEmpty()==true)
-		return;
-
 	QIcon			icon;
 	QPixmap			pixmap;
 	QMimeDatabase	db;
 	QString			mod;
+	QMimeType		type;;
 	int				md;
 	struct stat		sb;
-	QMimeType		type=db.mimeTypeForFile(this->selectedFilePath);
 
+	if(this->selectedFilePath.isEmpty()==true)
+		return;
+
+	type=db.mimeTypeForFile(this->selectedFilePath);
 	this->previewMimeType.setText(type.name());
 
 	if(type.name().contains("image"))
@@ -464,13 +475,7 @@ void chooserDialogClass::setFileData(void)
 				}
 		}
 
-	QRect rg;
-	QRect rf;
-	rg=this->dialogWindow.geometry();
-	rf=this->dialogWindow.frameGeometry();
-	rf.setHeight(rf.height()-(rf.height()-rg.height()));
-	rf.setWidth(rf.width()-(rf.width()-rg.width()));
-	prefs.setValue("size",rf);
+	prefs.setValue("size",this->dialogWindow.saveGeometry());
 
 	if(this->saveDialog==true)
 		prefs.setValue("lastsavefolder",this->localWD);
@@ -479,11 +484,6 @@ void chooserDialogClass::setFileData(void)
 
 	this->setFavs();
 	this->valid=true;
-}
-
-void chooserDialogClass::setOverwriteWarning(bool warn)
-{
-	this->overwriteWarning=warn;
 }
 
 void chooserDialogClass::addFileTypes(QString types)
@@ -499,6 +499,7 @@ void chooserDialogClass::buildMainGui(void)
 	QVBoxLayout	*infovlayout=new QVBoxLayout;
 	QVBoxLayout	*controlsvlayout=new QVBoxLayout;
 	QHBoxLayout	*hlayout=new QHBoxLayout;
+	QSplitter	*splitter=new QSplitter(Qt::Horizontal,&this->dialogWindow);
 
 	this->dialogWindow.setWindowTitle("Select File");
 
@@ -593,7 +594,11 @@ void chooserDialogClass::buildMainGui(void)
 	this->sideList.setEditTriggers(QAbstractItemView::NoEditTriggers);
 	this->fileList.setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-	sidevlayout->addWidget(&this->sideList);
+	QObject::connect(splitter,&QSplitter::splitterMoved,[this,splitter](int pos, int index)
+		{
+			QSettings	prefs("KDHedger","ChooserDialog");
+			prefs.setValue("splittersize", splitter->saveState());
+		});
 
 	QPushButton *deletefav=new QPushButton("Remove Fav");
 	deletefav->setIcon(QIcon::fromTheme("stock_cancel"));
@@ -603,24 +608,27 @@ void chooserDialogClass::buildMainGui(void)
 			if(ind.data(Qt::StatusTipRole).toString().isEmpty()==false)
 				this->sideListModel->removeRow(this->sideList.currentIndex().row());
 		});
+	sidevlayout->addWidget(&this->sideList);
 	sidevlayout->addWidget(deletefav);
-
-	filevlayout->addWidget(&this->fileList);
 
 	this->previewIcon.setMaximumWidth(128);
 	this->previewIcon.setMinimumWidth(128);
 	this->previewIcon.setAlignment(Qt::AlignCenter);
-
-	hlayout->addLayout(sidevlayout,1);
-	hlayout->addLayout(filevlayout,3);
-	hlayout->addLayout(infovlayout);
-	
 	this->previewMimeType.setWordWrap(true);
 	infovlayout->addWidget(&this->previewIcon);
 	infovlayout->addWidget(&this->previewMimeType);
 	infovlayout->addWidget(&this->previewSize);
 	infovlayout->addWidget(&this->previewMode);
 	infovlayout->addStretch();
+
+	QWidget *wrapper=new QWidget(&this->dialogWindow);
+	sidevlayout->setContentsMargins(0,0,0,0);
+	wrapper->setLayout(sidevlayout);
+	splitter->addWidget(wrapper);
+	splitter->addWidget(&this->fileList);
+	
+	hlayout->addWidget(splitter);
+	hlayout->addLayout(infovlayout);
 
 	windowvlayout->addLayout(hlayout);
 
@@ -633,10 +641,6 @@ void chooserDialogClass::buildMainGui(void)
 	controlsvlayout->addWidget(&this->fileTypes);
 	QObject::connect(&this->fileTypes,&QComboBox::currentTextChanged,[this](const QString &text)
 		{
-			if(text.compare("All Files")==0)
-				this->gFind->LFSTK_setFileTypes("");
-			else
-				this->gFind->LFSTK_setFileTypes(text.toStdString());
 			this->setFileList();
 		});
 
@@ -645,6 +649,9 @@ void chooserDialogClass::buildMainGui(void)
 	cancel->setIcon(QIcon::fromTheme("dialog-cancel"));
 	QObject::connect(cancel,&QPushButton::clicked,[this]()
 		{
+			QSettings	prefs("KDHedger","ChooserDialog");
+
+			prefs.setValue("size",this->dialogWindow.saveGeometry());
 			this->dialogWindow.hide();
 			this->setFavs();
 			this->valid=false;
@@ -752,11 +759,9 @@ void chooserDialogClass::buildMainGui(void)
 		}
 	this->fileList.setDragEnabled(true);
 	this->sideList.setAcceptDrops(true);
-}
 
-void chooserDialogClass::setMaxRecents(int maxrecents)
-{
-	this->maxRecents=maxrecents+1;
+	QSettings	prefs("KDHedger","ChooserDialog");
+	splitter->restoreState(prefs.value("splittersize").toByteArray());
 }
 
 chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QString startfolder)
@@ -764,9 +769,6 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 	QSettings	prefs("KDHedger","ChooserDialog");
 	QDir			folders("/");
 	QString		command;
-	QRect		r;
-
-	this->gFind=new LFSTK_findClass;
 
 	this->recentFoldersPath=QString("%1/.config/KDHedger/recentfolders").arg(QDir::homePath());
 	this->recentFilesPath=QString("%1/.config/KDHedger/recentfiles").arg(QDir::homePath());
@@ -803,8 +805,7 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 
 	this->buildMainGui();
 
-	r=prefs.value("size",QVariant(QRect(50,50,800,600))).value<QRect>();
-	this->dialogWindow.setGeometry(r);
+	this->dialogWindow.restoreGeometry(prefs.value("size").toByteArray());
 
 	command=QString("cd %1/ >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}'").arg(this->recentFilesPath).arg(this->maxRecents);
 	system(command.toStdString().c_str());

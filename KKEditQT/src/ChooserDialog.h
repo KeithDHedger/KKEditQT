@@ -22,8 +22,6 @@
 #define _CHOOSERDIALOG_
 
 #include "qtincs.h"
-#include "LFSTKUtilityClass.h"
-#include "LFSTKFindClass.h"
 
 #define MAXIMAGESIZETOTHUMB 2000000
 
@@ -43,18 +41,13 @@ class chooserDialogClass
 		QString				realName;
 		QString				realFilePath;
 		QVector<QString>		multiFileList;
-		LFSTK_findClass		*gFind;
 		bool					fileExists=false;
 		bool					useMulti=false;
 		bool					valid=false;
 
-		void					setSideListMode(QListView::ViewMode mode);
-		void					setFileListMode(QListView::ViewMode mode);
 		void					setShowImagesInList(bool show=false);
 		void					setMultipleSelect(bool select);
-		void					setOverwriteWarning(bool warn);
 		void					addFileTypes(QString types);
-		void					setMaxRecents(int maxrecents);
 
 	private:
 		QLineEdit			filepathEdit;

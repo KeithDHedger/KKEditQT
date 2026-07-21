@@ -1345,12 +1345,14 @@ bool KKEditClass::openFileDialog(void)
 	bool					goodfile=false;
 
 	chooser.setMultipleSelect(true);
-	chooser.gFind->LFSTK_sortByTypeAndName();
-	chooser.gFind->LFSTK_setIgnoreBroken(true);
 	chooser.setShowImagesInList(false);
-	chooser.addFileTypes(".cpp;.c;.h;.hpp;.m;.mm;.py;.go;.java;.js;.rb;.sh;.rs;.tcl;.pl");
-	chooser.addFileTypes(".html;.xml;.css;.php;.pro;.in;.am;.m4;.md;.ac;.json;.class;.sql");
-	chooser.addFileTypes("All Files");
+
+	for(int j=0;j<this->fileTypeFilters.size();j++)
+		chooser.addFileTypes(this->fileTypeFilters.at(j));
+//	chooser.addFileTypes("*.cpp;*.c;*.h;*.hpp;*.m;*.mm;*.py;*.go;*.java;*.js;*.rb;*.sh;*.rs;*.tcl;*.pl");
+//	chooser.addFileTypes("*.html;*.xml;*.css;*.php;*.pro;*.in;*.am;*.m4;*.md;*.ac;*.json;*.class;*.sql");
+//	chooser.addFileTypes("All Files");
+
 	chooser.dialogWindow.exec();
 
 	if(chooser.valid==false)
@@ -1397,7 +1399,7 @@ void KKEditClass::buildGetKeyShortCut(int index)
 	QString	text=QInputDialog::getText(this->mainWindow,"Keyboard Shortcut","Enter Key Combo",QLineEdit::Normal,this->defaultShortCutsList.at(index),&ok);
 	if ((ok==true) && (!text.isEmpty()))
 		{
-			text=QString(LFSTK_UtilityClass::LFSTK_strReplaceAllChar(text.toStdString()," ","",true).c_str());
+			text=text.replace(" ","");
 			this->defaultShortCutsList[index]=text;
 			this->resetKeyCombo();
 			qobject_cast<QComboBox*>(prefsOtherWidgets[SHORTCUTSCOMBO])->setCurrentIndex(index);

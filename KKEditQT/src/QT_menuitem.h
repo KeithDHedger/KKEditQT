@@ -30,16 +30,13 @@ class MenuItemClass : public QAction
 		~MenuItemClass();
 		KKEditClass		*mainKKEditClass=NULL;
 
-		void				setMenuID(unsigned int id);
-		unsigned int 	getMenuID(void);
-		void				setMenuString(QString str);
-		QString			getMenuString(void);
-
-
 		bool				inPopup=false;
 		bool				alwaysInPopup=false;
 
-	public slots:
+		QString			getMenuString(void);
+		void				setMenuID(unsigned int id);
+		unsigned int 	getMenuID(void);
+		void				setMenuString(QString str);
 		void				menuClickedGotoLine();
 
 	private:

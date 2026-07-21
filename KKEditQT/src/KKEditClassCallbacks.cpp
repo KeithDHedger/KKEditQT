@@ -947,10 +947,10 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 					chooserDialogClass	chooser(chooserDialogType::saveDialog,QString("%1.pdf").arg(doc->getFileName()));
 
 					chooser.setMultipleSelect(false);
-					chooser.gFind->LFSTK_sortByTypeAndName();
-					chooser.gFind->LFSTK_setIgnoreBroken(true);
+					//chooser.gFind->LFSTK_sortByTypeAndName();
+					//chooser.gFind->LFSTK_setIgnoreBroken(true);
 					chooser.setShowImagesInList(false);
-					chooser.addFileTypes(".pdf");
+					chooser.addFileTypes("*.pdf");
 					chooser.addFileTypes("All Files");
 					chooser.dialogWindow.exec();
 					if(chooser.valid==true)
@@ -984,16 +984,16 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 					chooserDialogClass	chooser(chooserDialogType::loadDialog);
 
 					chooser.setMultipleSelect(false);
-					chooser.gFind->LFSTK_sortByTypeAndName();
-					chooser.gFind->LFSTK_setIgnoreBroken(true);
+					//chooser.gFind->LFSTK_sortByTypeAndName();
+					//chooser.gFind->LFSTK_setIgnoreBroken(true);
 					chooser.setShowImagesInList(false);
-					chooser.addFileTypes(".pdf");
+					chooser.addFileTypes("*.pdf");
 					chooser.addFileTypes("All Files");
 					chooser.dialogWindow.exec();
 					if(chooser.valid==true)
 						{
 							QString fn;
-							if(chooser.selectedFileName.endsWith(".pdf"))
+							if(chooser.selectedFileName.endsWith("*.pdf"))
 								fn=chooser.selectedFileName.left(chooser.selectedFileName.length()-4);
 							else
 								fn=chooser.selectedFileName;
@@ -1629,20 +1629,16 @@ void KKEditClass::doTabBarContextMenu(MenuItemClass *mc)
 
 void KKEditClass::doOddMenuItems(MenuItemClass *mc)
 {
-#ifdef _ASPELL_
-	DocumentClass	*doc=this->getDocumentForTab(-1);
-#endif
-
 		switch(mc->getMenuID())
 			{
 				case SPELLCHECKMENUITEM:
+					{
 #ifdef _ASPELL_
-					if(doc->textCursor().selectedText().isEmpty()==false)
-						{
-						//	this->returnWord=false;
+						DocumentClass	*doc=this->getDocumentForTab(-1);
+						if(doc->textCursor().selectedText().isEmpty()==false)
 							this->setUpSpellGUI(doc->textCursor().selectedText(),doc);
-						}
 #endif
+					}
 					break;
 
 				case GOTODEFINEMENUSINGLEITEM:
@@ -1654,10 +1650,7 @@ void KKEditClass::doOddMenuItems(MenuItemClass *mc)
 
 void KKEditClass::doOddButtons(int what)
 {
-#ifdef _ASPELL_
-	DocumentClass	*doc=this->getDocumentForTab(-1);
-#endif
-	bool			saveas=false;
+	bool		saveas=false;
 
 	switch(what)
 		{
