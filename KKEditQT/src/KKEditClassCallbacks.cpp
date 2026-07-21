@@ -947,8 +947,6 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 					chooserDialogClass	chooser(chooserDialogType::saveDialog,QString("%1.pdf").arg(doc->getFileName()));
 
 					chooser.setMultipleSelect(false);
-					//chooser.gFind->LFSTK_sortByTypeAndName();
-					//chooser.gFind->LFSTK_setIgnoreBroken(true);
 					chooser.setShowImagesInList(false);
 					chooser.addFileTypes("*.pdf");
 					chooser.addFileTypes("All Files");
@@ -984,8 +982,6 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 					chooserDialogClass	chooser(chooserDialogType::loadDialog);
 
 					chooser.setMultipleSelect(false);
-					//chooser.gFind->LFSTK_sortByTypeAndName();
-					//chooser.gFind->LFSTK_setIgnoreBroken(true);
 					chooser.setShowImagesInList(false);
 					chooser.addFileTypes("*.pdf");
 					chooser.addFileTypes("All Files");
