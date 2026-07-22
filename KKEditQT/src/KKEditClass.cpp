@@ -507,13 +507,7 @@ void KKEditClass::initApp(int argc,char** argv)
 			else
 				this->mainWindow->setGeometry(100,100,800,600);
 		}
- 
- /*
- 	chooser.addFileTypes("*.cpp;*.c;*.h;*.hpp;*.m;*.mm;*.py;*.go;*.java;*.js;*.rb;*.sh;*.rs;*.tcl;*.pl");
-	chooser.addFileTypes("*.html;*.xml;*.css;*.php;*.pro;*.in;*.am;*.m4;*.md;*.ac;*.json;*.class;*.sql");
-	chooser.addFileTypes("All Files");
 
- */
 	this->fileTypeFilters.append("*.cpp;*.c;*.h;*.hpp;*.m;*.mm;*.py;*.go;*.java;*.js;*.rb;*.sh;*.rs;*.tcl;*.pl");
 	this->fileTypeFilters.append("*.html;*.xml;*.css;*.php;*.pro;*.in;*.am;*.m4;*.md;*.ac;*.json;*.class;*.sql");
 	this->fileTypeFilters.append("All Files");

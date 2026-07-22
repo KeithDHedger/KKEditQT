@@ -169,9 +169,6 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 			for(int j=0;j<this->fileTypeFilters.size();j++)
 				chooser.addFileTypes(this->fileTypeFilters.at(j));
 
-//			chooser.addFileTypes("*.cpp;*.c;*.h;*.hpp;*.m;*.mm;*.py;*.go;*.java;*.js;*.rb;*.sh;*.rs;*.tcl;*.pl");
-//			chooser.addFileTypes("*.html;*.xml;*.css;*.php;*.pro;*.in;*.am;*.m4;*.md;*.ac;*.json;*.class;*.sql");
-//			chooser.addFileTypes("All Files");
 			chooser.dialogWindow.exec();
 			if(chooser.valid==false)
 				return(false);

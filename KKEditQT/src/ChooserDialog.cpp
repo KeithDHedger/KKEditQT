@@ -475,7 +475,7 @@ void chooserDialogClass::setFileData(void)
 				}
 		}
 
-	prefs.setValue("size",this->dialogWindow.saveGeometry());
+	prefs.setValue("choosersize",this->dialogWindow.saveGeometry());
 
 	if(this->saveDialog==true)
 		prefs.setValue("lastsavefolder",this->localWD);
@@ -651,7 +651,7 @@ void chooserDialogClass::buildMainGui(void)
 		{
 			QSettings	prefs("KDHedger","ChooserDialog");
 
-			prefs.setValue("size",this->dialogWindow.saveGeometry());
+			prefs.setValue("choosersize",this->dialogWindow.saveGeometry());
 			this->dialogWindow.hide();
 			this->setFavs();
 			this->valid=false;
@@ -805,7 +805,7 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 
 	this->buildMainGui();
 
-	this->dialogWindow.restoreGeometry(prefs.value("size").toByteArray());
+	this->dialogWindow.restoreGeometry(prefs.value("choosersize").toByteArray());
 
 	command=QString("cd %1/ >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}'").arg(this->recentFilesPath).arg(this->maxRecents);
 	system(command.toStdString().c_str());
