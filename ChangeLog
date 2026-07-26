@@ -1,4 +1,5 @@
 2.2.2
+Fixed certain shortcut keys not setting document as dirty or vice versa.
 Save file dialog size/pos when canceled.
 Can now drag left side (places) of file dialog.
 Fixed preview of broken link.

@@ -184,6 +184,7 @@ void DocumentClass::makeDirty()
 	this->state=DIRTYTAB;
 	this->setTabColourType(this->state);
 	this->mainKKEditClass->setToolbarSensitive();
+	this->document()->setModified(true);
 }
 
 void DocumentClass::makeClean()
@@ -192,6 +193,7 @@ void DocumentClass::makeClean()
 	this->state=NORMALTAB;
 	this->setTabColourType(this->state);
 	this->mainKKEditClass->setToolbarSensitive();
+	this->document()->setModified(false);
 }
 
 void DocumentClass::modified()
@@ -552,8 +554,8 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 				break;
 			default:
 				this->lastCursorPosition=false;
-				if(!(event->key()<=0x01000060 && event->key()>=0x01000000))
-					this->makeDirty();
+				//if(!(event->key()<=0x01000060 && event->key()>=0x01000000))
+				//	this->makeDirty();
 				break;
 		}
 
@@ -582,7 +584,6 @@ void DocumentClass::keyPressEvent(QKeyEvent *event)
 			QPlainTextEdit::keyPressEvent(event);
 			return;
 		}
-
 	isshortcut=((event->modifiers() & Qt::ControlModifier) && event->key()== Qt::Key_E);
 	if(!this->mainKKEditClass->completer || !isshortcut) // do not process the shortcut when we have a completer???
 		QPlainTextEdit::keyPressEvent(event);
@@ -659,8 +660,12 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 		});
 	QObject::connect(this,&QPlainTextEdit::textChanged,[this]()
 		{
-			if(this->isDirty()==true)
-				this->modified();
+			if(this->document()->isModified()==true)
+				this->makeDirty();
+			else
+				this->makeClean();
+//			if(this->isDirty()==true)
+//				this->modified();
 		});
 
 	QObject::connect(this,&QPlainTextEdit::undoAvailable,[this](bool undo)
@@ -675,12 +680,12 @@ DocumentClass::DocumentClass(KKEditClass *kk,QWidget *parent): QPlainTextEdit(pa
 	this->updateLineNumberAreaWidth(this->oldBlockCount);
 	this->highlightCurrentLine();
 	this->setMouseTracking(true);
-	this->makeClean();
 
 	QObject::connect(&this->plugMakeDirty,&QAction::triggered,[this]()
 		{
 			this->makeDirty();
 		});
+	this->makeClean();
 }
 
 void DocumentClass::setFileName(const QString filename)

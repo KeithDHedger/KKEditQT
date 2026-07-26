@@ -810,8 +810,8 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 			case PASTEMENUITEM:
 				if(document!=NULL)
 					{
-						document->makeDirty();
 						document->paste();
+						document->makeDirty();
 					}
 				break;
 
@@ -1461,6 +1461,9 @@ void KKEditClass::handleMessages(void)
 			this->mainWindow->activateWindow();
 			this->mainWindow->raise();
 		}
+
+//DocumentClass	*doc=this->getDocumentForTab(-1);
+//doc->makeClean();
 }
 
 void KKEditClass::doDoubleClickPrefs(QListWidgetItem *item)
@@ -1868,14 +1871,17 @@ void KKEditClass::doAppShortCuts(QShortcut *sc)
 				cursor.select(QTextCursor::LineUnderCursor);
 				cursor.removeSelectedText();
 				cursor.deleteChar();
+				doc->makeDirty();
 				break;
 			case DELETETOEOLSHORTCUT:
 				cursor.movePosition(QTextCursor::EndOfLine,QTextCursor::KeepAnchor);
 				cursor.removeSelectedText();
+				doc->makeDirty();
 				break;
 			case DELETETOSOLSHORTCUT:
 				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::KeepAnchor);
 				cursor.removeSelectedText();
+				doc->makeDirty();
 				break;
 			case SELECTWORDSHORTCUT:
 				cursor.select(QTextCursor::WordUnderCursor);
@@ -1885,6 +1891,7 @@ void KKEditClass::doAppShortCuts(QShortcut *sc)
 				if(cursor.hasSelection()==false)
 					cursor.select(QTextCursor::WordUnderCursor);
 				cursor.removeSelectedText();
+				doc->makeDirty();
 				break;
 			case DUPLICATELINESHORTCUT:
 				anc=cursor.anchor();
@@ -1897,6 +1904,7 @@ void KKEditClass::doAppShortCuts(QShortcut *sc)
 				cursor.setPosition(anc);
 				doc->setTextCursor(cursor);
 				emit doc->cursorPositionChanged();
+				doc->makeDirty();
 				break;
 			case SELECTLINESHORTCUT:
 				cursor.select(QTextCursor::LineUnderCursor);
@@ -1918,6 +1926,7 @@ void KKEditClass::doAppShortCuts(QShortcut *sc)
 				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
 				cursor.movePosition(QTextCursor::Right,QTextCursor::MoveAnchor,anc);
 				doc->setTextCursor(cursor);
+				doc->makeDirty();
 				break;
 			case MOVELINEDOWNSHORTCUT:
 				anc=cursor.positionInBlock();
@@ -1935,6 +1944,7 @@ void KKEditClass::doAppShortCuts(QShortcut *sc)
 				cursor.movePosition(QTextCursor::StartOfLine,QTextCursor::MoveAnchor);
 				cursor.movePosition(QTextCursor::Right,QTextCursor::MoveAnchor,anc);
 				doc->setTextCursor(cursor);
+				doc->makeDirty();
 				break;
 			case MOVESELECTIONUPSHORTCUT:
 				txt=cursor.selectedText();
@@ -1946,6 +1956,7 @@ void KKEditClass::doAppShortCuts(QShortcut *sc)
 				cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor,txt.length());
 				doc->setTextCursor(cursor);
 				emit doc->cursorPositionChanged();
+				doc->makeDirty();
 				break;
 			case MOVESELECTIONDOWNSHORTCUT:
 				txt=cursor.selectedText();
@@ -1957,6 +1968,7 @@ void KKEditClass::doAppShortCuts(QShortcut *sc)
 				cursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor,txt.length());
 				doc->setTextCursor(cursor);
 				emit doc->cursorPositionChanged();
+				doc->makeDirty();
 				break;
 			case FORCESHOWCOMPLETE:
 				if(this->completer)

@@ -478,19 +478,21 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc=this->pages[this->newPageIndex];
 			doc->pageIndex=this->newPageIndex;
 			this->newPageIndex++;
-			doc->makeClean();
+			//doc->makeClean();
 			type=db.mimeTypeForFile(fileinfo.canonicalFilePath());
 			doc->mimeType=type.name();
 			int cnt=0;
 			content=QString::fromUtf8(file.readAll());
-			doc->document()->setModified(false);
-			while(cnt<content.length())//hack to prevent overwhelming qplaintextedit
-				{
-					doc->moveCursor (QTextCursor::End);
-					doc->insertPlainText(content.mid(cnt,3072));
-					doc->document()->setModified(false);
-					cnt+=3072;
-				}
+			doc->document()->blockSignals(true);
+				doc->document()->setModified(false);
+				while(cnt<content.length())//hack to prevent overwhelming qplaintextedit
+					{
+						doc->moveCursor (QTextCursor::End);
+						doc->insertPlainText(content.mid(cnt,3072));
+						doc->document()->setModified(false);
+						cnt+=3072;
+					}
+			doc->document()->blockSignals(false);
 			tabnum=this->mainNotebook->addTab(doc,tabicon,doc->getTabName());
 			doc->document()->setModified(false);
 			doc->setDirPath(fileinfo.canonicalPath());
@@ -512,6 +514,8 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc->oldBlockCount=doc->blockCount();
 			file.close();
 			doc->document()->clearUndoRedoStacks();
+			doc->makeClean();
+
 		}
 	else
 		{
@@ -538,6 +542,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	if(this->sessionBusy==false)
 		this->activateMainWindow();
 
-	doc->makeClean();
+	//doc->makeClean();
 	return(retval);
 }

@@ -106,6 +106,7 @@ class DocumentClass : public QPlainTextEdit
 
 //vertical selection
 		QString							verticalText="";
+		bool								dirty=false;
 
 	protected:
 	    void								resizeEvent(QResizeEvent *event);
@@ -132,7 +133,7 @@ class DocumentClass : public QPlainTextEdit
 		void								setRedo(bool avail);
 
 	private:	
-		bool								dirty=false;
+//		bool								dirty=false;
 		bool								inDrag=false;
 		QWidget 							*lineNumberArea;
 		QString							indentPad;
