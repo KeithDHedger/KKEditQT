@@ -219,10 +219,10 @@ void KKEditClass::setUpToolBar(void)
 						if(this->findDefWidget!=NULL)
 							delete this->findDefWidget;
 						this->findDefWidget=new QLineEdit(this->toolBar);
+						this->findDefWidget->setClearButtonEnabled(true);
 						this->findDefWidget->setObjectName(QString("%1").arg(DOAPISEARCH));
 						this->findDefWidget->setToolTip("Search For Define");
-						
-						
+
 						QObject::connect(this->findDefWidget,&QLineEdit::returnPressed,[this]()
 							{
 								this->doOddButtons(DOAPISEARCH);
@@ -235,6 +235,7 @@ void KKEditClass::setUpToolBar(void)
 						if(this->liveSearchWidget!=NULL)
 							delete this->liveSearchWidget;
 						this->liveSearchWidget=new QLineEdit(this->toolBar);
+						this->liveSearchWidget->setClearButtonEnabled(true);
 						this->liveSearchWidget->setToolTip("Live Search");
 						this->liveSearchWidget->setObjectName(QString("%1").arg(DOLIVESEARCH));
 						
