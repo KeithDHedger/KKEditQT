@@ -368,8 +368,8 @@ void DocumentClass::highlightCurrentLine()
 				{
 					QTextEdit::ExtraSelection	bmselect;
 					bracketcursor.setPosition(pos);
-					 bmselect.format.setBackground(QColor::fromRgba(highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::BracketMatching)));
-					 bmselect.format.setForeground(QColor::fromRgba(highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::BackgroundColor)));
+					bmselect.format.setBackground(QColor::fromRgba(highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::BracketMatching)));
+					bmselect.format.setForeground(QColor::fromRgba(highlighter2->theme().editorColor(KSyntaxHighlighting::Theme::BackgroundColor)));
 					bracketcursor.movePosition(QTextCursor::NextCharacter,QTextCursor::KeepAnchor);
 					bmselect.cursor=bracketcursor;
 					this->bracketMatch.append(bmselect);

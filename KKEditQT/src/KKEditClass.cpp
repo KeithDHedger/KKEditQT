@@ -289,7 +289,6 @@ void KKEditClass::setDefineSearchFolders(void)
 	QStringList	fl;
 	FILE			*fp=NULL;
 	char			line[1024];
-
 	for(int j=0;j<this->mainNotebook->count();j++)
 		{
 			DocumentClass	*doc=this->getDocumentForTab(j);
@@ -1532,14 +1531,16 @@ bool KKEditClass::unloadPlug(pluginStruct *ps)
 void KKEditClass::setTabVisibilty(int tab,bool visible)
 {
 	DocumentClass	*doc;
-
 	doc=this->getDocumentForTab(tab);
 	if(doc==NULL)
 		return;
 
-	this->mainNotebook->setTabVisible(tab,visible);
-	doc->visible=visible;
-	this->mainNotebook->setCurrentIndex(0);
+	this->mainNotebook->blockSignals(true);//stop title flickering
+		this->mainNotebook->setTabVisible(tab,visible);
+		doc->visible=visible;
+		this->mainNotebook->setCurrentIndex(0);
+	this->mainNotebook->blockSignals(false);
+
 	this->mainNotebook->setCurrentIndex(tab);
 }
 
