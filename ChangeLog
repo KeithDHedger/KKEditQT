@@ -1,4 +1,7 @@
 2.2.2
+Fixed some toolbar widgets not getting enabled/disabled properly on startup.
+Fixed some toolbar widgets not getting enabled/disabled properly when switching pages.
+Added completions to 'Search For Define' toobar widget.
 Added clear input button to toolbar search boxes.
 Fixed certain shortcut keys not setting document as dirty or vice versa.
 Save file dialog size/pos when canceled.

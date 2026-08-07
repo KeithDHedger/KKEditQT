@@ -478,7 +478,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			doc=this->pages[this->newPageIndex];
 			doc->pageIndex=this->newPageIndex;
 			this->newPageIndex++;
-			//doc->makeClean();
 			type=db.mimeTypeForFile(fileinfo.canonicalFilePath());
 			doc->mimeType=type.name();
 			int cnt=0;
@@ -515,7 +514,6 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			file.close();
 			doc->document()->clearUndoRedoStacks();
 			doc->makeClean();
-
 		}
 	else
 		{
@@ -542,6 +540,5 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	if(this->sessionBusy==false)
 		this->activateMainWindow();
 
-	//doc->makeClean();
 	return(retval);
 }

@@ -23,6 +23,7 @@
 
 #include "globalincludes.h"
 
+class QT_lineEditCompleterClass;
 class docBrowserClass;
 class ProxyStyle;
 class NoteBookClass;
@@ -276,8 +277,8 @@ MenuItemClass						*spellCheckMenuItem=NULL;
 
 //toolbar vars
 		ToolBarClass					*toolBar=NULL;
+		QT_lineEditCompleterClass	*findDefWidget=NULL;
 		QLineEdit					*lineNumberWidget=NULL;
-		QLineEdit					*findDefWidget=NULL;
 		QLineEdit					*liveSearchWidget=NULL;
 //toolbar functions
 		void							setUpToolBar(void);
@@ -456,6 +457,8 @@ MenuItemClass						*spellCheckMenuItem=NULL;
 //editor functions
 		void							setTabVisibilty(int tab,bool visible);
 		void							hideTab(int tabnum);
+		void							setDefineSearchFolders(void);
+
 //files
 		bool							possibleNonText(QString filepath);
 };

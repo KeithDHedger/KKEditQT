@@ -29,6 +29,7 @@
 #include "KKEditClass.h"
 #include "QT_AboutBox.h"
 #include "ChooserDialog.h"
+#include "QT_lineEditCompleter.h"
 
 static msgStruct	staticbuffer={0,0};
 
@@ -110,7 +111,6 @@ void KKEditClass::restoreSession(int what)
 	pd.what=DORESSESSION;
 	this->runAllPlugs(pd);
 
-	this->sessionBusy=false;
 	this->setCompWordList();
 	this->mainNotebook->setTabVisible(this->mainNotebook->count()-1,true);
 	for(int j=0;j<this->mainNotebook->count();j++)
@@ -121,6 +121,7 @@ void KKEditClass::restoreSession(int what)
 			doc->makeClean();
 		}
 
+	this->sessionBusy=false;
 	if(this->openFirstTabWithSession==true)
 		this->mainNotebook->setCurrentIndex(0);
 	else
@@ -884,7 +885,7 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 				break;
 		}
 }
-#include <QPagedPaintDevice>
+
 void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 {
 	switch(mc->getMenuID())
@@ -894,9 +895,11 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 				this->newFile();
 				break;
 			case OPENMENUITEM:
-			this->sessionBusy=true;
-				this->openFileDialog();
-			this->sessionBusy=false;
+				this->sessionBusy=true;
+					this->openFileDialog();
+				this->sessionBusy=false;
+				this->setToolbarSensitive();
+				this->setDefineSearchFolders();
 				break;
 			case HEXDUMPMENUITEM:
 				this->openAsHexDump();
@@ -917,6 +920,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 				break;
 			case SAVEASMENUITEM:
 				this->saveFileAs(-1);
+				this->setDefineSearchFolders();
 				break;
 			case SAVEALLMENUITEM:
 				this->saveAllFiles(false);
@@ -930,6 +934,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 				break;
 			case CLOSEALLMENUITEM:
 				this->closeAllTabs();
+				this->setDefineSearchFolders();
 				break;
 			case REVERTMENUITEM:
 				this->reloadDocument();
@@ -995,7 +1000,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 								fn=chooser.selectedFileName;
 							QString command=QString("pdftotext -nopgbrk -q -layout -nodiag -eol unix '%1' -|sed 'N;/\\n.*[0-9][0-9]*/d;P;D'|sed '$d'| unexpand --tabs=%4 >'/%2/%3'").arg(chooser.selectedFilePath).arg(this->tmpFolderName).arg(fn).arg(this->prefsTabWidth);
 							this->runPipeAndCapture(command,true);
-							this->openFile(QString("/%1/%2").arg(this->tmpFolderName).arg(fn));										
+							this->openFile(QString("/%1/%2").arg(this->tmpFolderName).arg(fn));																this->setDefineSearchFolders();
 						}
 				}
 		}
@@ -1027,6 +1032,7 @@ void KKEditClass::notDoneYet(QString string)
 void KKEditClass::doTimer(void)
 {
 	int			retlen=0;
+	bool			holdbusy=this->sessionBusy;
 
 	this->sessionBusy=true;
 	staticbuffer.mText[0]=0;
@@ -1045,7 +1051,8 @@ void KKEditClass::doTimer(void)
 			this->checkMessages->setSingleShot(true);
 			this->checkMessages->start(this->prefsMsgTimer);
 		}
-	this->sessionBusy=false;
+	//this->sessionBusy=false;
+	this->sessionBusy=holdbusy;
 }
 
 void KKEditClass::handleMessages(void)
@@ -1744,10 +1751,6 @@ void KKEditClass::doOddButtons(int what)
 				break;
 			case DOLIVESEARCH:
 				this->doLiveSearch(this->liveSearchWidget->text());
-				break;
-			case DOAPISEARCH:
-				this->findDefWidget->setText(this->findDefWidget->text().trimmed());
-				this->goToDefinition(this->findDefWidget->text());
 				break;
 			case DOCVIEWERGOHOME:
 				this->showWebPage("",this->htmlURI);

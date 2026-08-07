@@ -30,6 +30,7 @@
 #include "KKEditClass.h"
 #include "ChooserDialog.h"
 #include "QT_SpellCheck.h"
+#include "QT_lineEditCompleter.h"
 
 static const char			*replacementShorts[]={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"};
 static const QStringList		reservedShortcutKeys={"Ctrl+Shift+C","Ctrl+Shift+V"};
@@ -198,6 +199,7 @@ void KKEditClass::setUpToolBar(void)
 						if(this->lineNumberWidget!=NULL)
 							delete this->lineNumberWidget;
 						this->lineNumberWidget=new QLineEdit(this->toolBar);
+						this->lineNumberWidget->setPlaceholderText("100");
 						this->lineNumberWidget->setValidator(new QIntValidator(this->lineNumberWidget));
 						this->lineNumberWidget->setObjectName(QString("%1").arg(DOLINEBOX));
 						this->lineNumberWidget->setToolTip("Go To Line");
@@ -216,29 +218,44 @@ void KKEditClass::setUpToolBar(void)
 
 //find in function def
 					case 'D':
-						if(this->findDefWidget!=NULL)
-							delete this->findDefWidget;
-						this->findDefWidget=new QLineEdit(this->toolBar);
-						this->findDefWidget->setClearButtonEnabled(true);
-						this->findDefWidget->setObjectName(QString("%1").arg(DOAPISEARCH));
-						this->findDefWidget->setToolTip("Search For Define");
+						{
+							if(this->findDefWidget!=NULL)
+								delete this->findDefWidget;
 
-						QObject::connect(this->findDefWidget,&QLineEdit::returnPressed,[this]()
-							{
-								this->doOddButtons(DOAPISEARCH);
-							});
+							this->findDefWidget=new QT_lineEditCompleterClass("",this->toolBar);
+							this->findDefWidget->setPlaceholderText("Type some function/member strings eg: build");
+							this->findDefWidget->setCompleteType(STRINGCOMPLETE);
+							this->findDefWidget->setObjectName(QString("%1").arg(DOAPISEARCH));
+							this->findDefWidget->setToolTip("Search For Define");
+							this->findDefWidget->setUpCompleter();
+							this->findDefWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
 
-						this->toolBar->addWidget(this->findDefWidget);
+							this->setDefineSearchFolders();
+							this->toolBar->addWidget(this->findDefWidget);
+
+							QObject::connect(this->findDefWidget,&QLineEdit::editingFinished,[this]()
+								{
+									QStringList sl=this->findDefWidget->text().split(' ');
+									if(sl.count()>3)
+										{
+											this->openFile(QString("%1@%2").arg(sl.at(3)).arg(sl.at(2)));
+											this->findDefWidget->setText(sl.at(0));
+										}
+									this->findDefWidget->clearFocus();
+								});
+						}
 						break;
 //livesearch
 					case 'L':
 						if(this->liveSearchWidget!=NULL)
 							delete this->liveSearchWidget;
 						this->liveSearchWidget=new QLineEdit(this->toolBar);
+						this->liveSearchWidget->setPlaceholderText("Just start typing ...");
 						this->liveSearchWidget->setClearButtonEnabled(true);
 						this->liveSearchWidget->setToolTip("Live Search");
 						this->liveSearchWidget->setObjectName(QString("%1").arg(DOLIVESEARCH));
-						
+						this->liveSearchWidget->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
+
 						QObject::connect(this->liveSearchWidget,&QLineEdit::textChanged,[this](QString text)
 							{
 								this->doLiveSearch(text);
@@ -263,6 +280,40 @@ void KKEditClass::setUpToolBar(void)
 						break;
 				}
 		}
+}
+
+void KKEditClass::setDefineSearchFolders(void)
+{
+	QStringList	data;
+	QString		folders="";
+	QStringList	fl;
+	FILE			*fp=NULL;
+	char			line[1024];
+
+	for(int j=0;j<this->mainNotebook->count();j++)
+		{
+			DocumentClass	*doc=this->getDocumentForTab(j);
+			if(doc!=NULL)
+				folders+=doc->getDirPath()+"/*:";
+		}
+
+	fl=folders.split(":");
+	fl.removeDuplicates();
+	folders=fl.join(" ");
+
+	fp=popen(qPrintable(QString("ctags -x %1 |awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'").arg(folders)),"r");
+	if(fp!=NULL)
+		{
+			while(fgets(line,1024,fp))
+				{
+					if(line[strlen(line)-1]=='\n')
+						line[strlen(line)-1]=0;
+					data<<line;
+				}
+			pclose(fp);
+		}
+
+	this->findDefWidget->setStrings(data);
 }
 
 void KKEditClass::switchPage(int index)
@@ -302,6 +353,8 @@ void KKEditClass::switchPage(int index)
 	pd.userStrData2=currentFilename;
 	pd.userStrData3=doc->getDirPath();
 	this->runAllPlugs(pd);
+
+	this->setDefineSearchFolders();
 }
 
 void KKEditClass::rebuildBookMarkMenu()
@@ -522,8 +575,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	pd.userIntData1=this->msgKey;
 	pd.what=DOPOSTLOAD;
 	this->runAllPlugs(pd);
-
-	this->setToolbarSensitive();
+	this->sessionBusy=false;
 }
 
 QString KKEditClass::randomName(int len)
@@ -999,6 +1051,7 @@ bool KKEditClass::closeTab(int index)
 		}
 
 	this->mainNotebook->setCurrentIndex(ci);
+	this->setDefineSearchFolders();
 
 	return(true);
 }
@@ -1205,7 +1258,7 @@ void KKEditClass::setToolbarSensitive(void)
 						break;
 //find in function def
 					case 'D':
-						this->findDefWidget->setEnabled(true);
+						this->findDefWidget->setEnabled(gotdoc);
 						break;
 //livesearch
 					case 'L':

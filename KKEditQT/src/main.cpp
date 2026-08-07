@@ -126,6 +126,9 @@ int main (int argc, char **argv)
 	kkedit->forcedMultInst=kkedit->parser.isSet("multi");
 	kkedit->initApp(argc,argv);
 
+	kkedit->sessionBusy=false;
+	kkedit->setToolbarSensitive();
+
 //test plugs
 #if 0
 #ifdef _DEBUGCODE_
