@@ -223,7 +223,7 @@ void KKEditClass::setUpToolBar(void)
 								delete this->findDefWidget;
 
 							this->findDefWidget=new QT_lineEditCompleterClass("",this->toolBar);
-							this->findDefWidget->setPlaceholderText("Type some function/member strings eg: build");
+							this->findDefWidget->setPlaceholderText("Type some function/member strings eg: main");
 							this->findDefWidget->setCompleteType(STRINGCOMPLETE);
 							this->findDefWidget->setObjectName(QString("%1").arg(DOAPISEARCH));
 							this->findDefWidget->setToolTip("Search For Define");
