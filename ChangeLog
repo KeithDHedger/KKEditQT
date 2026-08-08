@@ -1,4 +1,5 @@
 2.2.2
+Fixed marking doc dirty when changing prefs.
 Session load speed improvements.
 Stopped main window title flickering when hiding tabs.
 Fixed some toolbar widgets not getting enabled/disabled properly on startup.

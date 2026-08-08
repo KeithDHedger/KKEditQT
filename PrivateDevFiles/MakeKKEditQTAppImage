@@ -32,7 +32,7 @@ pushd ${PROJECTFOLDER}
 	:>$ELFLOG
 popd
 
-cp /bin/xterm /bin/ctags /bin/xdotool /bin/xclip ${WHERE}/usr/bin
+cp /bin/xterm /bin/ctags /bin/sed /bin/xdotool /bin/xclip ${WHERE}/usr/bin
 cp --parents -rp /usr/lib/qt6/plugins/xcbglintegrations ${WHERE}
 cp --parents -rp /usr/lib/qt6/plugins/platforms/libqxcb.so  ${WHERE}
 cp --parents -rp /usr/lib64/qt6/plugins/platformthemes/libqt6ct.so  ${WHERE}

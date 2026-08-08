@@ -284,11 +284,10 @@ void KKEditClass::setUpToolBar(void)
 
 void KKEditClass::setDefineSearchFolders(void)
 {
-	QStringList	data;
+	QStringList	tags;
 	QString		folders="";
 	QStringList	fl;
-	FILE			*fp=NULL;
-	char			line[1024];
+
 	for(int j=0;j<this->mainNotebook->count();j++)
 		{
 			DocumentClass	*doc=this->getDocumentForTab(j);
@@ -300,19 +299,9 @@ void KKEditClass::setDefineSearchFolders(void)
 	fl.removeDuplicates();
 	folders=fl.join(" ");
 
-	fp=popen(qPrintable(QString("ctags -x %1 |awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'").arg(folders)),"r");
-	if(fp!=NULL)
-		{
-			while(fgets(line,1024,fp))
-				{
-					if(line[strlen(line)-1]=='\n')
-						line[strlen(line)-1]=0;
-					data<<line;
-				}
-			pclose(fp);
-		}
+	tags=this->runPipeAndCapture(QString("%2/ctags -x %1 | %2/sort |awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'").arg(folders).arg(this->realBinDir)).split('\n',Qt::SkipEmptyParts);
 
-	this->findDefWidget->setStrings(data);
+	this->findDefWidget->setStrings(tags);
 }
 
 void KKEditClass::switchPage(int index)
