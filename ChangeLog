@@ -1,4 +1,6 @@
 2.2.2
+Added fixed width spacer item to toolbar.
+Sort completions in 'Search For Define' toobar widget.
 Fixed marking doc dirty when changing prefs.
 Session load speed improvements.
 Stopped main window title flickering when hiding tabs.

@@ -278,6 +278,17 @@ void KKEditClass::setUpToolBar(void)
     							this->toolBar->addWidget(widg);
     						}
 						break;
+//fixed space
+					case 'g':
+						{
+							QWidget		*widg=new QWidget(this->toolBar);
+							QHBoxLayout *hbox=new QHBoxLayout(widg);
+    							hbox->addSpacing(32);
+    							widg->setLayout(hbox);
+    							this->toolBar->addWidget(widg);
+    						}
+						break;
+
 				}
 		}
 }

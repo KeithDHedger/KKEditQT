@@ -495,6 +495,7 @@ void KKEditClass::populateDnD(void)
 	this->addIcon(this->realDataDir+"/pixmaps/live.png","L",13,"Live Search");
 	this->addIcon(this->realDataDir+"/pixmaps/sep.png","s",14,"Separator");
 	this->addIcon(this->realDataDir+"/pixmaps/expand.png","E",15,"Expander");
+	this->addIcon(this->realDataDir+"/pixmaps/space.png","g",16,"Space");
 }
 
 void KKEditClass::addIconToList(QString name,int type)
@@ -601,6 +602,10 @@ void KKEditClass::populateStore(void)
 //expander
 					case 'E':
 						this->addIconToList(this->realDataDir+"/pixmaps/expand.png",'E');
+						break;
+//fixed space
+					case 'g':
+						this->addIconToList(this->realDataDir+"/pixmaps/space.png",'g');
 						break;
 				}
 		}
