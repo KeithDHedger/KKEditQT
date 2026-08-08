@@ -47,7 +47,6 @@ void KKEditClass::resetAllFilePrefs(void)
 			doc->setFilePrefs();
 			if(this->fileWatch->files().contains(doc->getFilePath())==false)
 				this->fileWatch->addPath(doc->getFilePath());	
-			qDebug()<<doc->dirty;
 			if(doc->isDirty()==true)
 				doc->makeDirty();
 			else

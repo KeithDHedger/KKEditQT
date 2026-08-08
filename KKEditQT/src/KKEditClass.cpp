@@ -310,7 +310,7 @@ void KKEditClass::setDefineSearchFolders(void)
 	fl.removeDuplicates();
 	folders=fl.join(" ");
 
-	tags=this->runPipeAndCapture(QString("%2/ctags -x %1 | %2/sort |awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'").arg(folders).arg(this->realBinDir)).split('\n',Qt::SkipEmptyParts);
+	tags=this->runPipeAndCapture(QString("%2/ctags -x %3 %1 | %2/sort |awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'").arg(folders).arg(this->realBinDir).arg(this->ctagsExlusions)).split('\n',Qt::SkipEmptyParts);
 
 	this->findDefWidget->setStrings(tags);
 }
@@ -632,6 +632,7 @@ void KKEditClass::readConfigs(void)
 	this->autoOneTab=this->prefs.value("app/autoonetab",QVariant(bool(false))).value<bool>();
 	this->openTabToRight=this->prefs.value("app/opentabtoright",QVariant(bool(true))).value<bool>();
 	this->openFirstTabWithSession=this->prefs.value("app/selectfirsttab",QVariant(bool(true))).value<bool>();
+	this->ctagsExlusions=this->prefs.value("app/exclusions","--exclude=Makefile* --exclude=aclocal* --exclude=config*").toString();
 
 //find
 	this->findList=this->prefs.value("find/findlist").toStringList();
@@ -855,6 +856,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/autoonetab",this->autoOneTab);
 	this->prefs.setValue("app/opentabtoright",this->openTabToRight);
 	this->prefs.setValue("app/selectfirsttab",this->openFirstTabWithSession);
+	this->prefs.setValue("app/exclusions",this->ctagsExlusions);
 
 //find
 	this->setSearchPrefs();

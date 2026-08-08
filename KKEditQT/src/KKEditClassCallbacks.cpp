@@ -1524,6 +1524,9 @@ void KKEditClass::setPreferences(void)
 
 	this->onExitSaveSession=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSAVE])->checkState();
 
+//exclusions
+	this->ctagsExlusions=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSCTAGSEXCLUDE])->text();
+
 //print command
 	this->prefsPrintCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSPRINTCOMMAND])->text();
 //pagesize

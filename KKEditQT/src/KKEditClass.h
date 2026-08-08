@@ -152,6 +152,7 @@ MenuItemClass						*spellCheckMenuItem=NULL;
 		bool							prefsNoOpenduplicate=false;
 		bool							prefsNoWarnings=false;
 		QString						prefsPrintCommand;
+		QString						ctagsExlusions;
 		int							prefsPageSize;
 
 		QVector<QString>				fileTypeFilters;

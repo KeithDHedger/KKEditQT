@@ -81,9 +81,11 @@ static const char *whatIsPrefsOther[MAXPREFSOTHERWIDGETS]={\
 "<html>Set font and size etc.</html>",\
 "<html>Enter a command to run a command in a terminal, the command is added to the end of this string.<br><br>Default is '<b>xterm -e</b>'</html>",\
 "<html>QT5 does not play well with CUPS ( nothing to do with me! )<br><br>You can set an external program to print your document, just enter the name or full path here, the full path to the current document will be added to the end as the file to print.<br>E.g. lpr to usr the line printer.<br><br>You can also use a gui application e.g. lprgui available here:<br><b>https://github.com/KeithDHedger/LprGUI</b><br><br>Leave this blank to use the built in QT5 print dialog ( but you may only get the native print to pdf option ).</html>",\
+"<html>Set PDF page size when exporting to PDF.</html>",\
 "<html>Enter a command to run a command as root, the command is added to the end of this string.<br><br>Default is '<b>gtksu -- env QTWEBENGINE_DISABLE_SANDBOX=1 env QT_QPA_PLATFORMTHEME=qt5ct </b>'</html>",\
 "<html>Set current font.</html>",\
-"<html>Set keyboard shortcuts.</html>"};
+"<html>Set keyboard shortcuts.</html>",\
+"<html>Set files to exclude from the 'Search For Define' edit box completions.<br><br>Default is <b>--exclude=Makefile* --exclude=aclocal* --exclude=config*</b></html>"};
 
 //prefs int widgets
 static const char *whatIsPrefsInt[MAXPREFSINTWIDGETS]={\
@@ -302,6 +304,14 @@ void KKEditClass::buildPrefsWindow(void)
 	makePrefsDial(MAXFUNCDEPTH,"Tag File Search Depth:",this->prefsDepth,0,20,posy);
 	prefsIntWidgets[MAXFUNCDEPTH]->setWhatsThis(whatIsPrefsInt[MAXFUNCDEPTH]);
 
+//exclusions for ctags
+	posy++;
+    widgetlabel=new QLabel("Exclude Files From Define Search:");
+	prefsOtherWidgets[PREFSCTAGSEXCLUDE]=new QLineEdit(this->ctagsExlusions);
+	prefsOtherWidgets[PREFSCTAGSEXCLUDE]->setWhatsThis(whatIsPrefsOther[PREFSCTAGSEXCLUDE]);
+	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
+	table->addWidget(prefsOtherWidgets[PREFSCTAGSEXCLUDE],posy,1,1,-1,Qt::AlignVCenter);
+
 //terminalcommand
 	posy++;
     widgetlabel=new QLabel("Terminal Command:");
@@ -321,6 +331,7 @@ void KKEditClass::buildPrefsWindow(void)
 //page size;
 	posy++;
 	prefsOtherWidgets[PREFSPAGESIZE]=new QComboBox;
+	prefsOtherWidgets[PREFSPAGESIZE]->setWhatsThis(whatIsPrefsOther[PREFSPAGESIZE]);
 	QPageSize ps;
 	for(int j=0;j<QPageSize::LastPageSize;j++)
 		{
