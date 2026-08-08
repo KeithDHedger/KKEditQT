@@ -1568,7 +1568,8 @@ void KKEditClass::setPreferences(void)
 	this->writeExitData();
 	this->setAppShortcuts();
 
-	switchPage(this->mainNotebook->currentIndex());
+	this->switchPage(this->mainNotebook->currentIndex());
+	this->setToolbarSensitive();
 }
 
 void KKEditClass::setFont(void)
