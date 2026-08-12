@@ -21,7 +21,6 @@
 #include "docBrowser.h"
 #include "QT_menuitem.h"
 #include "KKEditClass.h"
-#include "runExternalProc.h"
 
 docBrowserClass::~docBrowserClass()
 {
@@ -105,7 +104,7 @@ void docBrowserClass::openSrcFile(QString path)
 	anchor=QRegularExpression(R"RX(.*#(.*))RX").match(str).captured(1);
 	str.remove(QRegularExpression(R"RX(#.*$)RX"));
 
-	contents=this->mainKKEditClass->runPipeAndCapture(QString("sed -n '/<title>/p' '%1'").arg(str));
+	contents=this->mainKKEditClass->runPipeAndCapture(QStringList()<<QString("sed -n '/<title>/p' '%1'").arg(str));
 	contents=QRegularExpression(R"RX(\b([[:alnum:]\._]*)( (Struct|Class|File) Reference| Source File)?</title>)RX").match(contents).captured(1);
 
 	if(this->mainKKEditClass->goToDefinition(contents)==true)

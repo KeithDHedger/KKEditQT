@@ -1,4 +1,9 @@
 2.2.2
+Move tool output window to top, when triggering tool.
+Fixes to QT_RunExternalProc class.
+Fixed running external programs async.
+Temporarily removed splash screen.
+Redone running external procs.
 Added exclusions for completions in 'Search For Define' toobar widget.
 Fixed some what is text.
 Added fixed width spacer item to toolbar.

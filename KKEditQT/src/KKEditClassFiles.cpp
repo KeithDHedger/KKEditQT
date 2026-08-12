@@ -19,52 +19,53 @@
  */
 
 #include "MainWindow.h"
-#include "runExternalProc.h"
 #include "QT_notebook.h"
 #include "QT_recentMenu.h"
 #include "QT_menuitem.h"
 #include "QT_document.h"
 #include "KKEditClass.h"
 #include "ChooserDialog.h"
+#include "QT_RunExternalProc.h"
 
 void KKEditClass::runPipeAndCaptureToToolOP(QString command)
 {
-	FILE		*fp=NULL;
-	char		line[1024];
-	QTextCursor tc=this->toolsOPText->textCursor();
+	QTextCursor			tc=this->toolsOPText->textCursor();
+	QT_RunExternalProc	procs;
+
+	procs.readByLine=true;
+	procs.connectCB([&procs,this,&tc](QString msg)
+		{
+			tc.movePosition(QTextCursor::End,QTextCursor::MoveAnchor);
+			this->toolsOPText->setTextCursor(tc);
+			this->toolsOPText->insertPlainText(msg);
+			qApp->processEvents();
+		});
 
 	this->toolOutputWindow->show();
 	this->toggleToolWindowMenuItem->setText("Show Tool Output");
 	this->toolWindowVisible=true;
-	this->application->processEvents();
-	fp=popen(command.toStdString().c_str(),"r");
-	if(fp!=NULL)
-		{
-			while(fgets(line,1024,fp))
-				{
-					tc.movePosition(QTextCursor::End,QTextCursor::MoveAnchor);
-					this->toolsOPText->setTextCursor(tc);
-					this->toolsOPText->insertPlainText(line);
-					this->application->processEvents();
-				}
-			pclose(fp);
-		}
-	this->application->processEvents();
+	this->toolOutputWindow->activateWindow();
+	this->toolOutputWindow->raise();
+	qApp->processEvents();
+	procs.runCommandsInShell(command);
+	qApp->processEvents();
 }
 
-QString KKEditClass::runPipeAndCapture(QString command,bool inshell)
+QString KKEditClass::runPipeAndCapture(QStringList command,bool inshell)
 {
 	QString				results="";
-	runExternalProcClass	rp;
-	std::string			com="";
+	QT_RunExternalProc	procs;
 
-	//rp.showCli=true;
 	if(inshell==true)
-		com="sh -c \""+command.toStdString()+"\"";
+		{
+			results=procs.runCommandsInShell(command.at(0));
+		}
 	else
-		com=command.toStdString();
-	
-	results=QString::fromStdString(rp.runExternalCommands(com,true));
+		{
+			if(procs.setCommands(command)==true)
+				results=procs.runCommands();
+		}
+
 	return(results);
 }
 
@@ -84,7 +85,7 @@ void KKEditClass::openAsHexDump(void)
 		{
 			for (int j=0;j<chooser.multiFileList.count();j++)
 				{
-					dump=this->runPipeAndCapture(QString("hexdump -C '%1'").arg(chooser.multiFileList.at(j)));
+					dump=this->runPipeAndCapture(QStringList()<<QString("hexdump -C '%1'").arg(chooser.multiFileList.at(j)));
 					QFile		file(chooser.multiFileList.at(j));
 					QFileInfo	fileinfo(file);
 					this->newFile(dump,QString("%1.hexdump").arg(fileinfo.fileName()));

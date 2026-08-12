@@ -29,8 +29,6 @@ tagClass::tagClass(KKEditClass *mainKKEditClass)
 	this->mainKKEditClass=mainKKEditClass;
 }
 
-#include "runExternalProc.h"
-
 void tagClass::getTagList(QStringList filepaths,int sorttype)
 {
 	QString					sort;
@@ -78,7 +76,8 @@ void tagClass::getTagList(QStringList filepaths,int sorttype)
 	for(int k=0;k<filepaths.count();k++)
 		paths+="'"+filepaths.at(k)+"' ";
 
-	command=QString("%3/ctags -x %1 | %2 | sed 's@ \\+@ @g'").arg(paths).arg(sort).arg(this->mainKKEditClass->realBinDir);
+	//command=QString("%3/ctags -x %1 | %2 | sed 's@ \\+@ @g'").arg(paths).arg(sort).arg(this->mainKKEditClass->realBinDir);
+	QStringList com=QStringList()<<QString("%1/ctags -x %2").arg(this->mainKKEditClass->realBinDir).arg(paths)<<"sort"<<"sed 's@ \\+@ @g'";
 
 	if(filepaths.count()>200)
 		{
@@ -86,7 +85,8 @@ void tagClass::getTagList(QStringList filepaths,int sorttype)
 				return;
 		}
 
-	results=this->mainKKEditClass->runPipeAndCapture(command);
+	results=this->mainKKEditClass->runPipeAndCapture(com);
+	//results=this->mainKKEditClass->runPipeAndCapture(QStringList()<<command);
 	lines=results.split("\n",Qt::SkipEmptyParts);
 
 	for(int j=0;j<lines.count();j++)

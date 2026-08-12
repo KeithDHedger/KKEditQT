@@ -291,7 +291,7 @@ MenuItemClass						*spellCheckMenuItem=NULL;
 		bool							openFile(QString filepath,int linenumber=1,bool warn=false,bool addtorecents=true);
 		bool							openFileDialog(void);
 		void							openAsHexDump(void);
-		QString						runPipeAndCapture(QString command,bool inshell=false);
+		QString						runPipeAndCapture(QStringList command,bool inshell=false);
 		void							runPipeAndCaptureToToolOP(QString command);
 		void							runNoOutput(QString command,bool sync=true,bool asroot=false);
 

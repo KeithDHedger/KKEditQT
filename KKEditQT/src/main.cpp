@@ -41,7 +41,8 @@ int main (int argc, char **argv)
 	napp->setApplicationVersion(VERSION);
 
 	kkedit=new KKEditClass(napp);
-    kkedit->splash=new QSplashScreen(QString(kkedit->realDataDir)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
+//    kkedit->splash=new QSplashScreen(QString(kkedit->realDataDir)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
+//	kkedit->splash->show();
 
 	kkedit->parser.addHelpOption();
 	kkedit->parser.addOptions(
@@ -122,7 +123,7 @@ int main (int argc, char **argv)
 			return(0);
 		}
 
-	kkedit->splash->show();
+	//kkedit->splash->show();
 	kkedit->forcedMultInst=kkedit->parser.isSet("multi");
 	kkedit->initApp(argc,argv);
 
@@ -147,7 +148,7 @@ int main (int argc, char **argv)
 	else
 		kkedit->application->setWindowIcon(QIcon(kkedit->realDataDir+"/pixmaps/KKEditRoot.png"));
 
-	kkedit->splash->finish(kkedit->mainWindow);
+	//kkedit->splash->finish(kkedit->mainWindow);
 
 	kkedit->checkMessages->setSingleShot(true);
 	kkedit->checkMessages->start(kkedit->prefsMsgTimer);

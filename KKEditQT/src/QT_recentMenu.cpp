@@ -20,17 +20,22 @@
 
 #include "QT_notebook.h"
 #include "QT_recentMenu.h"
-#include "runExternalProc.h"
+#include "QT_recentMenu.h"
+#include "QT_RunExternalProc.h"
 
 RecentMenuClass::~RecentMenuClass()
 {
-	runExternalProcClass	rp;
-	std::string			com="";
+	QT_RunExternalProc	procs;
 
-	com=QString("tail -n%1 %2 | awk '!a[$0]++'").arg(this->maxFiles).arg(this->recentFileList).toStdString();
-	rp.runExternalCommands(com,false,QString(this->recentFileList+".bak").toStdString());
-	com=QString("mv %1.bak %2").arg(this->recentFileList).arg(this->recentFileList).toStdString();
-	rp.runExternalCommands(com,false);
+	procs.setStdOutFileOption(QString(this->recentFileList+".bak"));
+
+	if(procs.setCommands(QStringList()<<QString("%1/tail -n%2 %3").arg(this->mainKKEditClass->realBinDir).arg(this->maxFiles).arg(this->recentFileList)<<QString("%1/awk '!a[$0]++'").arg(this->mainKKEditClass->realBinDir))==true)
+		procs.runCommands();
+
+	procs.setStdOutFileOption("");
+	if(procs.setCommands(QStringList()<<QString("%1/mv %2.bak %2").arg(this->mainKKEditClass->realBinDir).arg(this->recentFileList))==true)
+		procs.runCommands();
+
 	delete this->recentMenu;
 }
 

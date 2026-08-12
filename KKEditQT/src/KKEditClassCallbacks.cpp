@@ -40,6 +40,7 @@ void KKEditClass::restoreSession(int what)
 	QString			filename;
 	DocumentClass	*doc;
 	plugData			pd;
+		qDebug()<<"00000000000";
 
 	int				x,y,w,h;//geometry
 	int				linecnt=5;//skip header data
@@ -52,8 +53,10 @@ void KKEditClass::restoreSession(int what)
 
 	file.setFileName(QString("%1/Session-%2").arg(this->sessionFolder).arg(what));
 	retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
+		qDebug()<<"00000000000";
 	if(retval==true)
 		{
+		qDebug()<<"00000000000";
 			this->closeAllTabs();
 			this->sessionBusy=true;
 
@@ -262,7 +265,7 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 //autosave session
 			if(sessionnumber==CURRENTSESSION)
 				sessionnumber=0;
-			this->splash->finish(this->mainWindow);
+			//this->splash->finish(this->mainWindow);
 			this->restoreSession(sessionnumber);
 		}
 
@@ -472,9 +475,9 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 											document->textCursor().beginEditBlock();
 												document->textCursor().removeSelectedText();
 												if(rootrun==false)
-													document->textCursor().insertText(this->runPipeAndCapture(str,true));
+													document->textCursor().insertText(this->runPipeAndCapture(QStringList()<<str,true));
 												else
-													document->textCursor().insertText(this->runPipeAndCapture(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str),true));						
+													document->textCursor().insertText(this->runPipeAndCapture(QStringList()<<QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str),true));						
 											document->textCursor().endEditBlock();
 											document->makeDirty();
 											break;
@@ -482,9 +485,9 @@ void KKEditClass::doToolsMenuItems(MenuItemClass *mc)
 										case TOOL_REPLACE_OP:
 											document->textCursor().beginEditBlock();
 												if(rootrun==false)
-													document->setPlainText(this->runPipeAndCapture(str,true));
+													document->setPlainText(this->runPipeAndCapture(QStringList()<<str,true));
 												else
-													document->setPlainText(this->runPipeAndCapture(QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str),true));
+													document->setPlainText(this->runPipeAndCapture(QStringList()<<QString("%1 sh -c \"%2\"").arg(this->prefsRootCommand).arg(str),true));
 											document->textCursor().endEditBlock();
 											document->makeDirty();
 											break;
@@ -974,9 +977,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 								{
 									this->showBarberPole("Running external tool pdfcrop ...","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
 									this->runNoOutput(QString("echo -n Croping, please wait ... >\"%1/progress\"").arg(this->tmpFolderName));
-
-									QString command=QString("pdfcrop --margins \"10 10 10 10\" '%1' '%2'").arg(chooser.selectedFilePath).arg(chooser.selectedFilePath);
-									this->runPipeAndCapture(command);
+									this->runPipeAndCapture(QStringList()<<QString("pdfcrop --margins \"10 10 10 10\" '%1' '%2'").arg(chooser.selectedFilePath).arg(chooser.selectedFilePath));
 									this->runNoOutput(QString("echo -e quit>\"%1/progress\"").arg(this->tmpFolderName));
 								}
 						}
@@ -999,7 +1000,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 							else
 								fn=chooser.selectedFileName;
 							QString command=QString("pdftotext -nopgbrk -q -layout -nodiag -eol unix '%1' -|sed 'N;/\\n.*[0-9][0-9]*/d;P;D'|sed '$d'| unexpand --tabs=%4 >'/%2/%3'").arg(chooser.selectedFilePath).arg(this->tmpFolderName).arg(fn).arg(this->prefsTabWidth);
-							this->runPipeAndCapture(command,true);
+							this->runPipeAndCapture(QStringList()<<command,true);
 							this->openFile(QString("/%1/%2").arg(this->tmpFolderName).arg(fn));																this->setDefineSearchFolders();
 						}
 				}

@@ -31,6 +31,7 @@
 #include "ChooserDialog.h"
 #include "QT_SpellCheck.h"
 #include "QT_lineEditCompleter.h"
+#include "QT_RunExternalProc.h"
 
 static const char			*replacementShorts[]={"Ctrl+H","Ctrl+Y","Ctrl+?","Ctrl+K","Ctrl+Shift+H","Ctrl+D","Ctrl+Shift+D","Ctrl+L","Ctrl+M","Ctrl+Shift+M","Ctrl+@","Ctrl+'","Ctrl+Shift+F"};
 static const QStringList		reservedShortcutKeys={"Ctrl+Shift+C","Ctrl+Shift+V"};
@@ -295,9 +296,10 @@ void KKEditClass::setUpToolBar(void)
 
 void KKEditClass::setDefineSearchFolders(void)
 {
-	QStringList	tags;
-	QString		folders="";
-	QStringList	fl;
+	QStringList			tags;
+	QString				folders="";
+	QStringList			fl;
+	QT_RunExternalProc	procs;
 
 	for(int j=0;j<this->mainNotebook->count();j++)
 		{
@@ -310,7 +312,8 @@ void KKEditClass::setDefineSearchFolders(void)
 	fl.removeDuplicates();
 	folders=fl.join(" ");
 
-	tags=this->runPipeAndCapture(QString("%2/ctags -x %3 %1 | %2/sort |awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'").arg(folders).arg(this->realBinDir).arg(this->ctagsExlusions)).split('\n',Qt::SkipEmptyParts);
+	if(procs.setCommands(QStringList()<<QString("%1/ctags -x %2 %3").arg(this->realBinDir).arg(this->ctagsExlusions).arg(folders)<<QString("%1/sort").arg(this->realBinDir)<<QString("%1/awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'") .arg(this->realBinDir))==true)
+		tags=procs.runCommands().split('\n',Qt::SkipEmptyParts);
 
 	this->findDefWidget->setStrings(tags);
 }
@@ -462,7 +465,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	this->maxSessions=this->prefs.value("app/maxsessions",24).toInt();
 	for(int j=0;j<this->maxSessions;j++)
 		{
-			this->runPipeAndCapture(QString("touch '%1/Session-%2'").arg(this->sessionFolder).arg(j));
+			this->runPipeAndCapture(QStringList()<<QString("touch '%1/Session-%2'").arg(this->sessionFolder).arg(j));
 			file.setFileName(QString("%1/Session-%2").arg(this->sessionFolder).arg(j));
 			if(file.open(QIODevice::Text | QIODevice::ReadOnly))
 				{
@@ -911,7 +914,7 @@ void KKEditClass::findFile(void)
 	if(this->openFile(QString("%1/%2").arg(document->getDirPath()).arg(filename))==true)
 		return;
 
-	results=this->runPipeAndCapture(QString("find \"/usr/include\" -path \"*%1\"").arg(filename));
+	results=this->runPipeAndCapture(QStringList()<<QString("find \"/usr/include\" -path \"*%1\"").arg(filename));
 	if(results.isEmpty()==false)
 		{
 			retval=results.split("\n",Qt::SkipEmptyParts);
@@ -919,7 +922,7 @@ void KKEditClass::findFile(void)
 				this->openFile(retval.at(j));
 		}
 
-	results=this->runPipeAndCapture(QString("find \"/usr/local/include\" -path \"*%1\"").arg(filename));
+	results=this->runPipeAndCapture(QStringList()<<QString("find \"/usr/local/include\" -path \"*%1\"").arg(filename));
 	if(results.isEmpty()==false)
 		{
 			retval=results.split("\n",Qt::SkipEmptyParts);
@@ -1375,7 +1378,6 @@ void KKEditClass::printDocument(void)
 void KKEditClass::setCompWordList(void)
 {
 	QString				results;
-	QString				command;
 	QString				paths;
 	DocumentClass		*doc;
 	QAbstractItemModel	*model;
@@ -1389,8 +1391,7 @@ void KKEditClass::setCompWordList(void)
 			paths+="'"+doc->getFilePath()+"' ";
 		}
 
-	command=QString("grep -Eho '[[:alpha:]_]{%1,}' %2|sort -u").arg(this->autoShowMinChars).arg(paths);
-	results=this->runPipeAndCapture(command);
+	results=this->runPipeAndCapture(QStringList()<<QString("grep -Eho '[[:alpha:]_]{%1,}' %2").arg(this->autoShowMinChars).arg(paths)<<"sort -u");
 	this->completionWords=results.split("\n",Qt::SkipEmptyParts);
 
 	if(this->completer!=NULL)
@@ -1580,26 +1581,14 @@ QStringList KKEditClass::tailStringList(QStringList list,int maxsize)
 
 void KKEditClass::runNoOutput(QString command,bool sync,bool asroot)
 {
-	QStringList	args;
-	QString		com;
+	QT_RunExternalProc	procs;
 
+	procs.sync=sync;
 	if(asroot==false)
-		{
-			com="sh";
-			args<<"-c"<<QString("cd %1;%2").arg(this->toolsFolder).arg(command);
-		}
+		procs.runCommandsInShell(QString("cd %1;%2").arg(this->toolsFolder).arg(command));
 	else
-		{
-			args=QProcess::splitCommand(this->prefsRootCommand);
-			com=args.at(0);
-			args.removeFirst();
-			args<<"sh"<<"-c"<<QString("cd %1;%2").arg(this->toolsFolder).arg(command);
-		}
-
-	if(sync==true)
-		QProcess::execute(com,args);
-	else
-		QProcess::startDetached(com,args);
+		procs.runCommandsInShell(QString("cd %1;%2 %3").arg(this->toolsFolder).arg(this->prefsRootCommand).arg(command));
+		
 }
 
 void KKEditClass::sendMessgage(QString msg)
