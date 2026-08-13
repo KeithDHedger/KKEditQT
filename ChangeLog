@@ -1,4 +1,6 @@
 2.2.2
+Sendng printfile message now prints current doc to PDF automatically.
+Fixed somtimes not setting view>show/hide tool op menu text.
 Move tool output window to top, when triggering tool.
 Fixes to QT_RunExternalProc class.
 Fixed running external programs async.

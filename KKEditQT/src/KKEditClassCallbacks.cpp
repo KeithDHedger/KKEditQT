@@ -184,7 +184,7 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 						}
 				}
 
-//TODO//set session name for save
+//set session name for save
 			retval=file.open(QIODevice::Text | QIODevice::WriteOnly);
 			if(retval==true)
 				{
@@ -609,6 +609,8 @@ void KKEditClass::doViewMenuItems(MenuItemClass *mc)
 					{
 						this->toolOutputWindow->show();
 						this->toggleToolWindowMenuItem->setText("Hide Tool Output");
+						this->toolOutputWindow->activateWindow();
+						this->toolOutputWindow->raise();
 					}
 				else
 					{
@@ -771,7 +773,7 @@ void KKEditClass::doEditMenuItems(MenuItemClass *mc)
 					}
 				break;
 
-			case VERTICALPASTEMENUITEM://TODO//
+			case VERTICALPASTEMENUITEM:
 				if(document!=NULL)
 					{
 						QTextCursor	cursor;
@@ -1362,8 +1364,17 @@ void KKEditClass::handleMessages(void)
 						}
 				}
 				break;
-			case PRINTFILESMSG://TODO//just print with defaults//TODO//
-				emit this->printMenuItem->triggered();
+			case PRINTFILESMSG:
+				{
+					DocumentClass	*doc=this->getDocumentForTab(-1);
+					if(doc!=NULL)
+						{
+							QDir	().mkpath(QString("%1/PDF").arg(this->homeFolder));
+							QPrinter		printer(QPrinter::HighResolution);
+							printer.setOutputFileName(QString("%1/PDF/%2.pdf").arg(this->homeFolder).arg(doc->getFileName()));
+							doc->print(&printer);
+						}
+				}
 				break;
 			case RUNTOOLMSG:
 				this->clickMenu(this->toolsMenu,QString(staticbuffer.mText));

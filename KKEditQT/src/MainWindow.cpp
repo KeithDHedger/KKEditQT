@@ -21,6 +21,7 @@
 #include "KKEditClass.h"
 #include "docBrowser.h"
 #include "MainWindow.h"
+#include "QT_menuitem.h"
 
 MainWindowClass::MainWindowClass(KKEditClass *kk)
 {
@@ -29,6 +30,12 @@ MainWindowClass::MainWindowClass(KKEditClass *kk)
 
 void MainWindowClass::closeEvent(QCloseEvent *event)
 {
+	if(this->mainKKEditClass->toolOutputWindow!=NULL)
+		{
+			this->mainKKEditClass->toolWindowVisible=true;
+			this->mainKKEditClass->doViewMenuItems(this->mainKKEditClass->toggleToolWindowMenuItem);
+		}
+
 	if(this->mainKKEditClass->docView!=NULL)
 		{
 			delete this->mainKKEditClass->docView;

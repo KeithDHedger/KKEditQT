@@ -840,7 +840,7 @@ void DocumentClass::setFilePrefs(void)
 	this->highlighter2->setDefinition(def);
 	this->setTheme(this->mainKKEditClass->prefStyleName);
 
-	this->dirty=holddirty;//TODO//
+	this->dirty=holddirty;
 	this->updateLineNumberAreaWidth(this->oldBlockCount);
 
 	this->setFont(this->mainKKEditClass->prefsDocumentFont);

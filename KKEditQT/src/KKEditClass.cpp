@@ -53,8 +53,6 @@ KKEditClass::~KKEditClass()
 	for(int j=0;j<NOMORESHORTCUT;j++)
 		delete this->appShortcuts[j];
 
-
-
 	for(int j=0;j<this->plugins.count();j++)
 		{
 			if(this->plugins[j].loaded==true)
@@ -931,7 +929,7 @@ void KKEditClass::findFile(void)
 		}
 }
 
-void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile)//TODO//
+void KKEditClass::showBarberPole(QString windowtitle,QString bodylabel,QString cancellabel,QString maxitems,QString controlfile)
 {
 	QStringList	arguments;
 

@@ -22,6 +22,7 @@
 #define KKEDITQTEXAMPLEPLUG_H
 
 #include "globalincludes.h"
+#include "../../../src/MainWindow.h"
 
 class kkeditQTexamplePlug : public QObject, kkEditQTPluginInterface
 {

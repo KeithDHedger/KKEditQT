@@ -41,11 +41,8 @@ void KKEditClass::runPipeAndCaptureToToolOP(QString command)
 			qApp->processEvents();
 		});
 
-	this->toolOutputWindow->show();
-	this->toggleToolWindowMenuItem->setText("Show Tool Output");
-	this->toolWindowVisible=true;
-	this->toolOutputWindow->activateWindow();
-	this->toolOutputWindow->raise();
+	this->toolWindowVisible=false;
+	this->doViewMenuItems(this->toggleToolWindowMenuItem);
 	qApp->processEvents();
 	procs.runCommandsInShell(command);
 	qApp->processEvents();
@@ -413,7 +410,7 @@ bool KKEditClass::possibleNonText(QString filepath)
 				{
 					if(!((str.at(j).isPrint()==true) || (str.at(j).isSpace()==true)))
 						{
-							qDebug()<<"bad char"<<str.at(j);//TODO//force open dialog
+							qDebug()<<"bad char"<<str.at(j);
 							file.close();
 							return(false);
 						}
@@ -424,7 +421,7 @@ bool KKEditClass::possibleNonText(QString filepath)
 	return(true);
 }
 
-bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtorecents)//TODO//warn
+bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtorecents)
 {
 	DocumentClass		*doc=NULL;
 	bool					retval=false;

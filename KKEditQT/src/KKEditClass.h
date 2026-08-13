@@ -332,7 +332,7 @@ MenuItemClass						*spellCheckMenuItem=NULL;
 //tools vars
 		QDialog						*toolsWindow=NULL;
 		QComboBox					*toolSelect;
-		QMainWindow					*toolOutputWindow;
+		MainWindowClass				*toolOutputWindow=NULL;
 		QPlainTextEdit				*toolsOPText=NULL;
 
 //tools functions

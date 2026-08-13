@@ -369,7 +369,7 @@ void KKEditClass::buildPrefsWindow(void)
 //max sessions
 	posy++;
 	makePrefsDial(MAXMENUSESSIONS,"Max Sessions:",this->maxSessions,0,MAXSESSIONS,posy);
-	prefsIntWidgets[MAXMENUSESSIONS]->setWhatsThis(whatIsPrefsInt[MAXMENUSESSIONS]);//TODO//
+	prefsIntWidgets[MAXMENUSESSIONS]->setWhatsThis(whatIsPrefsInt[MAXMENUSESSIONS]);
 
 //find replace history max
 	posy++;
@@ -1444,7 +1444,7 @@ void KKEditClass::buildToolOutputWindow(void)
 	QWidget		*widget;
 	QPushButton	*button;
 
-	this->toolOutputWindow=new QMainWindow(mainWindow);//TODO//close from window bar
+	this->toolOutputWindow=new MainWindowClass(this);
 	this->toolOutputWindow->restoreGeometry(prefs.value("app/toolsopgeometry").toByteArray());
 
 	docvlayout->setContentsMargins(0,0,0,0);
