@@ -40,7 +40,6 @@ void KKEditClass::restoreSession(int what)
 	QString			filename;
 	DocumentClass	*doc;
 	plugData			pd;
-		qDebug()<<"00000000000";
 
 	int				x,y,w,h;//geometry
 	int				linecnt=5;//skip header data
@@ -53,21 +52,21 @@ void KKEditClass::restoreSession(int what)
 
 	file.setFileName(QString("%1/Session-%2").arg(this->sessionFolder).arg(what));
 	retval=file.open(QIODevice::Text | QIODevice::ReadOnly);
-		qDebug()<<"00000000000";
 	if(retval==true)
 		{
-		qDebug()<<"00000000000";
 			this->closeAllTabs();
 			this->sessionBusy=true;
 
 			sl=QString(file.readAll()).split('\n',Qt::SkipEmptyParts);
 			file.close();
+
 			this->showBarberPole("Restore Session","Please Wait","",QString::number(sl.size()),QString("%1/session").arg(this->tmpFolderName));
 			x=sl.at(1).split(' ').at(0).toInt();
 			y=sl.at(1).split(' ').at(1).toInt();
 			w=sl.at(1).split(' ').at(2).toInt();
 			h=sl.at(1).split(' ').at(3).toInt();
 			this->mainWindow->setGeometry(x,y,w,h);
+			//this->splash->finish(this->mainWindow);
 			while(linecnt<sl.size())
 				{
 					mainline=sl.at(linecnt).split(' ').at(0).toInt();
@@ -150,7 +149,7 @@ void KKEditClass::doSessionsMenuItems(MenuItemClass *mc)
 		sessionnumber=0;
 	else
 		sessionnumber=mc->getMenuID();
-
+		
 	if((sessionnumber==0) || (mc->objectName().compare(SAVESESSIONMENUNAME)==0) || (mc->objectName().compare(QUITMENUNAME)==0))
 		{
 			if(sessionnumber!=0)
@@ -1056,6 +1055,7 @@ void KKEditClass::doTimer(void)
 		}
 	//this->sessionBusy=false;
 	this->sessionBusy=holdbusy;
+	//this->splash->finish(this->mainWindow);
 }
 
 void KKEditClass::handleMessages(void)

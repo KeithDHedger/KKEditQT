@@ -576,6 +576,7 @@ void KKEditClass::initApp(int argc,char** argv)
 	pd.what=DOPOSTLOAD;
 	this->runAllPlugs(pd);
 	this->sessionBusy=false;
+//	this->splash->finish(this->mainWindow);
 }
 
 QString KKEditClass::randomName(int len)

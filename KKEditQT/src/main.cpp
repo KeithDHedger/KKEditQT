@@ -35,14 +35,17 @@ int main (int argc, char **argv)
 	int				status;
 	QDir				commsDir;
 	QApplication		*napp=new QApplication(argc,argv);
+//	QString			realdatadir=QString("%1%2").arg(getenv("APPDIR")).arg(DATADIR);
 
 	napp->setOrganizationName("KDHedger");
 	napp->setApplicationName("KKEditQT");
 	napp->setApplicationVersion(VERSION);
 
 	kkedit=new KKEditClass(napp);
-//    kkedit->splash=new QSplashScreen(QString(kkedit->realDataDir)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint);
+//    kkedit->splash=new QSplashScreen(QString(realdatadir)+"/pixmaps/KKEditQT.png",Qt::FramelessWindowHint|Qt::X11BypassWindowManagerHint|Qt::WindowStaysOnTopHint);
+//
 //	kkedit->splash->show();
+//	napp->processEvents();
 
 	kkedit->parser.addHelpOption();
 	kkedit->parser.addOptions(
@@ -147,8 +150,6 @@ int main (int argc, char **argv)
 		kkedit->application->setWindowIcon(QIcon(kkedit->realDataDir+"/pixmaps/" PACKAGE ".png"));
 	else
 		kkedit->application->setWindowIcon(QIcon(kkedit->realDataDir+"/pixmaps/KKEditRoot.png"));
-
-	//kkedit->splash->finish(kkedit->mainWindow);
 
 	kkedit->checkMessages->setSingleShot(true);
 	kkedit->checkMessages->start(kkedit->prefsMsgTimer);
