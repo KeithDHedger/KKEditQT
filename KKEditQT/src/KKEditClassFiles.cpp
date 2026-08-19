@@ -170,7 +170,7 @@ bool KKEditClass::saveFileAs(int tabnum,QString filepath)
 			chooser.dialogWindow.exec();
 			if(chooser.valid==false)
 				return(false);
-			fileName=chooser.selectedFilePath;
+			fileName=chooser.multiFileList.at(0);
 		}
 	else
 		{

@@ -965,7 +965,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 							QPrinter	pd(QPrinter::ScreenResolution);
 							QSizeF	sz=doc->document()->documentLayout()->documentSize();
 							pd.setOutputFormat(QPrinter::PdfFormat);
-							pd.setOutputFileName(chooser.selectedFilePath);
+							pd.setOutputFileName(chooser.multiFileList.at(0));
 							pd.setPageMargins(QMarginsF(0,0,0,0),QPageLayout::Point);
 							sz.setWidth(sz.rwidth()-doc->lineNumberAreaWidth()-(doc->geometry().width()-sz.rwidth())-16);
 							sz.setHeight(this->mainNotebook->currentWidget()->geometry().height()-24);
@@ -978,7 +978,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 								{
 									this->showBarberPole("Running external tool pdfcrop ...","Please Wait","","0",QString("%1/progress").arg(this->tmpFolderName));
 									this->runNoOutput(QString("echo -n Croping, please wait ... >\"%1/progress\"").arg(this->tmpFolderName));
-									this->runPipeAndCapture(QStringList()<<QString("pdfcrop --margins \"10 10 10 10\" '%1' '%2'").arg(chooser.selectedFilePath).arg(chooser.selectedFilePath));
+									this->runPipeAndCapture(QStringList()<<QString("pdfcrop --margins \"10 10 10 10\" '%1' '%2'").arg(chooser.multiFileList.at(0)).arg(chooser.multiFileList.at(0)));
 									this->runNoOutput(QString("echo -e quit>\"%1/progress\"").arg(this->tmpFolderName));
 								}
 						}
@@ -996,11 +996,13 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 					if(chooser.valid==true)
 						{
 							QString fn;
-							if(chooser.selectedFileName.endsWith("*.pdf"))
-								fn=chooser.selectedFileName.left(chooser.selectedFileName.length()-4);
+							QString selectedfilename=QFileInfo(chooser.multiFileList.at(0)).fileName();
+							if(selectedfilename.endsWith("*.pdf"))
+								fn=selectedfilename.left(selectedfilename.length()-4);
 							else
-								fn=chooser.selectedFileName;
-							QString command=QString("pdftotext -nopgbrk -q -layout -nodiag -eol unix '%1' -|sed 'N;/\\n.*[0-9][0-9]*/d;P;D'|sed '$d'| unexpand --tabs=%4 >'/%2/%3'").arg(chooser.selectedFilePath).arg(this->tmpFolderName).arg(fn).arg(this->prefsTabWidth);
+								fn=selectedfilename;
+							
+							QString command=QString("pdftotext -nopgbrk -q -layout -nodiag -eol unix '%1' -|sed 'N;/\\n.*[0-9][0-9]*/d;P;D'|sed '$d'| unexpand --tabs=%4 >'/%2/%3'").arg(chooser.multiFileList.at(0)).arg(this->tmpFolderName).arg(fn).arg(this->prefsTabWidth);
 							this->runPipeAndCapture(QStringList()<<command,true);
 							this->openFile(QString("/%1/%2").arg(this->tmpFolderName).arg(fn));																this->setDefineSearchFolders();
 						}
