@@ -1,4 +1,5 @@
 2.2.2
+Redone file chooser.
 Sendng printfile message now prints current doc to PDF automatically.
 Fixed somtimes not setting view>show/hide tool op menu text.
 Move tool output window to top, when triggering tool.

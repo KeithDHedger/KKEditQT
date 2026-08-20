@@ -957,7 +957,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 
 					chooser.setMultipleSelect(false);
 					chooser.setShowImagesInList(false);
-					chooser.addFileTypes("*.pdf");
+					chooser.addFileTypes("PDF( *.pdf )");
 					chooser.addFileTypes("All Files");
 					chooser.dialogWindow.exec();
 					if(chooser.valid==true)
@@ -990,7 +990,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 
 					chooser.setMultipleSelect(false);
 					chooser.setShowImagesInList(false);
-					chooser.addFileTypes("*.pdf");
+					chooser.addFileTypes("PDF( *.pdf )");
 					chooser.addFileTypes("All Files");
 					chooser.dialogWindow.exec();
 					if(chooser.valid==true)

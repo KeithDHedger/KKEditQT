@@ -1,22 +1,3 @@
-/*
- *
- * ©K. D. Hedger. Wed 19 Aug 16:24:20 BST 2026 keithdhedger@gmail.com
-
- * This file (ChooserDialog.cpp) is part of KKEditQT.
-
- * KKEditQT is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
-
- * KKEditQT is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
- * You should have received a copy of the GNU General Public License
- * along with KKEditQT.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 #include "ChooserDialog.h"
 
@@ -175,6 +156,7 @@ void chooserDialogClass::buildMainGui(void)
 			this->fileEntryTextEdited(text);
 		});
 
+	this->fileTypes.setMinimumContentsLength(64);
 	controlsvlayout->addWidget(&this->fileTypes);
 	QObject::connect(&this->fileTypes,&QComboBox::currentTextChanged,[this](const QString &text)
 		{
@@ -221,7 +203,7 @@ void chooserDialogClass::buildMainGui(void)
 					if(dirp.mkdir(text)==true)
 						this->setFileList(this->currentFolderPath+"/"+text);
 					else
-						QMessageBox::critical(&this->dialogWindow,"Failed","Can't create folder ...");//TODO//Dont like this
+						QMessageBox::critical(&this->dialogWindow,"Failed","Can't create folder ...");
 				}
 		});
 
@@ -319,7 +301,6 @@ QIcon chooserDialogClass::getFileIcon(QString path)
 			else
 				{
 					icon=QIcon::fromTheme(type.iconName());
-					qDebug()<<type.iconName();
 				}
 		}
 
@@ -526,7 +507,7 @@ void chooserDialogClass::setExitData(bool valid)
 
 void chooserDialogClass::addFileTypes(QString types)
 {
-	this->fileTypes.addItem(types);
+	this->fileTypes.addItem(types.simplified());
 }
 
 void chooserDialogClass::setSelectedFiles(const QModelIndex &index,bool clear)
@@ -833,7 +814,11 @@ void chooserDialogClass::setFileList(QString dir,QDir::SortFlags sortas)
 	if(this->fileTypes.currentText()=="All Files")
 		namefilters.clear();
 	else
-		namefilters=this->fileTypes.currentText().split(';');
+		{
+			QString filts=this->fileTypes.currentText();
+			filts=filts.replace(QRegularExpression("^.*\\((.*)\\).*"),"\\1");
+			namefilters=filts.simplified().split(" ");
+		}
 
 	if(this->fromRecents==true)
 		dfilts|=QDir::NoDotDot;
