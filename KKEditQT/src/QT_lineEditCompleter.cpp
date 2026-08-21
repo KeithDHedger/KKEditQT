@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Fri  7 Aug 20:44:30 BST 2026 keithdhedger@gmail.com
+ * ©K. D. Hedger. Fri 21 Aug 16:05:08 BST 2026 keithdhedger@gmail.com
 
  * This file (QT_lineEditCompleter.cpp) is part of KKEditQT.
 
@@ -140,41 +140,54 @@ void QT_lineEditCompleterClass::setUpCompleter(QStringList sl)
 	this->completer->setCompletionMode(QCompleter::PopupCompletion);
 	this->completer->setCaseSensitivity(Qt::CaseInsensitive);
 
-	shortcutESC=new QShortcut(QKeySequence("Esc"),this);
-	shortcutESC->setContext(Qt::WidgetShortcut);
-	QObject::connect(shortcutESC,&QShortcut::activated,[&]()
+	if(this->useInternaleSC==true)
 		{
-			this->setText(this->holdText);
-			this->completer->popup()->hide();
-		});
-
-	shortcutTAB=new QShortcut(QKeySequence("Tab"),this);
-	shortcutTAB->setContext(Qt::WidgetShortcut);
-	QObject::connect(shortcutTAB,&QShortcut::activated,[this]()
-		{
-			switch(this->completionType)
+			shortcutESC=new QShortcut(QKeySequence("Esc"),this);
+			shortcutESC->setContext(Qt::WidgetShortcut);
+			QObject::connect(shortcutESC,&QShortcut::activated,[&]()
 				{
-					case STRINGCOMPLETE:
-						this->completer->setCompletionPrefix(this->text());
-						this->completer->complete();
-						this->completer->popup()->scrollToTop();
-						break;
-					case FOLDERCOMPLETE:
-						if(this->text().startsWith('/'))
-							{
-								this->rootFold="/";
-								this->folderModel->setStringList(completeForPrefix(this->text()));
-							}
-						else
-							{
-								this->completer->setCompletionPrefix("");
-								this->folderModel->setStringList(completeForPrefix(this->text()));
-							}
-						this->completer->complete();
-						this->completer->popup()->scrollToTop();
-						break;
-				}
-		});
+					this->doCancelKey();
+				});
+
+			this->shortcutTAB=new QShortcut(QKeySequence("TAB"),this);
+			this->shortcutTAB->setContext(Qt::WidgetShortcut);
+			QObject::connect(this->shortcutTAB,&QShortcut::activated,[this]()
+				{
+					this->doActivateKey();
+				});
+		}
+}
+
+void QT_lineEditCompleterClass::doCancelKey(void)
+{
+	this->setText(this->holdText);
+	this->completer->popup()->hide();
+}
+
+void QT_lineEditCompleterClass::doActivateKey(void)
+{
+	switch(this->completionType)
+		{
+			case STRINGCOMPLETE:
+				this->completer->setCompletionPrefix(this->text());
+				this->completer->complete();
+				this->completer->popup()->scrollToTop();
+				break;
+			case FOLDERCOMPLETE:
+				if(this->text().startsWith('/'))
+					{
+						this->rootFold="/";
+						this->folderModel->setStringList(completeForPrefix(this->text()));
+					}
+				else
+					{
+						this->completer->setCompletionPrefix("");
+						this->folderModel->setStringList(completeForPrefix(this->text()));
+					}
+				this->completer->complete();
+				this->completer->popup()->scrollToTop();
+				break;
+		}
 }
 
 void QT_lineEditCompleterClass::focusInEvent(QFocusEvent *e)

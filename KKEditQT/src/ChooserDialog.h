@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Fri 21 Aug 12:58:27 BST 2026 keithdhedger@gmail.com
+ * ©K. D. Hedger. Fri 21 Aug 16:04:55 BST 2026 keithdhedger@gmail.com
 
  * This file (ChooserDialog.h) is part of KKEditQT.
 
@@ -22,7 +22,7 @@
 #define _CHOOSERDIALOG_
 
 #include "qtincs.h"
-
+#include "QT_lineEditCompleter.h"
 
 #define MAXIMAGESIZETOTHUMB 2000000
 
@@ -43,7 +43,6 @@ class chooserDialogClass
 		void					addFileTypes(QString types);
 
 	private:
-
 //main
 		QString				selectedFolderPath="";
 		QString				currentFolderPath="/";
@@ -55,7 +54,10 @@ class chooserDialogClass
 		QListView			sideList;
 		QStandardItemModel	*sideListModel;
 
-		QLineEdit			filepathEdit;
+		QT_lineEditCompleterClass	*filepathEdit;
+		QShortcut			*pathActivateKey;
+		QShortcut			*pathCancelKey;
+
 		QComboBox			fileTypes;
 
 		QLabel				previewIcon;
@@ -94,6 +96,5 @@ class chooserDialogClass
 		void					setSelectedFiles(const QModelIndex &index,bool clear=false);
 		void					setFileList(QString dir,QDir::SortFlags sortas=QDir::Name);
 };
-
 
 #endif

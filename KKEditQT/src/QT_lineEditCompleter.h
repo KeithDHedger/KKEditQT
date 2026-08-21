@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Fri  7 Aug 20:44:41 BST 2026 keithdhedger@gmail.com
+ * ©K. D. Hedger. Fri 21 Aug 16:05:19 BST 2026 keithdhedger@gmail.com
 
  * This file (QT_lineEditCompleter.h) is part of KKEditQT.
 
@@ -29,10 +29,14 @@ class QT_lineEditCompleterClass: public QLineEdit
 		QT_lineEditCompleterClass(const QString &contents,QWidget *parent=nullptr);
 		~QT_lineEditCompleterClass();
 
+		bool				useInternaleSC=true;
+
 		void				setCompleteType(int type);
 		void				setUpCompleter(QStringList sl=QStringList());
 		void				setRootFolder(QString path);
 		void				setStrings(QStringList sl);
+		void				doActivateKey(void);
+		void				doCancelKey(void);
 
 	protected:
 		void				focusInEvent(QFocusEvent *e);
@@ -46,9 +50,9 @@ class QT_lineEditCompleterClass: public QLineEdit
 		QString			holdFold;
 		QString			rootFold="/";
 		QString			holdText="";
+		QStringList		completeForPrefix(QString typed);
 		int				completionType=STRINGCOMPLETE;
 
-		QStringList		completeForPrefix(QString typed);
 };
 
 #endif
