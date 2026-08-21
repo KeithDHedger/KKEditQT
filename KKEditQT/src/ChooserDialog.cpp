@@ -294,7 +294,8 @@ void chooserDialogClass::buildMainGui(void)
 
 	QObject::connect(this->filepathEdit,&QT_lineEditCompleterClass::textEdited,[this](const QString &text)
 		{
-			if(this->filepathEdit->text().isEmpty()==true)
+	//	qDebug()<<"textEdited";
+			if(this->filepathEdit->text().isEmpty()==true && QGuiApplication::queryKeyboardModifiers()==Qt::NoModifier)
 				{
 					this->fileList.clearSelection();
 					this->apply->setEnabled(false);
@@ -303,6 +304,7 @@ void chooserDialogClass::buildMainGui(void)
 
 	QObject::connect(this->filepathEdit,&QT_lineEditCompleterClass::editingFinished,[this]()
 		{
+//		qDebug()<<"editingFinished";
 			QModelIndex				index;
 			QList<QStandardItem*>	foundItems=this->fileListModel->findItems(this->filepathEdit->text(),Qt::MatchStartsWith);
 			if(foundItems.size()>0)
@@ -314,7 +316,8 @@ void chooserDialogClass::buildMainGui(void)
 
 	QObject::connect(this->filepathEdit,&QT_lineEditCompleterClass::textChanged,[this](const QString &text)
 		{
-			if(this->filepathEdit->text().isEmpty()==false)
+//			qDebug()<<"textChanged";
+		if(this->filepathEdit->text().isEmpty()==false && QGuiApplication::queryKeyboardModifiers()==Qt::NoModifier)
 				{
 					QModelIndex				index;
 					QList<QStandardItem*>	foundItems=this->fileListModel->findItems(text,Qt::MatchStartsWith);
