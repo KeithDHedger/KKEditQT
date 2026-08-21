@@ -51,13 +51,15 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 				this->currentFolderPath=prefs.value("lastsavefolder").toString();
 			else
 				this->currentFolderPath=startfolder;
-			this->filepathEdit->setText(name);
 		}
 
 	if((this->currentFolderPath.isEmpty()==true) || (QFileInfo(this->currentFolderPath).exists()==false))
 		this->currentFolderPath="/";
 
 	this->buildMainGui();
+	if(type==chooserDialogType::saveDialog)
+		this->filepathEdit->setText(name);
+
 	this->dialogWindow.restoreGeometry(prefs.value("choosersize").toByteArray());
 
 	command=QString("cd %1/ >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}'").arg(this->recentFilesPath).arg(this->maxRecents);
