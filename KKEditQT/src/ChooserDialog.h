@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Wed 19 Aug 14:47:46 BST 2026 keithdhedger@gmail.com
+ * ©K. D. Hedger. Fri 21 Aug 12:58:27 BST 2026 keithdhedger@gmail.com
 
  * This file (ChooserDialog.h) is part of KKEditQT.
 
