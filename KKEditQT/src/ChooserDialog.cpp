@@ -321,6 +321,7 @@ void chooserDialogClass::buildMainGui(void)
 //			qDebug()<<"textChanged";
 		if(this->filepathEdit->text().isEmpty()==false && QGuiApplication::queryKeyboardModifiers()==Qt::NoModifier)
 				{
+					this->fileList.clearSelection();
 					QModelIndex				index;
 					QList<QStandardItem*>	foundItems=this->fileListModel->findItems(text,Qt::MatchStartsWith);
 					if(foundItems.size()==1)
