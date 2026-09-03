@@ -1,0 +1,36 @@
+#!/bin/bash -e
+
+
+root="${1:-.}"
+
+# Process each distinct filename
+while IFS= read -r -d '' name; do
+    smallest_size=
+    smallest_file=
+    count=0
+
+    # Find all files with this basename and sort by size
+    while IFS= read -r -d '' record; do
+        size=${record%% *}
+        file=${record#* }
+
+        count=$((count + 1))
+
+        if [[ -z $smallest_size || $size -lt $smallest_size ]]; then
+            smallest_size=$size
+            smallest_file=$file
+        fi
+    done < <(
+        find "$root" -type f -name "$name" -printf '%s %p\0' |
+        sort -z -n
+    )
+
+    if (( count > 1 )); then
+        printf 'Removing: %s (%s bytes)\n' "$smallest_file" "$smallest_size"
+        rm -- "$smallest_file"
+        #printf 'Would remove: %s\n' "$smallest_file"
+    fi
+done < <(
+    find "$root" -type f -printf '%f\0' |
+    sort -z -u
+)

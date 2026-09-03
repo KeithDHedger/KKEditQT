@@ -39,7 +39,7 @@ class AboutBoxClass : public QObject
 		void			showAboutQtButton(bool show=false);
 		void			showLicenceButton(bool show=false);
 		void			showCreditsButton(bool show=false);
-		void			showHelp(QString htmlpath);
+		static void	showHelp(QString htmlpath);
 
 	private:
 		QDialog		*aboutDialog;

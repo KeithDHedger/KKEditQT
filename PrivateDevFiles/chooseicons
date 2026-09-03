@@ -1,0 +1,34 @@
+#!/bin/bash -e
+
+#©@USER@ @DATE@ @EMAIL@
+#search "QIcon::fromTheme" .|sed -n 's@.*QIcon::fromTheme("\([^"]*\)").*@\1@gp'
+#alias search='find . \! -iname '\''*~'\'' -print0 |xargs -0 grep -s --ignore-case --binary-files=without-match --line-number'
+#	this->printMenuItem=this->makeMenuItemClass(FILEMENU,"Print",QKeySequence::Print,"document-print",PRINTMENUNAME,PRINTMENUITEM);
+#search makeMenuItemClass|awk -F, '{print $4}'|sort -u|sed /NULL/d|sed -n 's@^"\(.*\)"$@\1@gp'
+
+search ()
+{
+	find $1 \! -iname *~ -print0 |xargs -0 grep -s --ignore-case --binary-files=without-match "$2"
+}
+
+FROMSRC=/home/keithhedger/Projects/DevProjects/KKEditQT/KKEditQT/src
+FROMICONSET=/home/keithhedger/.icons/nouveGnomeGray/
+#FROMICONSET=/home/keithhedger/.icons/Cheser/
+
+x1=$(search $FROMSRC "QIcon::fromTheme"|sed -n 's@.*QIcon::fromTheme("\([^"]*\)").*@\1@gp'|sort -u)
+x2=$(search $FROMSRC makeMenuItemClass|awk -F, '{print $4}'|sort -u|sed /NULL/d|sed -n 's@^"\(.*\)"$@\1@gp')
+
+#echo $x1
+#echo $x2
+
+FOUND=$(
+for arg in $x1 $x2
+	do
+		find ${FROMICONSET} -iname "${arg}.png"|sort -uV|tail -n1
+	done;
+)
+#echo -e "$FOUND"|sed -n "s@$FROMICONSET@@gp"|sort -u
+mkdir -vp /tmp/xxx
+pushd ${FROMICONSET}
+	cp --parents --no-clobber $(echo -e "$FOUND"|sed -n "s@$FROMICONSET@@gp"|sort -u) /tmp/xxx
+popd

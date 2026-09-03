@@ -553,8 +553,7 @@ void KKEditClass::doHelpMenuItems(MenuItemClass *mc)
 
 			 case HELPMENUITEM:
 			 	{
-			 		AboutBoxClass	about(this->mainWindow);
-			 		about.showHelp(QString("%1/help/index.html").arg(this->realDataDir));
+			 		AboutBoxClass::showHelp(QString("%1/help/index.html").arg(this->realDataDir));
 			 	}
 			 	break;
 		}
