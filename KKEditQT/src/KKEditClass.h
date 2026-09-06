@@ -208,6 +208,7 @@ MenuItemClass						*spellCheckMenuItem=NULL;
 
 		MenuItemClass				*newMenuItem;
 		MenuItemClass				*openMenuItem;
+		MenuItemClass				*openAllMenuItem;
 		MenuItemClass				*openRecentMenuItem;
 		MenuItemClass				*saveMenuItem;
 		MenuItemClass				*saveAsMenuItem;

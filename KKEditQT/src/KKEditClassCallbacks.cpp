@@ -30,6 +30,7 @@
 #include "QT_AboutBox.h"
 #include "ChooserDialog.h"
 #include "QT_lineEditCompleter.h"
+#include "QT_RunExternalProc.h"
 
 static msgStruct	staticbuffer={0,0};
 
@@ -904,6 +905,36 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 				this->setToolbarSensitive();
 				this->setDefineSearchFolders();
 				break;
+
+
+			case OPENALLMENUITEM:
+				{
+					QString				commands;
+					QT_RunExternalProc	procs;
+					this->sessionBusy=true;
+						chooserDialogClass	chooser(chooserDialogType::folderDialog);
+						chooser.setMultipleSelect(false);
+						chooser.setShowImagesInList(false);
+		
+						chooser.dialogWindow.exec();
+						if(chooser.valid==false)
+							{
+								qDebug()<<"Select canceled";
+								return;
+							}
+						commands=QString("find '%1' -maxdepth 1 -mindepth 1 -not -path '*/.*'|sort|xargs -I{} kkeditqtmsg -k %2 -c openfile -d '{}'").arg(chooser.multiFileList.at(0)).arg(this->msgKey);
+						procs.sync=false;
+						procs.runCommandsInShell(commands);
+					this->sessionBusy=false;
+
+					this->setToolbarSensitive();
+					this->setDefineSearchFolders();
+					return;
+				}
+				break;
+
+
+
 			case HEXDUMPMENUITEM:
 				this->openAsHexDump();
 				break;
@@ -1046,7 +1077,15 @@ void KKEditClass::doTimer(void)
 
 	if((staticbuffer.mType!=0) || (retlen>0))
 		{
-			this->handleMessages();
+			while(retlen>0)
+				{
+					this->handleMessages();
+					staticbuffer.mText[0]=0;
+					staticbuffer.mType=0;
+					retlen=msgrcv(this->queueID,&staticbuffer,MAXMSGSIZE,MSGANY,IPC_NOWAIT);
+					if(retlen>-1)
+						staticbuffer.mText[retlen]=0;
+				}
 		}
 
 	if(this->checkMessages->isActive()==false)

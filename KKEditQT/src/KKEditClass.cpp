@@ -525,7 +525,8 @@ void KKEditClass::initApp(int argc,char** argv)
 			this->doTimer();
 		});
 
-	QIcon::setFallbackThemeName("kkeditqticons");
+	if(QIcon::themeName()=="hicolor")
+		QIcon::setThemeName("kkeditqticons");
 	QIcon::setThemeSearchPaths(QStringList()<<QString("%1/icons").arg(this->realDataDir)<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME")) );
 
 	QIcon::setFallbackSearchPaths(QStringList()<<QString("%1/icons").arg(this->realDataDir)<<QString("%1/usr/share/icons").arg(getenv("APPDIR"))<<QString("/usr/share/icons")<<QString("%1/.icons").arg(getenv("HOME")));

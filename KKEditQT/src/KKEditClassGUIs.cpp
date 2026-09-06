@@ -796,6 +796,9 @@ void KKEditClass::buildMainGui(void)
 //open
 	this->openMenuItem=this->makeMenuItemClass(FILEMENU,"Open",QKeySequence::Open,"document-open",OPENMENUNAME,OPENMENUITEM);
 
+//open all files in dir
+	this->openAllMenuItem=this->makeMenuItemClass(FILEMENU,"Open All In Dir",0,"folder-open",OPENALLMENUNAME,OPENALLMENUITEM);
+
 //open recent
 	this->fileMenu->addMenu(this->recentFiles->recentMenu);
 

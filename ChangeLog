@@ -1,5 +1,7 @@
 2.2.2
-Added comletions to chooser.
+Updated fallback icons.
+Added "Open All In Dir" to file menu to open all files in a specific folder ( not including "." files ).
+Added completions to chooser.
 Redone file chooser.
 Sendng printfile message now prints current doc to PDF automatically.
 Fixed somtimes not setting view>show/hide tool op menu text.

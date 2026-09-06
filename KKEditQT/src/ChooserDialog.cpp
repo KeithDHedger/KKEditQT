@@ -652,7 +652,9 @@ void chooserDialogClass::setSideList(void)
 
 ///standard items
 	this->sideListModel->clear();
-	item=new QStandardItem(QIcon::fromTheme(QIcon::ThemeIcon::Computer),"Computer");
+	QIcon ic=QIcon::fromTheme("computer");
+	qDebug()<<">>>>"<<ic.name();
+	item=new QStandardItem(QIcon::fromTheme("computer"),"Computer");
 	fullFilePathData="/";
 	item->setData(fullFilePathData,Qt::UserRole);
 	this->sideListModel->appendRow(item);
