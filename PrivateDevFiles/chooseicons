@@ -12,15 +12,17 @@ search ()
 }
 
 FROMSRC=/home/keithhedger/Projects/DevProjects/KKEditQT/KKEditQT/src
-FROMICONSET=/home/keithhedger/.icons/nouveGnomeGray/
+FROMICONSET=/home/keithhedger/.icons/nouveGnomeGray
+#/256x256/actions
 #FROMICONSET=/home/keithhedger/.icons/Cheser/
 
 x1=$(search $FROMSRC "QIcon::fromTheme"|sed -n 's@.*QIcon::fromTheme("\([^"]*\)").*@\1@gp'|sort -u)
 x2=$(search $FROMSRC makeMenuItemClass|awk -F, '{print $4}'|sort -u|sed /NULL/d|sed -n 's@^"\(.*\)"$@\1@gp')
 
-#echo $x1
-#echo $x2
+echo $x1
+echo $x2
 
+exit
 FOUND=$(
 for arg in $x1 $x2
 	do

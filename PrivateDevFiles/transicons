@@ -1,0 +1,54 @@
+#!/bin/bash -e
+
+SECTION=status
+FROMSRC=/home/keithhedger/Projects/DevProjects/KKEditQT/KKEditQT/resources/icons/kkeditqticons/base/$SECTION
+FROMTHEME=/home/keithhedger/.icons/nouveGnomeGray/128x128/$SECTION
+FROMTHEMEICONS1=( $( find $FROMTHEME -mindepth 1 -maxdepth 1 ) )
+
+cnt=${#FROMTHEMEICONS1[@]}
+
+find ${FROMSRC} -mindepth 1 -maxdepth 1|while read
+	do
+		if [[ -L $REPLY ]];then
+			continue;
+		fi
+		icon=$REPLY
+		iconname=$(basename "$icon")
+		for(( j = 0; j < $cnt; j++))
+			do
+					if [[ -L ${FROMTHEMEICONS1[$j]} ]];then
+						continue
+					fi
+						if [[ $iconname = $(basename ${FROMTHEMEICONS1[$j]}) ]] ;then
+							testinfofrom="$(file ${FROMTHEMEICONS1[$j]} |cut -d " " -f5-)"
+							testinfoto="$(file ${REPLY} |cut -d " " -f5-)"
+							#echo ${FROMTHEMEICONS1[$j]} $REPLY $j
+							#echo $testinfofrom
+							#echo $testinfoto
+							iconsize=$(wc -c ${FROMTHEMEICONS1[$j]}|awk '{print $1}')
+							tosize=$(wc -c $REPLY|awk '{print $1}')
+							#echo $iconsize $tosize
+							if [[ $iconsize -gt $tosize ]];then
+								cp "${FROMTHEMEICONS1[$j]}" "$FROMSRC"
+							fi
+						fi
+			done
+		
+	done
+
+exit 0
+cnt=${#FROMTHEMEICONS2[@]}
+
+find ${FROMSRC} -mindepth 1 -maxdepth 1|while read
+	do
+		icon=$REPLY
+		iconname=$(basename "$icon")
+		for(( j = 0; j < $cnt; j++))
+			do
+				if [[ $iconname = $(basename ${FROMTHEMEICONS2[$j]}) ]] ;then
+					echo ${FROMTHEMEICONS2[$j]}
+				fi
+			done
+		
+	done
+
