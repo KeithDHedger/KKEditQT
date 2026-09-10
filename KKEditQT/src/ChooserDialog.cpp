@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Fri 21 Aug 16:04:47 BST 2026 keithdhedger@gmail.com
+ * ©K. D. Hedger. Thu 10 Sep 13:49:16 BST 2026 keithdhedger@gmail.com
 
  * This file (ChooserDialog.cpp) is part of KKEditQT.
 
@@ -59,7 +59,6 @@ chooserDialogClass::chooserDialogClass(chooserDialogType type,QString name,QStri
 	this->buildMainGui();
 	if(type==chooserDialogType::saveDialog)
 		this->filepathEdit->setText(name);
-
 	this->dialogWindow.restoreGeometry(prefs.value("choosersize").toByteArray());
 
 	command=QString("cd %1/ >/dev/null;ls -t1|tail -n +%2| xargs -I {} rm '{}'").arg(this->recentFilesPath).arg(this->maxRecents);
@@ -296,7 +295,7 @@ void chooserDialogClass::buildMainGui(void)
 
 	QObject::connect(this->filepathEdit,&QT_lineEditCompleterClass::textEdited,[this](const QString &text)
 		{
-	//	qDebug()<<"textEdited";
+		//qDebug()<<"textEdited";
 			if(this->filepathEdit->text().isEmpty()==true && QGuiApplication::queryKeyboardModifiers()==Qt::NoModifier)
 				{
 					this->fileList.clearSelection();
@@ -306,7 +305,7 @@ void chooserDialogClass::buildMainGui(void)
 
 	QObject::connect(this->filepathEdit,&QT_lineEditCompleterClass::editingFinished,[this]()
 		{
-//		qDebug()<<"editingFinished";
+		//qDebug()<<"editingFinished";
 			QModelIndex				index;
 			QList<QStandardItem*>	foundItems=this->fileListModel->findItems(this->filepathEdit->text(),Qt::MatchStartsWith);
 			if(foundItems.size()>0)
@@ -318,8 +317,8 @@ void chooserDialogClass::buildMainGui(void)
 
 	QObject::connect(this->filepathEdit,&QT_lineEditCompleterClass::textChanged,[this](const QString &text)
 		{
-//			qDebug()<<"textChanged";
-		if(this->filepathEdit->text().isEmpty()==false && QGuiApplication::queryKeyboardModifiers()==Qt::NoModifier)
+		//	qDebug()<<"textChanged";
+			if(this->filepathEdit->text().isEmpty()==false && QGuiApplication::queryKeyboardModifiers()==Qt::NoModifier)
 				{
 					this->fileList.clearSelection();
 					QModelIndex				index;
@@ -652,9 +651,7 @@ void chooserDialogClass::setSideList(void)
 
 ///standard items
 	this->sideListModel->clear();
-	QIcon ic=QIcon::fromTheme("computer");
-	qDebug()<<">>>>"<<ic.name();
-	item=new QStandardItem(QIcon::fromTheme("computer"),"Computer");
+	item=new QStandardItem(QIcon::fromTheme(QIcon::ThemeIcon::Computer),"Computer");
 	fullFilePathData="/";
 	item->setData(fullFilePathData,Qt::UserRole);
 	this->sideListModel->appendRow(item);
@@ -840,8 +837,27 @@ void chooserDialogClass::doubleClickSideList(const QModelIndex &index)
 	else
 		dirstr=index.data(Qt::UserRole).toString();
 
+//remove dead symlinks
 	if(dirstr==this->recentFoldersPath || dirstr==this->recentFilesPath)
-		this->fromRecents=true;
+		{
+			QFileInfoList	fl;
+			QDir				d=this->recentFoldersPath;
+			fl=d.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries|QDir::System);
+			for(const QFileInfo &fi : fl)
+				{
+					if(QFileInfo::exists(fi.filePath())==false)
+						QFile::remove(fi.filePath());
+				}
+	
+			d=this->recentFilesPath;
+			fl=d.entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries|QDir::System);
+			for(const QFileInfo &fi : fl)
+				{
+					if(QFileInfo::exists(fi.filePath())==false)
+						QFile::remove(fi.filePath());
+				}
+			this->fromRecents=true;
+		}
 	else
 		this->fromRecents=false;
 
