@@ -57,13 +57,16 @@ void ClipboardPlug::initPlug(KKEditClass *kk,QString pathtoplug)
 	this->clipboard=this->mainKKEditClass->application->clipboard();
 	this->clipCon=QObject::connect(this->clipboard,&QClipboard::dataChanged,[this]()
 		{
-			if(this->clipboard->text().compare(this->clips[this->currentClip]->objectName())!=0)
+			if(this->clipboard->mimeData()->hasText())
 				{
-					this->currentClip++;
-					if(this->currentClip==MAXCLIPS)
-						this->currentClip=0;
-					this->clips[this->currentClip]->setText(this->truncateWithElipses(this->clipboard->text()));
-					this->clips[this->currentClip]->setObjectName(this->clipboard->text());
+					if(this->clipboard->text().compare(this->clips[this->currentClip]->objectName())!=0)
+						{
+							this->currentClip++;
+							if(this->currentClip==MAXCLIPS)
+								this->currentClip=0;
+							this->clips[this->currentClip]->setText(this->truncateWithElipses(this->clipboard->text()));
+							this->clips[this->currentClip]->setObjectName(this->clipboard->text());
+						}
 				}
 		});			
 }

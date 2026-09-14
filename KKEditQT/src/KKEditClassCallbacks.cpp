@@ -974,7 +974,7 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 				this->reloadDocument();
 				break;
 			case QUITMENUITEM:
-				this->shutDownApp();//TODO.//
+				this->shutDownApp();
 				break;
 			case EXPORTTOPDFMENUITEM:
 				{

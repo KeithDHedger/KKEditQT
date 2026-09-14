@@ -442,6 +442,7 @@ const QString DocumentClass::textUnderCursor()
 	return cursor.selectedText();
 }
 
+
 void DocumentClass::mousePressEvent(QMouseEvent *event)
 {
 	if((event->buttons() & Qt::LeftButton)==Qt::LeftButton)
@@ -461,7 +462,6 @@ void DocumentClass::mousePressEvent(QMouseEvent *event)
 			this->doingVSelect=true;
 			this->startVCol=startcurs.columnNumber();
 			this->startVLine=startcurs.blockNumber();
-
 		}
 	QPlainTextEdit::mousePressEvent(event);
 }
@@ -1079,6 +1079,39 @@ void DocumentClass::mouseReleaseEvent(QMouseEvent *event)
 			this->setTabStopDistance(fm.horizontalAdvance(" ")*this->mainKKEditClass->prefsTabWidth);
 		}
 	this->doingVSelect=false;
+
+	if(event->button()==Qt::LeftButton)
+		{
+			QTextCursor	c;
+			qint64		elapsed;
+			int			doubleclickinterval;
+			bool			withindoubleclicktime;
+			int			end;
+
+			elapsed=this->tcTimer.elapsed();
+			doubleclickinterval=QGuiApplication::styleHints()->mouseDoubleClickInterval();
+
+			withindoubleclicktime=this->havePreviousRelease && elapsed <= doubleclickinterval;
+			if(withindoubleclicktime==true)
+				{
+					this->tcCnt++;
+					if(this->tcCnt<2)
+						{
+							QPlainTextEdit::mouseReleaseEvent(event);
+							return;
+						}
+					c=this->textCursor();
+					end=c.selectionEnd();
+					if(this->document()->characterAt(end-1)==QChar::ParagraphSeparator)
+						{
+							c.setPosition(end-1,QTextCursor::KeepAnchor);
+							setTextCursor(c);
+						}
+                 }
+			this->tcTimer.restart();
+			this->havePreviousRelease=true;
+			this->tcCnt=0;
+        }
 	QPlainTextEdit::mouseReleaseEvent(event);
 }
 

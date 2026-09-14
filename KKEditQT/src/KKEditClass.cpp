@@ -1068,7 +1068,8 @@ void KKEditClass::shutDownApp()
 	if(this->onExitSaveSession==true)
 		this->doSessionsMenuItems(NULL);
 
-	this->saveAllFiles(true);
+	if(this->saveAllFiles(true)==false)
+		return;
 
 	plugData pd;
 	pd.what=DOSHUTDOWN;

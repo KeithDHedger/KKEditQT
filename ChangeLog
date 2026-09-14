@@ -1,4 +1,7 @@
 2.2.2
+Fixed canceling unsaved changes on quit.
+Fixed clipboard plugin to only except text.
+Triple clicking to select whole line no longer includes trailing newline character.
 Remove broken symlinks from recent files/folders.
 Updated fallback icons.
 Added "Open All In Dir" to file menu to open all files in a specific folder ( not including "." files ).

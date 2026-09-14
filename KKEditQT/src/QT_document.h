@@ -133,7 +133,11 @@ class DocumentClass : public QPlainTextEdit
 		void								setRedo(bool avail);
 
 	private:	
-//		bool								dirty=false;
+//triple click detect
+		int								tcCnt=0;
+		QElapsedTimer					tcTimer;
+		bool								havePreviousRelease=false;
+    
 		bool								inDrag=false;
 		QWidget 							*lineNumberArea;
 		QString							indentPad;
