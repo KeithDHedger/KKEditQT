@@ -301,6 +301,8 @@ void chooserDialogClass::buildMainGui(void)
 					this->fileList.clearSelection();
 					this->apply->setEnabled(false);
 				}
+			if(this->filepathEdit->text().isEmpty()==false)
+				this->apply->setEnabled(true);
 		});
 
 	QObject::connect(this->filepathEdit,&QT_lineEditCompleterClass::editingFinished,[this]()
