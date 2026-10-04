@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Fri 21 Aug 16:05:19 BST 2026 keithdhedger@gmail.com
+ * ©K. D. Hedger. Sun  4 Oct 17:48:06 BST 2026 keithdhedger@gmail.com
 
  * This file (QT_lineEditCompleter.h) is part of KKEditQT.
 
@@ -30,6 +30,7 @@ class QT_lineEditCompleterClass: public QLineEdit
 		~QT_lineEditCompleterClass();
 
 		bool				useInternaleSC=true;
+		bool				onlyFolders=false;
 
 		void				setCompleteType(int type);
 		void				setUpCompleter(QStringList sl=QStringList());

@@ -473,7 +473,12 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	if(retval==true)
 		{
 			this->pages[this->newPageIndex]=new DocumentClass(this);
+
+
+
 			doc=this->pages[this->newPageIndex];
+
+	
 			doc->pageIndex=this->newPageIndex;
 			this->newPageIndex++;
 			type=db.mimeTypeForFile(fileinfo.canonicalFilePath());
@@ -512,6 +517,22 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 			file.close();
 			doc->document()->clearUndoRedoStacks();
 			doc->makeClean();
+
+//QScrollBar *sb=doc->verticalScrollBar();
+////sb->setStyleSheet("QScrollBar:vertical { min-height: 1000px; }");
+//
+//sb->setStyleSheet(R"(
+//    QScrollBar:vertical {
+//        width: 12px;
+//    }
+//
+//    QScrollBar::handle:vertical {
+//        min-height: 1000px;   /* minimum thumb length */
+//        background: #888;
+//        border-radius: 6px;
+//    }
+//)");
+
 		}
 	else
 		{

@@ -1,4 +1,5 @@
 2.2.2
+Tweaks to file chooser.
 Fixed minor gui glitch in save dialog.
 Fixed canceling unsaved changes on quit.
 Fixed clipboard plugin to only except text.

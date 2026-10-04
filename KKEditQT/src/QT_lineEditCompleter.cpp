@@ -1,6 +1,6 @@
 /*
  *
- * ©K. D. Hedger. Fri 21 Aug 16:05:08 BST 2026 keithdhedger@gmail.com
+ * ©K. D. Hedger. Sun  4 Oct 17:47:56 BST 2026 keithdhedger@gmail.com
 
  * This file (QT_lineEditCompleter.cpp) is part of KKEditQT.
 
@@ -93,7 +93,10 @@ QStringList QT_lineEditCompleterClass::completeForPrefix(QString typed)
 		return(QStringList());
 
 	filterPart=part;
-	entries=searchDir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries,QDir::Name);
+	if(this->onlyFolders==false)
+		entries=searchDir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries,QDir::Name);
+	else
+		entries=searchDir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs,QDir::Name);
 
 	for(const QFileInfo &fi : entries)
 		{
