@@ -665,7 +665,7 @@ void chooserDialogClass::setSelectedFiles(const QModelIndex &index,bool clear)
 	QString	displayname=index.data(Qt::DisplayRole).toString();
 	this->showPreViewData(filename);
 
-	//qDebug()<<"setSelectedFiles"<<filename<<displayname;
+//	qDebug()<<"setSelectedFiles"<<filename<<displayname;
 	if(displayname.isEmpty()==true && filename.isEmpty()==true)
 		return;
 
@@ -689,7 +689,13 @@ void chooserDialogClass::setSelectedFiles(const QModelIndex &index,bool clear)
 						this->apply->setText("Open");
 					else
 						this->apply->setText("Save");
+					
 					this->apply->setEnabled(true);
+					this->filepathEdit->blockSignals(true);
+						if(this->fileList.selectionModel()->selectedIndexes().size()==1)
+							if(QFileInfo(filename).isDir()==false)
+								this->filepathEdit->setText(displayname);
+					this->filepathEdit->blockSignals(false);
 				}
 				break;
 			case chooserDialogType::loadDialog:
@@ -700,15 +706,12 @@ void chooserDialogClass::setSelectedFiles(const QModelIndex &index,bool clear)
 						this->apply->setText(buttonname);
 
 					this->apply->setEnabled(true);
-					if(this->dialogType==chooserDialogType::loadDialog)
-					{
 					this->filepathEdit->blockSignals(true);
 						if(this->fileList.selectionModel()->selectedIndexes().size()==1)
 							this->filepathEdit->setText(displayname);
 						else
 							this->filepathEdit->clear();
 					this->filepathEdit->blockSignals(false);
-					}
 				}
 				break;
 		}
