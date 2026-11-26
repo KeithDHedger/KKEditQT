@@ -311,6 +311,10 @@ void KKEditClass::setDefineSearchFolders(void)
 	folders=fl.join(" ");
 
 	if(procs.setCommands(QStringList()<<QString("%1/ctags -x %2 %3").arg(this->realBinDir).arg(this->ctagsExlusions).arg(folders)<<QString("%1/sort").arg(this->realBinDir)<<QString("%1/awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'") .arg(this->realBinDir))==true)
+	
+//	qDebug()<<">>>>>>>>"<<QStringList()<<QString("%1/ctags -x %2 %3").arg(this->realBinDir).arg(this->ctagsExlusions).arg(folders)<<QString("%1/sort").arg(this->realBinDir)<<QString("%1/awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'") .arg(this->realBinDir);
+	
+	
 		tags=procs.runCommands().split('\n',Qt::SkipEmptyParts);
 
 	this->findDefWidget->setStrings(tags);
@@ -636,7 +640,7 @@ void KKEditClass::readConfigs(void)
 	this->autoOneTab=this->prefs.value("app/autoonetab",QVariant(bool(false))).value<bool>();
 	this->openTabToRight=this->prefs.value("app/opentabtoright",QVariant(bool(true))).value<bool>();
 	this->openFirstTabWithSession=this->prefs.value("app/selectfirsttab",QVariant(bool(true))).value<bool>();
-	this->ctagsExlusions=this->prefs.value("app/exclusions","--exclude=Makefile* --exclude=aclocal* --exclude=config*").toString();
+	this->ctagsExlusions=this->prefs.value("app/exclusions","--exclude=Makefile* --exclude=aclocal* --exclude=config* --exclude=*/man*").toString();
 
 //find
 	this->findList=this->prefs.value("find/findlist").toStringList();
