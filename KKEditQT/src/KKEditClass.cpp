@@ -298,12 +298,25 @@ void KKEditClass::setDefineSearchFolders(void)
 	QString				folders="";
 	QStringList			fl;
 	QT_RunExternalProc	procs;
+	int					totalfiles=0;
 
 	for(int j=0;j<this->mainNotebook->count();j++)
 		{
 			DocumentClass	*doc=this->getDocumentForTab(j);
 			if(doc!=NULL)
-				folders+=doc->getDirPath()+"/*:";
+				{
+					totalfiles+=QDir(doc->getDirPath()).count();
+					if(totalfiles>this->maxCtagsFiles)
+						{
+							folders+=doc->getFilePath()+":";
+							totalfiles-=QDir(doc->getDirPath()).count()-1;
+						}
+					else
+						{
+							folders+=doc->getDirPath()+"/*:";
+							totalfiles++;
+						}
+				}
 		}
 
 	fl=folders.split(":");
@@ -313,10 +326,8 @@ void KKEditClass::setDefineSearchFolders(void)
 	if(procs.setCommands(QStringList()<<QString("%1/ctags -x %2 %3").arg(this->realBinDir).arg(this->ctagsExlusions).arg(folders)<<QString("%1/sort").arg(this->realBinDir)<<QString("%1/awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'") .arg(this->realBinDir))==true)
 	
 //	qDebug()<<">>>>>>>>"<<QStringList()<<QString("%1/ctags -x %2 %3").arg(this->realBinDir).arg(this->ctagsExlusions).arg(folders)<<QString("%1/sort").arg(this->realBinDir)<<QString("%1/awk '{print $1 \" \" $2 \" \" $3 \" \" $4}'") .arg(this->realBinDir);
-	
-	
-		tags=procs.runCommands().split('\n',Qt::SkipEmptyParts);
 
+	tags=procs.runCommands().split('\n',Qt::SkipEmptyParts);
 	this->findDefWidget->setStrings(tags);
 }
 
@@ -641,6 +652,7 @@ void KKEditClass::readConfigs(void)
 	this->openTabToRight=this->prefs.value("app/opentabtoright",QVariant(bool(true))).value<bool>();
 	this->openFirstTabWithSession=this->prefs.value("app/selectfirsttab",QVariant(bool(true))).value<bool>();
 	this->ctagsExlusions=this->prefs.value("app/exclusions","--exclude=Makefile* --exclude=aclocal* --exclude=config* --exclude=*/man*").toString();
+	this->maxCtagsFiles=this->prefs.value("app/maxctagsfiles",200).toInt();
 
 //find
 	this->findList=this->prefs.value("find/findlist").toStringList();
@@ -865,6 +877,7 @@ void KKEditClass::writeExitData(void)
 	this->prefs.setValue("app/opentabtoright",this->openTabToRight);
 	this->prefs.setValue("app/selectfirsttab",this->openFirstTabWithSession);
 	this->prefs.setValue("app/exclusions",this->ctagsExlusions);
+	this->prefs.setValue("app/maxctagsfiles",this->maxCtagsFiles);
 
 //find
 	this->setSearchPrefs();

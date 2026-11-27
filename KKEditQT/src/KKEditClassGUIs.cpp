@@ -97,7 +97,8 @@ static const char *whatIsPrefsInt[MAXPREFSINTWIDGETS]={\
 "<html>Max characters in menu items and function definitions, default <b>64</b>.</html>",\
 "<html>Maximum number of recently opened files stored, default <b>10</b>.</html>",\
 "<html>Check for messages every X ms, default <b>1000</b>.</html>",\
-"<html>Maximum number of sessions default <b>24</b>.</html>"};
+"<html>Maximum number of sessions default <b>24</b>.</html>",\
+"<html>Maximum number of files ctags will consider when searching for defines.</b>.</html>"};
 
 void KKEditClass::buildPrefsWindow(void)
 {
@@ -311,6 +312,11 @@ void KKEditClass::buildPrefsWindow(void)
 	prefsOtherWidgets[PREFSCTAGSEXCLUDE]->setWhatsThis(whatIsPrefsOther[PREFSCTAGSEXCLUDE]);
 	table->addWidget(widgetlabel,posy,0,Qt::AlignVCenter);
 	table->addWidget(prefsOtherWidgets[PREFSCTAGSEXCLUDE],posy,1,1,-1,Qt::AlignVCenter);
+
+//total number of files ctags will use
+	posy++;
+	makePrefsDial(MAXCTAGFILES,"Max Ctag File's:",this->maxCtagsFiles,0,1000,posy);
+	prefsIntWidgets[MAXCTAGFILES]->setWhatsThis(whatIsPrefsInt[MAXCTAGFILES]);
 
 //terminalcommand
 	posy++;

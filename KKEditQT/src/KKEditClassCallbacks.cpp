@@ -922,6 +922,11 @@ void KKEditClass::doFileMenuItems(MenuItemClass *mc)
 								qDebug()<<"Select canceled";
 								return;
 							}
+						if(QDir(chooser.multiFileList.at(0)).count()>50)
+							{
+								if(this->yesNoDialog(QString("Folder %1 contains %2 files!").arg(chooser.multiFileList.at(0)).arg(QDir(chooser.multiFileList.at(0)).count()),"Are you sure you want to open all these files?")!=QMessageBox::Yes)
+									return;
+							}
 						commands=QString("find '%1' -maxdepth 1 -mindepth 1 -not -path '*/.*'|sort|xargs -I{} kkeditqtmsg -k %2 -c openfile -d '{}'").arg(chooser.multiFileList.at(0)).arg(this->msgKey);
 						procs.sync=false;
 						procs.runCommandsInShell(commands);
@@ -1576,8 +1581,10 @@ void KKEditClass::setPreferences(void)
 
 	this->onExitSaveSession=qobject_cast<QCheckBox*>(this->prefsWidgets[AUTOSAVE])->checkState();
 
+//ctags
 //exclusions
 	this->ctagsExlusions=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSCTAGSEXCLUDE])->text();
+	this->maxCtagsFiles=qobject_cast<QSpinBox*>(this->prefsIntWidgets[MAXCTAGFILES])->value();
 
 //print command
 	this->prefsPrintCommand=qobject_cast<QLineEdit*>(prefsOtherWidgets[PREFSPRINTCOMMAND])->text();

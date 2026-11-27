@@ -144,6 +144,7 @@ MenuItemClass						*spellCheckMenuItem=NULL;
 //editor
 		int							prefsFunctionMenuLayout=0;
 		unsigned int					prefsDepth=1;
+		unsigned int					maxCtagsFiles=200;
 		QString						prefsToolBarLayout;
 		unsigned int					prefsMaxTabChars=20;
 		unsigned int					prefsMaxMenuChars=MAXTEXTWIDTH;

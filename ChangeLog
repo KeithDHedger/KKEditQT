@@ -1,3 +1,8 @@
+2.2.3
+Added maximum number of files for ctags to prefs ( default 200 ).
+Added confirm dialog when opening all files in dir if folder contains more than 50 files.
+Added maximum number of files ctags will search for defines.
+
 2.2.2
 Added default */man* to ctags exclude for speed.
 Tweaks to file chooser.

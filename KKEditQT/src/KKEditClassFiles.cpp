@@ -473,12 +473,7 @@ bool KKEditClass::openFile(QString filepath,int linenumber,bool warn,bool addtor
 	if(retval==true)
 		{
 			this->pages[this->newPageIndex]=new DocumentClass(this);
-
-
-
 			doc=this->pages[this->newPageIndex];
-
-	
 			doc->pageIndex=this->newPageIndex;
 			this->newPageIndex++;
 			type=db.mimeTypeForFile(fileinfo.canonicalFilePath());
